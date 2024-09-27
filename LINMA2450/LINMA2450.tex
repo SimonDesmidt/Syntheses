@@ -1,0 +1,235 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[english]{babel}
+\usepackage{libertine}
+\usepackage{gensymb}
+\usepackage{tabularray}
+\usepackage{nicefrac}
+\usepackage{graphicx}
+\usepackage{steinmetz}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage[skins,many]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{pythonhighlight}
+\usepackage{empheq}
+\usepackage{mathpazo}
+\usepackage{xfrac}
+\usepackage{textcomp}
+%\usepackage[]{titletoc}
+\usepackage{nicematrix}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\usepackage{apptools}
+    \titleformat{\chapter}[hang]{\bfseries\huge}{\IfAppendix{\appendixname~}{\relax}\thechapter\IfAppendix{.}{.}}{\IfAppendix{0.333em}{2pc}}{}
+
+\titlespacing {\chapter}{0pt}{0pt}{40pt}
+
+\usepackage[nottoc]{tocbibind}
+\usepackage{keyval}
+\usepackage{kvoptions}
+\usepackage{fancyvrb}
+\usepackage{ifthen}
+\usepackage{calc}
+\usepackage{pdftexcmds}
+\usepackage{etoolbox}
+\usepackage{xstring}
+\usepackage{xcolor}
+\usepackage{lineno}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usetikzlibrary{patterns,arrows,decorations.pathreplacing,babel}
+
+\usepackage[]{minted}
+\newminted{python}{
+    linenos=true,
+    bgcolor=lightgray,
+    tabsize=4,
+    gobble=8,
+    fontfamily=courier,
+    fontsize=\small,
+    xleftmargin=5pt,
+    xrightmargin=5pt
+}
+
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+
+% Define a new tcolorbox style with a red border and transparent interior
+\tcbset{
+    redbox/.style={
+        enhanced,
+        colframe=red,
+        colback=white,
+        boxrule=1pt,
+        sharp corners,
+        before skip=10pt,
+        after skip=10pt,
+        box align=center,
+        width=\linewidth-2pt, % Adjust the width dynamically
+    }
+}
+\newcommand{\boxedeq}[1]{
+\begin{tcolorbox}[redbox]
+    \begin{align}
+        #1
+    \end{align}
+\end{tcolorbox}
+}
+\usepackage[]{titletoc}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\usepackage{apptools}
+    \titleformat{\chapter}[hang]{\bfseries\huge}{\IfAppendix{\appendixname~}{\relax}\thechapter\IfAppendix{.}{.}}{\IfAppendix{0.333em}{2pc}}{}
+
+\titlespacing {\chapter}{0pt}{0pt}{40pt}
+
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.75]{img/page_de_garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LINMA2450 Combinatorial Optimization \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Academic year 2024-2025 - Q1}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\chapter{Introduction}
+\section{Continuous vs Combinatorial optimization}
+A continuous optimization problem is expressed as 
+\begin{equation}\label{eq:1}
+    \max/\min f(x)
+\end{equation} 
+such that \(x\in \Omega\), where \(f:\mathbb{R}^n \rightarrow \mathbb{R}\) and \(\Omega \subseteq \mathbb{R}^n\), where \(\Omega\) does not have isolated points. \\
+A combinatorial optimization problem has the additional constraint that \[x\in \Omega \cap \mathbb{Z}^n\] which can be a finite set of values. If finite, it is not solvable by exhaustive search, as it can contain loads of points even for small scale problems.
+\section{Upper/Lower bound}
+Let \(f^*=\max \{f(x):\quad x\in \Omega\cap \mathbb{Z}^n\}\) be the optimal value for a given problem.
+\begin{itemize}
+    \item Any lower bound for \(f^*\) is called primal bound. One way to get primal bounds is to find feasible points, because if \(x\in \Omega\cap \mathbb{Z}^n\), then \(f_L = f(x)\le f^*\).
+    \item Any upper bound for \(f^*\) is called dual bound. One way to get this upper bound is to use relaxation : \[f^* \le \max_x \{f(x):\quad x\in \Omega\} = f_{\mathcal{U}}\] Thus if \(f_{\mathcal{U}}-f(x)\le \varepsilon\), we have a certificate that \(x\) is an \(\varepsilon\)-approximate solution of \ref{eq:1}.
+\end{itemize}
+\chapter{Knapsak problem}
+Suppose that we have the following : 
+\begin{itemize}
+    \item a bag;
+    \item a set of objects that we want to put in the bag;
+    \item each object has a value.
+\end{itemize}
+The objective of this problem is to select the objects to put in the bag in order to maximze the total value of the objects in the bag, such that the objects fit in the bag. We can only put nonnegative integer amounts of each object in the bag. 
+\subsection{Mathematical formulation}
+\begin{itemize}
+    \item \(b\) : the volume of the bag
+    \item \(n\) : the number of types of objects
+    \item \(0<a_j\le b\) : the volume of one unit of object \(j\)
+    \item \(c_j>0\) : the value of one unit of object \(j\)
+    \item \(x_j\) : the amount of object \(j\) that is put in the bag (VARIABLES)
+\end{itemize}
+The Linear Integer Programming Problem expression here is 
+\begin{equation}\label{eq:2}
+    \max \sum_{j=1}^n x_jc_j \quad \text{such that}\quad \begin{cases}
+        a^Tx \le b\\
+        x_j\in \mathbb{N} \quad \forall j=1,\dots,n
+    \end{cases}
+\end{equation}
+Let us now suppose that 
+\begin{equation}\label{eq:3}
+    \frac{c_1}{a_1}\ge \frac{c_2}{a_2} \ge \dots \ge \frac{c_n}{a_n}
+\end{equation}
+The greedy approach is to put in the bag the maximum amount possible of object 1, then 2, and so on. The amount of object \(j\) in the bag will therefore be 
+\begin{equation}\label{eq:4}
+    x_j^{(g)} = \left\lfloor \frac{b-\sum_{i=1}^{j-1} a_ix_i^{(g)}}{a_j} \right\rfloor \quad \forall j=1,\dots,n
+\end{equation}
+and the feasible point is \(x^{(g)}\) such that it \(j\) component is \(x_j^{(g)}\) calculated above. 
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Theorem}]
+    Let \(x^{(g)}\) be the feasible point to problem \ref{eq:2} given by the equation \ref{eq:4}, and suppose that the assumption \ref{eq:3} is true. Then,\[f\left(x^{(g)}\right) \ge \sfrac{1}{2} f^*\] that is, the Greedy Heuristics to a Knapsak problem gives a feasible point with a function value equal to at least 50\% of the optimal value.
+\end{tcolorbox}
+\chapter{Relaxation}
+We will here study problems such that the relaxation of the integer constraint still gives the same solution, i.e. solving the discrete or continuous problem is equivalent.\\
+\section{Linear problems}
+\subsection{Definitions}
+\begin{itemize}
+    \item A matrix \(B\in \mathbb{Z}^{k\times k}\) is unimodular when it is invertible and \(B^{-1}\in \mathbb{Z}^{k\times k}\). 
+    \item \(B\in \mathbb{Z}^{k\times k}\) is unimodular iff \(\det B\in \{-1,1\}\). 
+    \item \(A\in \mathbb{Z}^{m\times n}\) is totally unimodular (TU) when every invertible submatrix of \(A\) is unimodular. 
+    \item Let \(A\in \mathbb{Z}^{m\times n}\). If \(\det(B) \in \{-1,0,1\}\) for every square submatrix of \(A\), then A is TU.
+\end{itemize}
+\section{Resolution}
+A linear problem of optimization can be written under the following general form :
+\begin{equation}
+    \max f(x) = c^Tx \qquad \text{ such that } Ax\le b
+\end{equation}
+We can use the simplex method in that problem, stating that the solution is one of the vertices of the feasible set (a polygon here). It is possible to rearrange the rows of \(A\) and \(b\) in such a way that we get
+\begin{equation}
+    \begin{pNiceArray}{c}
+  B\\
+  \hline
+  C\\
+\end{pNiceArray} \qquad \begin{pNiceArray}{c}
+  b_{(1)} \\
+  \hline
+  b_{(2)}\\
+\end{pNiceArray}
+\end{equation}
+With that, the solution \(x^* = \begin{pmatrix}
+x^*_{(1)}\\ x^*_{(2)}\\ \end{pmatrix}
+\) verifies 
+\begin{equation}
+    \begin{cases}
+        Bx_{(1)}^* = b_{(1)}\\
+        x_{(2)}^* = 0\\
+    \end{cases}
+\end{equation}
+B being non singular.
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Theorem}]
+    Let \(A\in \mathbb{Z}^{m\times n}\) be a matrix such that
+    \begin{enumerate}
+        \item \(A_{ij} \in \{-1,0,1\}\);
+        \item Every column of \(A\) has at most 2 nonzero entries:
+        \item There exists a partition\footnote{\(I_1\cap I_2 = \emptyset\) and \(I_1 \cup I_2 = \) the set.} \(I_1\cup I_2 = \{1,\dots,m\}\) such that, if the \(j\)th column of \(A\) has exactly 2 nonzero entries, then \(\sum_{i\in I_1} A_{ij} = \sum_{i\in I_2} A_{ij}\);
+    \end{enumerate}
+    Then \(A\) is TU.
+\end{tcolorbox}
+\end{document}
