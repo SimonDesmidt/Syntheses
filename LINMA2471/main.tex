@@ -9,6 +9,8 @@
 \usepackage{libertine}
 \usepackage{graphicx}
 \usepackage{wrapfig}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{float}
 \usepackage{enumitem}
 \usepackage{pythonhighlight}
@@ -156,4 +158,42 @@ We use the sequence \(\{x_k\}_{k\ge 0}\), given a \(x_0\in \mathbb{R}^n\), such 
     \(\mu\)-strongly-convex \(f\) & \(f(x_k)-f(x^*)\le \varepsilon\) & \(\mathcal{O}(\log (\varepsilon^{-1}))\)
 \end{tabular}
 \end{center}
+\section{GM with Armijo Line Search}
+The Armijo Line Search consists of changing the constant in the GM in order to be more efficient and be able to make bigger steps in some directions where it is possible. 
+\begin{equation}
+    x_{k+1} = x_k - \alpha \nabla f(x_k)\qquad \alpha >0
+\end{equation}
+\begin{algorithm}\label{algo:Armijo}
+    \caption{Gradient Method with Armijo Line Search}
+    \begin{algorithmic}[1]
+    \State \textbf{Step 0:} Given $x_0 \in \mathbb{R}^n$ and $\alpha_0 > 0$, set $k \coloneqq 0$.
+    \State \textbf{Step 1:} Set $\ell \coloneqq 0$.
+    \State \textbf{Step 1.1:} Compute $x_k^+ = x_k - (0.5)^\ell \alpha_k \nabla f(x_k)$.
+    \State \textbf{Step 1.2 (Armijo Line Search):} If
+    \[
+    f(x_k) - f(x_k^+) \geq \frac{(0.5)^\ell \alpha_k}{2} \|\nabla f(x_k)\|^2 \tag{1}
+    \]
+    set $\ell_k \coloneqq \ell$ and go to Step 2. Otherwise, set $\ell \coloneqq \ell + 1$ and go back to Step 1.1.
+    \State \textbf{Step 3:} Define $x_{k+1} = x_k^+$, $\alpha_{k+1} = (0.5)^{\ell_k - 1} \alpha_k$, set $k \coloneqq k + 1$ and go back to Step 1.
+    \end{algorithmic}
+\end{algorithm}
+\section{Problems with convex constraints}
+Consider the problem
+\begin{equation}\label{eq:convex_problem}
+    \min_{x\in \mathbb{R}^n} f(x) \text{ such that } x\in \mathbb{\Omega}
+\end{equation}
+where \(f\) is L-smooth, and \(\Omega \subseteq \mathbb{R}^n\) is nonempty, closed and convex.
+Given an approximation \(x_k\in \Omega\) for a solution of \ref{eq:convex_problem}, a possible generalization of the Gradient Method is to define 
+\begin{equation}
+    x_{k+1} = P_{\Omega} \left(x_k-\frac{1}{L}\nabla f(x_k)\right)
+\end{equation}
+where \(P_{\Omega}\) is the projection of \(z\) onto \(\Omega\), and we call this method the Projected Gradient Method.\\
+If \(\Omega = [a,b]^n\), then the projection of an element \(z\) onto \(\Omega\) is such that its element \(i\) is given by:
+\begin{equation}
+    \left[P_\Omega(z)\right]_i = \begin{cases}
+        z_i \text{ if } a\le z_i\le b\\
+        a \text{ if } z_i<a\\
+        b \text{ if }z_i>b\\
+    \end{cases} \qquad \forall i=1,\dots,n
+\end{equation}
 \end{document}
