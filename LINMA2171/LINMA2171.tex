@@ -157,6 +157,92 @@ And the recursive formula is
 \begin{equation}
     P_{i_0i_1\dots i_k}= P_{i_0i_1\dots i_{k-1}}(x) + y_{i_0i_1\dots i_k}(x-x_{i_0})(x-x_{i_1})\dots(x-x_{i_{k-1}})
 \end{equation}
-for push only
+\section{Linear algebra approach}
+Let \((\phi_0,\dots,\phi_n)\) ba a basis of \(\mathcal{P}_n\), which is known to be an \((n+1)\)-dimensional linear space. The interpolation polynomial can thus be expressed in a unique way in the basis:
+\begin{equation}
+    p_n(x) = \sum_{i=0}^n a_i\phi_i(x)
+\end{equation}
+and the coefficient are obtained by solving the linear system
+\begin{equation}
+    \begin{bmatrix}
+        \phi_0(x_0) & \phi_1(x_0) & \dots & \phi_n(x_0)\\
+        \phi_0(x_1) & \phi_1(x_1) & \dots & \phi_n(x_1)\\
+        \vdots  & \vdots & \ddots & \vdots\\
+        \phi_0(x_n) & \phi_1(x_n) & \dots & \phi_n(x_n)\\
+    \end{bmatrix}\begin{bmatrix}
+        a_0\\ a_1\\ \vdots \\a_n\\
+    \end{bmatrix} = \begin{bmatrix}
+        y_0 \\y_1\\\vdots \\ y_n\\
+    \end{bmatrix}
+\end{equation}
+This is called a Vandermonde matrix, and its determinant is 
+\begin{equation}
+    \det(V) = \prod_{0\le i< j\le n}(x_j-x_i)
+\end{equation}
+which is always non zero, as the \(x_i\) are disinct, and the system has one unique solution. 
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: the condition number\footnote{It is a measure of the reaction of the system to a small perturbation} of such a matrix grows exponentially with \(n\). 
+\end{itemize}
+\section{Barycentric interpolation formula}
+This formula is interesting, because it is numerically stable, contrary to the linear algebra method described before. We use the following notation, called the nodal polynomial:
+\begin{equation}
+    \pi_{n+1}(x) = \prod_{i=0}^n (x-x_i)
+\end{equation}
+We now define 
+\begin{equation}
+    \lambda_j = \frac{1}{\prod_{k\neq j}(x_j-x_k)}
+\end{equation}
+The modified Lagrange formula is then 
+\begin{equation}\label{eq:barycentric1}
+    p_n(x) = \pi_{n+1}(x) \sum_{j=0}^n \frac{\lambda_j}{x-x_j}y_i
+\end{equation}
+For the polynomial \(p_n(x) = 1\), we have the following expression:\[1 = \pi_{n+1}(x) \sum_{j=0}^n \frac{\lambda_j}{x-x_j}\] and thus we generally prefer to use the equivalent formula for equation \eqref{eq:barycentric1}:
+\begin{equation}\label{eq:barycentric2}
+    p_n(x) = \sum_{j=0}^n \frac{\lambda_jy_j}{x-x_j} / \sum_{j=0}^n \frac{\lambda_j}{x-x_j}
+\end{equation}
+for all \(x\notin \{x_n,\dots,x_n\}\).
+\section{Trigonometric interpolation}
+Let us consider the evenly spaced points \(x_j = \frac{2\pi j}{N}\), \(j=0,\dots,N\), on the interval \([0,2\pi]\), and the interpolation values \(f_0,\dots, f_N\in \mathbb{C}\), with \(f_0=f_N\). The trigonometric interpolation problem consists of finding \(\beta_k\) such that 
+\begin{equation}
+    p(x) = \sum_{k=0}^{N-1}\beta_ke^{ikx}\text{ such that } p(x_j) = f_j\qquad j=0,\dots,N-1
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: the bound is \(N-1\) because the last condition \(p(x_N) = f_N\) is satisfied when the others are (periodicity). 
+\end{itemize}
+This is equivalent to the generalization to \(\mathbb{C}\) of the polynomial interpolation problem: if we denote \(\omega \coloneqq e^{ix}\), the complex polynomial is 
+\begin{equation}
+    P(\omega) = \sum_{k=0}^{N-1} \beta_k \omega^k
+\end{equation}
+The Vandermonde matrix in the complex case is defined as in the real case. We denote it \(W\). \\
+Theorem: \(W^*W=NI\) for a complex Vandermonde matrix in an interpolation problem. \\
 
+From this, the solution to the interpolation problem is solved by multiplying both sides by \(W^*\). We get 
+\begin{equation}
+    \beta = \frac{1}{N}W^*f \Longrightarrow \beta_k = \frac{1}{N}\sum_{j=0}^{N-1}f_j e^{-i2\pi kj/N} \qquad k=0,\dots,N-1
+\end{equation}
+And that is the discrete Fourier transform (DFT)
+\section{Rational interpolation}
+Let the interpolation points be \(x_0< x_1<\dots<x_\sigma\), with the values \(y_0,\dots,y_\sigma\in\mathbb{R}\). We define the polynomial
+\begin{align}\label{eq:rational}
+    \Phi(x) &= \frac{p_\mu(x)}{q_\nu(x)} \qquad p_\mu \in\mathcal{P}_\mu, q_\nu\in \mathcal{P}_\nu\\
+    &\text{such that } \Phi(x_i)=y_i\qquad i = 0,\dots,\sigma
+\end{align}
+The interpolation polynomial can be written 
+\begin{equation}
+    \Phi(x) = \frac{\sum_{k=0}^\mu a_kx^k}{\sum_{k=0}^\nu b_kx^k} = \frac{\lambda p_\mu(x)}{q\nu(x)}
+\end{equation}
+The number of constraints, i.e. points needed for the interpolation is then \(\sigma=\mu +\nu\). This implies that\\
+
+If \(\Phi\) is a solution to the equation \eqref{eq:rational}, then \(p_\mu,q_\nu\) are solutions of 
+\begin{align}\label{eq:rational2}
+    p_\mu(x_i) - y_i q_\nu(x_i) = 0&\qquad i = 0,\dots,\mu + \nu\\
+    \left(\sum_{k=0}^\mu a_kx_i^k\right) - y_i\left(\sum_{k=0}^\nu b_kx_i^k\right) &= 0
+\end{align}
+The theorem of existence states that the equation \eqref{eq:rational2} always has a non trivial solution, i.e. \((p_\mu,q_\nu) \neq (0,0)\). \\
+The theorem of uniqueness states that if \(\Phi_1\) and \(\Phi_2\) are non trivial solutions of \eqref{eq:rational2}, then they are equivalent, i.e. they differ only by a common polynomial factor in the numerator and denominator.\\
+
+\begin{itemize}
+    \item \(p_\mu,q_\nu\) are relatively prime if they do not have zeros in common.
+\end{itemize}
+Given \(\Phi = \frac{p_\mu}{q_\nu}\), let \(\tilde{\Phi}=\frac{\tilde{p}\mu}{\tilde{q}_\nu}\) be the equivalent expression for which \(\tilde{p}_\mu\) and \(\tilde{q}_\nu\) are relatively prime. \(\Phi\) is the solution of \eqref{eq:rational} \(\Longleftrightarrow \tilde{p}_\mu(x_i)-y_i \tilde{q}_\nu(x_i)=  0\), \(i=0,\dots,\mu+\nu\).  
 \end{document}
