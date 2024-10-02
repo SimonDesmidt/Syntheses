@@ -193,7 +193,7 @@ We will here study problems such that the relaxation of the integer constraint s
     \item \(A\in \mathbb{Z}^{m\times n}\) is totally unimodular (TU) when every invertible submatrix of \(A\) is unimodular. 
     \item Let \(A\in \mathbb{Z}^{m\times n}\). If \(\det(B) \in \{-1,0,1\}\) for every square submatrix of \(A\), then A is TU.
 \end{itemize}
-\section{Resolution}
+\section{Resolution}\label{sec:main_th}
 A linear problem of optimization can be written under the following general form :
 \begin{equation}
     \max f(x) = c^Tx \qquad \text{ such that } Ax\le b
@@ -231,5 +231,37 @@ B being non singular.
         \item There exists a partition\footnote{\(I_1\cap I_2 = \emptyset\) and \(I_1 \cup I_2 = \) the set.} \(I_1\cup I_2 = \{1,\dots,m\}\) such that, if the \(j\)th column of \(A\) has exactly 2 nonzero entries, then \(\sum_{i\in I_1} A_{ij} = \sum_{i\in I_2} A_{ij}\);
     \end{enumerate}
     Then \(A\) is TU.
+\end{tcolorbox}
+\section{Maximal Unweighted Matching Problems}
+\subsection{Definitions}
+\begin{itemize}
+    \item Given a graph \(G=(V,E)\), a matching of \(G\) is a subset of edges \(E'\subset E\) such that for every vertex \(v\in V\), there exists at most one edge \(e\in E'\) that is incident to it.
+    \item Assume that \(V=\{v_1,\dots,v_m\}\) and \(E=\{e_1,\dots, e_n\}\). Given \(E'\subset E\), we can then associate it to the vector \(x'\in \{0,1\}\subset \mathbb{Z}^n\subset \mathbb{R}^n\) given by 
+    \begin{equation}
+        x_j' = \begin{cases}
+            1 \text{ if } e_j \in E'\\
+            0\text{ otherwise}
+        \end{cases}
+    \end{equation}
+    \item Then, with this notation, we have 
+    \begin{equation}
+        |E'| = \mathbb{1}^Tx'
+    \end{equation}
+    \item Let us define the vertex-edge incidence matrix of \(G=(V,E)\) as the matrix \(M\in \mathbb{Z}^{m\times n}\) given by
+    \begin{equation}
+        M_{ij} = \begin{cases} 1 \text{ if }e_j\text{ is incident to }v_j\\ 0 \text{ otherwise}\\ \end{cases} \qquad i=1,\dots,m\qquad j=1,\dots,n
+    \end{equation}
+\end{itemize}
+\subsection{Problem}
+The maximal unweighted matching problem is to find a subgraph of a bipartite graph for which the maximum number of nodes are related to max one other node. It can be expressed in an combinatorial optimization manner such as:
+\begin{equation}
+    \max \mathbb{1}^Tx \qquad \text{ such that } Mx\le \mathbb{1}_n \qquad x\in \{0,1\}^n
+\end{equation}
+We want to be able to use the theorem of section \ref{sec:main_th}. 
+\begin{tcolorbox}[breakable,
+    colback=white,
+    colframe=white!75!black,
+    title={Theorem}]
+If \(G=(V,E)\) with \(|V| = m\) and \(|E|=n\) is a bipartite graph with no self-loop\footnote{Edge from a node to itself.}, then its vertex-edge incidence matrix \(M\in \mathbb{Z}^{m\times n}\) is a TU matrix.
 \end{tcolorbox}
 \end{document}
