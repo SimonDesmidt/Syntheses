@@ -151,7 +151,7 @@ The demonstration of the final results here obtained is in the notes, but not ex
 \subsection{Results}
 We use the sequence \(\{x_k\}_{k\ge 0}\), given a \(x_0\in \mathbb{R}^n\), such that \[x_{k+1} = x_k - \frac{1}{L}\nabla f(x_k)\]
 \begin{center}
-    \begin{tabular}{c|c|c}
+    \begin{tabular}{c|c|c}\label{tab:complexity}
     Problem class & Goal & Complexity bound \\ \hline\hline
     Non-convex \(f\) & \(\lVert \nabla f(x_k)\rVert \le \varepsilon\) & \(\mathcal{O}(\varepsilon^{-2})\)\\ \hline
     Convex \(f\) & \(f(x_k)-f(x^*)\le \varepsilon\) & \(\mathcal{O}(\varepsilon^{-1})\)\\ \hline
@@ -180,7 +180,7 @@ The Armijo Line Search consists of changing the constant in the GM in order to b
 \section{Problems with convex constraints}
 Consider the problem
 \begin{equation}\label{eq:convex_problem}
-    \min_{x\in \mathbb{R}^n} f(x) \text{ such that } x\in \mathbb{\Omega}
+    \min_{x\in \mathbb{R}^n} f(x) \text{ such that } x\in \Omega
 \end{equation}
 where \(f\) is L-smooth, and \(\Omega \subseteq \mathbb{R}^n\) is nonempty, closed and convex.
 Given an approximation \(x_k\in \Omega\) for a solution of \ref{eq:convex_problem}, a possible generalization of the Gradient Method is to define 
@@ -196,4 +196,49 @@ If \(\Omega = [a,b]^n\), then the projection of an element \(z\) onto \(\Omega\)
         b \text{ if }z_i>b\\
     \end{cases} \qquad \forall i=1,\dots,n
 \end{equation}
+If \(x^*\) is a solution of \eqref{eq:convex_problem}, then \[\langle \nabla f(x^*),z-x^*\rangle \ge 0\qquad \forall z \in \Omega\]
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: if \(\Omega = \mathbb{R}^n\), then this lemma is true, in particular for \(z=x^*-\nabla f(x^*)\). Then it is straightforward that we must have \(\nabla f(x^*)=0\). 
+\end{itemize}
+\section{Reduced gradient method}
+For a L-smooth function for the problem \eqref{eq:convex_problem}, we define 
+\begin{equation}
+    G_L(x_k) = L(x_k-x_{k+1})
+\end{equation}
+where \(x_{k+1}\) is given by the general formula\footnote{This definition of \(x_{k+1}\) is true for any type of gradient method, the first case seen being with \(\Omega = \mathbb{R}^n\).}
+\begin{equation}
+    x_{k+1} = \arg \min_{y\in \Omega} f(x_k) + \langle \nabla f(x_k),y-x_k\rangle +\frac{L}{2}\lvert y-x_k\rVert_2^2
+\end{equation}
+From this, we can show as we did in the previous sections that there is a lower bound for the method:
+\begin{equation}
+    f(x_k)-f(x_{k+1}) \ge \frac{1}{2L}\lVert G_L(x_k)\rVert_2^2
+\end{equation}
+This is the same result we found for the unconstrained gradient method, but with a different gradient definition. This is thus a generalization of the first cases. Furtheremore, by the same process we used before, we can show that the complexity of this Reduced Gradient Method is the same as in the table \ref{tab:complexity}.
+\section{Proximal Gradient Method}
+We will here consider problems of the form 
+\begin{equation}
+    \min_{x\in \mathbb{R}^n} F(x) \equiv f(x) + \phi(x)
+\end{equation}
+where \(f(\cdot)\) is L-smooth and \(\phi :\mathbb{R}^n\rightarrow \mathbb{R}\cup \{+\infty\}\) is convex, possibly nonsmooth. \\
+In this case, the formula for \(x_{k+1}\) is 
+\begin{equation}
+    x_{k+1} = \arg\min_{y\in \mathbb{R}^n} f(x_k) + \langle \nabla f(x_k),y-x_k\rangle + \frac{L}{2}\lvert y-x_k\rvert_2^2 + l(y)
+\end{equation}
+which can be re-expressed as 
+\begin{equation}
+    x_{k+1} = \arg\min_{y\in \mathbb{R}^n} \frac{1}{2}\lVert y-(x_k-\frac{1}{L}\nabla f(x_k))\rVert^2+\frac{1}{L}l(y)
+\end{equation}
+Given a convex function \(h\), we define the proximal operator \(prox_h:\mathbb{R}^n\rightarrow\mathbb{R}^n\) by
+\begin{equation}
+    prox_h(z) = \arg \min_{y\in \mathbb{R}^n}\frac{1}{2}\lVert y-z\rVert^2+h(y)
+\end{equation}
+Then, we can write
+\begin{equation}
+    x_{k+1} = prox_{\frac{1}{L}\phi}\left(x_k-\frac{1}{L}\nabla f(x_k)\right)
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: if the \(\phi\) function is the indicator function, i.e. \(\phi=i_\Omega = \begin{cases}
+        0 \text{ if } x\in \Omega\\ \infty \text{ otherwise}
+    \end{cases}\), then \(prox_{\frac{1}{L}i_\Omega}(z) = P_\Omega(z)\).
+\end{itemize}
 \end{document}
