@@ -9,6 +9,7 @@
 \usepackage{libertine}
 \usepackage{graphicx}
 \usepackage{wrapfig}
+\usepackage{amsthm}
 \usepackage{float}
 \usepackage{enumitem}
 \usepackage{pythonhighlight}
@@ -26,6 +27,13 @@
 \usepackage{pdfpages}
 \usepackage{tabularx}
 \usepackage[skins]{tcolorbox}
+
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}[chapter]
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{exmp}[thm]{Example} 
+\newtheorem{lem}[thm]{Lemma}
+
 \titleformat{\chapter}[display]
   {\normalfont\bfseries}{}{0pt}{\Huge}
 \usepackage{hyperref}
@@ -34,6 +42,7 @@
 \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 
+\newcommand{\R}{\mathbb{R}}
 % Define a new tcolorbox style with a red border and transparent interior
 \tcbset{
     redbox/.style={
@@ -83,37 +92,12 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-
-% \chapter{Methodology}
-
-% \section{Theoretically}
-% The modelisation and the analysis of a dynamical system requires to follow a set of steps, in order to have a clear overview of the system.\\
-
-% Firstly, we can draw the system that we want to model, at rest and in the movement that we want to analyse.\\
-
-% After that, we will model the system and its dynamics with a set of ODE.\\
-
-% And finally, we can analyse the system and its modelisation, in order to understand it. For example we can analyse the quantitive and qualitative behaviour of the system. Its equilibrium point(s), and the eigenvalues of the problems that will show the mode/focus where the system tends to.\\
-% Steps to follow, in order to have an overview of the system:
-% \begin{itemize}
-%     \item draw the system at rest/in useful mvt
-%     \item model the system with ODE's
-%     \item solve ODE system
-%     \item analyse the eigenvalues and how the system reacts
-%     \item deduce a qualitative/quantitative behaviour of the system
-% \end{itemize}
-
-% \section{Example}
-% Tacoma Narrows Bridge
-
-% \chapter{Terminology and notation}
-
 \chapter{Introduction}
 The tools introduced in this course are a simplifying view of the reality, yet very uselful to build simple and effective models in view of the control and optimization of the dynamical behaviour of the real systems.
 \section{Reminders}
 \begin{itemize}
-    \item A subset of \(\mathbb{R}\) is said to be negligible if its Lebesgue measure is equal to zeroo and that a property is said to be true almost everywhere if it is false only on a negligible set. 
-    \item Let \(I\subseteq \mathbb{R}\) be an interval the interior of which is not empty. A function \(x:I\rightarrow \mathbb{R}^N\) is said to be absolutely continuous if 
+    \item A subset of \(\R\) is said to be negligible if its Lebesgue measure is equal to zeroo and that a property is said to be true almost everywhere if it is false only on a negligible set. 
+    \item Let \(I\subseteq \R\) be an interval the interior of which is not empty. A function \(x:I\rightarrow \R^N\) is said to be absolutely continuous if 
 \end{itemize}
 \begin{multline*}
         \forall \varepsilon \in (0,\infty),\: \exists \delta\in (0,\infty) \: : \\
@@ -122,12 +106,12 @@ The tools introduced in this course are a simplifying view of the reality, yet v
         \sum_{i=1}^n(b_i-a_i)\le \delta \Longrightarrow \sum_{i=1}^n \lVert x(b_i)-x(a_i)\rVert \le \varepsilon
 \end{multline*}
 \begin{itemize}
-    \item Let \(a,b\in \mathbb{R}\) with \(a<b\). A function \(x:[a,b]\rightarrow \mathbb{R}\) is absolutely continuous iff there exists an integrable fucntion \(\varphi:[a,b]\rightarrow \mathbb{R}\) such that, for every \(t\in [a,b]\), \[x(t) = x(a0) + \int_a^t \phi(s)ds\] in which case \(x\) is almost everywhere differentiable with \(\dot x(t) = \phi(t)\) for almost every \(t\in [a,b]\). 
-    \item A function \(f:\Omega\rightarrow \mathbb{R}^N\), where \(\Omega\) is a nonempty subset of \(\mathbb{R}\times \mathbb{R}^N\), is said to be Lipschitz continuous in the second argument, uniformly with respect to the first argument, if there exists \(L\in \left[0,\infty\right)\) such that forall \(t\in \mathbb{R}\) and all \(x,y\in \mathbb{R}^N\) such that \((tx,),(t,y)\in \Omega\), \[\lVert f(t,x)-f(t,y)\rVert \le L\lVert x-y\rVert\] It is said to be locally Lipschitz continuous on an open ball for each argument. 
-    \item Let \(\Omega\) be a nonempty open subset of \(\mathbb{R}\times \mathbb{R}^N\) and \(f:\Omega\rightarrow \mathbb{R}^N\) be such that 
+    \item Let \(a,b\in \R\) with \(a<b\). A function \(x:[a,b]\rightarrow \R\) is absolutely continuous iff there exists an integrable fucntion \(\varphi:[a,b]\rightarrow \R\) such that, for every \(t\in [a,b]\), \[x(t) = x(a0) + \int_a^t \phi(s)ds\] in which case \(x\) is almost everywhere differentiable with \(\dot x(t) = \phi(t)\) for almost every \(t\in [a,b]\). 
+    \item A function \(f:\Omega\rightarrow \R^N\), where \(\Omega\) is a nonempty subset of \(\R\times \R^N\), is said to be Lipschitz continuous in the second argument, uniformly with respect to the first argument, if there exists \(L\in \left[0,\infty\right)\) such that forall \(t\in \R\) and all \(x,y\in \R^N\) such that \((tx,),(t,y)\in \Omega\), \[\lVert f(t,x)-f(t,y)\rVert \le L\lVert x-y\rVert\] It is said to be locally Lipschitz continuous on an open ball for each argument. 
+    \item Let \(\Omega\) be a nonempty open subset of \(\R\times \R^N\) and \(f:\Omega\rightarrow \R^N\) be such that 
     \begin{itemize}
-        \item for all \(t\in \mathbb{R},\: f(t,\cdot):\Omega_t\rightarrow \mathbb{R}^N\)
-        \item \(\partial_2f:\Omega \rightarrow \mathcal{L}(\mathbb{R}^N,\mathbb{R}^N):(t,x)\rightarrow \partial_2f(t,x)\) is locally bounded.
+        \item for all \(t\in \R,\: f(t,\cdot):\Omega_t\rightarrow \R^N\)
+        \item \(\partial_2f:\Omega \rightarrow \mathcal{L}(\R^N,\R^N):(t,x)\rightarrow \partial_2f(t,x)\) is locally bounded.
     \end{itemize}
 \end{itemize}
 Then, \(f\) is locally Lipschitz continuous in the second argument, uniformly with respect to the first argument.
@@ -139,31 +123,31 @@ A state-space model for a continuous dynamical system consists of an ODE of the 
 \begin{equation}\label{eq:1}
     \dot x (t) = f(t,x(t))
 \end{equation}
-where the function \(f:\Omega\rightarrow \mathbb{R}^N\), \(\Omega\) being a nonempty subset of \(\mathbb{R}\times \\mathbb{R}^N\), is called the vector field associated with the ODE.
-A continuous dynamical system with input \(u:\mathbb{R}\rightarrow \mathbb{R}^M\) described by the ODE 
+where the function \(f:\Omega\rightarrow \R^N\), \(\Omega\) being a nonempty subset of \(\R\times \\R^N\), is called the vector field associated with the ODE.
+A continuous dynamical system with input \(u:\R\rightarrow \R^M\) described by the ODE 
 \begin{equation}
     \dot x(t) = g(x(t),u(t))
 \end{equation}
-for some function \(g:\mathbb{R}^N\times \mathbb{R}^M\rightarrow \mathbb{R}^N\), can be written in the form \ref{eq:1} by defining the vector field \
+for some function \(g:\R^N\times \R^M\rightarrow \R^N\), can be written in the form \ref{eq:1} by defining the vector field \
 \begin{equation}
-    f_u :\mathbb{R}\times \mathbb{R}^N \rightarrow \mathbb{R}^N :(t,x) \rightarrow g(x,u(t))
+    f_u :\R\times \R^N \rightarrow \R^N :(t,x) \rightarrow g(x,u(t))
 \end{equation}
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: the norm of each \((t,x)\in \mathbb{R}\times \mathbb{R}^N\)  is defined as \(|t|+\lVert x\rVert\).
+    \item [\(\rightarrow\)] N.B.: the norm of each \((t,x)\in \R\times \R^N\)  is defined as \(|t|+\lVert x\rVert\).
 \end{itemize}
 \section{Integral curve}
-Let \(\Omega\) be a nonempty subset of \(\mathbb{R}\times \mathbb{R}^N\). An integral curve of \(f:\Omega\rightarrow \mathbb{R}^N\) is a function \(x:I\rightarrow \mathbb{R}^N\) where \(I\subseteq \mathbb{R}\) is an interval, for which the interior is not empty, called the interval of existence of \(x\), i.e. differentiable and satisfies \((t,x(t))\in \Omega\) and \(\dot x(t) = f(t,x(t))\) for all \(t\in I\). The graph \(\{(t,x(t))|t\in I\}\) and the image \(\{x(t)|t\in I\}\) of \(x\) are respectively called the trajectory and the orbit of \(x\). Given an initial condition \((t_0,x_0)\in \Omega\), a solution to the initial value problem 
+Let \(\Omega\) be a nonempty subset of \(\R\times \R^N\). An integral curve of \(f:\Omega\rightarrow \R^N\) is a function \(x:I\rightarrow \R^N\) where \(I\subseteq \R\) is an interval, for which the interior is not empty, called the interval of existence of \(x\), i.e. differentiable and satisfies \((t,x(t))\in \Omega\) and \(\dot x(t) = f(t,x(t))\) for all \(t\in I\). The graph \(\{(t,x(t))|t\in I\}\) and the image \(\{x(t)|t\in I\}\) of \(x\) are respectively called the trajectory and the orbit of \(x\). Given an initial condition \((t_0,x_0)\in \Omega\), a solution to the initial value problem 
 \begin{equation}
     \begin{cases}
         \dot x(t) = f(t,x(t))\\
         x(t_0) = x_0\\
     \end{cases}
 \end{equation}
-is an integral curve \(x:I\rightarrow \mathbb{R}^N\) of \(f\) such that \(t_0\in I\) and \(x(t_0)=x_0\). \\
+is an integral curve \(x:I\rightarrow \R^N\) of \(f\) such that \(t_0\in I\) and \(x(t_0)=x_0\). \\
 
-If, for the IVP described hereabove, \(f\) is continuous, then a continuous function \(x:I\rightarrow \mathbb{R}^N\) where \(I\subseteq \mathbb{R}\) is an interval containing \(t_0\) and the interior of which is not empty, is a solution iff its graph is contained in \(\Omega\) and it satisfies the integral equation \[x(t)=x_0+\int_{t_0}^tf(s,x(s))ds\] for all \(t\in I\). In that case, \(\dot x\) is continuous. \\
+If, for the IVP described hereabove, \(f\) is continuous, then a continuous function \(x:I\rightarrow \R^N\) where \(I\subseteq \R\) is an interval containing \(t_0\) and the interior of which is not empty, is a solution iff its graph is contained in \(\Omega\) and it satisfies the integral equation \[x(t)=x_0+\int_{t_0}^tf(s,x(s))ds\] for all \(t\in I\). In that case, \(\dot x\) is continuous. \\
 
-Let \(\Omega\) be a nonempty subset of \(\mathbb{R}\times \mathbb{R}^N\). An integral curve in the extended sense of \(f:\Omega\rightarrow \mathbb{R}^N\) is a function \(x:I\rightarrow \mathbb{R}^N\), where \(I\subseteq \mathbb{R}\) is an interval the interior of which is not empty called the interval of existence of \(x\), that is absolutely continuous and satisfies \((t,x(t))\in \Omega\) for every \(t\in I\) and \(\dot x(t) = f(t(x(t)))\) for almost every \(t\in I\). 
+Let \(\Omega\) be a nonempty subset of \(\R\times \R^N\). An integral curve in the extended sense of \(f:\Omega\rightarrow \R^N\) is a function \(x:I\rightarrow \R^N\), where \(I\subseteq \R\) is an interval the interior of which is not empty called the interval of existence of \(x\), that is absolutely continuous and satisfies \((t,x(t))\in \Omega\) for every \(t\in I\) and \(\dot x(t) = f(t(x(t)))\) for almost every \(t\in I\). 
 \begin{itemize}
     \item [\(\rightarrow\)] N.B.: If \(f\) is continuous, then the two definitions of integral curves are equivalent.
 \end{itemize}
@@ -171,8 +155,8 @@ Let \(\Omega\) be a nonempty subset of \(\mathbb{R}\times \mathbb{R}^N\). An int
 Consider the IVP defined hereabove with an integral curve in the extended sense, under the following assumptions:
 \begin{itemize}
     \item there exists \(\tau,r\in (0,\infty)\), such that \([t_0-\tau,t_0+\tau]\times B(x_0,r)\subseteq \Omega\);
-    \item for every \(x\in B(x_0,r)\), the function \([t_0-\tau,t_0+\tau]\rightarrow \mathbb{R}^N:t\rightarrow f(t,x)\) is measurable;
-    \item for every \(t\in [t_0-\tau,t_0+\tau]\), the function \(B(x_0,r)\rightarrow \mathbb{R}^N:x\rightarrow f(t,x)\) is continuous;
+    \item for every \(x\in B(x_0,r)\), the function \([t_0-\tau,t_0+\tau]\rightarrow \R^N:t\rightarrow f(t,x)\) is measurable;
+    \item for every \(t\in [t_0-\tau,t_0+\tau]\), the function \(B(x_0,r)\rightarrow \R^N:x\rightarrow f(t,x)\) is continuous;
     \item there exists an integrable function \(m:[t_0-\tau,t_0+\tau]\rightarrow \left[0,\infty\right)\) such that \[\lVert f(t,x)\rVert \le m(t) \text{ for all }(t,x) \in [t_0-\tau,t_0\tau]\times B[x_0,r]\]
 \end{itemize}
 Then, there exists a solution defined on a compact interval the interior of which contains \(t_0\). \\
@@ -182,10 +166,10 @@ We will study first-order dynamical systems of the form
 \begin{equation}\label{eq:ODE}
     \dot x = f(x,u)
 \end{equation}
-where \(f\) is a mapping from \(\mathbb{R}^{n+m}\) to \(\mathbb{R}^n\), while \(x\) and \(u\) are vector functions of time, respectively the state and the input. 
+where \(f\) is a mapping from \(\R^{n+m}\) to \(\R^n\), while \(x\) and \(u\) are vector functions of time, respectively the state and the input. 
 \section{Terminology and notation}
 \begin{itemize}
-    \item We assume that the input is a piecewise continuous and bounded function: \(u\in \mathcal{U}\), where \(\mathcal{U}\) is a set of piecewise continuous and bounded functions from \(\mathbb{R}\) to \(\mathbb{R}^m\).
+    \item We assume that the input is a piecewise continuous and bounded function: \(u\in \mathcal{U}\), where \(\mathcal{U}\) is a set of piecewise continuous and bounded functions from \(\R\) to \(\R^m\).
     \item For a given value of the initial state \(x(t_0)=x_0\) a,d a given input \(u\), the solution \(t\rightarrow x(t)\) for \(t\ge t_0\), of the system of ODE \ref{eq:ODE} is called the trajectory of the system. It is denoted \(x(t_0,x_0,u)\).
     \item When the input \(u\) can be freely chosen in \(\mathcal{U}\), the system \(\dot x = f(x,u)\) is said to be a forced/controlled system. 
     \item [\(\rightarrow\)] N.B.: in this course, we will study the solution of the equation \ref{eq:ODE} when the input is actually an a priori set constant: \(u(t) = \overline{u}\) \(\forall t\ge t_0\). The state-space model is then written as \(\dot x = f(x,\overline{u}) = f_{\overline{u}}(x)\).
@@ -194,12 +178,12 @@ where \(f\) is a mapping from \(\mathbb{R}^{n+m}\) to \(\mathbb{R}^n\), while \(
 \begin{equation}
     \dot x = f(x) + \sum_{i=1}^m u_ig_i = f(x) + G(x)u
 \end{equation}
-where \(f\) and \(g_i\) are mappings from \(\mathbb{R}^n\) to \(\mathbb{R}^n\). 
+where \(f\) and \(g_i\) are mappings from \(\R^n\) to \(\R^n\). 
 \subsection{System with affine state}
 \begin{equation}
     \dot x = \sum_{i=1}^n x_ia_i(u) + b(u) = A(u)x+b(u)
 \end{equation}
-where \(b\) and \(a_i\) are mappings from \(\mathbb{R}^m\) to \(\mathbb{R}^n\). 
+where \(b\) and \(a_i\) are mappings from \(\R^m\) to \(\R^n\). 
 \subsection{Bilinear systems}
 A bilinear system is affine both in the state and in the input:
 \begin{equation}
@@ -211,4 +195,235 @@ where \(A_i\) and \(B_i\) are matrices of dimensions \(n\times n\) and \(n\times
     \dot x = Ax + Bu
 \end{equation}
 where \(A\) and \(B\) are matrices of dimensions \(n\times n\) and \(n\times m\) respectively. 
+\chapter{Articulated mechanical systems}
+
+\chapter{Electrical and electromechanical systems}
+
+\chapter{State transformations}
+\section{Definition}
+The block diagram of a dynamical system is a visual representation of that system, necessarily containing \(n\) integrators whose outputs are the \(n\) state variables. \\
+\begin{minipage}{.5\textwidth}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width = \textwidth]{img/block_1.png}
+    \end{figure}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width = \textwidth]{img/block_2.png}
+    \end{figure}
+\end{minipage}
+The graph of a dynamical system contains as nodes the inputs and states of the system, and its edges are the relations between those quantities. The construction rules of the graph of a dynamical system are the following:
+\begin{itemize}
+    \item The \(n+m\) nodes are the \(n\) state variables \(x_i\) and the \(m\) inputs \(u_j\);
+    \item there is an oriented edge from \(x_i\) (or \(u_k\)) to \(x_j\) if the varibale \(x_i\) (or \(u_k\)) appears explicitly in the equation of the derivative \(\dot x_j\).
+\end{itemize}
+Example for a DC electric machine: the state space model is 
+\begin{equation}
+    \begin{cases}
+        \dot x_1 = x_2\\
+        \dot x_2 = J^{-1}(-h(x_2)+K_mx_3x_4+u_3)\\
+        \dot x_3 = L_s^{-1}(-R_sx_3+u_1)\\
+        \dot x_4 = L_r^{-1}(-R_rx_4-K_ex_2x_3+u_2)\\
+    \end{cases}
+\end{equation}
+and its graph representation is 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .5\textwidth]{img/graph.png}
+\end{figure}
+\section{Linear state transformation}
+For a dynamical system \(\dot x=f(x,u)\), a linear state transformation is a linear mapping \(T:\R^n\rightarrow \R^n\) that is bijective and transforms the state of the system \(x\in \R^n\) into a new state \(z\in \R^n\) following the rule \(z=Tx\), where \(T\in \R^{n\times n}\) is an invertible matrix. \\
+The relation between the two systems is
+\begin{equation}
+    \begin{cases}
+        \dot x=f(x,u)\\
+        \dot z = g(z,u)\\
+    \end{cases} \Longrightarrow \begin{cases}
+        z\triangleq T^{-1}x\\
+        g(z,u) \triangleq Tf(T^{-1}z,u)\\
+    \end{cases}
+\end{equation}
+For a linear system, we have 
+\begin{equation}
+    \dot z = Fz+Gu \qquad F\triangleq TAT^{-1} \qquad G\triangleq TB
+\end{equation}
+\section{Nonlinear state transformation}
+Let \(U,V\) be two open subsets of \(\R^n\). A nonlinear state transformation is a mapping \(T: U\rightarrow V\) that transforms the state of the system \(x\in U\) into a new state \(z\in V\): \(z=T(x)\) and that has the following properties:
+\begin{itemize}
+    \item \(T\) is bijective and has an inverse function \(T^{-1}:V\rightarrow U\) such that \(x=T^{-1}(z)\);
+    \item \(T\) and \(T^{-1}\) are of class \(\mathcal{C}^1\), i.e. continuously differentiable. 
+    \item [\(\rightarrow\)] N.B.: The state transformation is said to be global if \(U=V=\R^n\).
+\end{itemize}
+Such a transformation \(T\) is called a diffeomorphism, and the new state space is 
+\begin{equation}
+    \dot z = \frac{\partial T}{\partial x}\dot x = \frac{\partial T}{\partial x}f(x,u) \Longleftrightarrow f(x,u) \triangleq \left[\frac{\partial T^{-1}}{\partial z}g(z,u)\right]_{z=T(x)}
+\end{equation}
+\begin{lem}
+    \begin{itemize}
+        \item If the jacobien matrix \(\partial T/\partial x\) is nonsingular at \(x_0\), then, by the inverse function theorem, there is a neighbourhood \(U\) of \(x_0\) such that the mapping \(T\) restricted to \(U\) is a diffeomorphism on \(U\).
+        \item \(T\) is a global diffeomorphism iff \begin{enumerate}
+            \item \(\partial T/\partial x\) is a nonsingular for every \(x\in \R^n\);
+            \item \(\lim_{\lVert x\rVert \rightarrow \infty} \lVert T(x)\rVert =\infty\).
+        \end{enumerate}
+    \end{itemize}
+\end{lem}
+\section{Triangular system}
+\begin{definition}
+    A single input dynamical system is triangular if there is a state variable \(x_i\) such that the shortest path from \(u\) t \(x_i\) in the graph of the system is of length \(n\).
+\end{definition}
+We can thus renumber the state variables such that the system is expressed as
+\begin{align}\label{eq:triangular}
+    \dot x_1 &= g_1(x_1,x_2) \nonumber\\
+    &\vdots\nonumber\\
+    \dot x_i &= g_i(x_1,\dots, x_{i+1})\nonumber\\
+    & \vdots\nonumber\\
+    \dot x_{n-1} &= g_{n-1}(x_1,\dots, x_n)\nonumber\\
+    \dot x_n &= g_n(x_1,\dots,x_n,u)\tag{\theequation}  \refstepcounter{equation}
+\end{align}
+\section{Brunovsky canonical form}
+\begin{definition} A single input dynamical system can be written in brunovsky canonical form if there exists a state transformation \(T:U\rightarrow V\) and an open interval \(W\subseteq \R\) such that, in the new state variables \(z=T(x)\), the system takes on the following particular triangular form:
+\begin{align}
+    \dot z_1 &= z_2\nonumber\\
+    \dot z_2 &= z_3\nonumber\\
+    \vdots&\nonumber\\
+    \dot z_n &= \alpha(z_1,\dots,z_n,u)\tag{\theequation}  \refstepcounter{equation}
+\end{align}
+where the function \(\alpha\) is continuous and invertible according to \(u\) over \(W\) for all \(z\in V\). The block diagram of the Brunovsky canonical form is
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .5\textwidth]{img/block_brunovsky.png}
+\end{figure}
+\end{definition}
+\begin{lem}
+    A triangular dynamical system described by the state-space model \eqref{eq:triangular} can be put under Brunovsky canonical form around \((x_0,u_0)\) if the inequalities 
+    \begin{equation}
+        \begin{cases}
+            \frac{\partial g_i}{\partial x_{i+1}}\neq 0 \qquad i=1;\dots,n-1\\
+            \frac{\partial g_n}{\partial u}\neq 0
+        \end{cases}
+    \end{equation}
+\end{lem}
+\begin{lem}
+    A control-affine system \(\dot x =f(x)+g(x)u\) with \(x\in \R^n,u\in mathbb{R}\) can be written in Brunovsky form in a domain \(U\subseteq \R^n\) if there exists a state transformation \(z=T(x)\) that fulfills the following conditions:
+\end{lem}
+\begin{itemize}
+    \item \(T_{i+1}(x) = \frac{\partial T_i}{\partial x}f(x)\), for \(i=1,\dots,n-1\);
+    \item \(\frac{\partial T_i}{\partial x}g(x)= 0\), for \(i=1,\dots,n-1\);
+    \item \(\frac{\partial T_n}{\partial x}g(x)\neq 0\)
+\end{itemize}
+for every \(x\in U\).
+\chapter{Equilibria and invariant sets}
+In this chapter, we assume that \(f\) is locally Lipschitz continuous on an open set \(\Omega \subseteq \R^n\). 
+\begin{definition}
+    The pair \((\bar x, \bar u)\in \R^n\times \R^m\) is called an equilibrium of the system \(\dot x=f(x,u)\) if \(f(\bar x, \bar u)=0\). 
+\end{definition}
+\begin{definition}
+    The equilibrium \((\bar x,\bar u)\) is said to be isolated if there exists a neighbourhood of \(\bar x\) that contains no other vector \(x\) such that \(f(x,\bar u)=0\).
+\end{definition}
+\section{Equilibria of linear systems}
+\begin{equation}\label{eq:linear_sys}
+    \dot x = Ax+Bu
+\end{equation}
+\begin{thm}
+    If the matrix \(A\) is regular, then for each \(\bar u\), the pair \((-A^{-1}B\bar u, \bar u)\) is an isolated equilibrium.\\
+    If the matrix \(A\) is singular, the system \eqref{eq:linear_sys} has a continuum of non-isolated equilibria provided that \(B\bar u\in Im(A)\). Those equilibria are the solutions of the system \(A\bar x=-B\bar u\), forming an affine space. On the other side, for each \(\bar u\) such that \(B\bar u\notin Im(A)\), the system does not have any equilibrium.
+\end{thm}
+\section{Invariant sets}
+\begin{definition}
+    A set \(\mathcal{X} \times U\subseteq \R^n\times \R^m\) is said to be (positively) invariant for the dynamical system \(\dot x=f(x,u)\) if, for all \(x_0\in \mathcal{X}\) and for all input signal \(t\rightarrow u(t)\in U\), the trajectory \(t\rightarrow x(t,x_0,u(t))\) remains in \(\mathcal{X}\) for all \(t\ge t_0\) whenever it is defined.
+\end{definition}
+\begin{definition}
+    An outward normal vector to \(\mathcal{X}\subseteq \R^n\) at \(x\in \partial \mathcal{X}\) is a vector \(n\in \R^n\) such that \(n=\lambda(y-x)\), where \(\lambda >0\) and \(y\) is the center of an open ball \(B\subseteq \R^n\) such that \(x\in \partial B\) and \(B\cap \mathcal{X}=\emptyset\); if no such open ball exists, \(\mathcal{X}\) has no outward normal vector at \(x\). 
+\end{definition}
+\begin{thm}[Bony's theorem]
+    Let \(f\) be a locally Lipschitz continuous vector field defined on an open set \(\Omega \subseteq \R^n\), and \(\mathcal{X}\) a closed set of \(\Omega\). If \(\langle f(x),n(x)\rangle \le 0\) for every \(x\in \partial \mathcal{X}\), and every vector \(n(x)\) is outward normal to \(\mathcal{X}\) at \(x\), then \(\mathcal{X}\) is (positively) invariant for \(f\).
+\end{thm}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: no condition has to be verified at a poitn where \(\mathcal{X}\) does not have an outward normal vector.
+\end{itemize}
+\section{Periodic orbits}
+A periodic orbit is such that it is arising from a trajectory of the dynamical system, verifying \(x(t)=x(t+T)\) for all \(t\) and for some \(T>0\)\footnote{Equilibria are trivial periodic orbits.}. The infimum of possible values for \(T\) is called the period of the trajectory.\\
+We denote \(x(t,x_0,\bar u)\) as the solution at time \(t\) with \(x(t_0)=x_0\) and a constant input \(u(t) = \bar u\).
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .5\textwidth]{img/limit_cycle.png}
+\end{figure}
+\begin{definition}
+    The point \(z\) is called a limit point of \(y\) for the dynamical system subject to a constant input \(\bar u\) if there exists a real sequence \((t_n)\) such that \(t_n\rightarrow\infty\) when \(n\rightarrow \infty\) and \(\lim_{n\rightarrow\infty}x(t_n,y,\bar u)=z\).
+\end{definition}
+\begin{definition}
+    A limit cycle is a closed orbit \(\gamma\) such that at least one point of \(\gamma\)\footnote{Implying that they all are.} is a limit point of at least another point of the phase plane not in \(\gamma\).
+\end{definition}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: These definitions are only valid in \(\R^2\).
+\end{itemize}
+\begin{thm}[Bendixson-Dulac]
+    Let \(D\) be a simply connected domain in \(\R^2\). If the divergence of \(f\)\footnote{\(\div(f) = \frac{\partial f_1}{\partial x_1}+\frac{\partial f_2}{\partial x_2}\)} is not identically zero and does not change sign in \(D\), then \(D\) does not contain any closed orbit. 
+\end{thm}
+\begin{thm}[Poincaré-Bendixson]
+    If \(E\) is a closed and bounded subset of \(\R^2\), invariant for the system \(\dot x=f(x,u)\), and if \(\gamma\) is an orbit starting in \(E\), then:
+    \begin{itemize}
+        \item either \(\gamma\) converges to an equilibrium (which is the unique limit point of \(\gamma\));
+        \item or \(\gamma\) converges to a periodic orbit (which is the set of all limit points of \(\gamma\)).
+    \end{itemize}
+\end{thm}
+This theorem can be used to prove the existence of a limit cycle:
+\begin{enumerate}
+    \item Find a compact invariant set (proved by showing that on the border of this set, the vector field points inwards);
+    \item If there is no equilibrium in this set, it must contain a limit cycle or only periodic trajectories.
+\end{enumerate}
+\chapter{Local analysis of autonomous dynamical systems}
+A dynamical system is said to be autonomous if the input is constant:
+\begin{equation}
+    \dot x= f(x\bar u)
+\end{equation}
+\section{Linear planar systems}
+Let us consider the linear planar system such as \eqref{eq:linear_sys} with constant input \(u=\bar u\). Let \(\bar x\) be an equilibrium point corresponding to \(\bar u\). We will use the state transformation \(z=M^{-1}(x-x\bar x)\). We obtain the linear system
+\begin{equation}
+    \dot z = A'z\qquad A' = M^{-1}AM
+\end{equation}
+As \(A\) and \(A'\) have the same eigenvalues, we can choose \(A'\) to have a canonical form:
+\begin{itemize}
+    \item Two distinct real eigenvalues or double real eigenvalue (\(\lambda_1=\lambda_2\)) with a geometric multiplicity equal to 2.
+\end{itemize}
+\begin{equation}
+    A' = \begin{bmatrix}
+        \lambda_1 & 0\\
+        0 & \lambda_2\\
+    \end{bmatrix}
+\end{equation}
+\begin{itemize}
+    \item Double real eigenvalue of geometric multiplicity equal to 1.
+\end{itemize}
+\begin{equation}
+    A' = \begin{bmatrix}
+        \lambda & 1\\
+        0 & \lambda\\
+    \end{bmatrix}
+\end{equation}
+\begin{itemize}
+    \item Two complex conjugate eigenvalues \(\alpha \pm \omega i\).
+\end{itemize}
+\begin{equation}
+    A' = \begin{bmatrix}
+        \alpha & \omega\\
+        -\omega & \alpha\\
+    \end{bmatrix} \qquad \omega >0
+\end{equation}
+And the types of equilibrium for a linear planar system are:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = \textwidth]{img/orbit_lin_sys_1.png}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = \textwidth]{img/orbit_lin_sys_2.png}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = \textwidth]{img/orbit_lin_sys_3.png}
+\end{figure}
+
 \end{document}
