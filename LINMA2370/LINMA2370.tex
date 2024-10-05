@@ -64,7 +64,8 @@
     \end{align}
 \end{tcolorbox}
 }
-
+\hbadness=10001
+\hfuzz=200pt
 \begin{document}
 
 
@@ -128,7 +129,7 @@ A continuous dynamical system with input \(u:\R\rightarrow \R^M\) described by t
 \begin{equation}
     \dot x(t) = g(x(t),u(t))
 \end{equation}
-for some function \(g:\R^N\times \R^M\rightarrow \R^N\), can be written in the form \ref{eq:1} by defining the vector field \
+for some function \(g:\R^N\times \R^M\rightarrow \R^N\), can be written in the form \eqref{eq:1} by defining the vector field
 \begin{equation}
     f_u :\R\times \R^N \rightarrow \R^N :(t,x) \rightarrow g(x,u(t))
 \end{equation}
@@ -425,5 +426,150 @@ And the types of equilibrium for a linear planar system are:
     \centering
     \includegraphics[width = \textwidth]{img/orbit_lin_sys_3.png}
 \end{figure}
+\begin{itemize}
+    \item [\(\bullet\)] N.B.: if one of the eigenvalues is zero, the equilibrium is not isolated.
+\end{itemize}
+\begin{definition}
+    If all trajectories of a linear system converge to an equilibrium, we say that it is an attractive equilibrium. It is a repulsive equilibrium if they all diverge to infinity (save for the equilibrium itself.)
+\end{definition}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.5\textwidth]{img/det_tr_2d.png}
+\end{figure}
+\begin{itemize}
+    \item An attractive (resp. repulsive) equilibrium will remain attractive (resp.repulsive) after a perturbation and a saddle point will remain a saddle point. Such equilibria are called structurally stable. However, a center equilibrium (zero real part) is never structurally stable: even a small perturbation of the matrix \(A\) can shift eigenvalues away from the imaginary axis, and the corresponding trajectories then converge to the equilibrium or diverge from it.
+\end{itemize}
+\begin{definition}
+    If all eigenvalues of \(A\) have nonzero real part, the equilibrium of \(\dot x=Ax\) is said to be hyperbolic.
+\end{definition}
+\section{Linearisation of nonlinear systems}
+We assume the existence of an equilibrium \((\bar x, \bar u)\) for the nonlinear system \(\dot x = f(x,\bar u)\). The Taylor expansion is
+\begin{equation}
+    \dot x = f(\bar x,\bar u) + \left(\frac{\partial f(x,\bar u)}{\partial x}\right)_{\bar x}(x-\bar x)+\mathcal{O}(\lVert x-\bar x\rVert^2)
+\end{equation}
+Thus, the linear approximation of the system is, for \(\tilde x = x-\bar x\),
+\begin{equation}\label{eq:linearisation}
+    \dot{\tilde{x}} = \left(\frac{\partial f(x,\bar u)}{\partial x}\right)_{\bar x}\tilde x
+\end{equation}
+We define \(A\triangleq \left(\frac{\partial f(x,\bar u)}{\partial x}\right)_{\bar x}\) as the Jacobian matrix of \(f\) at the equilibrium.
+\begin{definition}
+    The equilibrium \((\bar x,\bar u)\) of the nonlinear system is said to be hyperbolic if all the eigenvalues of the jacobian matrix \(A\) have a nonzero real part. 
+\end{definition}
+\begin{definition}
+    Two dynamical systems are topologically conjugate if there exists a homeomorphism, i.e. a continuous bijection whose inverse is also continuous, that maps the trajectories of the first system to the trajectories of the second one in a time respecting way. That means that the trajectories of \(\dot x = f(x)\) on a domain \(D\) and \(\dot y=g(y)\) on a domain \(E\) are topologically conjnugate through the homeomorphism \(\phi:D\rightarrow E\) if every curve \([0,t_0]\rightarrow D:t\rightarrow x(t)\) is a trajectory of the system \(f\) iff the corresponding curve \([0,t_0]\rightarrow E:t\rightarrow\phi(x(t))\) is a trajectory of the system \(g\).
+\end{definition}
+\begin{thm}
+    If the equilibrium \((\bar x,\bar u)\) is hyperbolic, then the trajectories of the nonlinear system in a neighbourhood of the equilibrium \((\bar x,\bar u)\) are topologically conjugate to those of the linear approximation \eqref{eq:linearisation}. Specifically, there exists a neighbourhood \(X\) of \(\bar x\), a neighbourhood \(\tilde X\) of 0, and a homeomorphism \(\phi:X\rightarrow\tilde X\) with \(\phi(\bar x)=0\) such that if \(t\rightarrow x(t)\) is a trajectory of the nonlinear system contained in \(X\), then \(t\rightarrow \phi(x(t))\) is a trajectory of the linear system.
+\end{thm}
+That means that if the equilibrium is a node/focus (attractive or repulsive) or a saddle point (but not a centre) in the linearised system, then the linearised system is a good representation for the local behaviour of the nonlinear trajectories around the equilibrium as well. However, this theorem is local, and the higher-order terms are needed to conclude in the case of a non-hyperbolic equilibrium. 
+\chapter{Bifurcations}
+Bifurcation theory looks at the impact of the value \(\bar u\) on the nature and number of equilibria. 
+\section{Hopf bifurcation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .4\textwidth]{img/hopf_bif.png}
+\end{figure}
+Depending on the slope of the straight line, the characterization of the equilibrium changes: it is an attractive focus, then changes to repulsive focus and goes back to being an attractive focus.
+\begin{thm}
+    Suppose that a system has a family of isolated equilibria \((\bar x,\bar u)\) parametrized by \(\bar u\). Suppose that there exists a value \(\bar u^*\) such that a pair of eigenvalues of the Jacobian matrix evaluated in this equilibrium have a zero real part and a nonzero imaginary part. These values depend continuously on \(\bar u\), at least in the neighbourhood of \(\bar u^*\), and are denoted by
+\end{thm}
+\begin{equation}
+    \lambda_i(\bar u) = \alpha(\bar u)\pm i\omega(\bar u)
+\end{equation}
+Suppose also that \(\frac{d\alpha (\bar u^*)}{d\bar u}>0\). Thus, for \(\bar u\) close enough to \(\bar u^*\), the equilibrium is attractive for \(\bar u<\bar u^*\) and repulsive for \(\bar u>\bar u^*\). \\
+Then, there generically exists either an attractive closed orbit (i.e. limit cycle) for all \(\bar u^*<\bar u<\bar u^*+\varepsilon\) or a repulsive closed cycle for \(\bar u^*-\varepsilon < \bar u < \bar u^*\) (for some \(\varepsilon>0\)) unique in the neighbourhood of the equilibrium.
+\section{Transcritical bifurcation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .5\textwidth]{img/transcritical.png}
+\end{figure}
+In this example, the first equilibrium is attractive if \(\bar u>kx_1^{in}\) and is a saddle point otherwise. The second however is a saddle point when the above condition is met and attractive when it is not.\\
+
+A transcritical bifurcation is thus such that the characterization of the two equilibria switch when passing a certain threshold value of \(\bar u\).
+\section{Saddle-node/Fold bifurcation}
+For small values of \(\bar u\), the system has a single equilibrium. Then, for a critical value of \(\bar u\), the system exhibits two more equilibrium values (one a saddle point and the other attractive). By further increasing \(\bar u\), we cross a new critical value beyond which the system has only a single equilibrium that is also attractive. \\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .3\textwidth]{img/fold_bif.png}
+\end{figure}
+As the input \(\bar u\) is slowly modified from low to high values, the state of the system, initially following the bottom line of equilibria, goes through a brutal change at the rightmost bifurcation, where it jumps to a different equilibrium. It is called a catastrophe. As the input decreases again to low values, the catastrophe happens the other way. This is a hysteresis.
+\section{Pitchfork bifurcation}
+A pitchfork bifurcation is the split, for some value \(\bar u^*\) of the birufcation parameter, of a single attractive (resp. repulsive) equilibrium into three equilibria, one being repulsive (resp. attractive) and the other two being attractive (resp. repulsive). 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .4\textwidth]{img/pitchfork_bif.png}
+\end{figure}
+\chapter{Stability of equilibria}
+In this chapter we assume that the locally Lipschitz continuous vector field \(f(\cdot,\bar u)\) is defined on an open set \(\Omega\subseteq\R^n\) for a fixed value of \(\bar u\), where the trajectories are defined and stay in \(\Omega\) for all positive times. 
+\section{Definitions}
+\begin{definition}
+    The equilibrium \((\bar x,\bar u)\) is said to be stable if \begin{equation}
+        \forall \varepsilon>0, \exists \delta>0 \text{ such that } \forall x_0\in \Omega:\: \lVert x(t_0)-\bar x\rVert <\delta \Longrightarrow \lVert x(t,x(t_0), \bar u)-\bar x\rVert<\varepsilon \quad \forall t\ge t_0
+    \end{equation}
+\end{definition}
+That means that an equilibrium is stable if the trajectories remain arbitrarily close to it, provided that they start close enough from this equilibrium. 
+\begin{definition}
+    The equilibrium \((\bar x,\bar u)\) is said to be attractive if \begin{equation}
+        \exists \delta >0\text{ such that } \lVert x(T_0)-\bar x\rVert <\delta \Longrightarrow \lim_{t\rightarrow \infty} \lVert x(t,x(t_0),\bar u)-\bar u\rVert=0
+    \end{equation}
+\end{definition}
+An attractive equilibrium \(\bar x\) is thus a point to which each solution \(x\) converges provided that it starts close enough to \(\bar x\). 
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: stability and attractiveness do not imply each other.
+\end{itemize}
+\begin{definition}
+    The equilibrium \((\bar x,\bar u)\) is said to be asymptotically stable if it is both stable and attractive. The set of points \(x_0\) for which the trajectory \(x(t,x_0, \bar u)\) converges to \(\bar x\) is called the basin of attraction of the saymptotically stable equilibrium. 
+\end{definition}
+\begin{definition}
+    The equilibrium \((\bar x,\bar u)\) is said to be exponentially stable if \begin{equation}
+        \exists a,b,\delta>0 \text{ such that }\lVert x(t_0)-\bar x\rVert <\delta \Longrightarrow \lVert x(t,x(t_0),\bar u)-\bar x\rVert \le a\lVert x(t_0)-\bar x\rVert e^{-bt}\qquad \forall t\ge t_0
+    \end{equation}
+\end{definition}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: exponential stablity implies asymptotic stability.
+    \item [\(\rightarrow\)] N.B.: for a linear system, an attractive equilibrium and center are both stable, while a saddle or repulsive equilibrium is unstable. Attractive equilibrium is also exponentially stable, thus asymptotically stable: these three notions coincide for linear systems. 
+\end{itemize}
+\section{Lyapunov's first method}
+\begin{thm}
+    \begin{itemize}
+        \item If the equilibrium is attractive in the linearised system, i.e. all eigenvalues of the Jacobian matrix have a negative real part, then the equilibrium \((\bar x,\bar u)\) is exponentially stable.
+        \item If the equilibrium is repulsive or a saddle point in the linearised syste, i.e. the Jacobian matrix has at least one eigenvalue with a positive real part, then the equilibrium \((\bar x,\bar u)\) is unstable. 
+    \end{itemize}
+\end{thm}
+This theorem does not conclude on the stability of a non-hyperbolic equilibrium. 
+\section{Lyapunov's second method}
+\begin{thm}
+    The equilibrium \((\bar x,\bar u)\) of the system \(\dot x=f(x,\bar u)\), where \(f\) is locally Lipschitz continuous on an open set \(\Omega \subseteq \R^n\) is stable if there exists a continuously differentiable function \(V:\Omega\rightarrow \R\) with the following properties:
+    \begin{itemize}
+        \item \(\Omega\subseteq \R^n\) is a neighbourhood of \(\bar x\);
+        \item \(V(x)>V(\bar x) \: \forall x\in \Omega \setminus \{\bar x\}\), i.e. \(V\) has a strict minimum point at \(\bar x\);
+        \item \(\dot V(x)\le 0\:\forall x\in \Omega \setminus\{\bar x\}\).
+    \end{itemize}
+\end{thm}
+That means that a sufficient condition for the equilibrium \((\bar x,\bar u)\) to be stable is to have a positive-definite function \(V-V(\bar x)\) whose temporal derivative \(\dot V\) along trajectories is negative-semidefinite in a neighbourhood of \(\bar x\), the temporal derivative being defined as 
+\begin{equation}
+    \dot V(x) = \frac{dV}{dt} = \frac{\partial V}{\partial x} \dot x = \sum_{i=1}^n \frac{\partial V}{\partial x_i}f_i(x,\bar u) = \langle \nabla V(x(t)),f(x(t),\bar u)\rangle
+\end{equation}
+\begin{thm}
+    The equilibrium \((\bar x,\bar u)\) of the system \(\dot x = f(x,\bar u)\) is asymptotically stable if there exists a continuously differentiable function \(V:\Omega\rightarrow\R\) with the following properties:
+    \begin{itemize}
+        \item \(\Omega \subseteq \R^n\) is a neighbourhood of \(\bar x\);
+        \item \(V(x)>V(\bar x) \: \forall x\in \Omega \setminus\{\bar x\}\), i.e. \(V\) has a strict global minimum point at \(\bar x\);
+        \item \(\dot V(x)<0\: \forall x\in \Omega\setminus \{\bar x\}\).
+    \end{itemize}
+\end{thm}
+\begin{thm}
+    The basin of attraction of an asymptotically stable equilibrium is an open, connected, invariant set; and its boundary is formed by trajectories.
+\end{thm}
+\begin{definition}
+    Let \(f:\R^N\rightarrow \R^N\) be locally Lipschitz continuous and \(\bar x\in \R^N\) be an equilibrium of \(f\). The equilibrium \(\bar x\) is said to be globally asymptotically stable if it is asymptotically stable and its basin of attraction is the whole state spce \(\R^N\). 
+\end{definition}
+\begin{definition}
+    A function \(V:\R^N\rightarrow \R\) is said to be radially unbounded if \(\lVert x\rVert \rightarrow \infty\) implies \(V(x)\rightarrow \infty\), i.e. for every \(M\in\R\), there exists \(R\ge 0\) such that, for every \(x\in \R^N\), \(\lVert x\rVert \ge R\) implies \(V(x)\ge M\). 
+\end{definition}
+\begin{thm}
+    Let \(f:\R^N\rightarrow \R^N\) be locally Lipschitz continuous and \(\bar x\in \R^N\) be an equilibrium of \(f\). If there exists a radially unbounded continuously differentiable function \(V:\R^N\rightarrow \R\) such that, for every \(x\in \R^N\setminus \{\bar x\}\), \(V(x)>V(\bar x)\) and \(\dot V_f(x)<0\), then \(\bar x\) is globally asymptotically stable.
+\end{thm}
+\subsection{LaSalle's invariance principle}
 
 \end{document}
