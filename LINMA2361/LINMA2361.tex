@@ -33,7 +33,8 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
-
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
 % Define a new tcolorbox style with a red border and transparent interior
 \tcbset{
     redbox/.style={
@@ -119,5 +120,14 @@ and its solution is of the form \(x(t) = \exp(At)x(0)\). We will now study the d
         \item \(Re(\lambda)<0\): converges to the equilibrium in a spiral form.
     \end{enumerate}
 \end{enumerate}
-
+\chapter{Nonlinear CT, 2D systems}
+The general form of a nonlinear CT 2D dynamical system is 
+\begin{equation}
+    \dot x = f(x)\qquad x\in \R^2, \: f:\R^2\rightarrow \R^2
+\end{equation}
+A nullcline is a curve such that for an element \(x_i\) of \(x\), \(\dot x_i=0\). There are two in a 2D system and their intersections are the equilibrium points. The vector field has a horizontal or vertical direction on those curves., and their sense is given by the sign of \(\dot x\) or \(\dot y\).
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: The nullclines cross trajectories, as they are not trajectories themselves. 
+\end{itemize}
+An equilibrium point is stable if all eigenvalues of the jacobian matrix evaluated at that point have nonpositive real part.
 \end{document}
