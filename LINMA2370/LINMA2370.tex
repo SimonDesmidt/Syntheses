@@ -33,6 +33,7 @@
 \newtheorem{definition}[thm]{Definition}
 \newtheorem{exmp}[thm]{Example} 
 \newtheorem{lem}[thm]{Lemma}
+\newtheorem{crl}[thm]{Corollary}
 
 \titleformat{\chapter}[display]
   {\normalfont\bfseries}{}{0pt}{\Huge}
@@ -43,6 +44,7 @@
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
 % Define a new tcolorbox style with a red border and transparent interior
 \tcbset{
     redbox/.style={
@@ -196,9 +198,9 @@ where \(A_i\) and \(B_i\) are matrices of dimensions \(n\times n\) and \(n\times
     \dot x = Ax + Bu
 \end{equation}
 where \(A\) and \(B\) are matrices of dimensions \(n\times n\) and \(n\times m\) respectively. 
-\chapter{Articulated mechanical systems}
+\chapter{Articulated mechanical systems}\label{chap:mechanical}
 
-\chapter{Electrical and electromechanical systems}
+\chapter{Electrical and electromechanical systems}\label{chap:elec}
 
 \chapter{State transformations}
 \section{Definition}
@@ -284,7 +286,7 @@ We can thus renumber the state variables such that the system is expressed as
     \dot x_n &= g_n(x_1,\dots,x_n,u)\tag{\theequation}  \refstepcounter{equation}
 \end{align}
 \section{Brunovsky canonical form}
-\begin{definition} A single input dynamical system can be written in brunovsky canonical form if there exists a state transformation \(T:U\rightarrow V\) and an open interval \(W\subseteq \R\) such that, in the new state variables \(z=T(x)\), the system takes on the following particular triangular form:
+\begin{definition} A single input dynamical system can be written in Brunovsky canonical form if there exists a state transformation \(T:U\rightarrow V\) and an open interval \(W\subseteq \R\) such that, in the new state variables \(z=T(x)\), the system takes on the following particular triangular form:
 \begin{align}
     \dot z_1 &= z_2\nonumber\\
     \dot z_2 &= z_3\nonumber\\
@@ -571,5 +573,178 @@ That means that a sufficient condition for the equilibrium \((\bar x,\bar u)\) t
     Let \(f:\R^N\rightarrow \R^N\) be locally Lipschitz continuous and \(\bar x\in \R^N\) be an equilibrium of \(f\). If there exists a radially unbounded continuously differentiable function \(V:\R^N\rightarrow \R\) such that, for every \(x\in \R^N\setminus \{\bar x\}\), \(V(x)>V(\bar x)\) and \(\dot V_f(x)<0\), then \(\bar x\) is globally asymptotically stable.
 \end{thm}
 \subsection{LaSalle's invariance principle}
-
+\begin{definition}
+    A function \(x:\R^+\rightarrow\R^N\) is said to asymptotically approach a nonempty set \(M\subseteq \R^N\) if 
+    \begin{equation}
+        \lim_{t\rightarrow \infty} \underbrace{\inf_{y\in M} \lVert x(t)-y\rVert}_{\eqcolon \text{dist}(x(t),M)} = 0
+    \end{equation}
+\end{definition}
+\begin{thm}
+    Let \(F\subseteq \Omega\) be a compact (positively) invariant set for \(f\). Let \(V:\Omega \rightarrow \R\) be a continuously differentiable and such that \(\dot V_f \le 0\) for every \(x\in F\). Let \(E\coloneqq \{x\in F|\dot V_f (x)=0\}\). Let \(M\) be the largest (positively and negatively) invariant set in \(E\). Then, every trajectory of \(f\) starting in \(F\) asymptotically approaches \(M\). 
+\end{thm}
+\begin{crl}
+    Let \(\bar x\) be an equilibrium of \(f\). Let \(V:\Omega\rightarrow \R\) be continuously differentiable and such that, for every \(x\in \Omega\setminus \{\bar x\}\), \(V(x)>V(\bar x)\) and \(\dot V(x)\le 0\). Let \(S\coloneqq \{x\in \Omega |\dot V(x)=0\}\). If the equilibrium is the only trajectory fully contained (past and future) in \(S\), then \(\bar x\) is asymptotically stable. 
+\end{crl}
+\section{The energy as a Lyapunov function}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: the Lyapunov function \(V(x)\) often has the dimensions of an energy. 
+\end{itemize}
+\subsection{In mechanical systems}
+The general equation in a mechanical system\footnote{See chapter \ref{chap:mechanical}} is 
+\begin{equation}
+    M(q)\ddot q + C(q,\dot q)\dot q+g(q)+k(q)+h(\dot q)=G\bar u
+\end{equation}
+Here we assume the kinematic matrix \(G\) to be constant. The Lyapunov function taken for this general system is 
+\begin{align}
+    V(q,\dot q) &= \frac{1}{2}\dot q^TM(q)\dot q+E_p(q)-q^TG\bar u\\
+    \dot V(q,\dot q) &= -\dot q^Th(\dot q)
+\end{align}
+The first term is the kinetic energy, the second is the potential energy and the third is the work realized by the applied forces and torques.
+\subsection{In electrical systems}
+For electrical systems, there isn't a general formula of the state-space model. The Lyapunov function will however still have the dimensions of an energy, with different terms:
+\begin{itemize}
+    \item Inductance: \(E = \frac{1}{2}Li^2\)
+    \item Capacitance: \(E = \frac{1}{2}Cv^2\)
+    \item Resistance: \(E = Ri^2\)
+\end{itemize}
+\section{Linear systems}
+Let us study once again the system \eqref{eq:linear_sys} with an equilibrium \((\bar x,\bar u)\). We define the Lyapunov function \[V(x) = (x-\bar x)^TP(x-\bar x)\] where \(P\) is a symmetric positive-definite matrix. Its derivative is \(\dot V(x) = -(x-\bar x)^TQ(x-\bar x)\), with \(-Q=A^TP+PA\). 
+\begin{align}
+    V(x) &= (x-\bar x)^TP(x-\bar x)\\
+    \dot V(x) &= -(x-\bar x)^TQ(x-\bar x)\qquad -Q = A^TP+PA \label{eq:lyapunov}
+\end{align}
+\begin{thm}
+    Let \(A\) be a real matrix of order \(n\). For every positive-definite matrix \(Q\), equation \eqref{eq:lyapunov} owns a unique positive-definite solution \(P\) iff \(A\) is a Hurwitz matrix, i.e. all its eigenvalues have a negative real part.
+\end{thm}
+\section{Bounded-input, bounded-state stability}
+We are here interested in an input signal \(u(t)\) that is bounded and close to \(\bar u\). We need to analyse this case because a constant signal is not feasible in reality. We study the linear system
+\begin{equation}
+    \dot x = Ax+Bu \quad x(t_0) = x_0
+\end{equation}
+The trajectory of the system is
+\begin{equation}
+    x(t) = e^{A(t-t_0)}x_0 + \int_{t_0}^t e^{A(t-\tau)}Bu(\tau)d\tau
+\end{equation}
+The equilibrium is \((\bar x,\bar u)= (0,0)\). IT is asymptotically stable iff the matrix \(A\) is a Hurwitz matrix. This would mean that \(\lVert e^{At}\rVert\) is bounded for all \(t\ge t_0\) and there are nonnegative constants \(k\) and \(\lambda\) such that 
+\begin{equation}
+    \lVert e^{A(t-t_0)}\rVert \le ke^{-\lambda(t-t_0)}
+\end{equation}
+and thus
+\begin{equation}
+    \lVert x(t)\rVert \le ke^{-\lambda (t-t_0)}\lVert x_0\rVert + \frac{k\lVert B\rVert}{\lambda}\sup_{t_0\le \tau\le t}\lVert u(\tau)\rVert
+\end{equation}
+This means that a bounded input \(u(t)\), however big its magnitude is, generates a bounded state \(x(t)\), and the effect of the initial condition \(x_0\) fades away with time. 
+\begin{thm}
+    If the equilibrium \((\bar x, \bar u)\) of the linear system is asymptotically stable,
+    \begin{itemize}
+        \item there are three nonnegative constants \(c_1,c_2,c_3\) such that, for each initial state \(x_0\) with \(\lVert x_0-\bar x\rVert<0\) and each input signal \(u\) with \(\lVert u(t)-\bar u\rVert <c_2\) \(\forall t\ge t_0\), the solution \(x\) is bounded: \(\lVert x(t)-x_0\rVert <c_3\) \(\forall t\ge t_0\);
+        \item there is a nonnegative constant \(c_0\) and a continuous function \(\alpha :[0,a)\rightarrow [0,\infty)\) passing through the origine, i.e. \(\alpha(0)=0\), and increasing such that, for each input signal \(u\) with \(\lVert u(t)-\bar u\rVert<c_0\) \(\forall t\ge t_0\), the ultimate bound on \(x\) is an increasing function of the bound on \(u\) :
+    \end{itemize}
+    \begin{equation}
+        \lim_{t\rightarrow \infty}\sup \lVert x(t)\rVert \le \alpha(\lVert u\rVert_{\mathcal{L}_{\infty}})
+    \end{equation}
+\end{thm}
+\begin{thm}
+    If \(f\) is globally continuously differentiable and globally Lipschitz continuous, and if the equilibrium \((\bar x,\bar u)\) is globally exponentially stable, then for each initial condition \(x_0\), and each input signal \(u\), the solution \(x\) is bounded.
+\end{thm}
+\chapter{Controllability and trajectory planning}\label{chap:11}
+\begin{definition}
+    For the dyanmical system \(\dot x=f(x,u)\), the final state \(x_f\in \R^n\) is reachable from the initial state \(x_0\in \R^n\) within time \(T\) if there exists an input function \(u:[t_0,t_0+T]\rightarrow \R^m\) such that \(x(t_0)=x_0\) and \(x(t_0+T)=x_f\).
+\end{definition}
+\section{Controllability of LTI systems}
+\begin{definition}
+    The system \(\dot x = Ax + Bu\), for \(x\in \R^n\) and \(u\in \R^m\), is controllable if, for each initial state \(x_0\), it is possible to reach any other final state \(x_f\) within any positive time \(T\).
+\end{definition}
+\begin{thm}
+    The LTI system \(\dot x=Ax+Bu\) is completely controllable iff one of the two following criteria is satisfied:
+    \begin{itemize}
+        \item The matrix \(\mathcal{C}=\begin{bmatrix}
+            B & AB & A^2B & \cdots & A^{n-1}
+        \end{bmatrix}\) has full rank;
+        The rank of the matrix \(\begin{bmatrix}
+            sI-A & B
+        \end{bmatrix}\) is equal to \(n\) for each \(s\in \C\)
+    \end{itemize}
+\end{thm}
+If the controllability matrix has rank \(d<n\), we define a matrix \(T = (T_a\: T_b)\) such that \(T_a\) contains \(d\) linearly independent columns of \(\mathcal{C}\) and \(T_b\) completes the matrix by \(n-d\) vectors independent of the columns of \(T_a\). Its inverse is \(T^{-1}\coloneqq \begin{pmatrix}
+    U_a \\ U_b
+\end{pmatrix}\), where the matrices \(U_a,U_b\) are chosen such that 
+\begin{equation}
+    T^{-1}T = \begin{pmatrix}
+        U_aT_a & U_aT_b \\ U_bT_a & U_bT_b\\
+    \end{pmatrix} = \begin{pmatrix}
+        I_d & 0 \\ 0 & I_{n-d}\\
+    \end{pmatrix}
+\end{equation}
+From that, we define a state transformation 
+\begin{equation}
+    z = \begin{pmatrix}
+        z_a \\ z_b\\
+    \end{pmatrix} = \begin{pmatrix}
+        U_ax & U_bx\\
+    \end{pmatrix}
+\end{equation}
+The new state-space model is 
+\begin{align}
+    \dot z_a &= U_aAT_az_a + U_aAT_bz_b + U_aBu\\
+    \dot z_b &= U_bAT_bz_b\\
+\end{align}
+The part \(z_b\) is the non controllable part of the system, it is not influenced by the input \(u\).
+\section{Controllability of nonlinear systems}
+\begin{definition}
+    The system \(\dot x = f(x,u)\) for \(x\in \R^n\) and \(u\in \R^m\) is locally accessible from the initial state \(x_0\) if for any time \(T\), the set of states reachable from \(x_0\) within \(T\) contains a nonempty open set.
+\end{definition}
+\begin{definition}
+    The system \(\dot x=f(x,u)\) for \(x\in \R^n\) and \(u\in \R^m\) is locally controllable from the initial state \(x_0\) if for any time \(T\), the set of states reachable from \(x_0\) within \(T\) contains a neighbourhood of \(x_0\). 
+\end{definition}
+We can also define the global controllability, which requires that the whole state space is reachable from any initial condition. 
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: local accessibility, local controllability and global controllability are equivalent for linear systems.
+\end{itemize}
+\section{Drawbacks of linearisation}
+\begin{thm}
+Let us consider the linearisation of the system \(\dot x=f(x,u)\) around an equilibrium\((\bar x,\bar u)\): 
+\begin{equation}
+    \dot x = Ax+Bu \qquad A= \left(\frac{\partial f}{\partial x}\right)_{(\bar x,\bar u)} \qquad B = \left(\frac{\partial f}{\partial u}\right)_{(\bar x,\bar u)}
+\end{equation}
+If the linearised system is controllable, then for each \(\varepsilon >0\), the set of states reachable from \(\bar x\) within time \(T\) with inputs \(u(t)\) such that \(\lVert u(t)-\bar u\rVert <\varepsilon \), contains a neighbourhood of \(\bar x\).
+\end{thm}
+We now define a new operator, the Lie bracket of two vector fields:
+\begin{equation}
+    [g_1,g_2] \coloneqq \frac{\partial g_2}{\partial x}g_1-\frac{\partial g_1}{\partial x}g_2
+\end{equation}
+\begin{thm}
+    Let us consider the control-linear system\footnote{Control-linear means linear in every input.} in some open set \(X\subseteq \R^n\):
+    \begin{equation}
+        \dot x= g_1(x)u_1 + \dots + g_m(x)u_m
+    \end{equation}
+    for some analytic\footnote{Analytic means that all coordinates of all fields \(g_i\) have a Taylor series that converges in a neighbourhood, i.e. all derivatives of all order exist.} vector fields \(g_1,\dots,g_m\). Consider the set of all vector fields \(g_1,\dots,g_m\) and their repeated Lie brackets. Consider also the vector space generated by all these vector fields evaluated at a state \(x_0\). This vector space is of dimension \(n\) iff the system is locally controllable from \(x_0\). Moreover, if this condition is met everywhere in the state space \(X\), then the system is globally controllable.
+\end{thm}
+\begin{thm}
+    Let us consider the system in \(X\subseteq \R^n\):
+    \begin{equation}
+        \dot x=f(x)+g_1(x)u_1 + \dots + g_m(x)u_m
+    \end{equation}
+    for some analytic vector fields \(f,g_1,\dots,g_m\). Consider the set of all vector fields \(f,g_1,\dots,g_m\) and those obtained by repeated Lie brackets. Consider also the vector space generated by those vector fields evaluated at a state \(x_0\). This vector space if of dimension \(n\) iff the system is locally accessible from \(x_0\).
+\end{thm}
+\section{Trajectory planning}
+We work here with the following Brunovsky form of the nonlinear system:
+\begin{align}
+    \dot z_1 &= z_2 \nonumber\\
+    \dot z_2 &= z_3 \nonumber\\
+    &\vdots \nonumber\\
+    \dot z_n &= \alpha(z) + \beta(z)u \qquad \beta(z)\neq 0 
+\end{align}
+It is sufficient to define a polynomial trajectory for \(z_1\):
+\begin{equation}
+    z_1(t) = \sum_{i=0}^{2n-1}\lambda_i \left(\frac{t}{T}\right)^i
+\end{equation}
+By calculating the successive derivatives of \(z_1(t)\), we obtain the expressions of \(z_j(t)\), for \(j=2,\dots,n\):
+\begin{equation}
+    z_j(t) = \sum_{i=j-1}^{2n-1}\frac{i!}{(i-j+1)!}\frac{\lambda_i}{T^{j-1}}\left(\frac{t}{T}\right)^{1-j}
+\end{equation}
+and we can find the values of coefficients \(\lambda_i\) by calculating those values for \(t=0\) and \(t=T\). Finally, the input we need to obtain the wanted results is 
+\begin{equation}
+    u(t) = \frac{\dot z_n(t)-\alpha(z(t))}{\beta(z(t))}
+\end{equation}
 \end{document}
