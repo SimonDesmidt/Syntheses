@@ -12,6 +12,7 @@
 \usepackage{float}
 \usepackage{nicematrix}
 \usepackage{enumitem}
+\usepackage{amsthm}
 \usepackage{pythonhighlight}
 \usepackage[]{titletoc}
 \usepackage{empheq}
@@ -27,6 +28,14 @@
 \usepackage{pdfpages}
 \usepackage{tabularx}
 \usepackage[skins]{tcolorbox}
+
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}[chapter]
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{exmp}[thm]{Example} 
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{crl}[thm]{Corollary}
+
 \titleformat{\chapter}[display]
   {\normalfont\bfseries}{}{0pt}{\Huge}
 \usepackage{hyperref}
@@ -56,7 +65,8 @@
     \end{align}
 \end{tcolorbox}
 }
-
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
 \begin{document}
 
 
@@ -241,4 +251,57 @@ Then the rank of \(M\) satisfies
     rank(M) = n + rank(D-CA^{-1}B)
 \end{equation}
 And the matrix \(D-CA^{-1}B\) is called the Schur complement of \(M\). 
+\chapter{QR form}
+TODO
+\chapter{Unitary transformations and SVD}
+\section{Introduction and definitions}
+\begin{itemize}
+    \item A unitary matrix is a matrix \(U\in \C^{n\times n}\) such that \(U^*U=I\), i.e. its column are orthogonal.
+    \item An isometry is a matrix \(U\in \C^{m\times n}\), \(m\neq n\), such that \(U^*U=I\). We have \(\lVert Ux\rVert =\lVert x \rVert\). 
+\end{itemize}
+\section{Diagonalization by unitary transformations}
+The goal here is to have a matrix decomposition of the form 
+\begin{equation}
+    A = R\begin{pmatrix}
+        I_r & 0\\ 0& 0 \\
+    \end{pmatrix}Q^{-1}
+\end{equation}
+for any arbitrary matrix \(A_{m\times n}\), and with \(R,Q\) being unitary (if \(A\) is complex) or orthogonal (if \(A\) is real). We limit ourselves here to transformation matrices that are isometries\footnote{To define.}. This means that the invariants that we obtain characterize the way the matrix act on the norm of vectors. 
+\begin{thm}
+    Every Hermitian\footnote{\(A=A^*\)} matrix \(A\in \C^{n\times n}\) can be diagonalized by a unitary transformation \(U\in \C^{n\times n}\):
+    \begin{equation}
+        U^*AU = \begin{pmatrix}
+            \lambda_1 & 0 & \dots & 0\\
+            0&\ddots &\ddots \vdots \\
+            \dots & \ddots & \ddots & 0\\
+            0 & \dots & 0 & \lambda_n\\
+        \end{pmatrix}
+    \end{equation}
+    with \(\lambda_i\in \R\).
+\end{thm}
+\begin{thm} 
+    The eigenvalues of a Hermitian matrix \(A\in \C^{n\times n}\) are invariant under unitary similarity transformations:
+    \begin{equation}
+        B=U^*AU
+    \end{equation}
+    Every class of equivalence defined by this transformation group has a unique canonical representative which is the diagonal matrix \(\Lambda\) with the eigenvalues of \(A\) decreasing along the diagonal.
+\end{thm}
+\begin{thm}[\textbf{Singular Value Decomposition}]
+    For every matrix \(A\in \C^{m\times n}\), there exist unitary transformations \(U\in \C^{m\times m}\) and \(V\in \C^{n\times n}\) such that 
+    \begin{equation}
+        A=U\Sigma V^* \qquad \Sigma = \begin{pNiceArray}{ccc|c}
+            \sigma_1 &        & 0                  &  \\
+                     & \ddots &                    & 0_{r\times (n-r)}\\
+            0        &        & \sigma_r           &  \\ \hline
+                     & 0_{(m-r)\times r} & & 0_{(m-r)\times (n-r)}\\
+          \end{pNiceArray}
+        \end{equation}
+    with real positive singular values \(\sigma_1\ge \dots \ge \sigma_r > 0\). The value \(r\) and the \(r\)-tuple \((\sigma_1,\dots,\sigma_r)\) are uniquely defined and, as a consequence, the matrix \(\Sigma\) constitutes a canonical form under unitary transformations, i.e. under transformations of the forme \(B = \tilde U^* A\tilde V\). Where \(\tilde U, \tilde V\) are two unitary matrices. 
+\end{thm}
+\underline{Properties:}
+\begin{itemize}
+    \item If the matrix \(A\) is real, \(U,V\) are orthogonal matrices;
+    \item The transformations \(U,V\) diagonalize the matrices \(AA^*\) and \(A^*A\) respectively, since \(U^*AA^*A = \Sigma \Sigma^T\), \(V^*A^*AV=\Sigma^T\Sigma\), and the columns of \(U,V\) are the eigenvectors of \(AA^*\) and \(A^*A\) respectively.
+    \item The transformations \(U,V\) are not uniquely defined. 
+\end{itemize}
 \end{document}
