@@ -5,10 +5,11 @@
 \usepackage{amssymb}
 \usepackage{multicol}
 \usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
-\usepackage[french]{babel}
+\usepackage[english]{babel}
 \usepackage{libertine}
 \usepackage{graphicx}
 \usepackage{wrapfig}
+\usepackage{amsthm}
 \usepackage{float}
 \usepackage{enumitem}
 \usepackage{pythonhighlight}
@@ -19,6 +20,7 @@
 \usepackage{xfrac}
 \usepackage{textcomp}
 \usepackage{mathtools}
+\usepackage{hyperref}
 \usepackage{caption}
 \usepackage{tabularray}
 \usepackage{subcaption}
@@ -26,9 +28,16 @@
 \usepackage{pdfpages}
 \usepackage{tabularx}
 \usepackage[skins]{tcolorbox}
+
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}[chapter]
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{exmp}[thm]{Example} 
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{crl}[thm]{Corollary}
+
 \titleformat{\chapter}[display]
   {\normalfont\bfseries}{}{0pt}{\Huge}
-\usepackage{hyperref}
 \newcommand{\hsp}{\hspace{20pt}}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
@@ -57,9 +66,8 @@
 \end{tcolorbox}
 }
 
+\hbadness=100000
 \begin{document}
-
-
 \begin{titlepage}
     \begin{sffamily}
     \begin{center}
@@ -121,6 +129,7 @@ and its solution is of the form \(x(t) = \exp(At)x(0)\). We will now study the d
     \end{enumerate}
 \end{enumerate}
 \chapter{Nonlinear CT, 2D systems}
+\section{General form}
 The general form of a nonlinear CT 2D dynamical system is 
 \begin{equation}
     \dot x = f(x)\qquad x\in \R^2, \: f:\R^2\rightarrow \R^2
@@ -129,5 +138,79 @@ A nullcline is a curve such that for an element \(x_i\) of \(x\), \(\dot x_i=0\)
 \begin{itemize}
     \item [\(\rightarrow\)] N.B.: The nullclines cross trajectories, as they are not trajectories themselves. 
 \end{itemize}
-An equilibrium point is stable if all eigenvalues of the jacobian matrix evaluated at that point have nonpositive real part.
+An equilibrium point is stable if all eigenvalues of the jacobian matrix evaluated at that point have nonpositive real part. It is said to be hyperbolic if its real part is nonzero. 
+\begin{thm}
+    Consider the initial value problem \(\dot x=f(x),x(0)=x_0\). Suppose that \(f\) is continuous and all its partial derivaties are continuous for \(x\) in some open connected set \(D\subseteq \R^n\). Then for \(x_0\in D\), the initial value problem has a solution \(x(t)\) and the solution is unique. \\
+    This means that existence and uniqueness of solutions are guaranteed if \(f\) is continuously differentiable.
+\end{thm}
+\section{Methodology}
+\begin{enumerate}
+    \item Nullclines: Find the graph of the functions such that \(\dot x=0\), \(\dot y=0\).
+    \item Equilibrium points: Those are the intersections of both nullclines.
+    \item Stability: Analyze the eigenvalues of the Jacobian matrix at each equilibrium point.
+\end{enumerate}
+\section{Linearization}
+The system here is 
+\begin{align}\label{eq:2D-CT}
+    \dot x &= f(x,y)\nonumber \\
+    \dot y &= g(x,y)
+\end{align}
+If \((x^*,y^*)\) is one of its equilibrium points, then the Jacobian matrix for that point is 
+\begin{equation}
+    A \coloneqq \begin{pmatrix}
+        \frac{\partial f}{\partial x} & \frac{\partial f}{\partial y}\\
+        \frac{\partial g}{\partial x} & \frac{\partial g}{\partial y}\\
+    \end{pmatrix}_{(x^*,y^*)}
+\end{equation}
+and the linearized system is 
+\begin{equation}
+    \begin{pmatrix}
+        \dot u\\ \dot v
+    \end{pmatrix} = A \begin{pmatrix}
+        u\\ v
+    \end{pmatrix}
+\end{equation}
+with \(u=x-x^*\) and \(v=y-y^*\). 
+\section{Population dynamics}
+The Lotka-Volterra model of competition is used to model the population growth of two species fighting for the same finite resources, but not eating each other, e.g. sheeps and rabbits. The state-space model is
+\begin{align}
+    \dot x &= x(3-x-2y)\nonumber \\
+    \dot y &= y(2-y-x)
+\end{align}    
+Its equilibrium points are \((0,0), (0,2),(3,0),(1,1)\). The first is an unstable node, the next two are stable and the last is a saddle point. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .5\textwidth]{img/basin_of_attraction.png}
+\end{figure}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: the stable manifold is the boundary between the regions of the two stable equilibria. On one side of the stable manifold, evey trajectory converges to one equilibrium, and to the other one on the other side. Due to this characteristic, it is also called the basin boundary. 
+    \item [\(\rightarrow\)] N.B.: if the real part of the eigenvalues is zero, additionnal information is needed to conclude on the stability. 
+\end{itemize}
+\section{Conservative systems}
+A conservative system is such that there exists a quantity \(V:\R\rightarrow \R\) such that it is constant, according to the time, along every trajectory. It often has the dimensions of an energy. 
+\begin{thm}
+    Consider the system \(\dot x=f(x)\), \(x\in \R^2\) and \(f\in \mathcal{C}^1\). Suppose that there exists a conserved quantity \(E(x)\) and suppose that \(x^*\) is an isolated fixed point. If \(x^*\) is a local minimum of \(E\), then all trajectories sufficiently close to \(x^*\) are closed.
+\end{thm}
+\section{Reversible systems}
+\begin{definition}
+    If the system \(\begin{cases} \dot x =f(x,y)\\ \dot y=g(x,y) \end{cases}\) has the same equations under the transformation of coordinates 
+    \begin{equation}
+        \begin{cases}
+            \tau \coloneqq -t\\
+            X \coloneqq x\\
+            Y \coloneqq -y
+        \end{cases}
+    \end{equation}
+    then the system is reversible. In 2D, this is saying that the system is reversible if \(f\) is odd and \(g\) is even. 
+\end{definition}
+\begin{thm}
+    If \((x^*,y^*)\) is an equilibrium point, center for the linearized system, and the system is reversible, then, when close enough to the equilibrium point, all trajectories are closed curves.
+\end{thm}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .3\textwidth]{img/reversible.png}
+\end{figure}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: Trajectories that start and end at the same fixed point are called homoclinic orbits. 
+\end{itemize}
 \end{document}
