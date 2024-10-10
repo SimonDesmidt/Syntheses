@@ -20,6 +20,7 @@
 \usepackage{textcomp}
 \usepackage{mathtools}
 \usepackage{caption}
+\usepackage{amsthm}
 \usepackage{tabularray}
 \usepackage{subcaption}
 \usepackage[bottom]{footmisc}
@@ -33,6 +34,14 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand{\R}{\R}
+\newcommand{\C}{\mathbb{C}}
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}[chapter]
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{exmp}[thm]{Example} 
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{crl}[thm]{Corollary}
 
 % Define a new tcolorbox style with a red border and transparent interior
 \tcbset{
@@ -88,14 +97,14 @@
 \begin{itemize}
     \item Data : 
     \begin{itemize}
-        \item [\(\bullet\)] \(\chi \subseteq \mathbb{R}^d\) (here, \(d=1\) often).
-        \item [\(\bullet\)] \(f:\chi \rightarrow \mathbb{R}\), with \(f\in \mathfrak{f}\).
+        \item [\(\bullet\)] \(\chi \subseteq \R^d\) (here, \(d=1\) often).
+        \item [\(\bullet\)] \(f:\chi \rightarrow \R\), with \(f\in \mathfrak{f}\).
     \end{itemize}
     \item Design : 
     \begin{itemize}
-        \item [\(\bullet\)] \(\Hat{\mathfrak{f}} \subseteq \mathbb{R}^{\Hat{\chi}}\) is the set of admissible function, and is a subset of all function from \(\Hat{\chi}\) to \(\mathbb{R}\).
-        \item [\(\bullet\)] \(\mathcal{L}:\Hat{\mathfrak{f}} \times \mathfrak{f}\rightarrow \mathbb{R}\) is the loss function.
-        \item [\(\bullet\)] \(\mathcal{R}:\Hat{\mathfrak{f}}\rightarrow \mathbb{R}\) is the regularizer.
+        \item [\(\bullet\)] \(\Hat{\mathfrak{f}} \subseteq \R^{\Hat{\chi}}\) is the set of admissible function, and is a subset of all function from \(\Hat{\chi}\) to \(\R\).
+        \item [\(\bullet\)] \(\mathcal{L}:\Hat{\mathfrak{f}} \times \mathfrak{f}\rightarrow \R\) is the loss function.
+        \item [\(\bullet\)] \(\mathcal{R}:\Hat{\mathfrak{f}}\rightarrow \R\) is the regularizer.
     \end{itemize}
     \item Optimisation problem : \[\arg_{\Hat{f}\in \Hat{\mathfrak{f}}}\min\quad \mathcal{L}(\Hat{f},f)+\lambda \mathcal{R}(\Hat{f})\]
     \item Optimisation algorithm.
@@ -222,7 +231,7 @@ From this, the solution to the interpolation problem is solved by multiplying bo
 \end{equation}
 And that is the discrete Fourier transform (DFT)
 \section{Rational interpolation}
-Let the interpolation points be \(x_0< x_1<\dots<x_\sigma\), with the values \(y_0,\dots,y_\sigma\in\mathbb{R}\). We define the polynomial
+Let the interpolation points be \(x_0< x_1<\dots<x_\sigma\), with the values \(y_0,\dots,y_\sigma\in\R\). We define the polynomial
 \begin{align}\label{eq:rational}
     \Phi(x) &= \frac{p_\mu(x)}{q_\nu(x)} \qquad p_\mu \in\mathcal{P}_\mu, q_\nu\in \mathcal{P}_\nu\\
     &\text{such that } \Phi(x_i)=y_i\qquad i = 0,\dots,\sigma
@@ -245,4 +254,78 @@ The theorem of uniqueness states that if \(\Phi_1\) and \(\Phi_2\) are non trivi
     \item \(p_\mu,q_\nu\) are relatively prime if they do not have zeros in common.
 \end{itemize}
 Given \(\Phi = \frac{p_\mu}{q_\nu}\), let \(\tilde{\Phi}=\frac{\tilde{p}\mu}{\tilde{q}_\nu}\) be the equivalent expression for which \(\tilde{p}_\mu\) and \(\tilde{q}_\nu\) are relatively prime. \(\Phi\) is the solution of \eqref{eq:rational} \(\Longleftrightarrow \tilde{p}_\mu(x_i)-y_i \tilde{q}_\nu(x_i)=  0\), \(i=0,\dots,\mu+\nu\).  
+\chapter{Splines}
+\section{Definition}
+Let \(\mathcal{S}=\mathcal{S}(k)=\mathcal{S}(k;x_0,\dots,x_m)=\{s\in \mathcal{C}^{k-1}[a,b]:s|_{[x_{i-1},x_i]}\in \mathcal{P}_k,i=1,\dots,m\}\) denote the linear space of splines of degree \(k\ge 1\), with knots \(a=x_0<x_1<\dots <x_m=b\). \\
+The conditions at the knots are the following:
+\begin{equation}
+    s^{(j)}(x_i^-) = s^{(j)}(x_i^+) \quad j=0,\dots, k-1
+\end{equation}
+\(s^{(j)}\) denoting the \(j\)th derivative of the spline \(s\).
+A basis of that set \(\mathcal{S}\) is 
+\begin{equation}
+    \{x^0,\dots,x^k, (x-x_1)_+^k,\dots,(x-x_{m-1})^k_+\}
+\end{equation}
+where \((x-x_j)_+^k = (\max \{0,x-x_j\})^k\). \\
+\begin{thm}
+    The dimension of the linear space \(\mathcal{S}(k;x_0,\dots,x_m)\) is \(m+k\).
+\end{thm}
+\section{B-splines}
+The basis defined above is not well suited for computation, we will instead use the B-splines. These are functions \(\phi\) such that 
+\begin{equation}\label{eq:cond_bspline}
+    \phi(x) = 0\qquad \forall x\in [x_0,x_p]\cup [x_q,x_m]
+\end{equation}
+with \(0<p<q<m\) and \(q-p\) as small as possible. We will use \(\phi\) of the form 
+\begin{equation}
+    \phi(x) = \sum_{j=p}^qd_j(x-x_j)^k_+, \quad a\le x \le b
+\end{equation} 
+where the parameters \(d_j\) satisfy
+\begin{equation}
+    r_k(x)\coloneqq \sum_{j=p}^qd_j(x-x_j)^k=0,\quad x_q\le x\le b
+\end{equation}
+Playing with arithmetics and algebra, we finally get the general formula for a B-spline:
+\begin{equation}\label{eq:bspline}
+    B_p(x) = \sum_{j=p}^{p+k+1}\left(\prod_{l=p\\ l\neq j}^{p+k+1}\frac{1}{x_\ell-x_j}\right)(x-x_j)^k_+,\qquad x\in \R
+\end{equation}
+It belongs to \(\mathcal{S}\) and verifies the condition \eqref{eq:cond_bspline}. It is well-defined for \((p=0,\dots,m-k-1)\) and thus gives \(m-k\) B-splines. To define a basis of \(\mathcal{S}\), we need \(2k\) more functions. We are going to add \(k\) knots on the left of \(x_0\) and on the right of \(x_m\):
+\begin{equation}\label{eq:bspline_set}
+    x_{-k}<x_{-k+1}<\dots,x_{-1}<x_0=a<x_1<\dots<x_{m}=b<x_{m+1}<\dots<x_{m+k}
+\end{equation}
+and we will now define \(B_{-k},\dots,B_{m-1}\) on these dots. We now have \(m+k\) linearly independent functions, and thus a basis of \(\mathcal{S}\). 
+\begin{thm}
+    Let \(x_{-k},\dotsx_{m+k}\) satisfy \eqref{eq:bspline_set}. Then, the \(m+k\) functions \(B_p\), \(p=-k,\dots,m-1\), given by \eqref{eq:bspline} form a basis of the space \(\mathcal{S}(k;x_0,x_m)\), with small support, meaning that \(B_p\) is null outside the interval \((x_p,x_{p+k+1})\). 
+\end{thm}
+The recurrence formula for B-splines is the following, for \(k>1\):
+\begin{equation}
+    \begin{cases}
+        B_p^k(x) = \frac{(x-x_p)B_p^{k-1}(x)+(x_{p+k+1}-x)B_{p+1}^{k-1}(x)}{x_{p+k+1}-x_p}\\
+        B_p^0(x) = 1_{[x_p,x_{p+1})}
+    \end{cases}
+\end{equation}
+\section{Regression with splines}
+Let \(B_{-k},\dots,B_{m-1}\) be a basis of the linear space of splines \(\mathcal{S}(k;u_0,\dots,u_m)\). We have a function \(f\in \mathcal{C}[a,b]\) and sampling points \(w_0,\dots,w_q\), assuming \(q+1\ge k+m\). The goal of this section is to find a spline function \(s\in \mathcal{S}\) that is the closest to the data points \((w_i,f(w_i)), i=0,\dots,q\), i.e.
+\begin{equation}
+    \arg\min_{s\in \mathcal{S}}\sum_{i=0}^q|f(w_i)-s(w_i)|^2
+\end{equation}
+Using \(s=\sum_{j=-k}^{m-1}c_jB_j\), we must solve the system
+\begin{equation}
+    \underbrace{
+    \begin{bmatrix}
+        B_{-k}(w_0) & \dots & B_{m-1}(w_0)\\
+        \vdots & \ddots & \vdots\\
+        B_{-k}(w_q) & \dots & B_{m-1}(w_q)\\
+    \end{bmatrix}}_{\eqcolon A}\underbrace{\begin{bmatrix}
+        c_{-k}\\ \vdots \\ c_{m-1}
+    \end{bmatrix}}_{\eqcolon c} = \underbrace{\begin{bmatrix}
+        f(w_0)\\ \vdots\\ f(w_q)
+    \end{bmatrix}}_{\eqcolon F}
+\end{equation}
+This is solved using the normal equations: \(A^TAc=A^TF\). 
+\begin{thm}
+    Under the above assumptions, the columns of \(A\) are linearly independent iff there exists a subset of \(m+k\) sampling times \(w_{i_{-k}}<\dots<w_{i_{m-1}}\) such that 
+    \begin{equation}
+        u_p<w_{i_p}<u_{p+k+1}\quad p=-k,\dots,m-1
+    \end{equation}
+\end{thm}
+meaning that \(w_{i_p}\) must be in the support of \(B_p\). 
 \end{document}

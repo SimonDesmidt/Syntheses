@@ -29,11 +29,13 @@
 \usepackage[bottom]{footmisc}
 \usepackage{pdfpages}
 \usepackage{tabularx}
+\usepackage{amsthm}
 \titleformat{\chapter}[display]
   {\normalfont\bfseries}{}{0pt}{\Huge}
 \usepackage{hyperref}
 \newcommand{\hsp}{\hspace{20pt}}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\R}{\mathbb{R}}
 \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 
@@ -97,6 +99,14 @@
 \titleformat{\chapter}[display]
   {\normalfont\bfseries}{}{0pt}{\Huge}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}[chapter]
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{exmp}[thm]{Example} 
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Property}
+\newtheorem{crl}[thm]{Corollary}
 
 \usepackage{apptools}
     \titleformat{\chapter}[hang]{\bfseries\huge}{\IfAppendix{\appendixname~}{\relax}\thechapter\IfAppendix{.}{.}}{\IfAppendix{0.333em}{2pc}}{}
@@ -232,6 +242,7 @@ B being non singular.
     \end{enumerate}
     Then \(A\) is TU.
 \end{tcolorbox}
+\chapter{Applications}
 \section{Maximal Unweighted Matching Problems}
 \subsection{Definitions}
 \begin{itemize}
@@ -264,4 +275,70 @@ We want to be able to use the theorem of section \ref{sec:main_th}.
     title={Theorem}]
 If \(G=(V,E)\) with \(|V| = m\) and \(|E|=n\) is a bipartite graph with no self-loop\footnote{Edge from a node to itself.}, then its vertex-edge incidence matrix \(M\in \mathbb{Z}^{m\times n}\) is a TU matrix.
 \end{tcolorbox}
+\section{Minimum Vertex Cover Problem}
+\begin{definition}
+    Given a graph \(G=(V,E)\), a vertex cover of \(G\) is a subset \(V'\subset V\) such that for every edge \(e=\{u,v\}\in E\), we have \(u\in V'\) or \(v\in V'\).
+\end{definition}
+The minimum vertex cover problem consists in minimizing the cardinality of \(V'\subset V\) such that \(V'\) is a vertex cover of \(G\). We define the vector \(u\in \R^m\) such that
+\begin{equation}
+    u_i = \begin{cases}
+        1 \text{ if } v_i\in V'\\
+        0\text{ otherwise}
+    \end{cases}\qquad i=1,\dots,m
+\end{equation}
+The algebraic formulation of the problem is the following:
+\begin{equation}\label{eq:mvcp_d}
+    \min_{u\in \R^m}\mathbb{1}^Tu \text{ such that }M^Tu\ge \mathbb{1}_n\qquad u\in \{0,1\}^m
+\end{equation}
+If the graph is bipartite, then the incidence matrix \(M\) is TU, and the problem \eqref{eq:mvcp_d} is equivalent its relaxation:
+\begin{equation}
+    \min_{u\in \R^m}\mathbb{1}^Tu \text{ such that }M^Tu\ge \mathbb{1}_n\qquad u\in [0,1]^m
+\end{equation}
+Given a solution \(u^*\) of that problem, the desired vertex cover \(V^*\) will be the set \(V^* = \{v_i:u_i^*=1\}\). 
+\section{Shortest Path Problem}
+\begin{definition}
+    A directed graph is a pair \(G=(V,A)\) where \(V\neq \emptyset\) is the set of vertices and \(A\subset V\times V\) is the set of arrows. If \((u,v)\in A\), the edge leaves \(u\) and arrives at \(v\).
+\end{definition}
+Let \(G=(V,A)\) be a directed graph with \(V=\{v_1,\dots,v_m\}\) and \(A=\{a_1,\dots,a_n\}\). Then, the vertex-arrow incidence matrix \(M^d\in \R^{m\times n}\) is defined such that 
+\begin{equation}
+    M_{ij}^d = \begin{cases}
+        -1 \text{ if }a_j \text{ leaves }v_i\\
+        1 \text{ if }a_j \text{ arrives at }v_i\\
+        0 \text{ otherwise}
+    \end{cases}
+\end{equation}
+\begin{definition}
+    A path on \(G=(V,A)\) from vertex \(s\) to vertex \(t\) is a set of arrows \(P\subset A\) such that 
+    \begin{equation}
+        P=\{(\tilde v_1,\tilde v_2), (\tilde v_2,\tilde v_3), \dots, (\tilde v_{N-1},\tilde v_N)\}
+    \end{equation}
+    where \(\tilde v_1= s\), \(\tilde v_N=t\) and \(\tilde v_i\neq \tilde v_\ell\) if \(i\neq \ell\)\footnote{i.e. there is no cycle.}.
+\end{definition}
+Given a path \(P\subset A\), we can associate it to a vector \(x\in \R^n\) such that 
+\begin{equation}
+    x_j=\begin{cases}
+        1\text{ if }a_j\in P\\
+        0\text{ otherwise}
+    \end{cases}
+\end{equation}
+Let \(c_j\) be the cost associated to arrow \(a_j\). Then, the shortest path problem can be formulated as 
+\begin{equation}\label{eq:spp}
+    \min_{x\in \R^n}c^Tx \text{   such that   }M^dx=b\qquad x\in \{0,1\}^n
+\end{equation}
+where \(b\) is a vector such that its first component is -1, its last is 1, and all others are zero. The condition \(M^dx=b\) translates the fact that all arrows of the path must be next to each other, and that the path starts in \(s\) and ends in \(t\). 
+\begin{tcolorbox}[breakable,
+    colback=white,
+    colframe=white!75!black,
+    title={Theorem}]
+    Let \(G=(V,A)\) be a directed graph with \(|V|=m\) and \(|A|=n\). Denote by \(M^d\in\R^{m\times n}\) the vertex-arrow incidence matrix. If the graph has no self-loop, then \(M^d\) is TU.
+\end{tcolorbox}
+This means that once again, the combinatorial problem \eqref{eq:spp} is equivalent to its continuous relaxation. 
+\begin{prop}
+    If a matrix \(A\) is TU, then the matrices \(B=\begin{bmatrix}
+        A \\
+        I \\
+    \end{bmatrix}\) and \(C=\begin{bmatrix}
+        A\\ -A\\
+    \end{bmatrix}\) are both also TU. This means that the condition \(x\in [0,1]^n\) can always be added to the TU incidence matrix and stay TU.
+\end{prop}
 \end{document}
