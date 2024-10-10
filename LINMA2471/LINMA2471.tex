@@ -27,12 +27,14 @@
 \usepackage[bottom]{footmisc}
 \usepackage{pdfpages}
 \usepackage{tabularx}
+\usepackage{amsthm}
 \usepackage[skins]{tcolorbox}
 \titleformat{\chapter}[display]
   {\normalfont\bfseries}{}{0pt}{\Huge}
 \usepackage{hyperref}
 \newcommand{\hsp}{\hspace{20pt}}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\R}{\mathbb{R}}
 \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 
@@ -57,7 +59,13 @@
     \end{align}
 \end{tcolorbox}
 }
-
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}[chapter]
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{exmp}[thm]{Example} 
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Property}
+\newtheorem{crl}[thm]{Corollary}
 \begin{document}
 
 
@@ -101,45 +109,6 @@ where \(f:\mathbb{R}^n\rightarrow\mathbb{R}\) is a continuously differentiable f
     \item A differentiable function \(f:\mathbb{R}^n\rightarrow \mathbb{R}\) is \(\mu\)-strongly convex \((\mu>0)\) if, given \(x\in \mathbb{R}^n\), \[f(y) \ge f(x) + \nabla f(x)^T(y-x) + \frac{\mu}{2}\lVert y-x\rVert^2 \qquad \forall y\in \mathbb{R}^n\]
     \item PL inequality for a \(\mu\)-strongly convex function\footnote{\(x^*\) is the minimizer of \(f\)}: \[f(x)-f(x^*)\le \frac{1}{2\mu} \lVert \nabla f(x)\rVert^2 \qquad \forall x\in \mathbb{R}^n\]
 \end{itemize}
-% \section{Complexity of GM for non convex functions}
-% A function \(F:\mathbb{R}^n\rightarrow \mathbb{R}^n\) is L-Lipschitz continuous when \[\lVert F(y)-F(x)\rVert \le L\lVert y-x\rVert\qquad \forall x,y\in \mathbb{R}^n\]where we use the euclidian norm. \\
-% In what follows, let us consider the assumption A1 that \(\nabla f\) for \(f\) in equation \ref{eq:1} is L-Lipschitz, i.e. \[\lVert \nabla f(y)-\nabla f(x)\rVert \le L\lVert y-x\rVert\qquad \forall x,y\in \mathbb{R}^n\] \\
-% Lemma 1 : If \(\nabla f\) is L-Lipschitz then, given \(x\in \mathbb{R}^n\), \[f(y)\le f(x)+\langle \nabla f(x), y-x\rangle +\frac{L}{2}\lVert y-x\rVert^2 = m_x(y)\qquad \forall y\in \mathbb{R}^n\]and \(f\) is said to be a L-smooth function.\\
-% Definition 2 : We say that a differentiable function \(\Psi:\mathbb{R}^n\rightarrow \mathbb{R}\) is L-smooth for some \(L\ge 0\) when, given \(x\in \mathbb{R}^n\), \[\Psi(y) \le \Psi(x) + \langle \nabla \Psi (x),y-x\rangle + \frac{L}{2}\lVert y-x\rVert^2 \qquad \forall y\in \mathbb{R}^n\]
-% \begin{itemize}
-%     \item [\(\rightarrow\)] N.B. : Any function with L-Lipschitz gradient is L-smooth.
-% \end{itemize}
-% Using iterations, we can show that the gradient method is, given \(x_0\in \mathbb{R}^n\), 
-% \begin{equation}
-%     x_{k+1} = x_k-\frac{1}{L}\nabla f(x_k)
-% \end{equation}
-% Let us suppose that \(f\) is non convex and that (A2) there exists \(f_{low}\in \mathbb{R}\) such that \(f(x)\ge f_{low} \qquad \forall x\in \mathbb{R}^n\).\\
-% From lemma 1 and A1, we can now write
-% \begin{equation}
-%     f(y) \le f(x) + \langle \nabla f(x),y-x\rangle + \frac{L}{2}\lVert y-x\rVert^2 \qquad x,y\in \mathbb{R}^n
-% \end{equation}
-% In particular, for \(x=x_k\) and \(y=x_{k+1}\), we have
-% \begin{equation}
-%     f(x_{k+1}) \le f(x_k) - \frac{1}{2L}\lVert \nabla f(x_k)\rVert^2\Longrightarrow f(x_k)-f(x_{k+1}) \ge \frac{1}{2L}\lVert f(x_k)\rVert^2
-% \end{equation}
-% Defining a given number \(T\ge 1\), we have 
-% \begin{equation}
-%     f(x_k)-f(x_{k+1}) \ge \frac{1}{2L}\lVert f(x_k)\rVert^2 \qquad \forall k=0,\dots, T-1
-% \end{equation}
-% Thus, by some algebraic manipulations, we can write 
-% \begin{equation}\label{eq:2}
-%     \min_{l=0,\dots,T-1} \lVert \nabla f(x_l)\rVert^2 \le \frac{2L}{T}\left(f(x_0)-f_{low}\right) \Longrightarrow \min_{l=0,\dots,T-1} \lVert \nabla f(x_l)\rVert \le \frac{\sqrt{2L\left(f(x_0)-f_{low}\right)}}{\sqrt{T}} = \mathcal{O}\left(\frac{1}{\sqrt{T}}\right) 
-% \end{equation}
-% This means that, given \(\varepsilon >0\), there exists \(T_0\in \mathbb{N}\) such that \(\min_{l=0,\dots,T-1}\lVert \nabla f(x_l) \rVert \le \varepsilon \qquad \forall T\ge T_0\), i.e. \(\exists l\in \{0,\dots,T-1\}\) such that \(\lVert \nabla f(x_l) \rVert \le \varepsilon\) whenever \(T\ge T_0\). \\
-% Now, given \(\varepsilon>0\), we define \(T(\varepsilon) = \min \left\{k\in \mathbb{N}:\lVert \nabla f(x_k)\rVert \le \varepsilon\right\}\). Let us suppose that \(T(\varepsilon)\ge 1\). Then, by equation \ref{eq:2}, 
-% \begin{equation}
-%     \varepsilon < \min_{l=0,\dots,T(\varepsilon)-1} \lVert\nabla f(x_l)\rVert \le \sqrt{\frac{2L(f(x_0)-f_{low})}{T(\varepsilon)}}
-% \end{equation}
-% And by algebraic manipulations,
-% \begin{equation}
-%     T(\varepsilon)\le 2L(f(x_0)-f_{low}) \varepsilon^{-2} = \mathcal{O}(\varepsilon^{-2})
-% \end{equation}
-% This means that the gradient method applied to a non convex function takes no more than \(\mathcal{O}(\varepsilon^{-2})\) iterations to find an \(\varepsilon\)-approximate stationary point.
 \section{Complexity}
 The demonstration of the final results here obtained is in the notes, but not explained here. 
 \subsection{Hypotheses}
@@ -240,5 +209,45 @@ Then, we can write
     \item [\(\rightarrow\)] N.B.: if the \(\phi\) function is the indicator function, i.e. \(\phi=i_\Omega = \begin{cases}
         0 \text{ if } x\in \Omega\\ \infty \text{ otherwise}
     \end{cases}\), then \(prox_{\frac{1}{L}i_\Omega}(z) = P_\Omega(z)\).
+\end{itemize}
+\section{Accelerated Proximal Gradient Method}
+This method's goal is to take into account the history of the method, so that the convergence is faster. This method still makes the hypothesis that the function \(f\) is convex.
+\begin{algorithm}[H]\label{algo:Acc_prox}
+    \caption{Accelerated Proximal Gradient Method}
+    \begin{algorithmic}[1]
+    \State \textbf{Step 0:} Given $x_0 \in \mathbb{R}^n$, set \(y_1=x_0\), \(t_1=1\) and $k=1$.
+    \State \textbf{Step 1:} Compute 
+    \begin{equation}
+        x_k = prox_{\frac{1}{L}\phi}\left(y_k-\frac{1}{L}\nabla f(y_k)\right)
+    \end{equation}
+    \State \textbf{Step 2:} Define 
+    \begin{align}
+        t_{k+1} &= \frac{1+\sqrt{1+4t_k^2}}{2}\\
+        y_{k+1} &= x_k + \left(\frac{t_k-1}{t_{k+1}}\right)(x_k-x_{k-1})      
+    \end{align}
+    \State \textbf{Step 3:} Set \(k=k+1\) and go back to Step 1.
+    \end{algorithmic}
+\end{algorithm}
+This method takes at most \(\mathcal{O}(\varepsilon^{-1/2})\) iterations to generate \(x_k\) such that \(f(x_k)-f(x^*)\le \varepsilon\).
+\section{Convexly constrained optimization problem}
+Consider the problem 
+\begin{equation}
+    \min f(x) \text{   such that   }x\in \Omega
+\end{equation}
+where \(f:\R^n\rightarrow \R\) is a convex function possibly nonsmooth, and \(\Omega\) is convex, closed and nonempty. 
+\begin{definition}
+    A subgradient of the convex, non differentiable function \(f\) at \(x\) is a function \(g:\R^n\rightarrow \R^n :x\rightarrow g(x)\) such that 
+    \begin{equation}
+        f(y) \ge f(x)+\langle g(x),y-x\rangle \qquad \forall y\in \R^n
+    \end{equation}
+    The set of all subgradients of \(f\) at point \(x\) is called subdifferential of \(f\) at \(x\) and is denoted by \(\partial f(x)\). 
+\end{definition}
+A generalization of PGM to non smooth functions is 
+\begin{equation}
+    x_{k+1} = P_\Omega (x_k-\alpha g(x_k)) \qquad g(x_k)\in \partial f(x_k),\alpha_k>0,\forall k\ge 0
+\end{equation}
+\begin{itemize}
+    \item If we take \(\alpha_k=\alpha \), \(\forall k\ge 0\), then we need at most \(\mathcal{O}(\varepsilon^{-2})\) iterations. 
+    \item If we assume that \(\lVert g(x_k)\rVert \le M\) for all \(k\ge 0\), then we can take \(\alpha_k = \frac{\varepsilon}{\lVert g(x_k)\rVert^2}\), and the convergence is in \(\mathcal{O}(\varepsilon^{-2})\) too. However, this is a good example of a dynamic step (changes with \(g(x_k)\)). 
 \end{itemize}
 \end{document}
