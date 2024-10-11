@@ -213,4 +213,40 @@ A conservative system is such that there exists a quantity \(V:\R\rightarrow \R\
 \begin{itemize}
     \item [\(\rightarrow\)] N.B.: Trajectories that start and end at the same fixed point are called homoclinic orbits. 
 \end{itemize}
+\section{Invariance principle}
+\begin{definition}
+    \(x^*\) is a (\(\omega-\))limit point of \(x(t)\) if there exists \(\lim_{t\rightarrow \infty}t_n = \infty\) such that \(\lim_{n\rightarrow \infty}x(t_n)=x^*\).
+\end{definition}
+\begin{definition}
+    A limit set of a trajectory \(x(t)\) is the set of all limit points of that trajectory. It is denoted \(\lim_{\omega}(x(\cdot))\).
+\end{definition}
+\begin{thm}
+    Let the trajectory \(\{x(t);t>0\}\) be bounded. Then, \(\lim_\omega(x(\cdot))\) is nonempty, bounded, closed, invariant and \(\lim_{t\rightarrow \infty}x(t)=\lim_\omega (x(\cdot))\), meaning that the distance between \(x(t)\) and the limit set tends to 0.
+\end{thm}
+\begin{thm}\textbf{[LaSalle theorem]}
+    Let \(V:\R^n\rightarrow \R\), \(V\in \mathcal{C}^1\), such that, \(\dot V(x)\coloneqq \frac{d}{dt}\left(V(\varphi_T(x))\right)_{t=0}\le 0\), \(\forall x\in \R^n\), \(\varphi\) being a mapping such that \(\varphi_T(x(t)) = x(t+T)\). Let us define the sets \(S\coloneqq \{x\in \R^n :\dot V(x)=0\}\) and \(I\) the largest invariant subset of \(S\). Then \(\forall x_0\in \R^n\), \(\lim_\omega (x(\cdot;x_0)) \subseteq I\). Moreover, if \(\{x(t;x_0):t>0\}\) is bounded, then \(\lim_{t\rightarrow \infty}x(t;x_0)=I\). 
+\end{thm}
+\begin{crl}
+    Let \(x^*\) be an equilibrium point of \(\dot x=f(x)\), \(x\in \R^n\). Let \(V:\R^n\rightarrow \R\), \(V\in \mathcal{C}^1\) be positive-definite\footnote{\(V(x^*)=0\), \(V(x)>0\: \forall x\neq x^*\).}. Assume \(\dot V(x)\le 0\) \(\forall x\in \R^n\) and \(S\) is defined as above. Assume that no solution trajectory stays in \(S\) except \(x(t)=x^*\). Then, \(x^*\) is asymptotically stable. 
+\end{crl}
+\begin{exmp}
+    Let us consider the spring-damper system \(\ddot x=-g(x)-h(\dot x)\). where \(g,h\) are gloablly Lipschitz and verifying
+    \begin{itemize}
+        \item \(g(0)=0\), \(yg(y)>0\) \(\forall y\neq 0, y\in (-a,a)\);
+        \item \(h(0)=0\), \(yh(y)>0\) \(\forall y\neq 0, y\in (-a,a)\);
+    \end{itemize}
+    Then, the origin is a stable equilibrium point. 
+\end{exmp}
+\section{Index theory}
+Let us consider the 2D system \(\dot x=f(x)\), \(x\in \R^2\) and \(f:\R^2\rightarrow \R^2\), \(f\in \mathcal{C}^0\). Let \(C\) be a Jordan curve, i.e. a loop that is continuous and not self intersecting\footnote{Not necessarily a trajectory.}.
+\begin{definition}
+    The index of \(C\) for \(f\) \(I_C(f)\) is defined as the number of loops that \(f(C)\) does around the origin, counting positive for CCW and negative for CW.
+\end{definition}
+\begin{itemize}
+    \item If \(C_1,C_2\) contain the same fixed points, i.e. we can continuously deform \(C_1\) into \(C_2\) without passing through a fixed point, there indices are equal.
+    \item If a Jordan curve contains no fixed point, its index is zero.
+    \item The change of variable \(t\rightarrow -t\) does not change the index.
+    \item If \(C\) is a trajectory for the system, then \(I_C(f) = +1\).
+\end{itemize}
+
 \end{document}
