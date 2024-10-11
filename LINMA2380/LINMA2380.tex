@@ -304,4 +304,57 @@ for any arbitrary matrix \(A_{m\times n}\), and with \(R,Q\) being unitary (if \
     \item The transformations \(U,V\) diagonalize the matrices \(AA^*\) and \(A^*A\) respectively, since \(U^*AA^*A = \Sigma \Sigma^T\), \(V^*A^*AV=\Sigma^T\Sigma\), and the columns of \(U,V\) are the eigenvectors of \(AA^*\) and \(A^*A\) respectively.
     \item The transformations \(U,V\) are not uniquely defined. 
 \end{itemize}
+\section{Linear operator point of view}
+We define the compact SVD form: \(A=U_1\Sigma_rV_1^*\), to have \(\Sigma_r\) invertible. In this form, \(\Sigma_r\) is \(r\times r\), \(r\) being the number of nonzero singular values. \(U_1\) contains the \(r\) first columns of \(U\) and \(V_1^*\) the \(r\) first lines of \(V^*\). The other columns (resp. rows) of \(U\) (resp. \(V\)) are denoted by the matrix \(U_2\) (resp. \(V_2^*\)). 
+\begin{definition}
+    If \(\mathcal{X}_1,\mathcal{X}_2\) are subspaces of \(\R^n\) such that their intersection is the origin, then we note \(\mathcal{X}_1\oplus \mathcal{X}_2\)=\(\mathcal{X}_1+\mathcal{X}_2\) the direct sum of the two spaces. 
+\end{definition}
+Any vector \(x\in \mathcal{X}_1\oplus \mathcal{X}_2\) has a unique decomposition \(x=x_1+x_2, \:x_i\in \mathcal{X}_i\). \\
+For the SVD, we have 
+\begin{align}
+    \mathcal{X}_1 = Im(V_1) & \qquad \qquad \mathcal{X}_2 = Im(V_2) = Ker(A)\\
+    \mathcal{Y}_1 = Im(U_1) = Im(A) &\qquad  \qquad \mathcal{Y}_2 = Im(U_2)
+\end{align}
+\section{Polar decomposition - formal point of view}
+Any matrix \(A_{n\times n}\) can be expressed in the following form:
+\begin{equation}
+    A = \underbrace{U\Sigma U^*}_{\eqcolon H_1}UV^* = H_1Q = H_1\exp(iH_2)
+\end{equation}
+with \(H_1\) a positive definite Hermitian matrix, \(Q\) unitary and \(H_2\) also Hermitian.
+\section{Projectors and generalized inverses - algebraic point of view}
+\begin{definition}
+    A projector is a matrix \(P\in \C^{n\times n}\) such that \(P^2=P\). \\
+    It is said to be orthogonal if \(\forall x,\: (Px)^*(x-Px) = 0\). 
+\end{definition}
+\begin{thm}
+    Any projector \(P\) can be written \(P=XY^*\) with \(Y^*X=I_r\), \(r\) being the rank of \(P\). If \(P\) is orthogonal, then \(X=Y\). 
+\end{thm}
+\begin{itemize}
+    \item \(Im(P) = Ker(P^\perp)\)
+    \item \(P=P^*\)
+\end{itemize}
+\section{Least squares}
+\begin{thm}
+    Given a linear system \(Ax=y\), the generalized inverse \(A^I = V_1\Sigma_r^{-1}U_1^*\) gives \(x^* = A^I y\) the solution minimizing the norm of \(Ax-y\). If there are more than one such solution, it returns the one of smallest norm.
+\end{thm}
+\section{Unitarily invariant matrix norms - geometric point of view}
+A matrix norm is unitarily invariant if, for every \(A\in \C^{m\times n}\), we have \(\lVert A\rVert = \lVert U^*AV\rVert\) if \(U,V\) are unitary.\\
+The 2-norm and the Frobenius norm of \(A\in \C^{m\times n}\) are unitarily invariant.
+\begin{equation}
+    \lVert A \rVert_2 \coloneqq \sup_{x\neq 0}\frac{\lVert Ax\rVert_2}{\lVert x\rVert_2} \qquad \lVert A\rVert_F \coloneqq \left(\sum_{i,j}|a_{i,j}^2\right)^{1/2}
+\end{equation}
+\section{Canonical angles}
+\begin{thm}
+    Given two subspaces \(\mathcal{S}_i\subseteq \C^n\) (\(i=1,2\))., there exist orthonormal bases given by the columns of \(\Hat S_i\) respectively, and satisfying 
+    \begin{equation}
+        \Hat S_1^*\Hat S_2 = \begin{pNiceArray}{ccc|c}
+            \sigma_1 & & 0 & \\
+            & \ddots & & 0_{r\times (r_2-r)}\\
+            0 & & \sigma_r & \\
+            \hline
+            & 0_{(r_1-r)\times r} & & 0_{(r_1-r)\times r_2-r}\\
+        \end{pNiceArray} \qquad 1\ge \sigma_1 \ge \dots \ge \sigma_r>0
+    \end{equation}
+\end{thm}
+\color{red} Add the paper sheet of notes.
 \end{document}
