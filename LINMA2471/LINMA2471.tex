@@ -120,6 +120,7 @@ The demonstration of the final results here obtained is in the notes, but not ex
 \subsection{Results}
 We use the sequence \(\{x_k\}_{k\ge 0}\), given a \(x_0\in \mathbb{R}^n\), such that \[x_{k+1} = x_k - \frac{1}{L}\nabla f(x_k)\]
 \begin{center}
+    \renewcommand{\arraystretch}{1.5}
     \begin{tabular}{c|c|c}\label{tab:complexity}
     Problem class & Goal & Complexity bound \\ \hline\hline
     Non-convex \(f\) & \(\lVert \nabla f(x_k)\rVert \le \varepsilon\) & \(\mathcal{O}(\varepsilon^{-2})\)\\ \hline
@@ -250,4 +251,48 @@ A generalization of PGM to non smooth functions is
     \item If we take \(\alpha_k=\alpha \), \(\forall k\ge 0\), then we need at most \(\mathcal{O}(\varepsilon^{-2})\) iterations. 
     \item If we assume that \(\lVert g(x_k)\rVert \le M\) for all \(k\ge 0\), then we can take \(\alpha_k = \frac{\varepsilon}{\lVert g(x_k)\rVert^2}\), and the convergence is in \(\mathcal{O}(\varepsilon^{-2})\) too. However, this is a good example of a dynamic step (changes with \(g(x_k)\)). 
 \end{itemize}
+\section{Summary}
+\begin{center}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{c|c|c}\label{tab:summary_GM}
+    Method & Goal & Complexity\\ \hline\hline
+    PGM & \(F(x_k)-F(x^*)\le \varepsilon\) & \(\mathcal{O}(\varepsilon^{-1})\)\\ \hline
+    Accelerated PGM & \(F(x_k)-F(x^*)\le \varepsilon\) & \(\mathcal{O}(\varepsilon^{-1/2})\)\\ \hline
+    PSG & \(F(x_k)-F(x^*)\le \varepsilon\) & \(\mathcal{O}(\varepsilon^{-2})\)\\
+    \end{tabular}
+\end{center}
+\chapter{Coordinate Descent Method}
+The goal here is to solve the problem
+\begin{equation}
+    \min_{x\in \R^n}f(x) 
+\end{equation}
+where \(f:\R^n\rightarrow \R\) is L-smooth and bounded from below by \(f_{low}\).\\
+
+The cost of computing the gradient at each step can require a lot of operations: e.g. the gradient of a quadratic function is calculated in \(\mathcal{O}(n^2)\). In this section, we consider the setting in which \(n\) is huge to such an extent that \(\mathcal{O}(n^p)\) operations to get \(\nabla f(x)\) is not acceptable. 
+\section{Randomized Coordinate Descent Method}
+This algorithm randomly chooses a single component of the gradient to compute the next iterate, for a L-smooth function.
+\begin{algorithm}\label{algo:random_CDM}
+    \caption{Randomized Coordinate Descent Method}
+    \begin{algorithmic}[1]
+    \State \textbf{Step 0:} Given $x_0 \in \mathbb{R}^n$ and $L > 0$, set $k \coloneqq 0$.
+    \State \textbf{Step 1:} Choose \(i_k\in \{1,\dots,n\}\) randomly with uniform probability. 
+    \State \textbf{Step 2:} Compute $x_{k+1} = x_k - \frac{1}{L}\left(\nabla f(x_k)\right)_{i_k}e_{i_k}$.
+    \State \textbf{Step 3:} Set \(k\coloneqq k+1\), and go back to step 1.
+    \end{algorithmic}
+\end{algorithm}
+This algorithm converges in \(\mathcal{O}(n\varepsilon^{-2})\). 
+\section{Stochastic Gradient Method}
+Consider a dataset \(\{(a^{(i)},b^{(i)})\}_{i=1}^N\subset \R^p\times \R\). Let \(m_X:\R^p\rightarrow \R\) be defined by a parameter \(x\in \R^n\). In ML, we want to find \(x^*\) that solves the optimization problem
+\begin{equation}
+    \min_{x\in \R^n}\frac{1}{N}\sum_{i=1}^N \underbrace{\left(m_x\left(a^{(i)}\right)-b\right)^2}_{=f_i(x)}
+\end{equation}
+The cost to compute \(\nabla f(x)\) is thus \(\mathcal{O}(Nn^p)\). We will use the SGD method when N is big.
+\begin{algorithm}\label{algo:SGD}
+    \caption{Stochastic Gradient Descent Method}
+    \begin{algorithmic}[1]
+        \State \textbf{Step 0:} Given \(x_0\in \R^n\), \(\alpha_0>0\), set \(k\coloneqq 0\).
+        \State \textbf{Step 1:} Choose \(i_k\in \{1,\dots,N\}\) randomly with uniform probability.
+        \State \textbf{Step 2:} Compute \(x_{k+1}=x_k-\alpha_k \theta \nabla f_{i_k}(x_k)\).
+    \end{algorithmic}
+\end{algorithm}
 \end{document}
