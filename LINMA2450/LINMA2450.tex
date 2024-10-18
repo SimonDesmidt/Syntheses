@@ -243,7 +243,7 @@ B being non singular.
     Then \(A\) is TU.
 \end{tcolorbox}
 \chapter{Applications}
-\section{Maximal Unweighted Matching Problems}
+\section{Maximum Matching Problem}
 \subsection{Definitions}
 \begin{itemize}
     \item Given a graph \(G=(V,E)\), a matching of \(G\) is a subset of edges \(E'\subset E\) such that for every vertex \(v\in V\), there exists at most one edge \(e\in E'\) that is incident to it.
@@ -263,10 +263,10 @@ B being non singular.
         M_{ij} = \begin{cases} 1 \text{ if }e_j\text{ is incident to }v_j\\ 0 \text{ otherwise}\\ \end{cases} \qquad i=1,\dots,m\qquad j=1,\dots,n
     \end{equation}
 \end{itemize}
-\subsection{Problem}
-The maximal unweighted matching problem is to find a subgraph of a bipartite graph for which the maximum number of nodes are related to max one other node. It can be expressed in an combinatorial optimization manner such as:
+\subsection{Unweighted Problem}
+The maximum unweighted matching problem is to find a subgraph of a bipartite graph for which the maximum number of nodes are related to max one other node. It can be expressed in an combinatorial optimization manner such as:
 \begin{equation}
-    \max \mathbb{1}^Tx \qquad \text{ such that } Mx\le \mathbb{1}_n \qquad x\in \{0,1\}^n
+    \max \mathbb{1}^Tx \qquad \text{ such that } Mx\le \mathbb{1}_m \qquad x\in \{0,1\}^n
 \end{equation}
 We want to be able to use the theorem of section \ref{sec:main_th}. 
 \begin{tcolorbox}[breakable,
@@ -275,6 +275,11 @@ We want to be able to use the theorem of section \ref{sec:main_th}.
     title={Theorem}]
 If \(G=(V,E)\) with \(|V| = m\) and \(|E|=n\) is a bipartite graph with no self-loop\footnote{Edge from a node to itself.}, then its vertex-edge incidence matrix \(M\in \mathbb{Z}^{m\times n}\) is a TU matrix.
 \end{tcolorbox}
+\subsection{Weighted Problem}
+Let \(w_j\) be the weight associated to the edge \(e\in E\). The function to optimize then is \(w^Tx\), and the problem becomes 
+\begin{equation}
+    \max_{x\in \R^n} w^Tx \text{   such that   }Mx\le \mathbb{1}_m \qquad x\in \{0,1\}^n
+\end{equation}
 \section{Minimum Vertex Cover Problem}
 \begin{definition}
     Given a graph \(G=(V,E)\), a vertex cover of \(G\) is a subset \(V'\subset V\) such that for every edge \(e=\{u,v\}\in E\), we have \(u\in V'\) or \(v\in V'\).
@@ -341,4 +346,60 @@ This means that once again, the combinatorial problem \eqref{eq:spp} is equivale
         A\\ -A\\
     \end{bmatrix}\) are both also TU. This means that the condition \(x\in [0,1]^n\) can always be added to the TU incidence matrix and stay TU.
 \end{prop}
+\section{Maximum Flow Problem}
+In this problem, we want to maximize the flow that we can send from node \(s\) to node \(t\), respecting the conservative law, i.e. at intermediate vertices, the flow that arrives is equal to the flow that leaves. \\
+Let us define the matrix \(\Tilde M\) defined by the following:
+\begin{equation}
+    \Tilde M_{ij} = \begin{cases}
+        1 & \text{ if } j\in \delta^{(+)}(i)\\
+        -1 & \text{ if } j\in \delta^{(-)}(i)\\
+        0 & \text{ otherwise}\\
+    \end{cases} \forall i\in \{2,\dots,m-1\},j\in \{1,\dots, n\}
+\end{equation}
+where 
+\begin{equation}
+    \begin{cases}
+        \delta^{(-)}(i) = \{j\in \{1,\dots,n\}:a_j\text{ leaves }v_i\}\\
+        \delta^{(+)}(i) = \{j\in \{1,\dots,n\}:a_j\text{ arrives at }v_i\}
+    \end{cases}
+\end{equation}
+In matrix form, the problem is
+\begin{equation}
+    \max_{x\in \R^n} \sum_{j\in \delta^{(-)}(i)}x_j \text{   such that   } \Tilde M=0\qquad 0\le x_j\le c_j \: \forall j=1,\dots,n
+\end{equation}
+The constraint containing \(\Tilde M\) is the conservation law. 
+\section{Assignment Problem}
+Suppose that we have $n$ tasks and $m$ agents. Every task should be done by some agent, and every agent is responsible for one and only one task. Let $h_{ij}$ be the "happiness" that agent $i$ will feel by doing task $j$. We want to maximize the total happiness of the agents. \\
+Let $\R^{n\times n}$ be the decision variable such that 
+\begin{equation}
+    x_{ij} = \begin{cases}
+        1& \text{ if the }j\text{th task is done by agent }i\\
+        0& \text{ otherwise}
+    \end{cases}
+\end{equation}
+Then the problem is formulated as 
+\begin{equation}
+    \max_{x\in \R^{n\times n}} \sum_{j=1}^{n}\sum_{i=1}^n h_{ij}x_{ij}\text{   such that   }\begin{cases}
+        \sum_{j=1}^n x_{ij} = 1\qquad i=1, \dots, n\\
+        \sum_{j=1}^n x_{ij} = 1\qquad j=1, \dots, n\\
+    \end{cases}
+\end{equation}
+Let us put all this in matrix form, defining the vector $x_{n^2}$ and the matrix $A_{2n\times n^2}$ such that, for \(n=2\), we have
+\begin{equation}
+    \begin{pmatrix}
+        1 & 1 & 0 & 0 \\
+        0 & 0 & 1 & 1 \\
+        1 & 0 & 1 & 0 \\
+        0 & 1 & 0 & 1 \\
+    \end{pmatrix}\begin{pmatrix}
+        x_{11}\\ x_{21} \\ x_{12} \\ x_{22}\\
+    \end{pmatrix} = \begin{pmatrix}
+        1\\ 1\\ 1\\ 1\\
+    \end{pmatrix}
+\end{equation}
+It is easy to show that the matrix $A$ is TU, and thus the problem is written in the general form:
+\begin{equation}
+    \max_{x\in \R^{n^2}} h^Tx \text{   such that   } Ax=\mathbb{1}_{2n}\qquad x\in \{0,1\}^{n^2}
+\end{equation}
+
 \end{document}
