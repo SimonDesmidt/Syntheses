@@ -246,7 +246,72 @@ Let us consider the 2D system \(\dot x=f(x)\), \(x\in \R^2\) and \(f:\R^2\righta
     \item If \(C_1,C_2\) contain the same fixed points, i.e. we can continuously deform \(C_1\) into \(C_2\) without passing through a fixed point, there indices are equal.
     \item If a Jordan curve contains no fixed point, its index is zero.
     \item The change of variable \(t\rightarrow -t\) does not change the index.
-    \item If \(C\) is a trajectory for the system, then \(I_C(f) = +1\).
+    \item If \(C\) is a trajectory or an orbit for the system, then \(I_C(f) = +1\).
+    \item For any Jordan curve \(C\), \(I_C(f) = I_C(-f)\).
+\end{itemize}
+The index of an isolated equilibrium point \(x^*\) is \(I_{x^*}(f)\coloneqq I_C(f)\), \(C\) being any Jordan curve taken close enought to \(x^*\) to have no other equilibrium point inside. 
+\begin{itemize}
+    \item For any $C$, $I_C(f)=\sum_i I_{x_i^*}(f)$, $x_i^*$ being the equilibrium points of the system. 
+\end{itemize}
+\chapter{Bifurcations}
+We study here bifurcations in 1 dimension and continuous time. A bifurcation is the evolution of the equilibrium points of the system with a parameter $r$. The system is 
+\begin{equation}
+    \dot x= f_r(x),\: x\in \R
+\end{equation}
+and we study the three cases \(r>r_c\), $r=r_c$ and $r<r_c$, $r_c$ being the critical value. 
+\section{Saddle-node bifurcation}
+The normal form of a system with saddle-node bifurcation is 
+\begin{equation}
+    \dot x = r+x^2 \eqcolon f_r(x)
+\end{equation}
+It is the Taylor-developped, shifted and scaled general form.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.5\textwidth]{img/saddle_node_bif.png}
+\end{figure}
+For $r>r_c$, there is no equilibrium point. For $r=r_c$, we have one single equilibrium point, and for $r<r_c$, we have one stable and one unstable equilibrium point. The conditions for this bifurcation to appear are
+\begin{align}
+    f_{r_c}(x^*)&=0\nonumber\\
+    \partial_x f_{r_c}(x^*)&=0\nonumber\\
+    \partial_r f_{(r_c)}(x^*)&\neq 0\\
+    \partial^2_{xx} f_{r_c}(x^*)&\neq 0\nonumber
+\end{align}
+\section{Transcritical bifurcation}
+The normal form for this case is 
+\begin{equation}
+    \dot x= rx-x^2\eqcolon f_r(x)
+\end{equation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .5\textwidth]{img/transcritical_bif.png}
+\end{figure}
+At the critical value, the equilibrium points merge and exchange stability. 
+\section{Pitchfork bifurcation}
+A pitchfork bifurcation often occurs in physical problems that have a symmetry. 
+\subsection{Supercritical bifurcation}
+The normal form of this bifurcation is 
+\begin{equation}
+    \dot x = rx-x^3\eqcolon f_r(x)
+\end{equation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .5\textwidth]{img/pitchfork_bif.png}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .5\textwidth]{img/supercritical.png}
+\end{figure}
+There are three stable branches and one unstable.
+\subsection{Subcritical bifurcation}
+In the subcritical case, there are three unstable branches and one stable. This is however not physically possible and we thus add a $x^5$ term so that the system does not tend to infinity. The canonical form is
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .5\textwidth]{img/subcritical.png}
+\end{figure}
+\begin{itemize}
+    \item In the range $r_s<r<0$, two stable states coexist, and it is the inition condition that determines which fixed point is approach when $t\rightarrow \infty$. That means that the origin is stable under small perturbations, but not big ones (local stability vs global stability). 
+    \item The jump between stable curves is called a hysteresis. 
+    \item The bifurcation at $r=r_s$ is a saddle-node bifurcation. 
 \end{itemize}
 
 \end{document}
