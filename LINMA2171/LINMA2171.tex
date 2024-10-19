@@ -5,10 +5,11 @@
 \usepackage{amssymb}
 \usepackage{multicol}
 \usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
-\usepackage[french]{babel}
+\usepackage[english]{babel}
 \usepackage{libertine}
 \usepackage{graphicx}
 \usepackage{wrapfig}
+\usepackage{amsthm}
 \usepackage{float}
 \usepackage{enumitem}
 \usepackage{pythonhighlight}
@@ -19,23 +20,15 @@
 \usepackage{xfrac}
 \usepackage{textcomp}
 \usepackage{mathtools}
+\usepackage{hyperref}
 \usepackage{caption}
-\usepackage{amsthm}
 \usepackage{tabularray}
 \usepackage{subcaption}
 \usepackage[bottom]{footmisc}
 \usepackage{pdfpages}
 \usepackage{tabularx}
 \usepackage[skins]{tcolorbox}
-\titleformat{\chapter}[display]
-  {\normalfont\bfseries}{}{0pt}{\Huge}
-\usepackage{hyperref}
-\newcommand{\hsp}{\hspace{20pt}}
-\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
-\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
-\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
-\newcommand{\R}{\R}
-\newcommand{\C}{\mathbb{C}}
+
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
@@ -43,6 +36,14 @@
 \newtheorem{lem}[thm]{Lemma}
 \newtheorem{crl}[thm]{Corollary}
 
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
 % Define a new tcolorbox style with a red border and transparent interior
 \tcbset{
     redbox/.style={
@@ -65,13 +66,12 @@
 \end{tcolorbox}
 }
 
+\hbadness=100000
 \begin{document}
-
-
 \begin{titlepage}
     \begin{sffamily}
     \begin{center}
-        \includegraphics[scale=0.25]{img/Page de garde.png} \\[1cm]
+        \includegraphics[scale=0.25]{img/page_de_garde.png} \\[1cm]
         \HRule \\[0.4cm]
         { \huge \bfseries LINMA2171 Numerical Analysis \\[0.4cm] }
     
@@ -92,23 +92,6 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-\chapter{Introduction}
-\section{General Framework}
-\begin{itemize}
-    \item Data : 
-    \begin{itemize}
-        \item [\(\bullet\)] \(\chi \subseteq \R^d\) (here, \(d=1\) often).
-        \item [\(\bullet\)] \(f:\chi \rightarrow \R\), with \(f\in \mathfrak{f}\).
-    \end{itemize}
-    \item Design : 
-    \begin{itemize}
-        \item [\(\bullet\)] \(\Hat{\mathfrak{f}} \subseteq \R^{\Hat{\chi}}\) is the set of admissible function, and is a subset of all function from \(\Hat{\chi}\) to \(\R\).
-        \item [\(\bullet\)] \(\mathcal{L}:\Hat{\mathfrak{f}} \times \mathfrak{f}\rightarrow \R\) is the loss function.
-        \item [\(\bullet\)] \(\mathcal{R}:\Hat{\mathfrak{f}}\rightarrow \R\) is the regularizer.
-    \end{itemize}
-    \item Optimisation problem : \[\arg_{\Hat{f}\in \Hat{\mathfrak{f}}}\min\quad \mathcal{L}(\Hat{f},f)+\lambda \mathcal{R}(\Hat{f})\]
-    \item Optimisation algorithm.
-\end{itemize}
 \chapter{Polynomials}
 \(\mathcal{P}_n\) is the set of all real polynomials of degree at most \(n\). 
 \begin{itemize}
@@ -140,7 +123,7 @@ where \(L_k(x)\) is the Lagrange polynomial.
     \item The \(K_k(x)\) are such that their derivative is zero for all \(x_i\) except \(x_k\) where it is one, and their value is zero for all \(x_i\).\[K_k(x_i) = 0\qquad K_k'(x_i) = \delta_{ik} \qquad \forall i\]
 \end{itemize}
 \section{Neville's algorithm}
-Let us assume we are given a set of support points \((x_i,y_i)\), \(i=0,1,\dots,n\), and \(p_n\) is their Lagrange interpolation polynomial. Let us now define the notation \(P_{i_0i_1\dots i_k}\in \mathcal{P}_k\), the polynomial for which \(P_{i_0i_1\dots i_k}(x_{i_j}=y_{i_j}\)  for all \(j=0,1,\dots,k\). We work by recursion, with the following formula:
+Let us assume we are given a set of support points \((x_i,y_i)\), \(i=0,1,\dots,n\), and \(p_n\) is their Lagrange interpolation polynomial. Let us now define the notation \(P_{i_0i_1\dots i_k}\in \mathcal{P}_k\), the polynomial for which \(P_{i_0i_1\dots i_k}(x_{i_j})=y_{i_j}\)  for all \(j=0,1,\dots,k\). We work by recursion, with the following formula:
 \begin{equation}
     \begin{cases}
         P_i(x) = y_i\\
@@ -241,7 +224,6 @@ The interpolation polynomial can be written
     \Phi(x) = \frac{\sum_{k=0}^\mu a_kx^k}{\sum_{k=0}^\nu b_kx^k} = \frac{\lambda p_\mu(x)}{q\nu(x)}
 \end{equation}
 The number of constraints, i.e. points needed for the interpolation is then \(\sigma=\mu +\nu\). This implies that\\
-
 If \(\Phi\) is a solution to the equation \eqref{eq:rational}, then \(p_\mu,q_\nu\) are solutions of 
 \begin{align}\label{eq:rational2}
     p_\mu(x_i) - y_i q_\nu(x_i) = 0&\qquad i = 0,\dots,\mu + \nu\\
@@ -293,7 +275,7 @@ It belongs to \(\mathcal{S}\) and verifies the condition \eqref{eq:cond_bspline}
 \end{equation}
 and we will now define \(B_{-k},\dots,B_{m-1}\) on these dots. We now have \(m+k\) linearly independent functions, and thus a basis of \(\mathcal{S}\). 
 \begin{thm}
-    Let \(x_{-k},\dotsx_{m+k}\) satisfy \eqref{eq:bspline_set}. Then, the \(m+k\) functions \(B_p\), \(p=-k,\dots,m-1\), given by \eqref{eq:bspline} form a basis of the space \(\mathcal{S}(k;x_0,x_m)\), with small support, meaning that \(B_p\) is null outside the interval \((x_p,x_{p+k+1})\). 
+    Let \(x_{-k},\dots x_{m+k}\) satisfy \eqref{eq:bspline_set}. Then, the \(m+k\) functions \(B_p\), \(p=-k,\dots,m-1\), given by \eqref{eq:bspline} form a basis of the space \(\mathcal{S}(k;x_0,x_m)\), with small support, meaning that \(B_p\) is null outside the interval \((x_p,x_{p+k+1})\). 
 \end{thm}
 The recurrence formula for B-splines is the following, for \(k>1\):
 \begin{equation}
@@ -328,4 +310,78 @@ This is solved using the normal equations: \(A^TAc=A^TF\).
     \end{equation}
 \end{thm}
 meaning that \(w_{i_p}\) must be in the support of \(B_p\). 
+\section{Interpolation by natural cubic splines}
+Let us define the set of cubic splines  $\mathcal{S}(k=3;\xi_0,\dots, \xi_m)$. The set of natural cubic splines with those knots is the set 
+\begin{equation}
+    \mathcal{S}_N(k=3;\xi_0,\dots,\xi_m)=\{s\in \mathcal{C}^2[\xi_0,\xi_m]\: : s|_{[\xi_{i-1},\xi_i]} \in \mathcal{P}_3,\: i=1,\dots,m\text{ and } s''(\xi_0)=s''(\xi_m) = 0\}
+\end{equation}
+For an arbitrary piece $[\xi_{i-1}, \xi_i]$, we have 4 conditions:
+\begin{itemize}
+    \item $s|_{[\xi_{i-1},\xi_i]}(\xi_{i-1})=s_{i-1}$
+    \item $s|_{[\xi_{i-1},\xi_i]}(\xi_{i})=s_{i}$
+    \item $s''|_{[\xi_{i-1},\xi_i]}(\xi_{i-1})=\sigma_{i-1}$
+    \item $s''|_{[\xi_{i},\xi_i]}(\xi_{i-1})=\sigma_{i}$
+\end{itemize}
+And we thus write 
+\begin{equation}
+    s|_{[\xi_{i-1},\xi_i]} = s_{i-1}A(x)+s_i B(x) + \sigma_{i-1}C(x)+\sigma_iD(x)
+\end{equation}
+where all functions are $\in \mathcal{P}_3$ and satisfy 4 conditions themselves:
+\begin{center}
+    \begin{tabular}{c|c|c|c}
+        $A(\xi_{i-1})= 1$ & $B(\xi_{i-1})=0$ & $C(\xi_{i-1})=0$ & $D(\xi_{i-1})=0$\\ \hline
+        $A(\xi_{i})=0$ & $B(\xi_{i})=1$ & $C(\xi_{i})=0$ & $D(\xi_{i})=0$\\ \hline
+        $A''(\xi_{i-1})= 0$ & $B''(\xi_{i-1})=0$ & $C''(\xi_{i-1})=1$ & $D''(\xi_{i-1})=0$\\ \hline
+        $A''(\xi_{i})= 0$ & $B''(\xi_{i})=0$ & $C''(\xi_{i})=0$ & $D''(\xi_{i})=1$\\
+    \end{tabular}
+\end{center}
+Defining $h_i = \xi_i-\xi_{i-1}$, the final formula is 
+\begin{align}
+    s(x) &= \frac{(x-\xi_{i-1})s_i+(\xi_i-x)s_{i-1}}{h_i}\\
+     &-\frac{1}{6}(x-\xi_{i-1})(\xi_i-x)\left[\left(1+ \frac{x-\xi_{i-1}}{h_i}\right)\sigma_i+\left(1+\frac{\xi_i-x}{h_i}\right)\sigma_{i-1}\right] \qquad x\in [\xi_{i-1},\xi_i]
+\end{align}
+Now, we have the additional conditions that $s'(\xi_j^-)=s'(\xi_j^+)$, $j=1,\dots,m-1$, which we write in the following matrix form:
+\begin{equation}
+    Q^Ts=R\sigma
+\end{equation}
+where the matrices are:
+\begin{equation}
+    Q^T = \begin{pmatrix}
+        h_1^{-1} & -h_1^{-1}-h_2^{-1} & h_2^{-1} & 0 & \dots & 0\\
+        0 & h_2^{-1} & -h_2^{-1}-h_3^{-1} & h_3^{-1} & \dots & 0\\
+        \vdots & \ddots & \ddots & \ddots & \ddots & \vdots \\
+        0 & \dots & 0 & h_{m-1}^{-1} & -h_{m-1}^{-1}-h_m^{-1} & h_m^{-1}\\
+    \end{pmatrix}
+\end{equation}
+\begin{equation}
+    R = \begin{pmatrix}
+        \frac{1}{3} (h_1+h_2) & \frac{h_2}{6} & 0 & \dots & 0\\
+        \frac{h_2}{6} & \frac{1}{3}(h_2+h_3) & \frac{h_3}{6} & \dots & 0\\
+        \vdots & \ddots & \ddots  & \ddots & \vdots\\
+        0 & \dots & 0 & \frac{h_{m-1}}{6} & \frac{1}{3}(h_{m-1}+h_m)\\
+    \end{pmatrix}
+\end{equation}
+\begin{thm}
+    $s\in \mathcal{S}_N(k=3;\xi_0,\dots,\xi_m)$ iff $Q^Ts=R\sigma$.
+\end{thm}
+\begin{thm}
+    Consider $\xi_0\dots,x_m$ distinct and $y_0,\dots,y_m$. The interpolation at the knots 
+    \begin{equation}
+        s\in \mathcal{S}_N(k=3;\xi_0,\dots,\xi_m) \text{ such that }s(\xi_i) = y_i \qquad i=0,\dots, m
+    \end{equation}
+    exists and is unique.
+\end{thm}
+\begin{thm}
+    Let $s$ be a natural cubic spline. Then, 
+    \begin{equation}
+        \int_{\xi_0}^{\xi_m} \left(s''(x)\right)^2dx = s^TKs \qquad K = QR^{-1}Q^T
+    \end{equation}
+\end{thm}
+\begin{thm}
+    Let $s$ be the function in $\mathcal{S}_N(k=3;\xi_0,\dots,\xi_m)$ such that $s(\xi_i)=y_i$, $i=0,\dots,m$. Let $v$ be any function in $H^2[a,b]$ that satisfiers the same interpolation conditions. Then 
+    \begin{equation}
+        \int_{\xi_0}^{\xi_m} \left(v''(x)\right)^2dx\ge \int_{\xi_0}^{\xi_m} \left(s''(x)\right)^2dx
+    \end{equation}
+    with equality iff $v=s$.
+\end{thm}
 \end{document}
