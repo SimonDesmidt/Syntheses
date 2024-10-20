@@ -198,10 +198,6 @@ where \(A_i\) and \(B_i\) are matrices of dimensions \(n\times n\) and \(n\times
     \dot x = Ax + Bu
 \end{equation}
 where \(A\) and \(B\) are matrices of dimensions \(n\times n\) and \(n\times m\) respectively. 
-\chapter{Articulated mechanical systems}\label{chap:mechanical}
-
-\chapter{Electrical and electromechanical systems}\label{chap:elec}
-
 \chapter{State transformations}
 \section{Definition}
 The block diagram of a dynamical system is a visual representation of that system, necessarily containing \(n\) integrators whose outputs are the \(n\) state variables. \\
@@ -590,7 +586,7 @@ That means that a sufficient condition for the equilibrium \((\bar x,\bar u)\) t
     \item [\(\rightarrow\)] N.B.: the Lyapunov function \(V(x)\) often has the dimensions of an energy. 
 \end{itemize}
 \subsection{In mechanical systems}
-The general equation in a mechanical system\footnote{See chapter \ref{chap:mechanical}} is 
+The general equation in a mechanical system\footnote{See chapter \ref{sec:mechanical}} is 
 \begin{equation}
     M(q)\ddot q + C(q,\dot q)\dot q+g(q)+k(q)+h(\dot q)=G\bar u
 \end{equation}
@@ -747,4 +743,159 @@ and we can find the values of coefficients \(\lambda_i\) by calculating those va
 \begin{equation}
     u(t) = \frac{\dot z_n(t)-\alpha(z(t))}{\beta(z(t))}
 \end{equation}
+\chapter{Exercises}
+\section{Electrical systems}
+The three main components are 
+\begin{itemize}
+    \item Resistance : $v=Ri$, does not induce an ODE.
+    \item Capacitance : $q=CV\rightarrow i_c = C\frac{dV_C}{dt}$
+    \item Inductance : $v_L = L\frac{di_L}{dt}$
+\end{itemize}
+The graph of the circuit is such that every component is an edge and every cable connecting them is a node. We have $M$ edges and $N$ nodes.
+\subsection{Resolution method}
+\begin{itemize}
+    \item Draw the graph of the circuit;
+    \item Write the equations with Kirchhoff's laws, they give $N-1$ current equations and $M+1-N$ voltage equations;
+    \item Simplify equations;
+    \item Write the final system.
+\end{itemize}
+A capacitance mesh is a mesh of more than 2 capacitances. \\
+An inductance cut is a node with more than 2 inductances. 
+\section{Mechanical systems}\label{sec:mechanical}
+\subsection{For a single body}
+For a single body, we first set an arbitrary orthonormal inertial basis. The position of the body is characterized by its coordinates and its orientation:
+\begin{equation}
+    q \coloneqq \begin{pmatrix}
+        x\\y\\\theta
+    \end{pmatrix}
+\end{equation}
+The equations we use for the ODE system are
+\begin{align}
+    m\ddot x &= F_x\\
+    m\ddot y &= F_y\\
+    I\ddot \theta = &T
+\end{align}
+Where $m$ is the mass of the body, $I$ its moment of inertia, $F_x,F_y$ the forces applied to the body, and $T$ the resultant of the torques. \\
+The final equation to solve for that system is 
+\begin{equation}
+    J\ddot q+b(q) = B(q)u
+\end{equation}
+where $J$ is the diagonal and constant inertia matrix, $b(q)$ represents the effect of the gravity, $B(q)$ is a the kinematic matrix which depends nonlinearly on the state variables, and $u$ contains the input variables, e.g. some forces applied to the body. The state-space model is thus 
+\begin{align}
+    \dot q&= v \nonumber \\
+    \dot v &= J^{-1}(-b(q)+B(q)u)
+\end{align}
+\subsection{Articulated mechanical systems}
+\underline{General procedure:}
+\begin{itemize}
+    \item Choose an inertial basis and $N$ moving frames attached to the centers of mass of the $N$ bodies:
+\end{itemize}
+We get a vector of dimension $3N$:
+\begin{equation}
+    \xi = (x_1, y_1,\theta_1,\dots, x_N,xy_N,\theta_N)^T
+\end{equation}
+\begin{itemize}
+    \item Write the expressions of the constraints to which the motion of the system is subjected:
+\end{itemize}
+The algebraic relations are written such that 
+\begin{equation}
+    \Phi(\xi)=0
+\end{equation}
+where $\Phi:\Omega \rightarrow \R^p$ is a $\mathcal{C}^1$ mapping, and $p$ is the number of constraints. We choose a partition $\xi = (q,\bar q)$ such that the dimension $\sigma$ of $\bar q$ is equal to the rank of the Jacobian matrix of the mapping $\Phi$:
+\begin{equation}
+    \sigma \coloneqq \text{dim}(\bar q)= \text{rank}\frac{\partial \Phi}{\partial \xi}
+\end{equation}
+and such that we can express $\bar q$ as a function of $q$: $\bar q=\phi(q)$. This removes the redundant coordinates $\bar q$ of the system description. The number of degrees of freedom is thus $\delta\coloneqq 3N-\sigma$. 
+\begin{itemize}
+    \item Write the equations of motion for each coordinate with the Lagrange method:
+\end{itemize}
+Including the bonding forces related to the constraints, we get
+\begin{align}
+    J\ddot q +b(q,\bar q)&=B(q,\bar q)u+w\\
+    \bar J \Ddot{\bar q}\bar q(q,\bar q) &= \bar B(q,\bar q)u+\bar w\\
+\end{align}
+where $w$ and $\bar w$ represent the bonding forces that ensure that the constraints are satisfied at any time during the motion of the system. Their expressions are 
+\begin{equation}
+    w=-A(q)\lambda \qquad \bar w=\lambda
+\end{equation}
+where $\lambda$ is the vector of Lagrange coefficients of dimension $\sigma$, and $A(q)$ is the matrix of dimension $\delta\times \sigma$ defined as 
+\begin{equation}
+    A(q) \coloneqq \left(\frac{\partial \phi}{\partial q}\right)^T
+\end{equation}
+\begin{itemize}
+    \item Remove the Lagrange coefficients and the redundant coordinates:
+\end{itemize}
+The final equation is 
+\begin{equation}
+    M(q)\ddot q + f(q,\dot q) + g(q) = G(q)u
+\end{equation}
+The matrices in this formula are defined as follows:
+\begin{align}
+    M(q) &\coloneqq J+A(q)\bar JA^T(q)\\
+    f(q,\dot q) &\coloneqq A(q)\bar J\dot A^T(q)\dot q\\
+    g(q)&\coloneqq b(q,\phi(q))+A(q)\bar q(q,\phi(q))\\
+    G(q)&\coloneqq B(q,\phi(q))+A(q)\bar B(q,\phi(q))
+\end{align}
+Here we have the following properties:
+\begin{itemize}
+    \item $q\in \R^\delta$ is the vector of coordinates necessary for the description of the system;
+    \item $M(q)\in \R^{\delta \times \delta}$ is the symmetric and positive definite inertia matrix.
+    \item $f(q,\dot q)\in \R^\delta$ represents the forces and torques resulting from the links related to the constraints:
+\end{itemize}
+\begin{equation}
+    f(q,\dot q)=C(q,\dot q)\dot q
+\end{equation}
+\begin{itemize}
+    \item $g(q)\in \R^\delta$ represents the forces and torques resulting from the gravity;
+    \item $u\in \R^m$ represents the forces and torques applied to the system;
+    \item $G(q)\in \R^{\delta \times m}$ is the kinematic matrix. 
+\end{itemize}
+The state-space model is thus
+\begin{align}
+    \dot q&=v\nonumber \\
+    \dot v&=M^{-1}(q)\left(-f(q,v)-g(q)+G(q)u\right)
+\end{align}
+\subsection{Properties}
+\begin{itemize}
+    \item $\dot M(q) = A(q)\Bar J\dot A^T(q) + \dot A(q)\bar JA^T(q)=C(q,\dot q)+C^T(q,\dot q)$
+    \item $\frac{\partial }{\partial q}(\dot q^TM(q)\dot q)=\dot q^TC(q,\dot q)$
+\end{itemize}
+\section{Compartmental systems}
+We denote here $x_i\ge 0$ the quantity of content in compartment $i$ for $i\in\{1,<dots,n\}$, and $q_{ij}\ge 0$ specifies the flow from compartment $i$ to compartment $j$, with $i,j\in\{1,\dots,n\}$. We denote respectively $q_{i0}$ and $q_{0i}$ the flow from compartment $i$ to the environment and vice-versa. The general form of the state-space equations is 
+\begin{equation}
+    \dot x_i = \sum_{j=0}^n q_{ji}(x,u) - \sum_{j=0}^n q_{ij}(x,u)\qquad i = 1,\dots,n 
+\end{equation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .3\textwidth]{img/compartment.png}
+\end{figure}
+Defining $q(x,u)$ the vector of flows (in an arbitrary order), we get the matrix form:
+\begin{equation}
+    \dot x= Lq(x,u)
+\end{equation}
+where $L$ is the incidence matrix of the oriented graph whose coefficients all belong to $\{-1,0,1\}$. 
+\begin{definition}
+    A vector is nonnegative if each of its components is a nonnegative real number. The nonnegative orthant is the set of all nonnegative vectors of dimension $n$.
+\end{definition}
+\begin{definition}
+    A dynamical system $\dot x=f(x,u)$ is nonnegative if, for every admissible input $u$, its state is confined in the nonnegative orthant when the initial state is nonnegative. 
+\end{definition}
+\begin{thm}
+    A dynamical system $\dot x=f(x,u)$ is nonnegative if $f$ is continuously differentiable and if 
+    \begin{equation}
+        x\in \R^n_+, \: x_i=0\Longrightarrow \dot x_i\ge 0\qquad \forall i
+    \end{equation}
+\end{thm}
+\begin{thm}
+    Under the following conditions, a dynamical compartmental system $\dot x= Lq(x,u)$ is nonnegative.
+    \begin{itemize}
+        \item The functions $q_{ij}$ are nonnegative functions of their arguments on their domain of definition: $q_{ij}:\R^n_+\times \R^m\rightarrow \R_+: (x,u)\rightarrow q_{ij}(x,u)$.
+        \item The functions $q_{ij}$ are continuous and differentiable functions of their arguments on their domain of definition.
+        \item As there cannot be an outflow from an empty compoartment, the functions $q_{ij}$ verify the condition 
+    \end{itemize}
+    \begin{equation}
+        x_i=0\Longrightarrow q_{ij}(x,u)=0\qquad \forall i
+    \end{equation}
+\end{thm}
+
 \end{document}
