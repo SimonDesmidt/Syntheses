@@ -295,4 +295,54 @@ The cost to compute \(\nabla f(x)\) is thus \(\mathcal{O}(Nn^p)\). We will use t
         \State \textbf{Step 2:} Compute \(x_{k+1}=x_k-\alpha_k \theta \nabla f_{i_k}(x_k)\).
     \end{algorithmic}
 \end{algorithm}
+\begin{equation}
+    x_{k+1} = x_k-\alpha_k \nabla f_{i_k}(x_k)
+\end{equation}
+Suppose that $f(\cdot)$ is L-smooth and bounded from below by $f_{low}$, and that $\lVert \nabla f_i(x)\rVert \le G$ $\forall i\in \{1,\dots,n\}$ and $\forall x \in \R^n$. Let us take $\alpha_k = \alpha = \frac{\varepsilon^2}{LG^2}$, the ideal case if we want $\alpha_k$ to be constant. The SGD converges in $\mathcal{O}(\varepsilon^{-4})$, which is very bad. The advantages of this method resides in the easy calculations at each step. 
+\subsection{Momentum trick}
+The idea is to take into account the previous iterations:
+\begin{equation}
+    x_{k+1} = x_k - \alpha \left(\sum_{i=0}^k \beta^{k-i}\nabla f(x_i)\right)
+\end{equation}
+where $\beta \in (0,1)$ is a discount factor. To get this, we can define (using $m_0=0$):
+\begin{align}
+    m_{k+1}&=\beta m_k + (1-\beta)\nabla f(x_k)\nonumber\\
+    x_{k+1}&= x_k - \gamma m_{k+1}
+\end{align}
+and $\alpha = \gamma(1-\beta)$.\\
+This trick can be used with SGD to improve its efficiency. Pushing this to its extremity, we get the AdaGrad method.
+\section{AdaGrad}
+At the beginning of the $k$th iteration, we choose $i_k\in \{1,\dots,N\}$ ranodmly with uniform probability and then set 
+\begin{align}
+    [v_{k+1}]_j &= [v_k]_j + [\nabla f_{i_k}(x_k)]_j^2 \qquad j = 1,\dots, n\nonumber \\
+    [x_{k+1}]_j &= [x_k]_j - \frac{\eta}{\delta + \sqrt{[v_{k+1}]_j}}[\nabla f_{i_k}(x_k)]_j\qquad j=1,\dots, n
+\end{align}
+with $v_0=0$ and $\eta, \delta >0$.
+We can now mix the Momentum trick with AdaGrad.
+\section{RMSprop}
+At the beginning of the $k$th iteration, we choose $i_k\in \{1,\dots,N\}$ ranodmly with uniform probability and then set 
+\begin{align}
+    [v_{k+1}]_j &= \beta[v_k]_j + (1-\beta)[\nabla f_{i_k}(x_k)]_j^2 \qquad j = 1,\dots, n\nonumber \\
+    [x_{k+1}]_j &= [x_k]_j - \frac{\eta}{\delta + \sqrt{[v_{k+1}]_j}}[\nabla f_{i_k}(x_k)]_j\qquad j=1,\dots, n
+\end{align}
+with $v_0=0$ and $\eta, \delta >0$.
+\section{Adam}
+Even more extreme is the Adam method: RMSprop + Momentum trick.
+At the beginning of the $k$th iteration, we choose $i_k\in \{1,\dots,N\}$ ranodmly with uniform probability and then set 
+\begin{align}
+    m_{k+1} &= \beta_1m_k + (1-\beta_1)\nabla f_{i_k}(x_k)\nonumber \\
+    [v_{k+1}]_j &= \beta_2[v_k]_j + (1-\beta_2)[\nabla f_{i_k}(x_k)]_j^2 \qquad j = 1,\dots, n\nonumber \\
+    \hat m_{k+1} &= m_{k+1}/\left(1-\beta_1^{k+1}\right)\\
+    \hat v_{k+1} &= v_{k+1}/\left(1-\beta_2^{k+1}\right)\nonumber \\
+    [x_{k+1}]_j &= [x_k]_j - \frac{\eta}{\delta + \sqrt{[v_{k+1}]_j}}[\hat m_{k+1}]_j\qquad j=1,\dots, n\nonumber 
+\end{align}
+with $m_0=0, \: v_0=0$, $\beta_1,\beta_2\in (0,1)$ and $\eta, \delta >0$.
+\section{Revisiting Armijo Line Search}
+\begin{lem}
+    Let $f: \R^n\rightarrow \R$ be differentiable at $x\in \R^n$. If $\nabla f(x)^Td<0$ and $\eta\in (0,1)$, then there exists $\delta >0$ such that 
+    \begin{equation}
+        (x+\alpha d)\le f(x)+\eta \alpha \nabla f(x)^Td\qquad \forall \alpha \in [0,\delta)
+    \end{equation}
+\end{lem}
+slide 30.
 \end{document}
