@@ -128,13 +128,13 @@ We use the sequence \(\{x_k\}_{k\ge 0}\), given a \(x_0\in \mathbb{R}^n\), such 
     \(\mu\)-strongly-convex \(f\) & \(f(x_k)-f(x^*)\le \varepsilon\) & \(\mathcal{O}(\log (\varepsilon^{-1}))\)
 \end{tabular}
 \end{center}
-\section{GM with Armijo Line Search}
+\section{GM with Armijo Line Search}\label{sec:armijo}
 The Armijo Line Search consists of changing the constant in the GM in order to be more efficient and be able to make bigger steps in some directions where it is possible. 
 \begin{equation}
     x_{k+1} = x_k - \alpha \nabla f(x_k)\qquad \alpha >0
 \end{equation}
-\begin{algorithm}\label{algo:Armijo}
-    \caption{Gradient Method with Armijo Line Search}
+\begin{algorithm}
+    \caption{Gradient Method with Armijo Line Search}\label{algo:Armijo}
     \begin{algorithmic}[1]
     \State \textbf{Step 0:} Given $x_0 \in \mathbb{R}^n$ and $\alpha_0 > 0$, set $k \coloneqq 0$.
     \State \textbf{Step 1:} Set $\ell \coloneqq 0$.
@@ -213,8 +213,8 @@ Then, we can write
 \end{itemize}
 \section{Accelerated Proximal Gradient Method}
 This method's goal is to take into account the history of the method, so that the convergence is faster. This method still makes the hypothesis that the function \(f\) is convex.
-\begin{algorithm}[H]\label{algo:Acc_prox}
-    \caption{Accelerated Proximal Gradient Method}
+\begin{algorithm}[H]
+    \caption{Accelerated Proximal Gradient Method}\label{algo:Acc_prox}
     \begin{algorithmic}[1]
     \State \textbf{Step 0:} Given $x_0 \in \mathbb{R}^n$, set \(y_1=x_0\), \(t_1=1\) and $k=1$.
     \State \textbf{Step 1:} Compute 
@@ -271,8 +271,8 @@ where \(f:\R^n\rightarrow \R\) is L-smooth and bounded from below by \(f_{low}\)
 The cost of computing the gradient at each step can require a lot of operations: e.g. the gradient of a quadratic function is calculated in \(\mathcal{O}(n^2)\). In this section, we consider the setting in which \(n\) is huge to such an extent that \(\mathcal{O}(n^p)\) operations to get \(\nabla f(x)\) is not acceptable. 
 \section{Randomized Coordinate Descent Method}
 This algorithm randomly chooses a single component of the gradient to compute the next iterate, for a L-smooth function.
-\begin{algorithm}\label{algo:random_CDM}
-    \caption{Randomized Coordinate Descent Method}
+\begin{algorithm}
+    \caption{Randomized Coordinate Descent Method}\label{algo:random_CDM}
     \begin{algorithmic}[1]
     \State \textbf{Step 0:} Given $x_0 \in \mathbb{R}^n$ and $L > 0$, set $k \coloneqq 0$.
     \State \textbf{Step 1:} Choose \(i_k\in \{1,\dots,n\}\) randomly with uniform probability. 
@@ -287,8 +287,8 @@ Consider a dataset \(\{(a^{(i)},b^{(i)})\}_{i=1}^N\subset \R^p\times \R\). Let \
     \min_{x\in \R^n}\frac{1}{N}\sum_{i=1}^N \underbrace{\left(m_x\left(a^{(i)}\right)-b\right)^2}_{=f_i(x)}
 \end{equation}
 The cost to compute \(\nabla f(x)\) is thus \(\mathcal{O}(Nn^p)\). We will use the SGD method when N is big.
-\begin{algorithm}\label{algo:SGD}
-    \caption{Stochastic Gradient Descent Method}
+\begin{algorithm}
+    \caption{Stochastic Gradient Descent Method}\label{algo:SGD}
     \begin{algorithmic}[1]
         \State \textbf{Step 0:} Given \(x_0\in \R^n\), \(\alpha_0>0\), set \(k\coloneqq 0\).
         \State \textbf{Step 1:} Choose \(i_k\in \{1,\dots,N\}\) randomly with uniform probability.
@@ -337,12 +337,51 @@ At the beginning of the $k$th iteration, we choose $i_k\in \{1,\dots,N\}$ ranodm
     [x_{k+1}]_j &= [x_k]_j - \frac{\eta}{\delta + \sqrt{[v_{k+1}]_j}}[\hat m_{k+1}]_j\qquad j=1,\dots, n\nonumber 
 \end{align}
 with $m_0=0, \: v_0=0$, $\beta_1,\beta_2\in (0,1)$ and $\eta, \delta >0$.
-\section{Revisiting Armijo Line Search}
+\section{Revisiting Armijo Line Search - Cf \ref{sec:armijo}}
 \begin{lem}
     Let $f: \R^n\rightarrow \R$ be differentiable at $x\in \R^n$. If $\nabla f(x)^Td<0$ and $\eta\in (0,1)$, then there exists $\delta >0$ such that 
     \begin{equation}
         (x+\alpha d)\le f(x)+\eta \alpha \nabla f(x)^Td\qquad \forall \alpha \in [0,\delta)
     \end{equation}
 \end{lem}
-slide 30.
+We start from the following algorithm:
+\begin{algorithm}
+    \caption{General Descent Method with Armijo Line Search}\label{algo:armijo2}
+    \begin{algorithmic}[1]
+        \State \textbf{Step 0:} Given $x_0\in \R^n$, $\alpha_0>0$ and $\eta \in (0,1)$, set $k\coloneqq 0$.
+        \State \textbf{Step 1:} If $\nabla f(x_k)=0$, stop.
+        \State \textbf{Step 2:} Compute $d_k \in \R^n$ such that $\langle \nabla f(x_k),d_k\rangle <0$.
+        \State \textbf{Step 2.1:} Find the smallest integer $i_k\in \{0,\dots,n\}$ such that $\alpha_k = 2^{-i_k}$ satisfies
+        \begin{equation}
+            f(x_k+\alpha_kd_k)\le f(x_k) + \eta \alpha_k\langle \nabla f(x_k),d_k\rangle
+        \end{equation}
+        \State \textbf{Step 3:} Define $x_{k+1}=x_k + \alpha_kd_k$, set $k\coloneqq k+1$ and go to \textbf{Step 1}.
+    \end{algorithmic}
+\end{algorithm}
+\begin{lem}
+    Let $\{x_k\}_{k\ge 0}$ and $\{\alpha_k\}_{k\ge 0}$ be sequences generared by algorithm \ref{algo:armijo2}. If $f$ is L-smooth, and if there exist $c_1,c_2>0$ such that 
+    \begin{equation}\label{eq:A2}
+        \begin{cases}
+            \langle \nabla f(x_k),d_k\rangle \le -c_1\lVert \nabla f(x_k)\rVert^2\\
+            \lVert d_k\rVert \le c_2 \lVert \nabla f(x_k)\rVert
+        \end{cases} \qquad \forall k\ge 0
+    \end{equation}
+    then
+    \begin{equation}
+        \alpha_k\ge \min\left\{1, \frac{(1-\eta)c_1}{Lc_2^2}\right\} \equiv \alpha_{\min}
+    \end{equation}
+\end{lem}
+\underline{Properties:}
+\begin{itemize}
+    \item $f(x_k)-f(x_{k+1})\ge \eta \alpha_{\min} c_1\lVert \nabla f(x_k)\rVert^2$
+    \item The complexity of \ref{algo:armijo2} is described by table \ref{tab:complexity}
+\end{itemize}
+\subsection{Choosing the search direction}
+If we choose $d_k=-B_k \nabla f(x_k)$ with $c_1I \preceq B_k\preceq c_2$, $\forall k\ge 0$, then the sequence $\{d_k\}_{k\ge 0}$ of search directions verifies equations \eqref{eq:A2}.\\
+Here are some examples for $B_k$:
+\begin{itemize}
+    \item $B_k=I$ : $d_k =-\nabla f(x_k)\Longrightarrow$ Gradient Direction;
+    \item $B_k = (\nabla^2f(x_k))^{-1}$ : Newton Direction;
+    \item $B_k \approx (\nabla^2f(x_k))^{-1}$ : Quasi-Newton Direction;
+\end{itemize}
 \end{document}
