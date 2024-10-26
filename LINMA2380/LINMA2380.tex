@@ -345,7 +345,7 @@ The 2-norm and the Frobenius norm of \(A\in \C^{m\times n}\) are unitarily invar
 \end{equation}
 \section{Canonical angles}
 \begin{thm}
-    Given two subspaces \(\mathcal{S}_i\subseteq \C^n\) (\(i=1,2\))., there exist orthonormal bases given by the columns of \(\Hat S_i\) respectively, and satisfying 
+    Given two subspaces \(\mathcal{S}_i\subseteq \C^n\) (\(i=1,2\)), there exist orthonormal bases given by the columns of \(\Hat S_i\) respectively, and satisfying 
     \begin{equation}
         \Hat S_1^*\Hat S_2 = \begin{pNiceArray}{ccc|c}
             \sigma_1 & & 0 & \\
@@ -356,5 +356,53 @@ The 2-norm and the Frobenius norm of \(A\in \C^{m\times n}\) are unitarily invar
         \end{pNiceArray} \qquad 1\ge \sigma_1 \ge \dots \ge \sigma_r>0
     \end{equation}
 \end{thm}
-\color{red} Add the paper sheet of notes.
+\color{red} Add the paper sheet of notes.\color{black}
+\section{Variational problems}
+\begin{thm}
+    For a Hermitian matrix $H\in \C^{n\times n}$, the Rayleigh quotient is defined as 
+    \begin{equation}
+        R(x) \coloneqq \frac{\langle Hx,x\rangle}{\langle x,x\rangle} = \frac{x^*Hx}{x^*x} \qquad x\neq 0\in \C^n
+    \end{equation}
+    The Rayleigh quotient of a Hermitian matrix $H\in \C^{n\times n}$ is real and satisfies 
+    \begin{equation}
+        \lambda_{\min}(H) \le R(x)\le \lambda_{\max}(H)
+    \end{equation}
+\end{thm}
+Furthermore, supposing that $\lambda_1\ge \dots\ge \lambda_n$, we have
+\begin{equation}
+    \lambda_n=\min_{x\neq 0}R(x) \qquad \lambda_1 = \max_{x\neq 0}R(x)
+\end{equation}
+\begin{lem}
+    Let $\mathcal{S}_j \subseteq \C^n$ be a subspace of dimension $j$. Then, it holds that 
+    \begin{equation}
+        \min_{x\neq 0\in \mathcal{S}_j} R(x)\le \lambda_j\qquad \max_{x\neq 0\in S_j}R(x)\ge \lambda_{n-j+1}
+    \end{equation}
+\end{lem}
+\begin{thm}[Courant-Fisher]
+    For any Hermitian matrix $H\in \C^{n\times n}$, the Rayleigh quotient $R(x)$ satisfies 
+    \begin{equation}
+        \lambda_j=\max_{\mathcal{S}_j} \min_{x\neq 0 \in \mathcal{S}_j} R(x)\qquad \lambda_{n-j+1}=\min_{\mathcal{S}_j} \max_{x\neq 0 \in \mathcal{S}_j} R(x)
+    \end{equation}
+\end{thm}
+\begin{thm}
+    The singular values of an arbitrary matrix $A\in \C^{m\times n}$ are given by 
+    \begin{align}
+        \sigma_j(A) & = \max_{\mathcal{S}_j}\min_{x\neq 0\in \mathcal{S}_j} \frac{\lVert Ax\rVert_2}{\lVert x\rVert_2}\\
+        \sigma_{n-j+1}(A) & = \min_{\mathcal{S}_j}\max_{x\neq 0\in \mathcal{S}_j} \frac{\lVert Ax\rVert_2}{\lVert x\rVert_2}
+    \end{align}
+\end{thm}
+The following theorem is a major application of the SVD, as it allows to store a matrix with much less information that it contains.
+\begin{thm}
+    Let $A\in \C^{m\times n}$ be a matrix of rank $r$. The best approximation of $A$ by a matrix $B\in \C^{m\times n}$ of rank $s<r$ satisfies
+    \begin{equation}
+        \min_{\text{rank}(B)\le s}\lVert A-B\rVert_2 =\sigma_{s+1}(A)
+    \end{equation}
+\end{thm}
+\begin{thm}[Eckart-Young]
+    Furthermore, the matrix $A$ from the last theorem also satisfies
+    \begin{equation}
+        \min_{\text{rank}(B)\le s}\lVert A-B\rVert _F^2 = \sigma_{s+1}^2 + \dots + \sigma_r^2
+    \end{equation}
+\end{thm}
+
 \end{document}
