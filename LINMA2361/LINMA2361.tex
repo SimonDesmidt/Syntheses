@@ -313,5 +313,122 @@ In the subcritical case, there are three unstable branches and one stable. This 
     \item The jump between stable curves is called a hysteresis. 
     \item The bifurcation at $r=r_s$ is a saddle-node bifurcation. 
 \end{itemize}
-
+\section{Imperfect bifurcations and catastrophes}
+Let us here study the system $\dot x= h+rx-x^3$, where $h$ is an imperfection parameter, because it destroys the symmetry of the problem when $h=0$. The fixed points of this system are the intersections of $y=rx-x^3$ and $y=-h$. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .6\textwidth]{img/saddle_node_impft.png}
+\end{figure}
+The case $r\le 0$ is not very interesting. For $r>0$, there is a saddle-node bifurcation in $|h| = h_c(r)$, i.e. two bifurcations. The bifurcation curves meet tangentially at $(r,h)= (0,0)$, that point being called a cusp point. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.5\textwidth]{img/cusp.png}
+\end{figure}
+Let us analyse the behaviour when each of the parameter is changed:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.5\textwidth]{img/h_analysis.png}
+\end{figure}
+When $h=0$, we have a pitchfork diagram. When $h\neq 0$, the pitchfork disconnects into two pieces, one entirely stable, and the other has a stable and an unstable branch.This means that the lower branch of stable points is not accessible unless we make a fairly large disturbance.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.5\textwidth]{img/r_analysis.png}
+\end{figure}
+When $r\le 0$, there is one stable point for each $h$. When $r>0$, there are three fixed points when $|h|<h_c(r)$ and one otherwise. \\
+In 3D, that gives 
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/cusp_cata.png}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/cusp_cata_2.png}
+    \end{subfigure}
+\end{figure}
+and the projection on each plane gives the graphs displayed previously. 
+\subsection{Insect outbreak}
+This section is an example with the population of insects in a forest. The population model is 
+\begin{equation}
+    \dot N = RN\left(1-\frac{N}{K}\right) -p(N)\qquad p(N) = \frac{BN^2}{A^2+N^2}
+\end{equation}
+with $N(t)$ the population, $K$ the growth rate and $K$ the carrying capacity. $p(N)$ is the death rate due to predation of birds. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .3\textwidth]{img/predation.png}
+\end{figure}
+Introducing the adimensionalisation:
+\begin{equation}
+    x=N/A \qquad \tau = Bt/A \qquad r=RA/B\qquad k=K/A
+\end{equation}
+the model becomes
+\begin{equation}
+    \frac{dx}{d\tau}=rx\left(1- \frac{x}{k}\right)-\frac{x^2}{1+x^2}
+\end{equation}
+$x^*=0$ is always an unstable fixed point, while the others are the solutions of 
+\begin{equation}
+    r\left(1-\frac{x}{k}\right) = \frac{x}{1+x^2}
+\end{equation}
+\begin{figure}[H]
+    \includegraphics[width=.4\textwidth]{img/budworm.png}
+\end{figure}
+If $k$ is sufficiently small, there is exactly one intersection for any $r>0$. However, for large $k$, we can have 1, 2, 3 intersections, depending on $r$. As we decrease $r$ with $k$ fixed, the fixed points $b$ and $c$ approach each other and eventually coalesce ina  saddle-node bifurcation when the line intersects the curve tangentially (dashed). After the bifurcation, the only remaining fixed point is $a$. Similarly, $a$ and $b$ can collide and annihilate as $r$ is increased. \\
+As the stability type must alternate and 0 is unstable, $a$ and $c$ are stable and $b$ is not. $a$ is called the refuge level and $c$ the outbreak level. Thus the fate of the system is determined by the initial condition $x_0$, and the outbreak only occurs if $x_0>b$; $b$ is thus a threshold value.
+\chapter{Flows on the circle}
+We study here the system of a vector field on the circle:
+\begin{equation}\label{eq:polar}
+    \dot \theta = f(\theta)
+\end{equation}
+For example, for the system $\dot \theta = 0$, we have two equilibrium points: $\theta^*=0$ and $\theta^*=\pi$. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.2\textwidth]{img/theta0.png}
+\end{figure}
+The function $f$ here must satisfy the condition $f(\theta+2\pi)=f(\theta)$ for all real $\theta$, and we assume as usual that $f(\theta)$ is smooth enough to guarantee existence and uniqueness of solutions. 
+\section{Uniform oscillator}   
+The most simple oscillator is 
+\begin{equation}
+    \dot \theta = \omega
+\end{equation}
+\section{Nonuniform oscillator}
+An example of nonuniform oscillator is 
+\begin{equation}
+    \dot \theta = \omega - a\sin \theta, \qquad \omega >0, \alpha \ge 0
+\end{equation}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{.5\textwidth}
+        \includegraphics[width=\textwidth]{img/sin.png}
+    \end{subfigure}
+    \begin{subfigure}[b]{.5\textwidth}
+        \includegraphics[width=\textwidth]{img/sin_2.png}
+    \end{subfigure}
+\end{figure}
+\section{Fireflies}
+We study here the behaviour of fireflies emitting light based on a stimulus artificial light. Suppose that $\theta(t)$ is the phase of the firefly's flashing rhythm, where $\theta = 0$ corresponds to the instant when a flash is emitted. In absence of stimuli, the firefly has a frequency $\dot \theta = \omega$. Suppose that the artificial stimulus has a phase $\Theta$ and a constant frequency $\Omega$: $\dot \Theta = \Omega$, where $\Theta=0$ corresponds to the flash of the stimulus. \\
+The model of the problem of the synchronisation of the fly with the stimulus is 
+\begin{equation}
+    \dot \theta = \omega + A\sin (\Theta-\theta)\qquad A>0
+\end{equation}
+$A$ being the resetting strength, it measures the fly's ability to modify its instantaneous frequency. Introducing $\phi \coloneqq \Theta-\theta$, 
+\begin{equation}
+    \dot \phi = \Omega-\omega -A\sin \phi
+\end{equation}
+Adimensionally: 
+\begin{equation}
+    \phi'=\frac{d\phi}{d\tau}=\mu-\sin \phi \qquad \begin{cases}
+        \tau = At\\
+        \mu = \frac{\Omega-\omega}{A}
+    \end{cases}
+\end{equation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.5\textwidth]{img/fly.png}
+\end{figure}
+\begin{itemize}
+    \item For $\mu=0$, there is a single fixed point at $\phi^*=0$. This means that the fly and the stimulus flash simultaneously if the fly is driven at its natural frequency.
+    \item For $0<\mu<1$, all trajectories are still attracted to a stable fixed point, but $\phi^*>0$. The fly's rhythm is phase-locked ot the stimulus. It means that the fly and the stimulus run with the same instantaneous frequency, although they no longer flash in unison. 
+    \item For $\mu>1$, the stable and unstable points coalesce in a saddle-node biffurcation at $\mu=1$. 
+\end{itemize}
 \end{document}
