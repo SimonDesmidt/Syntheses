@@ -384,4 +384,73 @@ where the matrices are:
     \end{equation}
     with equality iff $v=s$.
 \end{thm}
+\section{Smoothing splines}
+The problem studied in this section is 
+\begin{equation}\label{eq:smoothing}
+    \arg\min_{s\in H^2[a,b]}F_{\lambda}(s) \coloneqq \sum_{i=0}^m (y_i-s(x_i))^2 + \lambda \int_a^b (s''(x))^2dx
+\end{equation}
+where $a=x_0<x_1<\dots<x_m=b$, $y_i\in \R$ are given and $\lambda >0$ is a parameter. The first term is the data-attachment and the second is the roughness penalty.
+\begin{thm}
+    If $\hat s$ is a solution of \eqref{eq:smoothing}, then $\hat s\in \mathcal{S}_N(k=3;x_0,\dots,x_m)$.
+\end{thm}
+To find the solution of \eqref{eq:smoothing}, we can rewrite the function to minimize:
+\begin{equation}
+    F_{\lambda}(s) = (y-s)^T(y-s)+\lambda s^TKs
+\end{equation}
+This function is strictly convex and quadratic and thus $s$ is the solution of the linear system 
+\begin{equation}
+    (I+\lambda K)s=y
+\end{equation}
+Meaning that \eqref{eq:smoothing} has one and only one solution. The easiest way to compute $s$ is 
+\begin{equation}
+    s = y-\lambda Q\sigma
+\end{equation}
+\begin{itemize}
+    \item When $\lambda \rightarrow 0$, we get a simple interpolation problem and there is an infinity of solutions.
+    \item When $\lambda \rightarrow \infty$, we find the linear regression solution.
+\end{itemize}
+\section{Interpolation by natural splines}
+We define the linear space of natural splines as follows:
+\begin{equation}
+    \mathcal{S}_N(2\kappa +1) = \{s\in \mathcal{S}(2\kappa+1):s^{(j)}(a)=s^{(j)}(b)=0,j=\kappa+1,\dots,2\kappa\} \qquad \kappa \ge 1
+\end{equation}
+Provided that $m\ge\kappa$, the dimension of $\mathcal{S}_N(2\kappa+1)$ is $m+1$. Given a function $f\in \mathcal{C}[a,b]$, the set of interpolatory natural splines is 
+\begin{equation}
+    I_f\mathcal{S}_N(2\kappa+1)=\{s\in \mathcal{S}_N(2\kappa+1):s(x_i)=f(x_i), i=0,\dots,m\}
+\end{equation}
+\begin{thm}
+    If $m\ge \kappa$, then $I_f\mathcal{S}_N(2\kappa+1)$ is a singleton, meaning that the interpolating natural spline exists and is unique. 
+\end{thm}
+\begin{thm}
+    Let $m\ge \kappa$ and let $s$ ne the unique element of $I_f\mathcal{S}_N(2\kappa+1)$. Then, for all $v\in H^{\kappa+1}(a,b)$ that also interpolate $f$ at $x_0,\dots,x_m$, it holds that 
+    \begin{equation}
+        \lVert s^{(\kappa+1)}\rVert_2 \le \lVert v^{(\kappa+1)}\rVert_2
+    \end{equation}
+    with equality iff $v=s$. In particular, the interpolating natural cubic spline, i.e. $\kappa=1$, is the unique minimizer of the mean square acceleration under the interpolation conditions. 
+\end{thm}
+\section{Error bounds of interpolation by natural splines}
+\begin{thm}
+    Let $s$ be the natural cubic spline interpolant of $f\in \mathcal{C}^4[a,b]$, where the interpolation is at equally spaced knots. Then, 
+    \begin{equation}
+        \lVert (f-s)^{(r)}\rVert_{\infty} \le C_r \lVert f^{(4)}\rVert_{\infty}h^{4-r} \qquad r=0,1,2,3
+    \end{equation}
+    with $C_0 = 5/384, C_1 = 1/24,c_2=3/8, C_3=1$ and $h$ the space between two knots. This means that the error between the interpolation and the function tends to 0 as the number of interpolation points goes to infinity.
+\end{thm}
+\section{Vector-valued splines}
+Vector-valued splines just work component-wise:
+\begin{equation}
+    \textbf{s}(x) = \sum_{j=-k}^{m-1}\textbf{c}_jB_j(x)
+\end{equation}
+where $x$ and $B_j(x)$ are real and scalar, but $\textbf{s}$ and $\textbf{c}_j$ are in $\R^n$ for all $j$.\\
+We deifne the Bernstein polynomials of degree $n$ as 
+\begin{equation}
+    b_i^n(x) = \begin{pmatrix}
+        n\\i\\
+    \end{pmatrix} x^i(1-x)^{n-i}\qquad i=0,\dots,n
+\end{equation}
+They form a basis of $\mathcal{P}_n$ and a partition of unity, i.e. $\sum_{i=0}^nb_i^n(x) = 1$. We can thus write any polynomial piece $\textbf{s}|_{[x_j,x_{j+1}]}\in \mathcal{P}_k$ in the Bernstein form:
+\begin{equation}
+    \textbf{s}|_{[x_j,x_{j+1}]} = \sum_{i=0}^k\textbf{c}_i^jb_i^k\frac{x-x_j}{x_{j+1}-x_j}
+\end{equation}
+aka the Bézier curve on $[x_j,x_{j+1}]$ with control points $\textbf{c}_0^j,\dots, \textbf{c}_k^j$.
 \end{document}
