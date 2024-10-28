@@ -34,7 +34,7 @@
 \newtheorem{definition}[thm]{Definition}
 \newtheorem{exmp}[thm]{Example} 
 \newtheorem{lem}[thm]{Lemma}
-\newtheorem{crl}[thm]{Corollary}
+\newtheorem{corollary}[thm]{Corollary}
 
 \titleformat{\chapter}[display]
   {\normalfont\bfseries}{}{0pt}{\Huge}
@@ -404,5 +404,84 @@ The following theorem is a major application of the SVD, as it allows to store a
         \min_{\text{rank}(B)\le s}\lVert A-B\rVert _F^2 = \sigma_{s+1}^2 + \dots + \sigma_r^2
     \end{equation}
 \end{thm}
-
+\chapter{Eigenvalues, eigenvectors and similarity transformations}
+The eigenvalues of a matrix are invariant under similarity transformations. The similiary transformations $A\rightarrow TAT^{-1}$ define an equivalence class of matrices and every matrix $A_T$ belonging to the similarity class of $A$ has the same eigenvalues. 
+\begin{thm}[Schur]
+    Every matrix $A\in \C^{n\times n}$ can be upper triangularized under unitary similarity transformations:
+    \begin{equation}
+        U^*AU = \begin{bmatrix}
+            \lambda_1 & \times & \cdots & \times\\
+            0 & \lambda_2 & \ddots & \vdots\\
+            \vdots & \ddots & \ddots & \times\\
+            0 & \dots & 0 & \lambda_n
+        \end{bmatrix} \eqcolon A_S
+    \end{equation}
+    where the diagonal of $A_S$ consists of the eigenvalues of $A$.
+\end{thm}
+\begin{itemize}
+    \item If $A$ is Hermitian, then $A_S$ is Hermitian, and thus diagonal and real. This is its canonical form.
+    \item The eigenvalues in the Schur form can be ordered. 
+    \item If $A\in \R^{n\times n}$, the eigenvalues and eigenvectors can be complex. Then, their complex conjugates are also eigenvalues and eigenvectors of $A$.
+\end{itemize}
+\begin{definition}
+    A normal matrix is a square matrix $A\in \C^{n\times n}$ satisfying $AA^*=A^*A$.
+\end{definition}
+\begin{thm}
+    A matrix $A\in \C^{n\times n}$ is normal if and only if it is diagonalizable under unitary similarity transformations: $A=U\Lambda U^*$.
+\end{thm}
+\section{Invariant subspaces}
+\begin{definition}
+    A subset $\mathcal{X}\subseteq \C^n$ is an invariant subspace under the operator $A\in \C^{n\times n}$ if $A\mathcal{X}\subseteq \mathcal{X}$.
+\end{definition}
+\begin{thm}
+    Let $\mathcal{X}\subseteq \C^n$ be a subspace of dimension $k$. Let $X\in \C^{n\times k}$ be such that the columns of $X$ form a basis of $\mathcal{X}$, and let $X_c$ be a completion of $X$ such that $T\coloneqq [X|X_c]$ is non-singular. Then, the following three propositions are equivalent:
+    \begin{itemize}
+        \item $A\mathcal{X}\subseteq \mathcal{X}$;
+        \item $AX=XA_{11}$;
+        \item $T^{-1}AT=\begin{bNiceArray}{c|c}
+            A_{11}& A_{12}\\
+            \hline
+            0_{(n-k)\times k} & A_{22}\\
+        \end{bNiceArray}$
+    \end{itemize}
+    where $A_{11}\in \C^{k\times k}$, $A_{12}\in \C^{k\times (n-k)}$ and $A_{22}\in \C^{(n-k)\times (n-k)}$.
+\end{thm}
+\begin{thm}[Real Schur form]
+    Every matrix $A\in \R^{n\times n}$ can be almost triangularized under real similarity transformations $U\in \R^{n\times n}$, and with blocks of dimension $1\times 1$ or $2\times 2$:
+    \begin{equation}
+        U^TAU = \begin{bmatrix}
+            A_{11} & \times & \dots & \times\\
+            & A_{22} & \ddots & \vdots\\
+            &&\ddots & \times\\
+            &&& A_{kk}\\ 
+            \end{bmatrix} \qquad A_{ii}\in \R^{1\times 1}\cup \R^{2\times 2}
+    \end{equation} 
+\end{thm}
+\section{Jordan canonical form}
+\begin{thm}
+    Every matrix $A\in \C^{n\times n}$ admits a block-diagonal form under similarity transformations:
+    \begin{equation}
+        T^{-1}AT = A_S = diag\{A_{11},\dots,A_{kk}\}
+    \end{equation}
+    where each block $A_{ii}$ has only one eigenvalue (with multiplicity possibly larger than 1).
+\end{thm}
+\begin{thm}
+    Every matrix $A\in \C^{n\times n}$ can be transformed by similarity transformations into a block-diagonal form:
+    \begin{equation}
+        T^{-1}AT = diag\{J_1(\lambda),\dots,J_k(\lambda)\}
+    \end{equation}
+    where each $J_i(\lambda)\in \C^{n_i\times n_i}$ is a Jordan block:
+    \begin{equation}
+        J_i(\lambda) = \begin{bmatrix}
+            \lambda & 1 &&&\\
+            & \lambda & 1&&\\
+            &&\ddots&\ddots&\\
+            &&&\lambda & 1\\
+            &&&&\lambda
+        \end{bmatrix}
+    \end{equation}
+\end{thm}
+\begin{corollary}
+    Two matrices $A,B\in \C^{n\times n}$ are similar iff they have the same Jordan form.
+\end{corollary}
 \end{document}
