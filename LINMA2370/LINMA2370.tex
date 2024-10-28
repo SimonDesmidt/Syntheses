@@ -897,5 +897,57 @@ where $L$ is the incidence matrix of the oriented graph whose coefficients all b
         x_i=0\Longrightarrow q_{ij}(x,u)=0\qquad \forall i
     \end{equation}
 \end{thm}
-
+\section{Reaction systems}
+The number $n$ of species is finite and these species are denoted by $X_i$. A reaction is thus a set of $m$ reactions of the following form:
+\begin{equation}
+    \sum_{i=1}^n \gamma_{ij} X_i \rightarrow \sum_{i=1}^n\delta_{ij}X_i \qquad j = 1,\dots,m \qquad \gamma_{ij},\delta_{ij}\ge 0
+\end{equation}
+The coefficients $\gamma_{ij}$ and $\delta_{ij}$ are positives real numbers called stoichiometric coefficients. We create 3 matrices: 
+\begin{itemize}
+    \item $\Gamma = [\gamma_{ij}]$
+    \item $\Delta = [\delta_{ij}]$
+    \item $C = \Delta - \Gamma$
+\end{itemize}
+The rank $p$ of $C$ is called the reaction network rank, it is the number of independent reactions. 
+\subsection{State-space model}
+Let $x_i(t)$ denote the quantity of the species $X_i$ per unit of volume in the system at time $t$, and let $r_j:\R^n_+\rightarrow \R_+$ be the reaction rate associated to each reaction. It verifies 
+\begin{itemize}
+    \item $r_j(x)\ge 0$ $\forall j\: \forall x\in \R_+^n$
+    \item $r_j(x)=0$ if $x_i=0$ for some $i\in I^{rj}$, $I^{rj}$ being the set of indices of all reactants involved in reaction $j$.
+\end{itemize}
+The equations of the system are thus
+\begin{equation}
+    \dot x_i = \sum_{j=1}^m (\delta_{ij}-\gamma_{ij})r_j(x(t))+\frac{1}{V}(Q_{0i}(t)-Q_{i0}(t))
+\end{equation}
+with $V$ the constant volume, $Q_{i0}(t)$ the flux going from the domain to the outside and $Q_{0i}(t)$ the flux going from the outside into the domain. In matrix form,
+\begin{equation}
+    \dot x= Cr(t)+q_{in}(x,u)-q_{out}(x,u)
+\end{equation}
+\subsection{Modelling of reaction kinetics}
+\begin{equation}
+    r_j(x) = k_j \prod_{i\in I^{rj}} x_i^{\nu_{ij}}
+\end{equation}
+where $k_j$ is the kinetci constant of the $j$th reaction, and $\nu_{ij}$ the partial order of the $i$th reactant in the $j$th reaction. Generally, $\nu_{ij}=\gamma_{ij}$. 
+\subsection{Continuous Stirred Tank Reactors (CSTR)}
+We study here a perfectly mixed chemical reactor of constant volume $V$\footnote{This is achieved by adjusting the in and out flowrates.}. We call $F_{in}$ the feed volumetric flowrate. The reactional equation of the system is, with $u\triangleq F_{in}/V$,
+\begin{equation}
+    \dot x = Cr(x)-ux+ux^{in}
+\end{equation}
+If the volume is not constant,
+\begin{equation}
+    \frac{d}{dt}(xV) = Cr(x)V-F_{out}x+F_{in}x^{in} 
+\end{equation}
+Balancing the volumes,
+\begin{eqnarray}
+    \dot V = F_{in}-F_{out}
+\end{eqnarray}
+and thus 
+\begin{equation}
+    \dot x = Cr(x) + \frac{u_1}{x_{n+1}}(x^{in}-x)\qquad \dot x_{n+1} = u_1-u_2 \begin{cases}
+        u_1 = F_{in}\\
+        u_2 = F_{out}\\
+        x_{n+1} = V
+    \end{cases}
+\end{equation}
+Note that in a closed system, $q_{in}=q_{out}=0$. And a system is conservative if there exists $\omega\in \R^n$ such that $C^T\omega=0$ and $\omega_i>0$ for all $i$.
 \end{document}
