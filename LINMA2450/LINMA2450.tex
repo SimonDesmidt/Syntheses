@@ -496,16 +496,37 @@ Let $p^*$ be the problem instance that we want to solve. Dynamic programming sup
 \end{equation}
 where $f_{p,q}(S_q)$ is a way of building a solution of $p$ by extending the optimal solution of $q$\footnote{It is supposed to be easy to compute.}, and $S_p^0$ represents a "trivial" solution for $p$. 
 \begin{ex}
-    % In the case of the shortest paths from the source $s$ to node $v$, the set $\mathbb{P}$ of problems consist of computing the shortest apths of length at most $k$ ($k=0,\dots,n)$ from the source $s$ to every node $i$, and the problem order relation can be defined by $D_k(i)<D_{k'}(i')$ if $k<k'$, i.e. the max length is shorter. The set of immediate predecessors $R_p$ of $p=D_k(i)$ is the set of $D_{k-1}(j)$ for all $j$ from which $i$ can be reached. 
+    In the case of the shortest paths from the source $s$ to node $v$, the set $\mathbb{P}$ of problems consist of computing the shortest apths of length at most $k$ ($k=0,\dots,n)$ from the source $s$ to every node $i$, and the problem order relation can be defined by $D_k(i)<D_{k'}(i')$ if $k<k'$, i.e. the max length is shorter. The set of immediate predecessors $R_p$ of $p=D_k(i)$ is the set of $D_{k-1}(j)$ for all $j$ from which $i$ can be reached. 
 \end{ex}
 \begin{algorithm}
     \caption{Dynamic Programming}\label{algo:dp}
     \begin{algorithmic}[1]
-        Solve all problems $p$ for which $R_p=\emptyset$.
-        \While{p^* not solved} 
+        \State Solve all problems $p$ for which $R_p=\emptyset$.
+        \While{$p^*$ not solved}
             \State Pick $p$ such that all problems of $R_p$ are solved;
-            \State Solve p using \eqref{eq:formal}.
+            \State Solve $p$ using \eqref{eq:formal}.
         \EndWhile
     \end{algorithmic}
 \end{algorithm}
+\section{0-1 Knapsak Problem}
+We consider the 0-1 Knapsak problem:
+\begin{equation}
+    z = \max\sum_{j=1}^n c_jx_j \text{   such that   } \begin{cases}
+        \sum_{j=1}^n a_jx_j\le b\\ x\in [0,1]^n
+    \end{cases}
+\end{equation}
+where the coefficients $a_1,\dots,a_n$ and $b$ are positive integers. As set $\mathbb{P}$, we will define problems with smaller costs and smaller sets of objects: let $\lambda$ take values from $0$ to $b$ as state, and the subset of variables $x_1,\dots,x_r$ represented by $r$ as stage, leads us to define the problem $P_r(\lambda)$ and optimal value function $f_r(\lambda)$ as follows:
+\begin{equation}
+    f_r(\lambda) = \max \sum_{j=1}^r c_jx_j \text{   such that   } \begin{cases}
+        \sum_{j=1}^r a_jx_j\le \lambda\\ x\in [0,1]^r
+    \end{cases}
+\end{equation}
+If $x_r=0$, we have $f_r(\lambda)=f_{r-1}(\lambda)$. If $x_r=1$, then $f_r(\lambda) = c_r + f_{r-1}(\lambda - a_r)$. Thus we have the following instantiation of \eqref{eq:formal}:
+\begin{equation}
+    f_r(\lambda) = \max\{f_{r-1}(\lambda),\:c_r + f_{r-1}(\lambda - a_r)\}
+\end{equation}
+for a set of two predecessors of $f_r(\lambda)$ defined by $f_{r-1}(\lambda - a_r)$ and $f_{r-1}(\lambda)$, and the operation $f_{q,p}$ consisting in either adding the object $r$ in the first case and keeping the solution $f_r(\lambda)$ as it is in the second one. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Note: The Knapsak problem is NP-hard, as its complexity is exponential.
+\end{itemize}
 \end{document}
