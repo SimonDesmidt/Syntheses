@@ -109,6 +109,7 @@
 \newtheorem{lem}[thm]{Lemma}
 \newtheorem{prop}[thm]{Property}
 \newtheorem{crl}[thm]{Corollary}
+\newtheorem{ex}[thm]{Example}
 
 \usepackage{apptools}
     \titleformat{\chapter}[hang]{\bfseries\huge}{\IfAppendix{\appendixname~}{\relax}\thechapter\IfAppendix{.}{.}}{\IfAppendix{0.333em}{2pc}}{}
@@ -481,4 +482,30 @@ This is equivalent to
     \max{M\subset E} f(M)\equiv L(\{e_0\})-L(M\cup \{e_0\})\text{    such that    } |M|\le k
 \end{equation}
 where $e_0$ is a phantom medoid. Practically, we have a dataset and find two medoids using Algorithm \ref{algo:cardinal}. With the above problem, we find the clusters of the dataset by assigning the points to the closest medoid. 
+\chapter{Dynamic Programming}
+\section{Formal description}
+Let $p^*$ be the problem instance that we want to solve. Dynamic programming supposes that we can find a finite set $\mathbb{P}$ of instances $p$ with optimal solutions $S_p$, with corresponding costs $C(S_p)$, such that 
+\begin{itemize}
+    \item $p^*\in \mathbb{P}$: the relevant problem belongs to the set.
+    \item There is an order relation on $\mathbb{P}$: $q<p$ if $q$ is "easier" than $p$. The order can be partial (not defined for all $p,q$). The problem $p$ has a (possibly empty) set of immediate predecessors $R_p\subseteq \{q:q<p\}$ among the more basic problems.
+    \item If the problem $p$ has no predecessors, i.e. $R_p=\emptyset$, then its optimal solution $S_p$ can be "easily" computed. 
+    \item If the problem has predecessors, then the optimal solution $S_p$ and its cost $C(S_p)$ satisfies
+\end{itemize}
+\begin{equation}\label{eq:formal}
+    C(S_p)=\min\{\min_{q\in R_p}\:C(f_{p,q}(S_q)),\:C(S_p^0)\}
+\end{equation}
+where $f_{p,q}(S_q)$ is a way of building a solution of $p$ by extending the optimal solution of $q$\footnote{It is supposed to be easy to compute.}, and $S_p^0$ represents a "trivial" solution for $p$. 
+\begin{ex}
+    % In the case of the shortest paths from the source $s$ to node $v$, the set $\mathbb{P}$ of problems consist of computing the shortest apths of length at most $k$ ($k=0,\dots,n)$ from the source $s$ to every node $i$, and the problem order relation can be defined by $D_k(i)<D_{k'}(i')$ if $k<k'$, i.e. the max length is shorter. The set of immediate predecessors $R_p$ of $p=D_k(i)$ is the set of $D_{k-1}(j)$ for all $j$ from which $i$ can be reached. 
+\end{ex}
+\begin{algorithm}
+    \caption{Dynamic Programming}\label{algo:dp}
+    \begin{algorithmic}[1]
+        Solve all problems $p$ for which $R_p=\emptyset$.
+        \While{p^* not solved} 
+            \State Pick $p$ such that all problems of $R_p$ are solved;
+            \State Solve p using \eqref{eq:formal}.
+        \EndWhile
+    \end{algorithmic}
+\end{algorithm}
 \end{document}
