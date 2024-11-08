@@ -529,4 +529,10 @@ for a set of two predecessors of $f_r(\lambda)$ defined by $f_{r-1}(\lambda - a_
 \begin{itemize}
     \item [\(\rightarrow\)] Note: The Knapsak problem is NP-hard, as its complexity is exponential.
 \end{itemize}
+\section{Optimal subtree of a tree}
+The optimal subtree of a tree problem involves a tree $T=(V,E)$ with a root $r\in V$ and weights $c_v$ (can be negative) for $v\in V$. The problem is to choose a subtree of $T$ rooted at $r$ of maximum weight, or the empty tree if there is no positive weight rooted subtree. The cost function is
+\begin{equation}
+    C(T(v)) = \max\{0, \: c_v+\sum_{w\in N^+(v)} C(T(w))\}
+\end{equation}
+with $N^+(v)$ the successors of $v$. We can therefore define $R_{T(v)}$ by saying that computing $T(w)$ is a predecessor of the problem of computing $T(v)$ if $w\in N^+(v)$. The problem $T(v)$ for the leaf nodes have no predecessor, but are easy to compute: $T(v)=\{v\}$ if the benefit is positive and 0 otherwise. 
 \end{document}
