@@ -168,7 +168,7 @@ If \(\Omega = [a,b]^n\), then the projection of an element \(z\) onto \(\Omega\)
 \end{equation}
 If \(x^*\) is a solution of \eqref{eq:convex_problem}, then \[\langle \nabla f(x^*),z-x^*\rangle \ge 0\qquad \forall z \in \Omega\]
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: if \(\Omega = \mathbb{R}^n\), then this lemma is true, in particular for \(z=x^*-\nabla f(x^*)\). Then it is straightforward that we must have \(\nabla f(x^*)=0\). 
+    \item [\(\rightarrow\)] Note: if \(\Omega = \mathbb{R}^n\), then this lemma is true, in particular for \(z=x^*-\nabla f(x^*)\). Then it is straightforward that we must have \(\nabla f(x^*)=0\). 
 \end{itemize}
 \section{Reduced gradient method}
 For a L-smooth function for the problem \eqref{eq:convex_problem}, we define 
@@ -207,7 +207,7 @@ Then, we can write
     x_{k+1} = prox_{\frac{1}{L}\phi}\left(x_k-\frac{1}{L}\nabla f(x_k)\right)
 \end{equation}
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: if the \(\phi\) function is the indicator function, i.e. \(\phi=i_\Omega = \begin{cases}
+    \item [\(\rightarrow\)] Note: if the \(\phi\) function is the indicator function, i.e. \(\phi=i_\Omega = \begin{cases}
         0 \text{ if } x\in \Omega\\ \infty \text{ otherwise}
     \end{cases}\), then \(prox_{\frac{1}{L}i_\Omega}(z) = P_\Omega(z)\).
 \end{itemize}
@@ -384,4 +384,111 @@ Here are some examples for $B_k$:
     \item $B_k = (\nabla^2f(x_k))^{-1}$ : Newton Direction;
     \item $B_k \approx (\nabla^2f(x_k))^{-1}$ : Quasi-Newton Direction;
 \end{itemize}
+\chapter{Second order methods}
+\section{Newton Method}
+Consider the unconstrained optimization 
+\begin{equation}
+    \min_{x\in \R^n} f(x)
+\end{equation}
+To fing the basic Newton step, we do a Second order Taylor expansion of \(f\) around \(x_k\): and minimize that quantity. This gives 
+\begin{equation}
+    0 = \nabla f(x_k) + \nabla^2f(x_k)h \Longleftrightarrow \nabla^2f(x_k)h = -\nabla f(x_k)
+\end{equation}
+Assuming the Hessian to be invertible, 
+\begin{equation}
+    h = -\nabla^2f(x_k)^{-1}\nabla f(x_k)
+\end{equation}
+We call $h$ the Newton step $n(x) = -\nabla^2f(x)^{-1}\nabla f(x)$. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Note: In practice, we never compute $\nabla^2f(x_k)^{-1}$ as it is not needed by itself.
+\end{itemize}
+\begin{algorithm}
+    \caption{Newton Method}\label{algo:newton}
+    \begin{algorithmic}[1]
+        \State \textbf{Step 0:} Given $x_0\in \R^n$, $f$, $\nabla f$, $\nabla^2f$ invertible, set $k\coloneqq 0$.
+        \State \textbf{Step 1:} If $\nabla f(x_k)=0$, stop.
+        \State \textbf{Step 2:} Define $x_{k+1}=x_k - \nabla^2f(x_k)^{-1}\nabla f(x_k)$, set $k\coloneqq k+1$ and go to \textbf{Step 1}.
+    \end{algorithmic}
+\end{algorithm}
+The problem with this method is that it does not find a minimizer, it only computes the solution of $\nabla m_{x_k}(h)=0$. It is not always well defined, with not convex functions, and the computational cost of one iteration is high. 
+\begin{thm}
+    Let $f\in \mathcal{C}^2$. If $\nabla^2f$ is M-Lipschitz and $x^*$ is a minimum of $f$ such that $\nabla^2f(x^*)\succeq \mu I$, with $\mu>0$, then for any $x$ such that $\lVert x-x^*\rVert\le \frac{\mu}{2M}$, we have
+    \begin{equation}
+        \lvert x^+-x^*\rVert \le \frac{M}{\mu}\lVert x-x^*\rVert^2
+    \end{equation}
+    where $x^+ = x - \nabla^2f(x)^{-1}\nabla f(x)$ is well-defined.
+\end{thm}
+Newton's method is invariant with respect to linear changes of variables, while gradient/first-order methods are not. However, it does not always converge. 
+\section{Self-concordance}
+\begin{definition}
+    Given an open domain $X\subseteq \R^n$, a function $f:X\rightarrow \R$ is called self-concordant iff 
+    \begin{itemize}
+        \item $f\in \mathcal{C}^3$ is convex;
+        \item $\nabla^3f(x)[h,h,h]\le 2\nabla^2 f(x)[h,h]^{3/2}$, $\forall x\in X$, $\forall h\in \R^n$.
+    \end{itemize}
+    with 
+    \begin{itemize}
+        \item $\nabla f(x)[h] = \nabla f(x) \cdot h$
+        \item $\nabla^2f(x)[h,h] = h^T\nabla f(x)h$
+        \item $\nabla^3f(x)[h,h,h] = \sum_i\sum_j\sum_k \frac{\partial^3 f}{\partial x_i \partial x_j \partial x_k}h_ih_jh_k$
+    \end{itemize}
+\end{definition}
+For univariate functions, the conditions are simpler:
+\begin{itemize}
+    \item $f\in \mathcal{C}^3$ is convex;
+    \item $|f'''(x)|\le 2f''(x)^{3/2}$, $\forall x \in X$
+\end{itemize}
+\begin{prop}
+    The self-concordance property is conserved by sum and by linear changes of variables, and is nondegenerate:\\
+    Let $X$ be an open set containing no line. Then,
+    \begin{itemize}
+        \item Any self concordant function defined over $X$ satisfies $\nabla^2f(x)\succ 0$;
+        \item $f(x)\rightarrow \infty$ as $x\rightarrow \partial X$, where $\partial X$ is the boundary of $X$.
+    \end{itemize}
+\end{prop}
+\section{Local norms}
+Optimality measure $\lVert \nabla f(x)\rVert$ is not suitable, as it is not affine-invariant. This is why we define local norms:
+\begin{definition}
+    Given a self-concordant function $f$, the local norm at $x$ is 
+    \begin{equation}
+        \lVert z\rVert_x = (z^T\nabla^2f(x)z)^1/2
+    \end{equation}
+    The corresponding dual norml is given by
+    \begin{equation}
+        \lVert z\rVert_x^* = (z^T\nabla^2f(x)^{-1}z)^{1/2}
+    \end{equation}
+\end{definition}
+\section{Optimality measure}
+Using the dual local norm defined in the last section, we define the optimality measure:
+\begin{equation}
+    \delta(x)\coloneqq \lVert \nabla f(x)\rVert_x^* = \lVert n(x)\rVert_x
+\end{equation}
+Because of convexity, $x$ is optimal iff $\nabla f(x) = 0\Longleftrightarrow \delta(x)=0$.
+\section{Improving Newton}
+Given an open convex domain $X$ and a self-concordnat function $f:X\rightarrow \R$, we want $\min_{x\in X} f(x)$.\\
+Let $x\in X$ such that $\delta(x)<1$:
+\begin{itemize}
+    \item A global minimum $x^*$ of $f$ exists;
+    \item $f(x)\le f(x^*)-\delta(x) - \log(1-\delta(x)) \Longrightarrow f(x)-f(x^*) =\mathcal{O}(\delta(x)^2)$;
+    \item $\lVert x-x^*\rVert_x \le \frac{\delta}{1-\delta} = \mathcal{O}(\delta(x))$;
+    \item Newton step $x^+=x+n(x)$ is feasible, i.e. $x^+\in X$, meaning the method is well-defined;
+    \item $\delta(x^+)\le \left(\frac{\delta}{1-\delta}\right)^2$ meaning quadratic convergence. 
+\end{itemize}
+If the method starts close to the minimizer, converges in less than 10 iterations.\\
+If $x\in X$ and $\delta(x)\ge 1$, the good behaviour of the method is no longer guaranteed. To fix this, we introduce a damping of the steps:\\
+
+For any $x\in X$ and thus any $\delta(x)$,
+\begin{itemize}
+    \item The damped Newton step $x^+=x+\left(\frac{1}{1+\delta(x)}\right)n(x)$ is feasible;
+    \item The decrease is guaranteed: $f(x)-f(x^+) \ge \delta(x)-\log(1+\delta(x))\ge 0$.
+\end{itemize}
+\section{Globally convergent Newton's method}
+Suppose $\delta(x_0)>\frac{1}{\sqrt{2}}$. While $\delta(x_i)>\frac{1}{\sqrt{2}}$, 
+\begin{equation}
+    f(x_i)-f(x_{i+1}) > \frac{1}{\sqrt{2}}-\log(1+\frac{1}{\sqrt{2}}) > \frac{1}{6}
+\end{equation}
+Hence, after at most $k \le \lceil 6(f(x_0)-f(x^*))\rceil$, we must have $\delta(x_k)\le \frac{1}{\sqrt{2}}$. Applying pure Newton steps once this stage is reached, we obtain a $\epsilon$-solution after 
+\begin{equation}
+    \mathcal{O}(f(x_0)-f(x^*)) + \mathcal{O}(\log \log \frac{1}{\epsilon}) \text{   iterations}
+\end{equation}
 \end{document}
