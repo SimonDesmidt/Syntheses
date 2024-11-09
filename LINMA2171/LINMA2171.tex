@@ -14,6 +14,7 @@
 \usepackage{enumitem}
 \usepackage{pythonhighlight}
 \usepackage[]{titletoc}
+\usepackage{amsbsy}
 \usepackage{empheq}
 \usepackage{titlesec}
 \usepackage{mathpazo}
@@ -453,4 +454,144 @@ They form a basis of $\mathcal{P}_n$ and a partition of unity, i.e. $\sum_{i=0}^
     \textbf{s}|_{[x_j,x_{j+1}]} = \sum_{i=0}^k\textbf{c}_i^jb_i^k\frac{x-x_j}{x_{j+1}-x_j}
 \end{equation}
 aka the Bézier curve on $[x_j,x_{j+1}]$ with control points $\textbf{c}_0^j,\dots, \textbf{c}_k^j$.
+\section{Thin plate splines}
+Thin plate splines consist of generalizing equation \eqref{eq:smoothing} to fit a function $s:\R^d\rightarrow \R$ to support points $(\textbf{t}_i,z_i)$, $i=0,\dots, N$:
+\begin{equation}\label{eq:smoothing-tps}
+    \arg_s \min F_\lambda (s)\coloneqq \sum_{i=0}^N (z_i-s(\textbf{t}_i))^2 + \lambda \sum_{i_1,i_2=1}^d \int_{\R^d} \left(\partial_{i_1,i_2}s(\textbf{t})\right)^2d\textbf{t}
+\end{equation}
+In the bivariate case, i.e. $d=2$, we denote $\textbf{t}=(x,y)$, and the equation reduces to 
+\begin{equation}
+    \arg_s \min F_\lambda (s)\coloneqq \underbrace{\sum_{i=0}^N (z_i-s(x_i,y_i))^2}_{DA} + \lambda \underbrace{\int_{\R^2} \left(\frac{\partial^2s}{\partial x^2}\right)^2 + 2\left(\frac{\partial^2 s(x,y)}{\partial x\partial y}\right)^2 + \left(\frac{\partial^2 s}{\partial y^2}\right)^2 dxdy}_{PEN}
+\end{equation}
+\begin{definition}\label{def:tps}
+    A function $s$ is a thin plate spline on the data set $\textbf{t}_0,\dots,\textbf{t}_N\in \R^2$ if it takes the form
+    \begin{equation}
+        s(\textbf{t}) = \sum_{i=0}^N \delta_i \eta (\lVert \textbf{t}-\textbf{t}_i\rVert) + \sum_{j=1}^3 a_j\phi_j(\textbf{t})
+    \end{equation}
+    where $\delta_i,a_i$ are real numbers, 
+    \begin{equation}
+        \eta_r = \begin{cases}
+            \frac{1}{16\pi} r^2\log(r^2) & \text{ if } r>0\\
+            0& \text{ if } r=0
+        \end{cases}
+    \end{equation}
+    and the $\phi_i$ simply denote the functions $\phi_1(x,y) = 1$, $\phi_2(x,y) = x$, $\phi_3(x,y)=y$. \\
+
+    If $\pmb{\delta}=[\delta_0 \dots \delta_N]^T$ satisfies $T\pmb{\delta} = 0$, where 
+    \begin{equation}
+        T = \begin{bmatrix}
+            1 & 1& \dots & 1\\
+            \textbf{t}_0 & \textbf{t}_1 & \dots & \textbf{t}_N
+        \end{bmatrix}
+    \end{equation}
+    then $s$ is said to be a natural thin plate spline.
+\end{definition}
+\begin{thm}
+    Let $s$ ba a thin plate spline. Then, $PEN(s)$ is finite iff $s$ is a natural thin plate spline. If $s$ is a natural thin plate spline, then $PEN(s) = \pmb{\delta}^TE\pmb{\delta}$, where $E_{ij} \coloneqq \eta(\lVert \textbf{t}_i-\textbf{t}_j\rVert)$.
+\end{thm}
+\subsection{Interpolation by thin plate splines}
+Let $\textbf{t}_0,\dots,\textbf{t}_m$ be non-collinear and let $\lambda \ge 0$. Then 
+\begin{equation}
+    \begin{bmatrix}
+        E+\lambda I& T^T\\
+        T & 0\\
+    \end{bmatrix}
+\end{equation}
+is nonsingular. 
+\begin{thm}
+    Let $\textbf{t}_0,\dots,\textbf{t}_N$ be distinct non-collinear points in $\R^2$. Given any values $z_0,\dots, z_N$, there is one and only one natural thin plate spline $s$ on the set $\textbf{t}_0,\dots,\textbf{t}_N$ such that $s(\textbf{t}_i)=z_i$ for all $i=0,\dots,N$.
+\end{thm}
+\subsection{Optimality of thin plate splines}
+\begin{thm}
+    The natural thin plate spline interpolant uniquely minimizes PEN subject to the interpolation conditions $s(\textbf{t}_i)=z_i$ for all $i$. 
+\end{thm}
+\subsection{Thin plate spline smoother}
+\begin{thm}
+    If $\Hat s$ is a solution of the smoothing problem \eqref{eq:smoothing-tps}, then $\Hat s$ admits the thin late spline form of \ref{def:tps} with the natural spline condition $T\pmb{\delta} =0$.
+\end{thm}
+The objective function can be rewritten as 
+\begin{equation}
+    F_\lambda (s) = \begin{bmatrix} \pmb{\delta}^T &\pmb{a}^T\end{bmatrix}\underbrace{\begin{bmatrix}
+    E^2+\lambda E & ET^T\\ TE & TT^T
+    \end{bmatrix}}_{= \begin{bmatrix} E&0\\ T& -\lambda I\end{bmatrix}\begin{bmatrix} E+\lambda I& T^T\\ T & 0\end{bmatrix}} \begin{bmatrix}
+        \pmb{\delta}\\ \pmb{a}\\
+    \end{bmatrix} - \begin{bmatrix} \pmb{\delta}^T &\pmb{a}^T\end{bmatrix} \begin{bmatrix}
+        E\\T
+    \end{bmatrix} \pmb{z} + \pmb{z}^T\pmb{z}
+\end{equation}
+The unique solution of the minimization of the above function is 
+\begin{equation}
+    \begin{bmatrix}
+        E+\lambda I & T^T\\ T & 0\\
+    \end{bmatrix} \begin{bmatrix}
+        \pmb{\delta}\\ \pmb{a}\\
+    \end{bmatrix} = \begin{bmatrix}
+        \pmb{z} \\ 0
+    \end{bmatrix}
+\end{equation}
+\section{Tensor product splines}
+In the last section, thin plate splines are not piecewise polynomials. If we want the admissible functions restrict to piecewise polynomials, we need other approaches, as the tensor product splines. \\
+\begin{definition}\textbf{Tensor product}
+    Let $\mathcal{R}$ and $\mathcal{S}$ be two linear spaces of real-valued univariate functions. The tensor product of two functiuons $r\in \mathcal{R}$ and $s\in \mathcal{S}$ is $r \otimes s:\R^2\rightarrow \R:(t_1,t_2)\rightarrow r(t_1)s(t_2)$. The tensor product of the two spaces is the linear space 
+    \begin{equation}
+        \mathcal{R}\otimes \mathcal{S} = \left\{ \sum_{i,j} c_{ij}r_i\otimes s_j| c_{ij}\in \R\right\}
+    \end{equation}
+    where $(r_1,\dots,r_{N_1})$ is a basis of $\mathcal{R}$ and $(s_1,\dots,s_{N_2})$ is a basis of $\mathcal{S}$.
+\end{definition}
+Let us define the sets 
+\begin{align}
+    \Delta &= \{a=x_0<x_1<\dots<x_m = b\}\\
+    \Bar \Delta &= \{\bar a =y_0<y_1<\dots<y_{\bar m} = \bar b\}
+\end{align}
+and let $\mathcal{S}_k(\Delta)=\mathcal{S}(k;x_0,\dots,x_m)$, same for $\bar \Delta$. In this section, the set of admissible functions is 
+\begin{equation}
+    \mathcal{S}_k(\Delta)\otimes S_{\bar k}(\bar \Delta) 
+\end{equation}
+The functions of that set are called tensor product splines of degree $(k,\bar k)$ and the points in $\Delta, \bar \Delta$ are the knots. The dimension of the space is $(m+k)(\bar m+\bar k)$, and a basis is given by 
+\begin{equation}
+    B_{ij}^{k,\bar k}(x,y) \coloneqq B_i^k(x)B_j^{\bar k}(y) \qquad i\in \{-k,\dots,m-1\}, j\in \{-\bar k,\dots,\bar m-1\}
+\end{equation}
+where $B$ functions are B-splines creating a basis of their respective $\mathcal{S}_k(\Delta), \mathcal{S}_{\bar k}(\bar \Delta)$. Any admissible function can thus be uniquely written as a linear combination of those. 
+\subsection{Matrix form}
+Any tensor-product spline $s$ can be written in matrix form:
+\begin{equation}
+    s(x,y) = \begin{bmatrix}
+        B_{-k}^k(x) &\dots& B_{m-1}^k(x)\\
+    \end{bmatrix}C \begin{bmatrix}
+        B_{-k}^{\bar k}(y)\\ \vdots\\ B_{\bar m-1}^{\bar k}(y)
+    \end{bmatrix} \qquad C = \begin{bmatrix}
+        c_{-k, -\bar k}& \dots& c_{-k,\bar m-1}\\
+        \vdots & \ddots & \vdots\\
+        c_{m-1,-\bar k}& \dots& c_{m-1,\bar m-1}
+    \end{bmatrix}
+\end{equation}
+\subsection{Interpolation and regression}
+Consider $t_1<\dots<t_n$ in $[a,b]$ and $\bar t_1<\dots<\bar t_{\bar n}$ in $\bar a,\bar b$, and suppose that we are given real number $\{z_{ij}\}_{i=1,j=1}^{n,\bar n}$. The interpolation problem is to find a tensor product spline $s$ such that 
+\begin{equation}
+    s(t_i,\bar t_j) = z_{ij}\quad i=1,\dots,n,\quad j=1,\dots,\bar n
+\end{equation}
+In matrix form, this system of equations is 
+\begin{equation}
+    MC\bar M^T = Z = \begin{bmatrix}
+        z_{1,1}&\dots&z_{1,\bar n}\\
+        \vdots & \ddots & \vdots\\
+        z_{n,1}&\dots&z_{n,\bar n}
+    \end{bmatrix}
+\end{equation}
+\begin{equation}
+    M = \begin{bmatrix}
+        B_{-k}^k(t_1) & \dots & B_{m-1}^k(t_1)\\
+        \vdots & \ddots & \vdots\\
+        B_{-k}^k(t_n) & \dots & B_{m-1}^k(t_n)
+    \end{bmatrix}\qquad \bar M = \begin{bmatrix}
+        B_{-k}^{\bar k}(\bar t_1) & \dots & B_{\bar m-1}^{\bar k}(\bar t_1)\\
+        \vdots & \ddots & \vdots\\
+        B_{-k}^{\bar k}(\bar t_{\bar n}) & \dots & B_{\bar m-1}^{\bar k}(\bar t_{\bar n})
+    \end{bmatrix}
+\end{equation}
+Solving this in the least square sense, the normal equations are 
+\begin{equation}
+    M^TMC\bar M^T\bar M = M^TZ\bar M 
+\end{equation}
+\chapter{}
 \end{document}
