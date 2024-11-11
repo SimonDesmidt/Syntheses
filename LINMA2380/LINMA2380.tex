@@ -484,4 +484,50 @@ The eigenvalues of a matrix are invariant under similarity transformations. The 
 \begin{corollary}
     Two matrices $A,B\in \C^{n\times n}$ are similar iff they have the same Jordan form.
 \end{corollary}
+For a real matrix $A\in \R^{n\times n}$, we can separate the real and imaginary parts of the eigenvalues: $\lambda = \alpha + \beta j$. Separating the eigenvectors $v=x+iy$:
+\begin{equation}
+    A \begin{bmatrix}
+        x & y\\
+    \end{bmatrix} = \begin{bmatrix} x & y\\\end{bmatrix} \begin{bmatrix}
+    \alpha & \beta\\ -\beta & \alpha\\
+    \end{bmatrix}
+\end{equation}
+\begin{corollary}
+    Any real matrix $A\in \R^{n\times n}$ has an invariant space of dimensionn 1 or 2:
+    \begin{equation}
+        \begin{bmatrix}
+            \alpha & \beta & 1 & 0 &&\\
+            -\beta & \alpha & 0 & 1&&\\
+            & & \alpha & \beta & 1& 0&& \\
+            & & -\beta & \alpha & 0 & 1&&\\
+            &&&&& \ddots & \ddots &\\
+            &&&&&& 1&0\\
+            &&&&&& 0&1\\
+            &&&&&& \alpha & \beta\\
+            &&&&&& -\beta & \alpha
+        \end{bmatrix}
+    \end{equation}
+\end{corollary}
+\begin{definition}
+    Given a polynomial $p(x) = p_0+p_1x+ \dots + p_d x^d$, we define the matrix polynomial $p(A) = p_0 I+p_1A+ \dots + p_d A^d$.
+\end{definition}
+\begin{thm}
+    If $A=TJT^{-1}$, $p(A)=Tp(J)T^{-1}$, and thus 
+    \begin{equation}
+        \lambda_i(p(A)) = p(\lambda_i(A))
+    \end{equation}
+\end{thm}
+\begin{corollary}
+    The characteristic polynomial of $A$ satisfies $\chi(A)=\prod_i (A-\lambda_iI)^{m_i}=0$, with $m_i$ the algebraic multiplicity of the eigenvalue $\lambda_i$.
+\end{corollary}
+\begin{thm}\textbf{(Bendixson)}
+    The eigenvalues $\alpha+\beta j$ of a matrix $A\in \C^{n\times n}$  are in the rectangle 
+    \begin{align}
+        \lambda_{\min} \left(\frac{A+A^*}{2}\right) \le \alpha \le \lambda_{\max} \left(\frac{A+A^*}{2}\right)\\
+        \lambda_{\min} \left(\frac{A-A^*}{2j}\right) \le \beta \le \lambda_{\max} \left(\frac{A-A^*}{2j}\right)
+    \end{align}
+\end{thm}
+\begin{thm}
+    Let $A\in \C^{n\times n}$. Its eigenvalues are all in the union of the Gershgorin circles: $|z-a_{pp}| \le \sum_{k\neq p} |a_{pk}|$. \\
+\end{thm}
 \end{document}
