@@ -492,4 +492,139 @@ Hence, after at most $k \le \lceil 6(f(x_0)-f(x^*))\rceil$, we must have $\delta
 \begin{equation}
     \mathcal{O}(f(x_0)-f(x^*)) + \mathcal{O}(\log \log \frac{1}{\epsilon}) \text{   iterations}
 \end{equation}
+\textcolor{red}{DO CM9 SI PAS ENCORE FAIT}
+\section{Short-step algorithm}
+\begin{equation}\label{eq:short_step}
+    \min c^Tx \text{ such that }x\in C
+\end{equation}
+Let $F$ be a $\nu$-self-concordant barrier such that $dom(F)=int(C)$
+\begin{algorithm}
+    \begin{algorithmic}[1]
+        \caption{Short-step algorithm}\label{algo:short_step}
+        \State Given a starting point $x_0\in int(C)$ and a target accuracy $\epsilon$;
+        \State Pick suitable parameters $0<\tau<1$ and $0<\theta<1$;
+        \State Find a value $\mu_0$ such that $\delta_{\mu_0}(x_0)\le \tau$ and compute $\mu_f=\epsilon \frac{1-\tau}{\nu}$;
+        \While{$\mu_k>\mu_f$}\\
+        $\qquad \mu_{k+1}=(1-\theta)\mu_k$;\\
+        $\qquad x_{k+1} = x_k + n_{\mu_{k+1}}(x_k)$;\\
+        $\qquad k=k+1$;
+        \EndWhile 
+    \end{algorithmic}
+\end{algorithm}
+\subsection{Initialization}
+\begin{itemize}
+    \item To pick a reasonable $\bar x$, we can take an element of $int(C)$, not necessarily close to the central path;
+    \item For $\mu_0$, any value $>0$ works, but $\mu_0$ too small will lead to longer Initialization. A good choice is the min of $\delta_{\mu_0}(\bar x)$;
+    \item Compute $x_0$ solving $\min \frac{c^Tx}{\mu_0}+F(x)$ using damped Newton steps and starting from $\bar x$; stop the procedure when $\delta_{\mu_0}(x_0)\le \tau$.
+\end{itemize}
+\subsection{Convex nonlinear objective}
+If the objective function of \eqref{eq:short_step} is nonlinear, we can rewrite the problem:
+\begin{equation}
+    \min_{x,t}t \text{ such that }\begin{cases}
+        f(x)\le t\\
+        x\in C
+    \end{cases}
+\end{equation}
+By the properties of convexity and self-concordant barriers, this is equivalent.
+\subsection{Affine change of variables}
+If the problem is of the form 
+\begin{equation}
+    \min c^Tx\text{ such that }Ax-b\in C
+\end{equation}
+and if we have a self-concordant barrier $F$ on $C$, then $x\mapsto F(Ax-b)$ is a self-concordant barrier for $\{x:Ax-b\in C\}$.
+\subsection{Linear equalities}
+If the problem is of the form \eqref{eq:short_step}, but with the additionnal constraint that $Ax=b$, the set $C\cap \{x:Ax=b\}$ has no interior. We must modify the short-step algorithm: the step $n_{Ax=b}$ is the solution of 
+\begin{equation}
+    \begin{pmatrix}
+        \nabla^2F(x) & A^T\\
+        A & 0\\
+    \end{pmatrix}\begin{pmatrix}
+        n\\ \lambda 
+    \end{pmatrix} = \begin{pmatrix}
+        -\nabla F(x)\\ 0\\
+    \end{pmatrix}
+\end{equation}
+with $\lambda$ the Lagrangian multipliers.
+\subsection{Nonconvex problems}
+Nonconvex problems can most of the time be reexpressed as convex problems but, due to their shape, it is not helpful to solve them efficiently.\\
+\section{Long-step method}
+The long-step method is more efficient in terms of number of iterations than the short-step. The algorithm is the following:
+\begin{algorithm}
+\begin{algorithmic}[1]
+    \caption{Long-step method}\label{algo:long_step}
+    \State Given $x_0,\mu_0, 0<\tau<1, 0<\theta<1$ such that $\delta_{\mu_0}(x_0)\le \tau$;
+    \While {$\mu_k>\mu_f$}\\
+    $\qquad \mu_{k+1}=(1-\theta)\mu_k$;\\
+    $\qquad$ Compute $x_{k+1}$ such that $\delta_{\mu_{k+1}}(x_{k+1})\le \tau$;
+    \EndWhile
+    $\qquad k=k+1$;
+\end{algorithmic}
+\end{algorithm}
+\begin{thm}
+Consider a problem equipped with a $\nu$-self-concordant barrier. For any $0<\tau<1$ and $0<\theta<1$, the long-step method stops after $\mathcal{O}(\nu \log(\frac{1}{\epsilon}))$. This is theoretically worse than the short-step, but it rarely needs more than 20-50 iterations. 
+\end{thm}
+\chapter{Conic optimization}
+\section{Reminder}
+In linear optimization, there exists a dual for any problem:
+\begin{center}
+    \begin{tabular}{c|c}
+        Primal & Dual\\ \hline 
+        $\min_x c^Tx$ & $\max_y b^Ty$\\
+        $Ax=b$ and $x\ge 0$ & $A^Ty \le c$ \\ \hline 
+        $x\in \R^n$ & $y\in \R^m$\\
+    \end{tabular}    
+\end{center}
+The main goal of conic optimization is to generalize linear optimization, while trying to keep the nice properties of duality and efficient algorithms. \\
+\section{Inequalities}
+For vectors of real numbers $a,b\in \R^n$, we define inequalities componentwise:
+\begin{equation}
+    \begin{aligned}
+        a\ge 0 &\Leftrightarrow a_i\ge 0 \Leftrightarrow a_i\in \R_+ \qquad \forall i\in \{1,\ldots,n\}    \\
+        a\ge b & \Leftrightarrow a_i- b_i\ge 0 \Leftrightarrow a_i-b_i\in \R_+ \qquad \forall i\in \{1,\ldots,n\}
+    \end{aligned}
+\end{equation}
+Let $K\subseteq \R^n$ be an arbitrary set. Define $a\succeq_K0\Leftrightarrow a\in K$ for any vector $a\in \R^n$.\\ This allows to define a generalized primal linear optimization problem:
+\begin{equation}
+    \min_{x\in \R^n} c^Tx\text{ such that }Ax=b \text{ and }x\succeq_K0
+\end{equation}
+\begin{itemize}
+    \item [$\rightarrow$] Note: We find a linear optimization problem if $K=\R^n_+$.
+\end{itemize}
+The generalized dual linear optimization problem is 
+\begin{equation}
+    \max_{y\in \R^m}b^Ty \text{ such that } A^Ty\preceq_K c
+\end{equation}
+\subsection{Requirements for an order}
+An order $\succeq$ or $\preceq$ must verify two properties:
+\begin{itemize}
+    \item $a\succeq_K0\Rightarrow \lambda a\succeq_K0$ for any $\lambda\ge 0$. This means that $K$ is a cone.
+    \item $a\succeq_K0$ and $b\succeq_K0$ implies $a+b\succeq_K0$. This means that $K$ is closed under addition. 
+\end{itemize}
+This simply means that the linear combination of two elements of the set stays in the set.
+\begin{itemize}
+    \item [$\rightarrow$] Note: Any set satisfying those two properties must be convex. Moreover, for a cone, those properties and convexity are equivalent. 
+\end{itemize}
+\subsection{Conic hull}
+\begin{definition}
+    Given a convex set $X\subseteq \R^n$ in dimension $n$, its conic hull is the following set in $n+1$ dimensions:
+    \begin{equation}
+        \text{conic hull }X = cl\left\{(x,t)\in \R^n\times \R \text{ such that } t>0 \text{ and }\frac{x}{t}\in X\right\}
+    \end{equation}
+\end{definition}
+\begin{thm}
+    The conic hull is always a close cone, and a set is convex iff its conic hull is convex.
+\end{thm}
+Hence the convew problem \eqref{eq:short_step} is equivalent to 
+\begin{equation}
+    \min_{x,t} \begin{pmatrix}
+        c & 0
+    \end{pmatrix}\begin{pmatrix}
+        x\\t \\
+    \end{pmatrix} \text{ such that }
+    \begin{cases}
+        \begin{pmatrix} x \\t\\ \end{pmatrix}
+        \in \text{ conic hull}\\
+        t = 1    
+    \end{cases}
+\end{equation}
 \end{document}
