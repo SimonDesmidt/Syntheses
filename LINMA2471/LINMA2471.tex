@@ -492,7 +492,39 @@ Hence, after at most $k \le \lceil 6(f(x_0)-f(x^*))\rceil$, we must have $\delta
 \begin{equation}
     \mathcal{O}(f(x_0)-f(x^*)) + \mathcal{O}(\log \log \frac{1}{\epsilon}) \text{   iterations}
 \end{equation}
-\textcolor{red}{DO CM9 SI PAS ENCORE FAIT}
+\section{Interior-point methods}
+Let $f:\R^n\rightarrow \R$ be a convex function and $C\subseteq \R^n$ be a closed convex set. We want to optimize 
+\begin{equation}
+    \inf_{x\in \R^n} c^Tx \text{ such that }x\in C 
+\end{equation}
+Interior-point methods consist in approximating the constrained problem by a family of unconstrained problems, using a barrier function $F$ to replace $x\in C$. 
+\subsection{Central path}
+Let $\mu>0$ be a scalar parameter and consider 
+\begin{equation}\label{eq:central_path}
+    \inf_{x\in \R^n} \frac{c^Tx}{\mu} + F(x) = f_\mu(x)
+\end{equation}
+The solution $x_\mu^*$ tends to $x^*$ the solution of the initial problem, as $\mu$ tends to 0. \\
+
+To compute $x_\mu^*$, we can use Newton steps, solving 
+\begin{equation}
+    \frac{c}{\mu}+\nabla F(x) = 0
+\end{equation}
+\subsubsection{Accuracy}
+Assume $f$ is a $\nu$-self-concordant barrier. We have the property 
+\begin{equation}
+    c^Tx_\mu -c^T x^* \le \nu \mu \qquad \forall \mu>0
+\end{equation}
+\begin{thm}
+    Assume $x$ is such that $\delta_\mu(x)\le \tau <1$. Then,
+    \begin{equation}
+        c^Tx-c^Tx^* <\frac{\nu \mu}{1-\tau}
+    \end{equation}
+    We can thus choose $\mu_{final}$ as the solution to 
+    \begin{equation}
+        \frac{\nu\mu}{1-\tau} = \epsilon
+    \end{equation}
+    guaranteeing a final $\epsilon$ accuracy on the linear objective.
+\end{thm}
 \section{Short-step algorithm}
 \begin{equation}\label{eq:short_step}
     \min c^Tx \text{ such that }x\in C
@@ -511,6 +543,13 @@ Let $F$ be a $\nu$-self-concordant barrier such that $dom(F)=int(C)$
         \EndWhile 
     \end{algorithmic}
 \end{algorithm}
+\begin{prop}
+    The total number of iterations until the algorithm stops is 
+    \begin{equation}
+        N = \left\lceil \log_{1-\theta} \left(\frac{\mu_f}{\mu_0}\right)\right\rceil
+    \end{equation}
+\end{prop}
+The complexity of the short-step method is $\mathcal{O}(\sqrt{\nu}\log \frac{1}{\epsilon})$ iterations. 
 \subsection{Initialization}
 \begin{itemize}
     \item To pick a reasonable $\bar x$, we can take an element of $int(C)$, not necessarily close to the central path;
@@ -596,15 +635,26 @@ The generalized dual linear optimization problem is
 \end{equation}
 \subsection{Requirements for an order}
 An order $\succeq$ or $\preceq$ must verify two properties:
-\begin{itemize}
+\begin{enumerate}
     \item $a\succeq_K0\Rightarrow \lambda a\succeq_K0$ for any $\lambda\ge 0$. This means that $K$ is a cone.
-    \item $a\succeq_K0$ and $b\succeq_K0$ implies $a+b\succeq_K0$. This means that $K$ is closed under addition. 
-\end{itemize}
-This simply means that the linear combination of two elements of the set stays in the set.
+    \item $a\succeq_K0$ and $b\succeq_K0$ implies $a+b\succeq_K0$. This means that $K$ is closed under addition. \\
+    
+    This simply means that the linear combination of two elements of the set stays in the set.
+    \item We require $x\succeq_K0$ and $x\preceq_K0\Longrightarrow x=0$.
+    \item Define the strict inequality by $a\succ_K0\Leftrightarrow a\in int(K)$. We require that $int(K) \neq \emptyset$, i.e. the cone is solid.
+    \item We want the limits to preserve the order:
+    \begin{equation}
+        \lim_{i\rightarrow \infty} x_i = \bar x \text{ with }x_i\succeq_K0 \:\forall i \Rightarrow \bar x \succeq_K0
+    \end{equation}
+\end{enumerate}
 \begin{itemize}
-    \item [$\rightarrow$] Note: Any set satisfying those two properties must be convex. Moreover, for a cone, those properties and convexity are equivalent. 
+    \item [$\rightarrow$] Note: Any set satisfying those two first properties must be convex. Moreover, for a cone, those properties and convexity are equivalent. 
 \end{itemize}
-\subsection{Conic hull}
+A cone is proper if it is solid, pointed and closed. 
+\begin{itemize}
+    \item [$\rightarrow$] Note: If $K_1,K_2$ are proper cones, then $K_1\times K_2$ also is. 
+\end{itemize}
+\section{Conic hull}
 \begin{definition}
     Given a convex set $X\subseteq \R^n$ in dimension $n$, its conic hull is the following set in $n+1$ dimensions:
     \begin{equation}
@@ -627,4 +677,220 @@ Hence the convew problem \eqref{eq:short_step} is equivalent to
         t = 1    
     \end{cases}
 \end{equation}
+\subsection{Examples of cones}
+\begin{itemize}
+    \item The only convex cones in $\R$ are $\emptyset, \R,\R_+,\R_-$. 
+    \item In $\R^2$, a convex cone is either $\emptyset, \R^2$, a line through the origin, or a region between two half-lines from the origin, with an angle of less than $\pi$. 
+    \item Lorentz-cone: $\mathbb{L}^n = \{(x_0,\dots,x_n)\in \R^{n+1}|\sqrt{x_1^2+\dots+x_n^2}\le x_0\}$. 
+    \item Semi-definite cone: $K=\mathbb{S}_+^n$, i.e. the set of symmetric positive semidefinite matrices. 
+\end{itemize}
+\section{Dual cone}
+Given a convex cone $K$, the dual cone $K^*$ is defined as
+\begin{equation}
+    K^* = \{z\in \R^n\text{ such that } x^Tz \ge 0 \: \forall x\in K\}
+\end{equation}
+$K^*$ is always a convex cone, even if $K$ is not, it is always closed and, if $K$ is closed, then $(K^*)^* = K$. \\
+$K^*$ is pointed if $K$ is solid and solid if $K$ is pointed. Therefore, if $K$ is proper, then $K^*$ is too. \\
+We can now define the dual problem. 
+\subsection{Primal-Dual pair of conic problems}
+\begin{equation}
+    \begin{aligned}
+        \min c^Tx \text{ such that } Ax=b\text{ and }x\succeq_K0\\
+        \max b^Ty \text{ such that } A^Ty\preceq_K c\\
+    \end{aligned}
+\end{equation}
+Some cones are self-dual:
+\begin{itemize}
+    \item $(\R_+^n)^* = \R_+^n$;
+    \item $(\mathbb{L}^n) = \mathbb{L}^n$;
+    \item $(\mathbb{S}_+^n)^* = \mathbb{S}_+^n$;
+\end{itemize}
+and the cartesian product works with duality: $(K_1\times K_2)^* = K_1^* \times K_2^*$.
+\begin{thm}
+    If $x$ is feasible for the primal problem and $y$ is feasible for the dual problem, then inequality $b^Ty \le c^tx$ holds. This is weak duality. 
+\end{thm}
+\begin{thm}
+    If both problems admit feasible solutions, the primal optimal value $p^*$ and dual optimal value $d^*$ are finite and satisfy $d^*\le p^*$. If both problems admit feasible solutions $x$ and $y$ such that $c^Tx=b^Ty$, then both $x$ and $y$ are optimal.
+\end{thm}
+\begin{thm}
+    The dual of an unbounded problem is infeasible.
+\end{thm}
+\begin{itemize}
+    \item [$\rightarrow$] Note: Strong duality does not hold in general for conic optimization.
+\end{itemize}
+\section{Strong duality}
+\begin{definition}
+    A feasible solution to a conic problem is stricly feasible iff it belongs to the interior of the cone:
+    \begin{itemize}
+        \item $x$ is strictly feasible for the primal iff we have both $Ax=b$ and $x\succeq_K0$;
+        \item $y$ is strictly feasible for the dual iff $A^Ty\prec_{K^*}c$.
+    \end{itemize}
+\end{definition}
+\begin{thm}
+    If both the primal and the dual problems admit a strictly feasible solution, they are both solvable and their optimal solutions $x^*$ and $y^*$ satisfy $c^Tx^*=b^Ty^*$.
+\end{thm}
+\section{Cones and barriers}
+\subsection{Nonegative/linear cone}
+\begin{equation}
+    \R_+=\{x\in\R \text{ such that }x\ge 0\}
+\end{equation}
+The associated self-concordant barrier with parameter $\nu=1$ is 
+\begin{equation}
+    int \: \R_+ \rightarrow \R:x\rightarrow -\log x
+\end{equation}
+In $\R^n$, this becomes $K=\R_+^n$ with $\nu=n$. 
+\subsection{Second order cone}
+\begin{equation}
+    \mathbb{L}^n = \{(x_0,\dots,x_n)\in \R^{n+1}|\lVert x_1^2+\dots+x_n^2\rVert\le x_0\}
+\end{equation}
+The corresponding self-concordant barrier with parameter $\nu=2$ is 
+\begin{equation}
+    int \: \mathbb{L}^n \rightarrow \R :\: x \rightarrow -\log(x_0^2-x_1^2 - \dots-x_n^2)
+\end{equation}
+\subsection{Rotated second-order cone}
+\begin{equation}
+    \mathbb{L}_R^n = \{(x_1,\dots,x_n,y,z)\in \R^n\times \R^2_+ \text{ such that }2yz \ge \lVert (x_1,\dots,x_n)\rVert^2\}
+\end{equation}
+The corresponding self-concordant barrier with parameter $\nu=2$ is 
+\begin{equation}
+    int \: \mathbb{L}_R^n \rightarrow \R :\: x \rightarrow -\log(2yz-x_1^2 - \dots-x_n^2)
+\end{equation}
+The rotated second-order cone is equivalent to a quadratic cone:
+\begin{equation}
+    (x_1,\dots,x_n,y,z)\in \mathbb{L}_R^n \Longleftrightarrow \left(\frac{y+z}{\sqrt{2}}, x_1,\dots,x_n,\frac{y-z}{\sqrt{2}}\right)\in \mathbb{L}^{n+1}
+\end{equation}
+\subsection{Exponential cone}
+\begin{equation}
+    \mathbb{E} = cl\{(x,y,z)\in \R^3\text{ such that }z\ge ye^{x/y} \text{ and } y>0\}
+\end{equation}
+The associated self-concordant barrier with parameter $\nu=3$ is
+\begin{equation}
+    int \: \mathbb{E} :(x,y,z) \rightarrow -\log (z-ye^{x/y})-\log y-\log z
+\end{equation}
+\subsection{Power cone}
+Given a parameter $0<\alpha<1$, the power cone is 
+\begin{equation}
+    \mathbb{P}_\alpha = \{(x,y,z)\in \R^3 \text{ such that }x^\alpha y^{1-\alpha}\ge |z| \text{ and }x\ge0,y\ge0\}
+\end{equation}
+The associated self-concordant barrier with parameter $\nu=4$ is
+\begin{equation}
+    int \: \mathbb{P}_\alpha :(x,y,z) \rightarrow -\log (x^{2\alpha} y^{2-2\alpha}-z^2)-\log x -\log y 
+\end{equation}
+\begin{itemize}
+    \item [$\rightarrow$] Note: the power cone with $\alpha=1/2$ is the rotated second-order cone.
+\end{itemize}
+\subsection{Handling p-norms}
+The inequality $\lVert u\rVert_p \le t$ is not the same as $\lVert u\rVert_p^p \le t^p$. It is rather equivalent to 
+\begin{equation}
+    \lVert u\rVert_p \le t \Longleftrightarrow |u_i| \le t_i^{1/p}t^{1-1/p} \qquad \sum_i t_i = t
+\end{equation}
+\section{Duals of cones}
+\begin{itemize}
+    \item Linear cone: $(\R_+)^* = \R_+$;
+    \item Quadratic cone: $(\mathbb{L}^n)^* = \mathbb{L}^n$;
+    \item Power cone: $(\mathbb{P}_\alpha)^* = \{(u,v,w)\in \R_+\times \R_+\times \R \: |w| \le \left(\frac{u}{\alpha}\right)^\alpha \left(\frac{v}{1-\alpha}\right)^{1-\alpha}\}$;
+    \item Exponential cone: $(\mathbb{E})^* = cl\{(u,v,w)\in \R_- \times \R\times \R_+\: : w\ge -ue^{v/u-1}\le 0\}$.
+\end{itemize}
+\section{Computing a dual problem}
+\begin{equation}
+    \min_z z^TQz \text{ such that }Gz\le f 
+\end{equation}
+with $Q\in \mathbb{S}_+^n$ and $G\in \R^{m\times n}$.
+\subsection{Write a conic formulation}
+\begin{enumerate}
+    \item Make the objective linear using the epigraph technique:
+    \begin{equation}
+        \min_{z\in \R^n,t\in \R} t \text{ such that }Gz\le f\text{ and } z^TQz\le t
+    \end{equation}
+    \item Represent the constraints with cones: $K_1 =\R^m_+$ and $K_2 = \mathbb{L}_R$;
+    \item Define the dual variable: $y=\begin{pmatrix}
+        z\\t
+    \end{pmatrix} \in \R^n\times \R$;
+    \item Use $Q=LL^T$ for a change of variables. 
+\end{enumerate}
+\subsection{Derive the dual problem}
+\begin{enumerate}
+    \item Write the dual with the usual formula;
+    \item Simplify the dual.
+\end{enumerate}
+\section{Duality application}
+Duality is often the only way to 
+\begin{itemize}
+    \item Establish a lower bound for a min problem or an upper bound in a max problem;
+    \item Certify optimality of a given problem;
+    \item Derive properties of optimal solutions without computing them.
+\end{itemize}
+\subsection{Optimal value functions}
+Consider a conic problem with fixed cone $K$ and matrix $A$. We define the primal and dual values 
+\begin{equation}
+    \begin{aligned}
+        p^*(b,c) &= \min c^Tx \text{ such that } Ax=b \text{ and }x\succeq_K0\\
+        d^*(b,c) &= \max b^Ty \text{ such that }A^Ty\preceq_{K^*}0
+    \end{aligned}
+\end{equation}
+Function $d^*$ is convex in $b$ when $c$ is fixed, and function $p^*$ is concave in $c$ when $b$ is fixed. By strong duality, $p^*(b,c)=d^*(b,c)$, hence both functions are convex in $b$ and concave in $c$. \\
+
+Let us define 
+\begin{equation}
+    f_c(b) \coloneqq p^*(b,c)
+\end{equation}
+and $y_c^*(b)$ the optimal solution of the dual for any $b$. As $d^*$ is linear in $b$, and since strong duality implies $f_c(b) = d^*(b,c)$, 
+\begin{equation}
+    f_c(b+\Delta b) \ge f_c(b)+y_c^*(b)^T\Delta b
+\end{equation}
+meaning that $y_c^*(b)$ is a subgradient of $f_c(b)$. Therefore, dual variables tell how the objective value changes when $b$ is modified, and when the dual has a unique solution, $y_c(b)$ is the gradient of $f_c(b)$. The same reasoning holds when $b$ is fixed:$x_b^*(c)$ is a sup-gradient of $g_b(c)\coloneqq p^*(b,c)$ and is its gradient if it is unique. \\
+The sensitivity to coefficients of $A$ can also be computed (not here).
+\subsection{Robust optimization}
+Consider a single constraint $\alpha^Ty\le b$ where $\alpha$ is not known precisely and belongs to an uncertainty set $\mathcal{A} \coloneqq \{\alpha | C\alpha \succeq_K d\}$. We want to find solutions such that the constraint holds for any $\alpha\in \mathcal{A}$. \\
+It is equivalent to requiring that 
+\begin{equation}
+    \alpha^Ty\le b\:\forall \alpha\in \mathcal{A}\Longleftrightarrow \left[\max_{\alpha\in \mathcal{A}} \alpha^Ty \right] \le b
+\end{equation}
+Which can be converted into the easier (conic dual) problem 
+\begin{equation}
+    \left[\min_{x\succeq_{K^*}0}d^Tx \text{ such that }C^Tx = y\right] \le b
+\end{equation}
+With this formulation, we only need to find ONE $x$ verifying the property, because if there exists one, then the min verifies it too. \\
+In summary, a robust constraint is equivalent to the finite constraint 
+\begin{equation}
+    \exists x\text{ such that }d^Tx \le b\text{ and }C^Tx = y,x\succeq_{K^*}0
+\end{equation}
+\section{Semidefinite optimization}
+The semidefinite cone is the cone of positive semidefinite matrices.
+\begin{itemize}
+    \item $S$ is positive semidefinite iff 
+    \begin{itemize}
+        \item all eigenvalues are nonnegative;
+        \item the quadratic form $x^TSx$ is always nonnegative;
+        \item there exists a factorization $S=BB^T$.
+    \end{itemize}
+    \item The inner product is defined by 
+    \begin{equation}
+        \langle S,T\rangle = tr(S^TT)
+    \end{equation}
+    \item The induced norm is the Frobenius norm.
+    \item With that inner product, the cone is self-dual. 
+\end{itemize}
+Working with matrices, the problem is
+\begin{equation}
+    \min C \bullet X \text{ such that }A_i \bullet X = b_i \text{ and } X\succeq 0
+\end{equation}
+and its dual becomes 
+\begin{equation}
+    \max b^Ty \text{ such that }\sum_{i=1}^m A_i y_i \preceq C
+\end{equation}
+\begin{itemize}
+    \item The primal variable is a matrix, but the dual is a vector;
+    \item $A_i\in \mathcal{S}^n$, $1\le i \le m$ are $m$ symmetric.
+\end{itemize}
+\subsection{Applications}
+\begin{itemize}
+    \item An ellipsoid of center $c$ is defined as 
+    \begin{equation}
+        \mathcal{E} = \{x\text{ such that }(x-c)^TE(x-c) \le 1\}
+    \end{equation}
+    with $E$ positive semidefinite.
+    \item Semidefinite constraints can exert control over the eigenvalues of the variable matrix $S$: $\lambda_{\min}(S) \ge a \Longleftrightarrow S-aI \succeq 0$.
+\end{itemize}
+
 \end{document}
