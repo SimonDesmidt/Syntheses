@@ -9,63 +9,37 @@
 \usepackage{libertine}
 \usepackage{graphicx}
 \usepackage{wrapfig}
-\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{float}
 \usepackage{enumitem}
 \usepackage{pythonhighlight}
 \usepackage[]{titletoc}
-\usepackage{amsbsy}
 \usepackage{empheq}
 \usepackage{titlesec}
 \usepackage{mathpazo}
 \usepackage{xfrac}
 \usepackage{textcomp}
 \usepackage{mathtools}
-\usepackage{hyperref}
 \usepackage{caption}
 \usepackage{tabularray}
 \usepackage{subcaption}
 \usepackage[bottom]{footmisc}
 \usepackage{pdfpages}
 \usepackage{tabularx}
+\usepackage{amsthm}
 \usepackage[skins]{tcolorbox}
-
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
-\newtheorem{exmp}[thm]{Example} 
 \newtheorem{lem}[thm]{Lemma}
-\newtheorem{crl}[thm]{Corollary}
-
-\titleformat{\chapter}[display]
-  {\normalfont\bfseries}{}{0pt}{\Huge}
-\newcommand{\hsp}{\hspace{20pt}}
-\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
-\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
-\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\C}{\mathbb{C}}
-% Define a new tcolorbox style with a red border and transparent interior
-\tcbset{
-    redbox/.style={
-        enhanced,
-        colframe=red,
-        colback=white,
-        boxrule=1pt,
-        sharp corners,
-        before skip=10pt,
-        after skip=10pt,
-        box align=center,
-        width=\linewidth-2pt, % Adjust the width dynamically
-    }
-}
-\newcommand{\boxedeq}[1]{
-\begin{tcolorbox}[redbox]
-    \begin{align}
-        #1
-    \end{align}
-\end{tcolorbox}
-}
 
 \hbadness=100000
 \begin{document}
@@ -93,7 +67,7 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-\chapter{Polynomials}
+\chapter{Polynomial interpolation}
 \(\mathcal{P}_n\) is the set of all real polynomials of degree at most \(n\). 
 \begin{itemize}
     \item The Runge phenomenon is the explosion of the polynomial near the boundary of the domain when the interpolation points are chosen to be equidistant. A solution to that is to put more points near the boundary and less in the middle of the domain, e.g. Chebyshev points.
@@ -101,17 +75,37 @@
 \section{Lagrange interpolation}
 Let \(x_0,\dots,x_n\) be distinct real numbers. The Lagrange polynomial \(L_k\) of degree \(n\) is such that it is equal to 0 for all \(x_i\), \(i\neq k\) and \(1\) for \(x_k\). This serves as a base for the next interpolations. The general formula for the Lagrange polynomial is 
 \begin{equation}
-    L_k(x) = \prod_{i=0\\i\neq k}^n \frac{x-x_i}{x_k-x_i}\qquad k=0,1,\dots,n
+    L_k(x) = \prod_{\substack{i=0\\ i\neq k}}^n \frac{x-x_i}{x_k-x_i}\qquad k=0,1,\dots,n
 \end{equation}
 \begin{itemize}
-    \item N.B.: we usually denote \(L_k(x;x_0,\dots,x_n)\) or let \(\chi = (x_0,\dots,x_n)\) and \(L_k(x;\chi)\). 
+    \item Note: we usually denote \(L_k(x;x_0,\dots,x_n)\) or let \(\chi = (x_0,\dots,x_n)\) and \(L_k(x;\chi)\). 
 \end{itemize}
+\begin{thm}
+    Assume that $n\ge 0$. Let $x_i,i=0,\dots,n$ be distinct real number and suppose that $y_i,i=0,\dots,n$ are real numbers. Then, there is a unique polynomial $p_n\in \mathcal{P}_n$ such that $p_n(x_i)=y_i$ for all $i=0,\dots,n$.
+\end{thm}
+\begin{definition}
+    The polynomial $p_n$ defined by 
+    \begin{equation}\label{eq:lagrange}
+        p_n(x) = \sum_{k=0}^n y_kL_k(x)
+    \end{equation}
+    with $L_k$ the Lagrange polynomial ($L_0(x) \equiv 1$), is the Lagrange interpolation polynomial of degree $n$ for the points $(x_i,y_i),i=0,\dots,n$.
+\end{definition}
+\begin{thm}
+    Let $f:\R\mapsto \R$, $f\in \mathcal{C}^{n+1}[a,b]$. Then, given that $x\in[a,b]$, there exists $\xi=\xi(x)$ on $(a,b)$ such that 
+    \begin{equation}
+        f(x)-p_n(x) = \frac{f^{(n+1)}(\xi)}{(n+1)!}\pi_{n+1}(x)
+    \end{equation}
+    where $\pi_{n+1} = \prod_{i=0}^n(x-x_i)$. Moreover, 
+    \begin{equation}
+        |f(x)-p_n(x)| \le \frac{M_{n+1}}{(n+1)!}|\pi_{n+1}(x)| \qquad M_{n+1} = \max_{\zeta \in [a,b]}|f^{(n+1)}(\zeta)|
+    \end{equation}
+\end{thm}
 \section{Hermite interpolation}
 Let \(x_0,\dots,x_n\) be distinct real numbers. Then, given two sets of real numbers \((y_0,\dots y_n)\) and \((z_0,\dots,z_n)\), there is a unique polynomial \(p_{2n+1}\in \mathcal{P}_{2n+1}\) such that 
 \begin{equation}
     p_{2n+1} (x_i) = y_i \qquad p_{2n+1}'(x_i) =z_i \qquad i=0,\dots,n
 \end{equation}
-The polynomial \(p_{2n+1}\) is termed the Hermite interpolation polynomial of degree at most \(2n+1\) for the data points \((x_0,y_0,z_0),\dots,(x_n,y_n,z_n)\). The expression is 
+The polynomial \(p_{2n+1}\) is called the Hermite interpolation polynomial of degree at most \(2n+1\) for the data points \((x_0,y_0,z_0),\dots,(x_n,y_n,z_n)\). The expression is 
 \begin{equation}
     p_{2n+1}(x) = \sum_{k=0}^n \left(H_k(x)y_k + K_k(x)z_k\right) \qquad \begin{cases}
         H_k(x) = (L_k(x))^2(1-2L'_k(x_k)(x-x_k))\\
@@ -122,6 +116,7 @@ where \(L_k(x)\) is the Lagrange polynomial.
 \begin{itemize}
     \item The \(H_k(x)\) are such that their derivative is zero for all \(x_i\), and their value is zero for all \(x_i\) except \(x_k\), where it is 1.\[H_k(x_i) = \delta_{ik}\qquad H_k'(x_i) = 0 \qquad \forall i\]
     \item The \(K_k(x)\) are such that their derivative is zero for all \(x_i\) except \(x_k\) where it is one, and their value is zero for all \(x_i\).\[K_k(x_i) = 0\qquad K_k'(x_i) = \delta_{ik} \qquad \forall i\]
+    \item [$\rightarrow$] Note: for $n=0$, we define $H_0(x)\equiv 1$ and $K_0(x)\equiv x-x_0$.
 \end{itemize}
 \section{Neville's algorithm}
 Let us assume we are given a set of support points \((x_i,y_i)\), \(i=0,1,\dots,n\), and \(p_n\) is their Lagrange interpolation polynomial. Let us now define the notation \(P_{i_0i_1\dots i_k}\in \mathcal{P}_k\), the polynomial for which \(P_{i_0i_1\dots i_k}(x_{i_j})=y_{i_j}\)  for all \(j=0,1,\dots,k\). We work by recursion, with the following formula:
@@ -174,7 +169,7 @@ This is called a Vandermonde matrix, and its determinant is
 \end{equation}
 which is always non zero, as the \(x_i\) are disinct, and the system has one unique solution. 
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: the condition number\footnote{It is a measure of the reaction of the system to a small perturbation} of such a matrix grows exponentially with \(n\). 
+    \item [\(\rightarrow\)] Note: the condition number\footnote{It is a measure of the reaction of the system to a small perturbation} of such a matrix grows exponentially with \(n\). 
 \end{itemize}
 \section{Barycentric interpolation formula}
 This formula is interesting, because it is numerically stable, contrary to the linear algebra method described before. We use the following notation, called the nodal polynomial:
@@ -200,7 +195,7 @@ Let us consider the evenly spaced points \(x_j = \frac{2\pi j}{N}\), \(j=0,\dots
     p(x) = \sum_{k=0}^{N-1}\beta_ke^{ikx}\text{ such that } p(x_j) = f_j\qquad j=0,\dots,N-1
 \end{equation}
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: the bound is \(N-1\) because the last condition \(p(x_N) = f_N\) is satisfied when the others are (periodicity). 
+    \item [\(\rightarrow\)] Note: the bound is \(N-1\) because the last condition \(p(x_N) = f_N\) is satisfied when the others are (periodicity). 
 \end{itemize}
 This is equivalent to the generalization to \(\mathbb{C}\) of the polynomial interpolation problem: if we denote \(\omega \coloneqq e^{ix}\), the complex polynomial is 
 \begin{equation}
@@ -237,7 +232,186 @@ The theorem of uniqueness states that if \(\Phi_1\) and \(\Phi_2\) are non trivi
     \item \(p_\mu,q_\nu\) are relatively prime if they do not have zeros in common.
 \end{itemize}
 Given \(\Phi = \frac{p_\mu}{q_\nu}\), let \(\tilde{\Phi}=\frac{\tilde{p}\mu}{\tilde{q}_\nu}\) be the equivalent expression for which \(\tilde{p}_\mu\) and \(\tilde{q}_\nu\) are relatively prime. \(\Phi\) is the solution of \eqref{eq:rational} \(\Longleftrightarrow \tilde{p}_\mu(x_i)-y_i \tilde{q}_\nu(x_i)=  0\), \(i=0,\dots,\mu+\nu\).  
-\chapter{Splines}
+\chapter{Polynomial approximation}
+\section{Definitions}
+\begin{definition}
+    Suppose that $w\in \mathcal{C}[a,b]$ is integrable on $(a,b)$. The set $\mathcal{C}[a,b]$ is a normed linear space equipped with the norm
+    \begin{equation}
+        \lVert f\rVert_2^2 = \int_a^b w(x)|f(x)|^2dx
+    \end{equation}
+\end{definition}
+\begin{lem}
+    For a given interval $[a,b]$,
+    \begin{equation}
+        \lVert f\rVert_2 \le W\lVert f\rVert_\infty \qquad \qquad W = \left[\int_a^b w(x)dx\right]^{1/2}
+    \end{equation}
+\end{lem}
+\begin{itemize}
+    \item [$\rightarrow$] Note: the 2- and $\infty$-norms are equivalent with vectors but not for functions. Hence they are not interchangeable in this course. 
+\end{itemize}
+\begin{thm}\label{thm:weierstraß}
+    Suppose $f:\R\mapsto\R$, $f\in \mathcal{C}[a,b]$. Then, given any $\epsilon>0$, there exists a polynomial $p$ such that $\lVert f-p\rVert_\infty<\epsilon$. It also holds for the 2-norm if $f$ is positive on $[a,b]$.
+\end{thm}
+\section{Best approximation in the \texorpdfstring{$\infty$}{infinity}-norm}
+\begin{definition}
+    A polynomial f best approximation of degree $n$ to the function $f$ in the $\infty$-norm is $p_n\in \mathcal{P}_n$ such that 
+    \begin{equation}
+        \lVert f-p_n\rVert_\infty = \inf_{q\in \mathcal{P}_n} \lVert f-q\rVert_\infty
+    \end{equation}
+\end{definition}
+\begin{thm}
+    Given that $f\in \mathcal{C}[a,b]$, there exists a polynomial $p_n\in \mathcal{P}_n$ such that $\lVert f-p_n\rVert_\infty = \min_{q\in \mathcal{P}_n} \lVert f-q\rVert_\infty$.
+\end{thm}
+We call this polynomial the minimax polynomial.
+\begin{thm}\textbf{De la Vall\'ee Poussin's theorem}
+    Let $f\in \mathcal{C}[a,b]$ and $r\in \mathcal{P}_n$. Suppose that there exists $n+2$ points $x_0<\dots<x_{n+1}$ in the interval $[a,b]$ such that $f(x_i)-r(x_i)$ and $f(x_{i+1})-r(x_{i+1})$ have opposite signs. Then,
+    \begin{equation}
+        \min_{q\in \mathcal{P}_n} \lVert f-q\rVert_\infty \ge \min_{i=0,\dots,n+1} |f(x_i)-r(x_i)|
+    \end{equation}
+\end{thm}
+\begin{thm}
+    Suppose that $f\in \mathcal{C}[a,b]$. A polynomial $r\in \mathcal{P}_n$ is a minimax polynomial for $f$ on $[a,b]$ iff there exists a sequence of $n+2$ points $x_i$, $i=0,\dots,n+1$ such that $a\le x_0<\dots<x_{n+1}\le b$, 
+    \begin{equation}
+        \begin{aligned}
+            |f(x_i)-r(x_i)| &\le \lVert f-r\rVert_\infty \qquad i=0,\dots,n+1\\
+            f(x_i)-r(x_i) &= - [f(x_{i+1})+r(x_{i+1})] \qquad i=0,\dots,n
+        \end{aligned}
+    \end{equation}
+\end{thm}
+This means that $f-r$ attains its maximum absolute value with alternating signs at the points $x_i$. These are called the critical points. 
+\begin{thm}
+    Suppose that $[a,b]$ is a bounded closed interval. Each $f\in \mathcal{C}[a,b]$ has a unique minimax polynomial $p_n\in \mathcal{P}_n$ on $[a,b]$. 
+\end{thm}
+\section{Chebyshev polynomials}
+\begin{definition}
+    The Chebyshev polynomial $T_n$ of degree $n$ is defined, for $x\in [-1,1]$, by 
+    \begin{equation}
+        T_n(x) = \cos(n\arccos(x)) \qquad n=0,1,\dots
+    \end{equation}
+\end{definition}
+Using some trigonometric formulae, there exists a recurrence relation for the Chebyshev polynomials:
+\begin{equation}
+    T_{n+1}(x) = 2xT_n(x)-T_{n-1}(x)\qquad n=1\dots \qquad x\in [-1,1]
+\end{equation}
+with $T_0(x) \equiv 1$ and $T_1(x) = x$.
+\begin{lem}
+    The Chebyshev polynomials have the following properties:
+    \begin{itemize}
+        \item For $n\ge 1$, $T_n$ is a polynomial in $x$ of degree $n$ on the interval $[-1,1]$, with leading coefficient $2^{n-1}x^n$;
+        \item $T_n$ is an even (resp. odd) function on $[-1,1]$ if $n$ is even (resp. odd);
+        \item For $n\ge 1$, the zeros of $T_n$ are 
+        \begin{equation}
+            x_j = \cos\frac{(2j-1)\pi}{2n}\qquad j=1,\dots,n
+        \end{equation}
+        \item $|T_n(x)| \le 1$ for all $x\in [-1,1]$ and all $n\ge 0$;
+        \item For $n\ge1$, $T_n(x) = \pm 1$, alternately at the $n+1$ points $x_k = \cos(\frac{k\pi}{n})$, $k=0,\dots,n$.
+    \end{itemize}
+\end{lem}
+\begin{thm}
+    Suppose that $n\ge 0$. The polynomial $p_n\in \mathcal{P}_n$ defined by 
+    \begin{equation}
+        p_n(x) = x^{n+1}-2^{-n}T_{n+1}(x) \qquad x\in [-1,1]
+    \end{equation}
+    is the minimax approximation of degree $n$ to the function $x\mapsto x^{n+1}$ on the interval $[-1,1]$.
+\end{thm}
+This implies that among all monic polynomials of degree $n+1$, the polynomials $2^{-n}T_{n+1}(x)$ and $-2^{-n}T_{n+1}(x)$ have the smallest $\infty$-norm on the interval $[-1,1]$.
+\subsection{The exchange algorithm}
+Let $f\in \mathcal{C}[a,b]$. The exchange algorithm calculates the element $p^*\in \mathcal{P}_n$ that minimizes the maximum error $\lVert f-p\rVert_\infty$.
+\begin{algorithm}
+    \caption{Exchange algorithm} \label{algo:exchange}
+    \begin{algorithmic}[1]
+        \State Choose a reference $\{\xi_i : i=0,\dots,n+1\}$ that satisfies the condition $a\le \xi_0<\xi_1<\dots<\xi_{n+1}\le b$.
+        \While {$\delta = |f(\eta)-p(\eta)| - |h|$ not small enough}\\
+        $\qquad$ Solve, for $h\in \R$ and $p\in \mathcal{P}_n$, 
+        \begin{equation}
+            f(\xi_i)-p(\xi_i)=(-1)^i h\qquad i=0,\dots,n+1
+        \end{equation} \\
+        $\qquad$ Compute a point $\eta \in [a,b]$ that realizes the maximum error, i.e. $|f(\eta)-p(\eta)| = \lVert f-p\rVert_\infty$.\\
+        $\qquad$ Replace a point of the reference by $\nu$ in such a way that the new reference satisfies 
+        \begin{equation}
+            \text{sign}(f(\xi_{i+1})-p(\xi_{i+1})) = -\text{sign}(f(\xi_i)-p(\xi_i)) \qquad i=0\dots, n
+        \end{equation}	
+    \EndWhile 
+    \end{algorithmic}
+\end{algorithm}
+
+\section{Interpolation}
+\begin{thm}
+    Suppose that $f\in \mathcal{C}^{n+1}[a,b]$. Let $p_n\in \mathcal{P}_n$ denote the Lagrange interpolation polynomial of $f$, with interpolation points being the zeros of the Chebyshev polynomial:
+    \begin{equation}
+        \xi_j = \frac{1}{2}(b-a)\cos\frac{(j+\frac{1}{2})\pi}{n+1} + \frac{1}{2}(b+a)\qquad j=0,\dots,n
+    \end{equation}
+    then, 
+    \begin{equation}
+        \lVert f-p_n\rVert_\infty\le \frac{(b-a)^{n+1}}{2^{2n+1}(n+1)!} M_{n+1}
+    \end{equation}
+\end{thm}
+\subsection{Best approximation in the 2-norm}
+The polynomial of best approximation of degree $n$ to the function $f$ in the 2-norm on $(a,b)$ is $p_n\in \mathcal{P}_n$ such that 
+\begin{equation}
+    \lVert f-p_n\rVert_2 = \inf_{q\in \mathcal{P}_n} \lVert f-q\rVert_2
+\end{equation}
+\subsubsection{Inner product}
+The set $\mathcal{C}[a,b]$ is an inner product space with 
+\begin{equation}\label{eq:inner_prod}
+    \langle f,g\rangle = \int_a^b w(x)f(x)g(x)dx
+\end{equation}
+where $w(x)\in \mathcal{C}[a,b]$ is the weight function, positive and integrable on $(a,b)$. 
+\begin{definition}
+    A norm is strictly convex if 
+    \begin{equation}
+        \forall p,\forall q\neq p, \qquad \lVert p\rVert \le r ,\lVert q\rVert \le r \Longrightarrow \left\rVert \frac{p+q}{2}\right\rVert < r
+    \end{equation}
+\end{definition}
+The max-norm is not strictly convex.\\
+
+The objective of this section is to minimise the error of the approximation in the 2-norm, defined as
+\begin{equation}
+    E(c) = \lVert e_n\rVert_2^2 = \lVert f-p_n\rVert_2^2 = \int_0^1 |f(x)-p_n(x)|^2dx
+\end{equation}
+$c$ being the coefficient vector for the polynomial $p_n$. \\
+To minimise this quantity, we solve
+\begin{equation}
+    \sum_{k=0}^n M_{jk}c_k = b_j \qquad j=0,\dots,n
+\end{equation}
+where $M_{jk} = \int_0^1 x^{k+j}dx = \langle x^j,x^k\rangle = \frac{1}{k+j+1}$ and $b_j = \int_0^1 f(x)x^jdx = \langle f,x^j\rangle$. 
+\subsection{Orthogonal polynomials}
+Suppose $\varphi_j$, $j=0,\dots,n$ form a basis for $\mathcal{P}_n$, $n\ge0$. We want to express the polynomial $p_n$ as 
+\begin{equation}
+    p_n(x) = \sum_{j=0}^n \gamma_j\varphi_j(x)
+\end{equation}
+where $\gamma_j$ are the coefficients. We get the system (as before):
+\begin{equation}
+    \sum_{k=0}^n M_{jk}\gamma_k = b_j \qquad j=0,\dots,n
+\end{equation}
+where $M_{jk} = \langle \varphi_j,\varphi_k\rangle$ and $b_j = \langle f,\varphi_j\rangle$, the inner product being defined in \eqref{eq:inner_prod}. The matrix $M$ will be diagonal if the basis is orthogonal. 
+\begin{definition}
+    Given a weight function $w\in \mathcal{C}[a,b]$ positive and integrable on $(a,b)$, the sequence of polynomials $\varphi_j$, $j=0,1,\dots$ is a system of orthogonal polynomials on the interval $[a,b]$ with respect to $w$ if each $\varphi_j$ is exactly of degree $j$ and if 
+    \begin{equation}
+        \int_a^b w(x)\varphi_k(x)\varphi_j(x) dx \begin{cases}
+            = 0 & k\neq j\\
+            \neq 0 & k=j
+        \end{cases}
+    \end{equation}
+\end{definition}
+We can use the Gram-Schmidt procedure to create an orthogonal basis from a general set of polynomials. 
+\begin{thm}
+    Given a function $f$, there exists a unique polynomial $p_n\in \mathcal{P}_n$ such that
+    \begin{equation}
+        \lVert f-p_n\rVert_2 = \min_{q\in \mathcal{P}_n} \lVert f-q\rVert_2
+    \end{equation}
+\end{thm}
+\begin{thm}
+    A polynomial $p_n\in \mathcal{P}_n$ is the polynomial of best approximation of degree $n$ to a function $f$ in the 2-norm iff the difference $f-p_n$ is orthogonal to every element of $\mathcal{P}_n$, i.e. $\langle f-p_n,q\rangle = 0\:\forall q\in \mathcal{P}_n$. 
+\end{thm}
+By the previous results, the polynomial $p_n$ is of the form 
+\begin{equation}
+    p_n(x) = \sum_{j=0}^n \gamma_j\varphi_j(x) \qquad \gamma_j = \frac{\langle f,\varphi_j\rangle}{\langle \varphi_j,\varphi_j\rangle} \qquad j=0,\dots,n
+\end{equation}
+\begin{thm}
+    Suppose that $\varphi_j$, $j=0,1,\dots,$ is a system of orthogonal polynomials on the interval $(a,b)$ with respevt to $w$. $\varphi_j$ are of exact degree $j$. Then, for $j\ge1$, the zeros of the polynomial $\varphi_j$ are real and distinct, and lie in the interval $(a,b)$.
+\end{thm}
+\chapter{Piecewise polynomial approximation}
 \section{Definition}
 Let \(\mathcal{S}=\mathcal{S}(k)=\mathcal{S}(k;x_0,\dots,x_m)=\{s\in \mathcal{C}^{k-1}[a,b]:s|_{[x_{i-1},x_i]}\in \mathcal{P}_k,i=1,\dots,m\}\) denote the linear space of splines of degree \(k\ge 1\), with knots \(a=x_0<x_1<\dots <x_m=b\). \\
 The conditions at the knots are the following:
@@ -252,6 +426,19 @@ A basis of that set \(\mathcal{S}\) is
 where \((x-x_j)_+^k = (\max \{0,x-x_j\})^k\). \\
 \begin{thm}
     The dimension of the linear space \(\mathcal{S}(k;x_0,\dots,x_m)\) is \(m+k\).
+\end{thm}
+\section{Linear interpolating splines}
+Suppose $f\in \mathcal{C}^0[a,b]$. Let $K=\{x_0,\dots,x_m\}$ such that $a = x_0<x_1<\dots<x_m=b$, $m\ge2$. The linear spline $s_L$, interpolating $f$ at the points $x_i$, is defined by 
+\begin{equation}
+    s_L(x) = \frac{x_i-x}{x_i-x_{i-1}}f(x_{i-1}) + \frac{x-x_{i-1}}{x_i-x_{i-1}}f(x_i) \qquad x\in [x_{i-1},x_i], \quad i=1,\dots,m
+\end{equation}
+The points $x_i$ are the knots. 
+\begin{thm}
+    Suppose that $f\in \mathcal{C}^2[a,b]$ and let $s_L$ be the linear spline that interpolates $f$ at the knots. Then, the error is bounded:
+    \begin{equation}
+        \lVert f-s_L\rVert_{\infty} \le \frac{1}{8} h^2 \lVert f''\rVert_{\infty}
+    \end{equation}
+    where $h=\max_i (x_i-x_{i-1})$. 
 \end{thm}
 \section{B-splines}
 The basis defined above is not well suited for computation, we will instead use the B-splines. These are functions \(\phi\) such that 
@@ -385,6 +572,32 @@ where the matrices are:
     \end{equation}
     with equality iff $v=s$.
 \end{thm}
+\section{Hermite cubic splines}
+We define the Hermite cubic spline as a function $s\in \mathcal{C}^1[a,b]$ such that 
+\begin{itemize}
+    \item $s(x_i) = f(x_i)$, $s'(x_i)=f'(x_i)$ for $i=0,\dots,m$;
+    \item $s$ is a cubic polynomial on $[x_{i-1}, x_i]$ for $i=1,\dots,m$;
+\end{itemize}
+It can be expressed as 
+\begin{equation}
+    s(x) = c_0 + c_1(x-x_{i-1}) + c_2(x-x_{i-1})^2 + c_3(x-x_{i-1})^3 \qquad x\in [x_{i-1},x_i]
+\end{equation}
+with 
+\begin{equation}
+    \begin{aligned}
+        c_0 &= f(x_{i-1})\\
+        c_1 &= f'(x_{i-1})\\
+        c_2 &= 3\frac{f(x_i)-f(x_{i-1})}{h_i^2} - \frac{f'(x_i)-2f'(x_{i-1})}{h_i}\\
+        c_3 &= \frac{f'(x_i)-f'(x_{i-1})}{h_i^2} - 2\frac{f(x_i)-f(x_{i-1})}{h_i^3}
+    \end{aligned}
+\end{equation}
+\begin{thm}
+    Let $f\in \mathcal{C}^4[a,b]$, and let $s$ be the Hermite cubic spline that interpolates $f$ at the knots. Then, the error is bounded:
+    \begin{equation}
+        \lVert f-s\rVert_\infty \le \frac{1}{384}h^4 \lVert f^{(4)}\rVert_\infty
+    \end{equation}
+\end{thm}
+
 \section{Smoothing splines}
 The problem studied in this section is 
 \begin{equation}\label{eq:smoothing}
@@ -593,5 +806,73 @@ Solving this in the least square sense, the normal equations are
 \begin{equation}
     M^TMC\bar M^T\bar M = M^TZ\bar M 
 \end{equation}
-\chapter{}
+\chapter{Numerical integration}
+\section{Newton-Cotes formulae}
+Functions can be difficult to integrate. This is why we use polynomial approximations to compute it. One way is to use the interpolations seen before: 
+\begin{equation}
+    \int_a^b f(x)dx \approx \int_a^b p_n(x)dx
+\end{equation}
+where $p_n(x)$ is the Lagrange interpolation polynomial of $f$ on $[a,b]$. Assuming that the interpolation points are equally spaced, using equation \eqref{eq:lagrange},
+\begin{equation}
+    \int_a^b f(x)dx \approx \sum_{k=0}^n w_kf(x_k)\qquad w_k = \int_a^b L_k(x)dx \qquad k=0,\dots,n
+\end{equation}
+and the $w_k$ are called the quadrature weights. \\
+We call the Newton-Cotes formula with $n=1$ the trapezium rule: $\int_a^b f(x)dx \approx \frac{b-a}{2}[f(a)+f(b)]$. For $n=2$, it is called Simpson's rule.\\
+
+In general, we can make the change of variable $x(t) = \frac{b-a}{2}t+\frac{b+a}{2}$ to reduce the integration interval to $[-1,1]$. 
+\begin{itemize}
+    \item [$\rightarrow$] Note: the weight values do not depend on the function to integrate.
+\end{itemize}
+\subsection{Error estimation}
+\begin{thm}
+    Let $n\ge 1$. Suppose that $f:\R\mapsto\R$, $f\in \mathcal{C}^{n+1}(a,b)$. Then, the error $E_n(f) \coloneqq \int_a^b f(x)dx-\sum_{k=0}^n w_kf(x_k)$ is bounded:
+    \begin{equation}
+        |E_n(f)| \le \frac{M_{n+1}}{(n+1)!}\int_a^b |\pi_{n+1}(x)|dx
+    \end{equation}
+    where $M_{n+1} = \max_{\zeta\in[a,b]}|f^{(n+1)}(\zeta)|$. 
+\end{thm}
+\begin{itemize}
+    \item [$\rightarrow$] Note: some Runge phenomenon can appear like in the case of interpolation, depending on the integration points $x_i$. 
+\end{itemize}
+\section{Composite formulae}
+To avoid Runge phenomenon, we usually use Newton-Cotes with very low degree ($n=1$ or $2$). We rather divide the interval into $m$ equal subintervals of width $h=(b-a)/m$:
+\begin{equation}
+    \int_a^b f(x)dx = \sum_{i=1}^m \int_{x_i-1}^{x_i}f(x)dx \qquad x_i = a+ih \qquad i=0,\dots,m
+\end{equation}
+The integral over $[x_i,x_i+1]$ is approximated by the trapezium rule or Simpson's rule. Using the usual formula for the bound on the error, we have for the trapezium rule
+\begin{equation}
+    |E_1(f)| \le \frac{1}{12}h^3 \sum_{i=1}^m\left(\max_{\xi\in [x_{i-1},x_i]}|f''(\xi)|\right)\le \frac{(b-a)^3}{12m^2}M_2
+\end{equation}
+The same reasoning can be done on the Simpson rule, and we find the bound
+\begin{equation}
+    |E_2(f)| \le \frac{(b-a)^5}{2880m^4}M_4
+\end{equation}
+\begin{itemize}
+    \item [$\rightarrow$] Note: the error of the composite trapezium rule is in $\mathcal{O}(1/m^2)$, but can be improved by extrapolation methods. 
+\end{itemize}
+\section{Gauss quadrature}
+Gauss quadrature consists in approximating the integral of $f$ over the interval $[a,b]$ by the integral of its Hermite polynomial on the same interval. 
+\begin{equation}
+    \int_a^b w(x)f(x)dx \approx \int_a^b w(x)p_{2n+1}(x)dx  = \sum_{k=0}^n W_kf(x_k)+\sum_{k=0}^m V_k f'(x_k)
+\end{equation}
+where 
+\begin{equation}
+    W_k = \int_a^bw(x)H_k(x)dx \qquad V_k = \int_a^bw(x)K_k(x)dx
+\end{equation}
+We want to choose the points $x_k$ such that all $V_k$ are zero and the function $f'$ does not appear. \\
+\begin{equation}
+    \int_a^b w(x)f(x)dx \approx\mathcal{G}_n(f)= \sum_{k=0}^n W_kf(x_k)
+\end{equation}
+\textcolor{red}{To complete with notes: how to choose the $x_k$}\\
+The quadrature points are chosen as the zeros of the polynomial of degree $n+1$ from a system of orthogonal polynomials over the interval $(a,b)$ with respect to the weight function $w$.
+This gives the formula 
+\begin{equation}
+    W_k = \int_a^b w(x)[L_k(x)]^2dx 
+\end{equation}
+\begin{thm}
+    Suppose that the weight function $w\in \mathcal{C}[a,b]$ is integrable and positive on $[a,b]$, and that $f\in \mathcal{C}^0[a,b]$. Then,
+    \begin{equation}
+        \lim_{n\rightarrow \infty}\mathcal{G}_n(f) = \int_a^b w(x)f(x)dx
+    \end{equation}
+\end{thm}
 \end{document}
