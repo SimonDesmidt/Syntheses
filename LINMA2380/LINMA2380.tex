@@ -2,10 +2,13 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amsfonts,amssymb}
+\usepackage{bm}
 \usepackage{amssymb}
 \usepackage{multicol}
 \usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
 \usepackage[english]{babel}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
 \usepackage{libertine}
 \usepackage{graphicx}
 \usepackage{wrapfig}
@@ -26,6 +29,8 @@
 \usepackage{subcaption}
 \usepackage[bottom]{footmisc}
 \usepackage{pdfpages}
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning}
 \usepackage{tabularx}
 \usepackage[skins]{tcolorbox}
 
@@ -34,6 +39,7 @@
 \newtheorem{definition}[thm]{Definition}
 \newtheorem{exmp}[thm]{Example} 
 \newtheorem{lem}[thm]{Lemma}
+\newtheorem{proposition}[thm]{Proposition}
 \newtheorem{corollary}[thm]{Corollary}
 
 \titleformat{\chapter}[display]
@@ -41,32 +47,9 @@
 \usepackage{hyperref}
 \newcommand{\hsp}{\hspace{20pt}}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
-\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
-\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
-
-% Define a new tcolorbox style with a red border and transparent interior
-\tcbset{
-    redbox/.style={
-        enhanced,
-        colframe=red,
-        colback=white,
-        boxrule=1pt,
-        sharp corners,
-        before skip=10pt,
-        after skip=10pt,
-        box align=center,
-        width=\linewidth-2pt, % Adjust the width dynamically
-    }
-}
-\newcommand{\boxedeq}[1]{
-\begin{tcolorbox}[redbox]
-    \begin{align}
-        #1
-    \end{align}
-\end{tcolorbox}
-}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
+
 \begin{document}
 
 
@@ -533,6 +516,253 @@ For a real matrix $A\in \R^{n\times n}$, we can separate the real and imaginary 
         |z-a_{pp}| \le \sum_{k\neq p} |a_{pk}|
     \end{equation}
 \end{thm}
+\chapter{Polynomial matrices}
+\section{Group of elementary matrices}
+\begin{enumerate}
+    \item Permutations: $P$ such that $P^T = P^{-1}$;
+    \item Eliminations: $(I+p(x) E_{ij})^{-1} = I-p(x)E_{ij}$ where $E_{ij}$ is such that $e_{ij} = 1$ and all other elements are 0;
+    \item Scaling matrices : The identity with a polynomial on one of the term of the diagonal. 
+\end{enumerate}
+Type I, II, and III with a constant polynomial are unimodular matrices. \\
+\section{Smith form}
+\begin{definition}
+    A polynomial matrix $E(\lambda)\in \C^{n\times n}[\lambda]$ is unimodular if its determinant is a nonzero constant.
+\end{definition}
+From this it comes that the invertible polynomial matrices are exactly the unimodular matrices. 
+\begin{algorithm}[H]
+    \caption{Euclide's algorithm}
+    \begin{algorithmic}[1]
+        \State Input: $a\ge b\in \mathbb{Z}$.
+        \State Output: GCD(a,b).
+        \State $a = bq_1+r_1$ \\
+        $i=1$;\\
+        $r_0 = b$;\\
+        Repeat if $r_i\neq 0$;\\
+        If $r_i = 0$, $r_{i+1} \coloneqq r_{i-1}-r_i a_{i+1}$.
+    \end{algorithmic}
+\end{algorithm}
+\begin{lem}
+    The Euclide algorithm terminates in finite time $T$, with $r_T=0$ and $r_{T-1} = GCD(a,b)$. 
+\end{lem}
+\begin{thm}\textbf{Euclid-Stevin}
+    For every two polynomials $a(\lambda),b(\lambda)\in \C[\lambda]$, there exists a unimodular transformation $U(\lambda)\in \C^{n\times n}[\lambda]$ such that 
+    \begin{equation}
+        \begin{bmatrix}
+            a(\lambda)\\ b(\lambda)\\
+        \end{bmatrix} = U(\lambda)\begin{bmatrix}
+            d(\lambda)\\ 0\\
+        \end{bmatrix}
+    \end{equation}
+    where $d(\lambda)$ is the greatest common divisor (gcd) of $a(\lambda)$ and $b(\lambda)$.
+\end{thm}
+\begin{corollary}
+    For every $n$ polynomials $p_1(\lambda),\dots,p_n(\lambda)\in \C[\lambda]$, there exists a unimodular transformation $Q(\lambda)\in \C^{n\times n}[\lambda]$ such that
+    \begin{equation}
+        Q(\lambda) \begin{bmatrix}
+            p_1(\lambda)\\ \vdots\\ p_n(\lambda)\\
+        \end{bmatrix} = \begin{bmatrix}
+            d(\lambda) \\ 0 \\ \vdots \\ 0 \\
+        \end{bmatrix}
+    \end{equation}
+    where $d(\lambda)$ is the gcd of $p_1(\lambda),\dots,p_n(\lambda)$.
+\end{corollary}
+\begin{thm}\textbf{Hermite}
+    Every polynomial matrix $P(\lambda)\in \C^{m\times n}[\lambda]$ can be transformed into a quasi-triangular form 
+    \begin{equation}
+        M(\lambda)P(\lambda)N = \begin{pNiceArray}{ccc|ccc}
+            p_1(\lambda) & \dots & \times & \times & \dots & \times \\
+             & \ddots & \vdots & \vdots & & \vdots \\
+            & & p_r(\lambda) & \times & \dots & \times \\ \hline 
+            &0_{(m-r)\times r} & && 0_{(m-r)\times (n-r)}&\\
+        \end{pNiceArray}
+    \end{equation}
+    where $M(\lambda)\in \C^{m\times m}[\lambda]$ is unimodular and $N\in \R^{n\times n}$ is a permutation matrix.
+\end{thm}
+\begin{proposition}
+    Let $P\in\mathbb{Z}^{n\times n}$, $M,N$ unimodular and $a\in \mathbb{Z}$. All $i\times i$ minors of $P$ are divisible by $a$ iff all minors of $MPN$ are divisible by $a$.
+\end{proposition}
+\begin{thm}\textbf{Smith}
+    Every polynomial matrix $P(\lambda)\in \C^{m\times n}[\lambda]$ can be reduced by unimodular transformations $M(\lambda)\in \C^{m\times m}[\lambda]$ and $N(\lambda)\in \C^{n\times n}[\lambda]$ to a quasi-diagonal form
+    \begin{equation}
+        M(\lambda)P(\lambda)N(\lambda) = \begin{pNiceArray}{ccc|ccc}
+            e_1(\lambda) & \dots & \times & & & \\
+             & \ddots & \vdots & & 0_{r\times (n-r)} & \\
+            & & e_r(\lambda) & & &\\ \hline 
+            &0_{(m-r)\times r} & & & 0_{(m-r)\times (n-r)}&\\
+        \end{pNiceArray}
+    \end{equation}
+    where $e_i(\lambda)$ divides $e_{i+1}(\lambda)$, which we denote $e_i(\lambda)|e_{i+1}(\lambda)$ ($i=1,\dots,r-1$). 
+\end{thm}
+\begin{thm}
+    Let $i\le k\le n$. 
+    \begin{equation}
+        \prod_{1\le j\le k}e_j = GCD\text{ of all minors of size }k
+    \end{equation}
+    This means that the Smith form is canonical. 
+\end{thm}
+\begin{definition}
+    The normal rank of a polynomial matrix $P(\lambda)\in \C^{m\times n}[\lambda]$ is the order of its largest nonzero minor. 
+\end{definition}
+\begin{itemize}
+    \item [$\rightarrow$] Note: the Smith form is a canonical form under the group of unimodular transformations on the left and on the right. These transformations are equivalences, and two polynomial matrices are thus equivalent iff they have the same Smith form. 
+\end{itemize}
+\subsection{Smith form of a Jordan block}
+\begin{lem}
+    The Smith form of $\lambda I-A$ is the Smith form of $\lambda I-J_A$, $J_A$ being the Jordan form of $A$. 
+\end{lem}
+\begin{proposition}
+    The Smith form of a Jordan block of size $n$ $\begin{pmatrix}
+        \lambda-\lambda_i & 1 & & & \\
+        & \lambda-\lambda_i & 1 & & \\
+        &&\ddots&\ddots&\\
+        &&&\lambda-\lambda_i & 1\\
+        &&&&\lambda-\lambda_i
+    \end{pmatrix}$ is \begin{equation}
+        \begin{pmatrix}
+            1& \\
+            & 1 & \\
+             & & \ddots & \\
+            & & & (\lambda-\lambda_i)^n\\
+        \end{pmatrix}
+    \end{equation}
+    For a Jordan matrix with several blocks of different sizes $n_j$ with the same eigenvalue, the Smith form is 
+    \begin{equation}
+        \begin{pmatrix}
+            1 & \\
+            & 1 &\\
+            && \ddots & \\
+            & & & (\lambda-\lambda_i)^{n_1}\\
+            & & & & (\lambda-\lambda_i)^{n_2}\\
+            & & & & & \ddots \\
+            & & & & & & (\lambda-\lambda_i)^{n_k}\\
+        \end{pmatrix}
+    \end{equation}
+\end{proposition}
+\begin{thm}
+    Let $A\in \C^{n\times n}$. The Smith form of $\lambda I-A$ is $diag(e_1(\lambda),e_2(\lambda),\dots, e_n(\lambda))$, where $e_{n-k+1}(\lambda)$ contains a factor $(\lambda-\lambda_i)^d$. if there are more than $k$ Jordan blocks of eigenvalue $\lambda_i$ and $d$ is the size of the $k$th largest Jordan block.
+\end{thm}
+\chapter{Nonnegative matrices}
+\begin{definition}
+    A nonnegative matrix $A$ is such that all its entries are nonnegative.
+\end{definition}
+\begin{definition}
+    A nonnegative matrix $A\in \R_+^{n\times n}$ is irreducible if $(I+A)^{n+1} >0$.
+\end{definition}
+\begin{definition}
+    A nonnegative matrix $A\in \R_+^{n\times n}$ is primitive if there exists $m\in \mathbb{Z}_+$ such that $A^m>0$.
+\end{definition}
+\begin{thm}
+    In the case of $A$ irreducible, this theorem is referred as the Perron-Frobenius theorem.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{img/nonnegative_matrices.png}
+    \end{figure}
+\end{thm}
+\begin{thm}
+    $Ax$ is monotonous in $x$ if $x\ge x'\Longrightarrow Ax\ge Ax'$. If, for some $x$, $Ax\ge Mx$, then $A^tx\ge M^tx$ and $|\lambda_1(A)|\ge M$.
+\end{thm}
+\begin{proposition}
+    If $A^k>0$ for some $k$, then the optimal $x^*$ in 
+    \begin{equation}
+        \max_{\lVert x\rVert = 1} \{r\: :Ax\ge rx\}
+    \end{equation}
+    is such that $Ax^* = r^*x^*$. 
+\end{proposition}
+\begin{corollary}
+    Let $A\ge 0\in \R^{n\times n}$  be primitive and assume that $\rho(A)=1$. Let $x>0\in \R^n$ be right and left eigenvectors of $A$ associated to the eigenvalue 1 satisfying $y^Tx = 1$. Then, $\lim_{m\rightarrow \infty}A^m = xy^T$. 
+\end{corollary}
+\begin{thm}\label{thm:7.5}
+    If $A\ge 0\in \R^{n\times n}$ is irreducible and stochastic, then $\rho(A)=1$ and 1 is a simple eigenvalue of $A$. Hence, there is a unique vector $x>0\in \R^n$ such that $Ax=x$ and $u^Tx=1$.
+\end{thm}
+\begin{corollary}
+    If $A\ge0\in \R^{n\times n}$ is primitive and stochastic, then $\lim_{m\times \infty}A^m =  xu^T$, where $x$ is as in Theorem \ref{thm:7.5}.
+\end{corollary}
+\section{Graph-theoretic characterization}
+\begin{definition}
+    Given $A\ge 0\in \R^{n\times n}$, the graph $G_A$ is strongly connected if for any pair of nodes $(i,j)\in \{1,\dots,n\}^2$, there is a path from $i$ to $j$ in $G_A$.
+\end{definition}
+\begin{definition}
+    Given $A\ge 0\in \R^{n\times n}$, the graph $G_A$ is aperiodic if the gcd of all cycles in $G_A$ is 1. 
+\end{definition}
+\begin{lem}
+    Let $A\ge 0\in \R^{n\times n}$, $(i,j)\in \{1,\dots,n\}^2$ and $m\in \mathbb{Z}_+$. It holds that $[A^m]_{ij}>0$ iff there exists a path from $i$ to $j$ of length $m$ in $G_A$.
+\end{lem}
+\begin{thm}
+    A matrix $A\ge 0\in \R^{n\times n}$ is irreducible iff $G_A$ is strongly connected. 
+\end{thm}
+\begin{thm}
+    A matrix $A\ge 0\in \R^{n\times n}$ is primitive iff $G_A$ is strongly connected and aperiodic. 
+\end{thm}
+\chapter{Semigroups of matrices}
+\section{Markov chains}
+\begin{center}
+    \begin{tikzpicture}[>=stealth, node distance=2cm]
+        \node[state] (A) {Sun};
+        \node[state, right of=A] (B) {Rain};
+        \path[->] 
+            (A) edge[loop left] node {0.3} (A)
+                edge[bend left] node {0.7} (B)
+            (B) edge[loop right] node {0.8} (B)
+                edge[bend left] node {0.2} (A);
+    \end{tikzpicture}
+\end{center}
+The state of the Markov chain is $x_t = \begin{pmatrix}S_t\coloneqq \text{ probability that there is sun at day } t\\ R_t \coloneqq 1-S_t \end{pmatrix}$. With this example, we have the recurrence 
+\begin{equation}
+    x_{t+1} = \begin{pmatrix}
+        0.3 & 0.2\\
+        0.7 & 0.8\\
+    \end{pmatrix} x_t
+\end{equation}
+\begin{itemize}
+    \item [$\rightarrow$] Note: $|\lambda_1(A)| = 1$ to keep $S_t+R_t = 1 \: \forall t$. 
+\end{itemize}
+As $t$ increases, $x$ tends to a constant vector $(1/2, 1/2)^T$ whatever the initial conditions. 
+\section{Definitions}
+\begin{definition}
+    The joint spectral radius of a bounded set of matrices $\Sigma \subseteq \R^{n\times n}$ is defined by 
+    \begin{equation}
+        \rho(\Sigma) = \lim_{t\rightarrow \infty} \sup \rho_t(\Sigma) = \lim_{t\rightarrow \infty} \hat \rho_t(\Sigma)
+    \end{equation}
+    with 
+    \begin{equation}
+        \hat \rho_t(\Sigma)\coloneqq \sup \{\lVert A\rVert^{1/t} \: : A\in \Sigma^t\}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    Using 
+    \begin{equation}
+        \begin{cases}
+            \check \rho_t(\Sigma) \coloneqq \inf \{\lVert A\rVert^{1/t} \: : A\in \Sigma^t\}\\
+            \underbar{$\rho$}_t(\Sigma) \coloneqq \inf \{\rho(A)^{1/t}\: : A\in \Sigma^t\}\\
+        \end{cases}
+    \end{equation}
+    The joint spectral subradius of a set of matrices $\Sigma \subseteq \R^{n\times n}$ is defined by
+    \begin{equation}
+        \check \rho(\Sigma) = \lim_{t\rightarrow \infty} \check \rho_t(\Sigma) = \lim_{t\rightarrow \infty} \underbar{$\rho$}_t
+    \end{equation}
+\end{definition}
+\section{Theorems}
+\begin{thm}
+    For any bounded set of matrices $\Sigma \subseteq\R^{n\times n}$, the values $\check \rho(\Sigma)$ and $\rho(\Sigma)$ are equal.
+\end{thm}
+\begin{thm}
+    For any bounded set of matrices $\Sigma \subseteq\R^{n\times n}$, there exists a left-infinite product $\dots A_2A_1$ that does not converge to zero iff $\rho(\Sigma) \ge 1$.
+\end{thm}
+\begin{corollary}
+    For any bounded set of matrices $\Sigma \subseteq\R^{n\times n}$, the corresponding switched dyanmical system like the one in the Markov chains is stable iff $\rho(\Sigma) < 1$.
+\end{corollary}
+\begin{corollary}
+    For any bounded set of matrices $\Sigma \subseteq\R^{n\times n}$, there is an infinite product of these matrices reaching the joint spectral radius, i.e. there is a sequence of matrices $A_0,A_1,\dots$ in $\Sigma$ such that 
+    \begin{equation}
+        \lim_{t\rightarrow \infty} \lVert A_t\dots A_1 A_0\rVert^{1/t} = \rho(\Sigma)
+    \end{equation}
+\end{corollary}
+\begin{corollary}
+    For any set of matrices $\Sigma \subseteq \R^{n\times n}$, there is an infinite product of these matrices reaching the joint spectral subradius, i.e. there is a sequence of matrices $A_0,A_1,\dots$ in $\Sigma$ such that
+    \begin{equation}
+        \lim_{t\rightarrow \infty} \lVert A_t\dots A_1 A_0\rVert^{1/t} = \check \rho(\Sigma)
+    \end{equation}
+\end{corollary}
 \chapter{Summary}
 \begin{figure}[H]
     \centering
