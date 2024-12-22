@@ -31,7 +31,6 @@
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
-\newtheorem{exmp}[thm]{Example} 
 \newtheorem{lem}[thm]{Lemma}
 \newtheorem{crl}[thm]{Corollary}
 
@@ -40,37 +39,17 @@
 \usepackage{hyperref}
 \newcommand{\hsp}{\hspace{20pt}}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
-\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
-\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
-% Define a new tcolorbox style with a red border and transparent interior
-\tcbset{
-    redbox/.style={
-        enhanced,
-        colframe=red,
-        colback=white,
-        boxrule=1pt,
-        sharp corners,
-        before skip=10pt,
-        after skip=10pt,
-        box align=center,
-        width=\linewidth-2pt, % Adjust the width dynamically
-    }
-}
-\newcommand{\boxedeq}[1]{
-\begin{tcolorbox}[redbox]
-    \begin{align}
-        #1
-    \end{align}
-\end{tcolorbox}
-}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+
 \hbadness=10001
 \hfuzz=200pt
+
 \begin{document}
-
-
 \begin{titlepage}
     \begin{sffamily}
     \begin{center}
@@ -79,7 +58,7 @@
         { \huge \bfseries LINMA2370 Modelling and Analysis of Dynamical Systems \\[0.4cm] }
     
         \HRule \\[1.5cm]
-        \textsc{\LARGE Simon Desmidt\\Issambre L'Hermite Dumont}\\[1cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
         \vfill
         \vspace{2cm}
         {\large Academic year 2024-2025 - Q1}
@@ -99,7 +78,7 @@
 The tools introduced in this course are a simplifying view of the reality, yet very uselful to build simple and effective models in view of the control and optimization of the dynamical behaviour of the real systems.
 \section{Reminders}
 \begin{itemize}
-    \item A subset of \(\R\) is said to be negligible if its Lebesgue measure is equal to zeroo and that a property is said to be true almost everywhere if it is false only on a negligible set. 
+    \item A subset of \(\R\) is said to be negligible if its Lebesgue measure is equal to zero and that a property is said to be true almost everywhere if it is false only on a negligible set. 
     \item Let \(I\subseteq \R\) be an interval the interior of which is not empty. A function \(x:I\rightarrow \R^N\) is said to be absolutely continuous if 
 \end{itemize}
 \begin{multline*}
@@ -109,7 +88,7 @@ The tools introduced in this course are a simplifying view of the reality, yet v
         \sum_{i=1}^n(b_i-a_i)\le \delta \Longrightarrow \sum_{i=1}^n \lVert x(b_i)-x(a_i)\rVert \le \varepsilon
 \end{multline*}
 \begin{itemize}
-    \item Let \(a,b\in \R\) with \(a<b\). A function \(x:[a,b]\rightarrow \R\) is absolutely continuous iff there exists an integrable fucntion \(\varphi:[a,b]\rightarrow \R\) such that, for every \(t\in [a,b]\), \[x(t) = x(a0) + \int_a^t \phi(s)ds\] in which case \(x\) is almost everywhere differentiable with \(\dot x(t) = \phi(t)\) for almost every \(t\in [a,b]\). 
+    \item Let \(a,b\in \R\) with \(a<b\). A function \(x:[a,b]\rightarrow \R\) is absolutely continuous iff there exists an integrable function \(\varphi:[a,b]\rightarrow \R\) such that, for every \(t\in [a,b]\), \[x(t) = x(a0) + \int_a^t \phi(s)ds\] in which case \(x\) is almost everywhere differentiable with \(\dot x(t) = \phi(t)\) for almost every \(t\in [a,b]\). 
     \item A function \(f:\Omega\rightarrow \R^N\), where \(\Omega\) is a nonempty subset of \(\R\times \R^N\), is said to be Lipschitz continuous in the second argument, uniformly with respect to the first argument, if there exists \(L\in \left[0,\infty\right)\) such that forall \(t\in \R\) and all \(x,y\in \R^N\) such that \((tx,),(t,y)\in \Omega\), \[\lVert f(t,x)-f(t,y)\rVert \le L\lVert x-y\rVert\] It is said to be locally Lipschitz continuous on an open ball for each argument. 
     \item Let \(\Omega\) be a nonempty open subset of \(\R\times \R^N\) and \(f:\Omega\rightarrow \R^N\) be such that 
     \begin{itemize}
@@ -126,7 +105,7 @@ A state-space model for a continuous dynamical system consists of an ODE of the 
 \begin{equation}\label{eq:1}
     \dot x (t) = f(t,x(t))
 \end{equation}
-where the function \(f:\Omega\rightarrow \R^N\), \(\Omega\) being a nonempty subset of \(\R\times \\R^N\), is called the vector field associated with the ODE.
+where the function \(f:\Omega\rightarrow \R^N\), \(\Omega\) being a nonempty subset of \(\R\times \R^N\), is called the vector field associated with the ODE.
 A continuous dynamical system with input \(u:\R\rightarrow \R^M\) described by the ODE 
 \begin{equation}
     \dot x(t) = g(x(t),u(t))
@@ -136,7 +115,7 @@ for some function \(g:\R^N\times \R^M\rightarrow \R^N\), can be written in the f
     f_u :\R\times \R^N \rightarrow \R^N :(t,x) \rightarrow g(x,u(t))
 \end{equation}
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: the norm of each \((t,x)\in \R\times \R^N\)  is defined as \(|t|+\lVert x\rVert\).
+    \item [\(\rightarrow\)] Note: the norm of each \((t,x)\in \R\times \R^N\)  is defined as \(|t|+\lVert x\rVert\).
 \end{itemize}
 \section{Integral curve}
 Let \(\Omega\) be a nonempty subset of \(\R\times \R^N\). An integral curve of \(f:\Omega\rightarrow \R^N\) is a function \(x:I\rightarrow \R^N\) where \(I\subseteq \R\) is an interval, for which the interior is not empty, called the interval of existence of \(x\), i.e. differentiable and satisfies \((t,x(t))\in \Omega\) and \(\dot x(t) = f(t,x(t))\) for all \(t\in I\). The graph \(\{(t,x(t))|t\in I\}\) and the image \(\{x(t)|t\in I\}\) of \(x\) are respectively called the trajectory and the orbit of \(x\). Given an initial condition \((t_0,x_0)\in \Omega\), a solution to the initial value problem 
@@ -152,7 +131,7 @@ If, for the IVP described hereabove, \(f\) is continuous, then a continuous func
 
 Let \(\Omega\) be a nonempty subset of \(\R\times \R^N\). An integral curve in the extended sense of \(f:\Omega\rightarrow \R^N\) is a function \(x:I\rightarrow \R^N\), where \(I\subseteq \R\) is an interval the interior of which is not empty called the interval of existence of \(x\), that is absolutely continuous and satisfies \((t,x(t))\in \Omega\) for every \(t\in I\) and \(\dot x(t) = f(t(x(t)))\) for almost every \(t\in I\). 
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: If \(f\) is continuous, then the two definitions of integral curves are equivalent.
+    \item [\(\rightarrow\)] Note: If \(f\) is continuous, then the two definitions of integral curves are equivalent.
 \end{itemize}
 \section{Existence of a solution}
 Consider the IVP defined hereabove with an integral curve in the extended sense, under the following assumptions:
@@ -175,7 +154,7 @@ where \(f\) is a mapping from \(\R^{n+m}\) to \(\R^n\), while \(x\) and \(u\) ar
     \item We assume that the input is a piecewise continuous and bounded function: \(u\in \mathcal{U}\), where \(\mathcal{U}\) is a set of piecewise continuous and bounded functions from \(\R\) to \(\R^m\).
     \item For a given value of the initial state \(x(t_0)=x_0\) a,d a given input \(u\), the solution \(t\rightarrow x(t)\) for \(t\ge t_0\), of the system of ODE \ref{eq:ODE} is called the trajectory of the system. It is denoted \(x(t_0,x_0,u)\).
     \item When the input \(u\) can be freely chosen in \(\mathcal{U}\), the system \(\dot x = f(x,u)\) is said to be a forced/controlled system. 
-    \item [\(\rightarrow\)] N.B.: in this course, we will study the solution of the equation \ref{eq:ODE} when the input is actually an a priori set constant: \(u(t) = \overline{u}\) \(\forall t\ge t_0\). The state-space model is then written as \(\dot x = f(x,\overline{u}) = f_{\overline{u}}(x)\).
+    \item [\(\rightarrow\)] Note: in this course, we will study the solution of the equation \ref{eq:ODE} when the input is actually an a priori set constant: \(u(t) = \overline{u}\) \(\forall t\ge t_0\). The state-space model is then written as \(\dot x = f(x,\overline{u}) = f_{\overline{u}}(x)\).
 \end{itemize}
 \subsection{System with affine input}
 \begin{equation}
@@ -253,7 +232,7 @@ Let \(U,V\) be two open subsets of \(\R^n\). A nonlinear state transformation is
 \begin{itemize}
     \item \(T\) is bijective and has an inverse function \(T^{-1}:V\rightarrow U\) such that \(x=T^{-1}(z)\);
     \item \(T\) and \(T^{-1}\) are of class \(\mathcal{C}^1\), i.e. continuously differentiable. 
-    \item [\(\rightarrow\)] N.B.: The state transformation is said to be global if \(U=V=\R^n\).
+    \item [\(\rightarrow\)] Note: The state transformation is said to be global if \(U=V=\R^n\).
 \end{itemize}
 Such a transformation \(T\) is called a diffeomorphism, and the new state space is 
 \begin{equation}
@@ -263,7 +242,7 @@ Such a transformation \(T\) is called a diffeomorphism, and the new state space 
     \begin{itemize}
         \item If the jacobien matrix \(\partial T/\partial x\) is nonsingular at \(x_0\), then, by the inverse function theorem, there is a neighbourhood \(U\) of \(x_0\) such that the mapping \(T\) restricted to \(U\) is a diffeomorphism on \(U\).
         \item \(T\) is a global diffeomorphism iff \begin{enumerate}
-            \item \(\partial T/\partial x\) is a nonsingular for every \(x\in \R^n\);
+            \item \(\frac{\partial T}{\partial x}\) is a nonsingular for every \(x\in \R^n\);
             \item \(\lim_{\lVert x\rVert \rightarrow \infty} \lVert T(x)\rVert =\infty\).
         \end{enumerate}
     \end{itemize}
@@ -299,13 +278,13 @@ where the function \(\alpha\) is continuous and invertible according to \(u\) ov
     A triangular dynamical system described by the state-space model \eqref{eq:triangular} can be put under Brunovsky canonical form around \((x_0,u_0)\) if the inequalities 
     \begin{equation}
         \begin{cases}
-            \frac{\partial g_i}{\partial x_{i+1}}\neq 0 \qquad i=1;\dots,n-1\\
+            \frac{\partial g_i}{\partial x_{i+1}}\neq 0 \qquad i=1,\dots,n-1\\
             \frac{\partial g_n}{\partial u}\neq 0
         \end{cases}
     \end{equation}
 \end{lem}
 \begin{lem}
-    A control-affine system \(\dot x =f(x)+g(x)u\) with \(x\in \R^n,u\in mathbb{R}\) can be written in Brunovsky form in a domain \(U\subseteq \R^n\) if there exists a state transformation \(z=T(x)\) that fulfills the following conditions:
+    A control-affine system \(\dot x =f(x)+g(x)u\) with \(x\in \R^n,u\in \R\) can be written in Brunovsky form in a domain \(U\subseteq \R^n\) if there exists a state transformation \(z=T(x)\) that fulfills the following conditions:
 \end{lem}
 \begin{itemize}
     \item \(T_{i+1}(x) = \frac{\partial T_i}{\partial x}f(x)\), for \(i=1,\dots,n-1\);
@@ -340,7 +319,7 @@ In this chapter, we assume that \(f\) is locally Lipschitz continuous on an open
     Let \(f\) be a locally Lipschitz continuous vector field defined on an open set \(\Omega \subseteq \R^n\), and \(\mathcal{X}\) a closed set of \(\Omega\). If \(\langle f(x),n(x)\rangle \le 0\) for every \(x\in \partial \mathcal{X}\), and every vector \(n(x)\) is outward normal to \(\mathcal{X}\) at \(x\), then \(\mathcal{X}\) is (positively) invariant for \(f\).
 \end{thm}
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: no condition has to be verified at a poitn where \(\mathcal{X}\) does not have an outward normal vector.
+    \item [\(\rightarrow\)] Note: no condition has to be verified at a point where \(\mathcal{X}\) does not have an outward normal vector.
 \end{itemize}
 \section{Periodic orbits}
 A periodic orbit is such that it is arising from a trajectory of the dynamical system, verifying \(x(t)=x(t+T)\) for all \(t\) and for some \(T>0\)\footnote{Equilibria are trivial periodic orbits.}. The infimum of possible values for \(T\) is called the period of the trajectory.\\
@@ -350,18 +329,18 @@ We denote \(x(t,x_0,\bar u)\) as the solution at time \(t\) with \(x(t_0)=x_0\) 
     \includegraphics[width = .5\textwidth]{img/limit_cycle.png}
 \end{figure}
 \begin{definition}
-    The point \(z\) is called a limit point of \(y\) for the dynamical system subject to a constant input \(\bar u\) if there exists a real sequence \((t_n)\) such that \(t_n\rightarrow\infty\) when \(n\rightarrow \infty\) and \(\lim_{n\rightarrow\infty}x(t_n,y,\bar u)=z\).
+    The point \(z\) is called a limit point of \(y\) for the dynamical system subject to a constant input \(\bar u\) if there exists a real sequence \(\{t_n\}_n\) such that \(t_n\rightarrow\infty\) when \(n\rightarrow \infty\) and \(\lim_{n\rightarrow\infty}x(t_n,y,\bar u)=z\).
 \end{definition}
 \begin{definition}
     A limit cycle is a closed orbit \(\gamma\) such that at least one point of \(\gamma\)\footnote{Implying that they all are.} is a limit point of at least another point of the phase plane not in \(\gamma\).
 \end{definition}
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: These definitions are only valid in \(\R^2\).
+    \item [\(\rightarrow\)] Note: These definitions are only valid in \(\R^2\).
 \end{itemize}
 \begin{thm}[Bendixson-Dulac]
-    Let \(D\) be a simply connected domain in \(\R^2\). If the divergence of \(f\)\footnote{\(\div(f) = \frac{\partial f_1}{\partial x_1}+\frac{\partial f_2}{\partial x_2}\)} is not identically zero and does not change sign in \(D\), then \(D\) does not contain any closed orbit. 
+    Let \(D\) be a simply connected domain in \(\R^2\). If the divergence of \(f\)\footnote{\(\text{div}(f) = \frac{\partial f_1}{\partial x_1}+\frac{\partial f_2}{\partial x_2}\)} is not identically zero and does not change sign in \(D\), then \(D\) does not contain any closed orbit. 
 \end{thm}
-\begin{thm}[Poincaré-Bendixson]
+\begin{thm}[Poincar\'e-Bendixson]
     If \(E\) is a closed and bounded subset of \(\R^2\), invariant for the system \(\dot x=f(x,u)\), and if \(\gamma\) is an orbit starting in \(E\), then:
     \begin{itemize}
         \item either \(\gamma\) converges to an equilibrium (which is the unique limit point of \(\gamma\));
@@ -376,10 +355,10 @@ This theorem can be used to prove the existence of a limit cycle:
 \chapter{Local analysis of autonomous dynamical systems}
 A dynamical system is said to be autonomous if the input is constant:
 \begin{equation}
-    \dot x= f(x\bar u)
+    \dot x= f(x,\bar u)
 \end{equation}
 \section{Linear planar systems}
-Let us consider the linear planar system such as \eqref{eq:linear_sys} with constant input \(u=\bar u\). Let \(\bar x\) be an equilibrium point corresponding to \(\bar u\). We will use the state transformation \(z=M^{-1}(x-x\bar x)\). We obtain the linear system
+Let us consider the linear planar system such as \eqref{eq:linear_sys} with constant input \(u=\bar u\). Let \(\bar x\) be an equilibrium point corresponding to \(\bar u\). We will use the state transformation \(z=M^{-1}(x-\bar x)\). We obtain the linear system
 \begin{equation}
     \dot z = A'z\qquad A' = M^{-1}AM
 \end{equation}
@@ -425,7 +404,7 @@ And the types of equilibrium for a linear planar system are:
     \includegraphics[width = \textwidth]{img/orbit_lin_sys_3.png}
 \end{figure}
 \begin{itemize}
-    \item [\(\bullet\)] N.B.: if one of the eigenvalues is zero, the equilibrium is not isolated.
+    \item [\(\bullet\)] Note: if one of the eigenvalues is zero, the equilibrium is not isolated.
 \end{itemize}
 \begin{definition}
     If all trajectories of a linear system converge to an equilibrium, we say that it is an attractive equilibrium. It is a repulsive equilibrium if they all diverge to infinity (save for the equilibrium itself.)
@@ -513,7 +492,7 @@ That means that an equilibrium is stable if the trajectories remain arbitrarily 
 \end{definition}
 An attractive equilibrium \(\bar x\) is thus a point to which each solution \(x\) converges provided that it starts close enough to \(\bar x\). 
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: stability and attractiveness do not imply each other.
+    \item [\(\rightarrow\)] Note: stability and attractiveness do not imply each other.
 \end{itemize}
 \begin{definition}
     The equilibrium \((\bar x,\bar u)\) is said to be asymptotically stable if it is both stable and attractive. The set of points \(x_0\) for which the trajectory \(x(t,x_0, \bar u)\) converges to \(\bar x\) is called the basin of attraction of the saymptotically stable equilibrium. 
@@ -524,8 +503,8 @@ An attractive equilibrium \(\bar x\) is thus a point to which each solution \(x\
     \end{equation}
 \end{definition}
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: exponential stablity implies asymptotic stability.
-    \item [\(\rightarrow\)] N.B.: for a linear system, an attractive equilibrium and center are both stable, while a saddle or repulsive equilibrium is unstable. Attractive equilibrium is also exponentially stable, thus asymptotically stable: these three notions coincide for linear systems. 
+    \item [\(\rightarrow\)] Note: exponential stablity implies asymptotic stability.
+    \item [\(\rightarrow\)] Note: for a linear system, an attractive equilibrium and center are both stable, while a saddle or repulsive equilibrium is unstable. Attractive equilibrium is also exponentially stable, thus asymptotically stable: these three notions coincide for linear systems. 
 \end{itemize}
 \section{Lyapunov's first method}
 \begin{thm}
@@ -583,7 +562,7 @@ That means that a sufficient condition for the equilibrium \((\bar x,\bar u)\) t
 \end{crl}
 \section{The energy as a Lyapunov function}
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: the Lyapunov function \(V(x)\) often has the dimensions of an energy. 
+    \item [\(\rightarrow\)] Note: the Lyapunov function \(V(x)\) often has the dimensions of an energy. 
 \end{itemize}
 \subsection{In mechanical systems}
 The general equation in a mechanical system\footnote{See chapter \ref{sec:mechanical}} is 
@@ -695,7 +674,7 @@ The part \(z_b\) is the non controllable part of the system, it is not influence
 \end{definition}
 We can also define the global controllability, which requires that the whole state space is reachable from any initial condition. 
 \begin{itemize}
-    \item [\(\rightarrow\)] N.B.: local accessibility, local controllability and global controllability are equivalent for linear systems.
+    \item [\(\rightarrow\)] Note: local accessibility, local controllability and global controllability are equivalent for linear systems.
 \end{itemize}
 \section{Drawbacks of linearisation}
 \begin{thm}
@@ -721,7 +700,7 @@ We now define a new operator, the Lie bracket of two vector fields:
     \begin{equation}
         \dot x=f(x)+g_1(x)u_1 + \dots + g_m(x)u_m
     \end{equation}
-    for some analytic vector fields \(f,g_1,\dots,g_m\). Consider the set of all vector fields \(f,g_1,\dots,g_m\) and those obtained by repeated Lie brackets. Consider also the vector space generated by those vector fields evaluated at a state \(x_0\). This vector space if of dimension \(n\) iff the system is locally accessible from \(x_0\).
+    for some analytic vector fields \(f,g_1,\dots,g_m\). Consider the set of all vector fields \(f,g_1,\dots,g_m\) and those obtained by repeated Lie brackets. Consider also the vector space generated by those vector fields evaluated at a state \(x_0\). This vector space is of dimension \(n\) iff the system is locally accessible from \(x_0\).
 \end{thm}
 \section{Trajectory planning}
 We work here with the following Brunovsky form of the nonlinear system:
@@ -773,7 +752,7 @@ The equations we use for the ODE system are
 \begin{align}
     m\ddot x &= F_x\\
     m\ddot y &= F_y\\
-    I\ddot \theta = &T
+    I\ddot \theta &= T
 \end{align}
 Where $m$ is the mass of the body, $I$ its moment of inertia, $F_x,F_y$ the forces applied to the body, and $T$ the resultant of the torques. \\
 The final equation to solve for that system is 
@@ -861,7 +840,7 @@ The state-space model is thus
     \item $\frac{\partial }{\partial q}(\dot q^TM(q)\dot q)=\dot q^TC(q,\dot q)$
 \end{itemize}
 \section{Compartmental systems}
-We denote here $x_i\ge 0$ the quantity of content in compartment $i$ for $i\in\{1,<dots,n\}$, and $q_{ij}\ge 0$ specifies the flow from compartment $i$ to compartment $j$, with $i,j\in\{1,\dots,n\}$. We denote respectively $q_{i0}$ and $q_{0i}$ the flow from compartment $i$ to the environment and vice-versa. The general form of the state-space equations is 
+We denote here $x_i\ge 0$ the quantity of content in compartment $i$ for $i\in\{1,\dots,n\}$, and $q_{ij}\ge 0$ specifies the flow from compartment $i$ to compartment $j$, with $i,j\in\{1,\dots,n\}$. We denote respectively $q_{i0}$ and $q_{0i}$ the flow from compartment $i$ to the environment and vice-versa. The general form of the state-space equations is 
 \begin{equation}
     \dot x_i = \sum_{j=0}^n q_{ji}(x,u) - \sum_{j=0}^n q_{ij}(x,u)\qquad i = 1,\dots,n 
 \end{equation}
@@ -927,7 +906,7 @@ with $V$ the constant volume, $Q_{i0}(t)$ the flux going from the domain to the 
 \begin{equation}
     r_j(x) = k_j \prod_{i\in I^{rj}} x_i^{\nu_{ij}}
 \end{equation}
-where $k_j$ is the kinetci constant of the $j$th reaction, and $\nu_{ij}$ the partial order of the $i$th reactant in the $j$th reaction. Generally, $\nu_{ij}=\gamma_{ij}$. 
+where $k_j$ is the kinetic constant of the $j$th reaction, and $\nu_{ij}$ the partial order of the $i$th reactant in the $j$th reaction. Generally, $\nu_{ij}=\gamma_{ij}$. 
 \subsection{Continuous Stirred Tank Reactors (CSTR)}
 We study here a perfectly mixed chemical reactor of constant volume $V$\footnote{This is achieved by adjusting the in and out flowrates.}. We call $F_{in}$ the feed volumetric flowrate. The reactional equation of the system is, with $u\triangleq F_{in}/V$,
 \begin{equation}
@@ -943,7 +922,7 @@ Balancing the volumes,
 \end{eqnarray}
 and thus 
 \begin{equation}
-    \dot x = Cr(x) + \frac{u_1}{x_{n+1}}(x^{in}-x)\qquad \dot x_{n+1} = u_1-u_2 \begin{cases}
+    \dot x = Cr(x) + \frac{u_1}{x_{n+1}}(x^{in}-x)\qquad \dot x_{n+1} = u_1-u_2 \qquad \begin{cases}
         u_1 = F_{in}\\
         u_2 = F_{out}\\
         x_{n+1} = V
