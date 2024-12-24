@@ -103,10 +103,10 @@ where \(f:\mathbb{R}^n\rightarrow\mathbb{R}\) is a continuously differentiable f
 \begin{itemize}
     \item A function \(F:\mathbb{R}^n\rightarrow \mathbb{R}^n\) is L-Lipschitz continuous when \[\lVert F(y)-F(x)\rVert \le L\lVert y-x\rVert\qquad \forall x,y\in \mathbb{R}^n\]where we use the euclidian norm. 
     \item If \(\nabla f\) is L-Lipschitz then, given \(x\in \mathbb{R}^n\), \[f(y)\le f(x)+\langle \nabla f(x), y-x\rangle +\frac{L}{2}\lVert y-x\rVert^2 = m_x(y)\qquad \forall y\in \mathbb{R}^n\]and \(f\) is said to be a L-smooth function.
-    \item We say that a differentiable function \(\Psi:\mathbb{R}^n\rightarrow \mathbb{R}\) is L-smooth for some \(L\ge 0\) when, given \(x\in \mathbb{R}^n\), \[\Psi(y) \le \Psi(x) + \langle \nabla \Psi (x),y-x\rangle + \frac{L}{2}\lVert y-x\rVert^2 \qquad \forall y\in \mathbb{R}^n\]
-    \item A convex function \(f:\mathbb{R}^n \rightarrow \mathbb{R}\) is convex when, given \(x,y\in \mathbb{R}^n\) and \(\lambda \in [0,1]\), we have \[f(\lambda x+(1-\lambda)y)\le \lambda f(x)+(1-\lambda)f(y)\]
+    \item A function \(f:\mathbb{R}^n \rightarrow \mathbb{R}\) is convex when, given \(x,y\in \mathbb{R}^n\) and \(\lambda \in [0,1]\), we have \[f(\lambda x+(1-\lambda)y)\le \lambda f(x)+(1-\lambda)f(y)\]
     \item Let \(f:\mathbb{R}^n\rightarrow\mathbb{R}\) be convex. If \(f\) is differentiable, then \[f(y) \ge f(x) + \nabla f(x)^T (x-y) \qquad \forall x,y\in \mathbb{R}^n\]
-    \item A differentiable function \(f:\mathbb{R}^n\rightarrow \mathbb{R}\) is \(\mu\)-strongly convex \((\mu>0)\) if, given \(x\in \mathbb{R}^n\), \[f(y) \ge f(x) + \nabla f(x)^T(y-x) + \frac{\mu}{2}\lVert y-x\rVert^2 \qquad \forall y\in \mathbb{R}^n\]
+    \item A differentiable function $f:\R^n\rightarrow \R$ is $\mu$-strongly convex ($\mu\ge 0$) if $\forall x,y$, $\forall \lambda \in ]0,1[$, \[f(\lambda x+(1-\lambda)y) \le \lambda f(x)+(1-\lambda)f(y)-\frac{\mu}{2}\lambda(1-\lambda)\lVert x-y\rVert^2_2\] 
+    \item A differentiable function \(f:\mathbb{R}^n\rightarrow \mathbb{R}\) is \(\mu\)-strongly convex \((\mu>0)\) iff, given \(x\in \mathbb{R}^n\), \[f(y) \ge f(x) + \nabla f(x)^T(y-x) + \frac{\mu}{2}\lVert y-x\rVert^2 \qquad \forall y\in \mathbb{R}^n\]
     \item PL inequality for a \(\mu\)-strongly convex function\footnote{\(x^*\) is the minimizer of \(f\)}: \[f(x)-f(x^*)\le \frac{1}{2\mu} \lVert \nabla f(x)\rVert^2 \qquad \forall x\in \mathbb{R}^n\]
 \end{itemize}
 \section{Complexity}
@@ -144,7 +144,7 @@ The Armijo Line Search consists of changing the constant in the GM in order to b
     f(x_k) - f(x_k^+) \geq \frac{(0.5)^\ell \alpha_k}{2} \|\nabla f(x_k)\|^2 \tag{1}
     \]
     set $\ell_k \coloneqq \ell$ and go to Step 2. Otherwise, set $\ell \coloneqq \ell + 1$ and go back to Step 1.1.
-    \State \textbf{Step 3:} Define $x_{k+1} = x_k^+$, $\alpha_{k+1} = (0.5)^{\ell_k - 1} \alpha_k$, set $k \coloneqq k + 1$ and go back to Step 1.
+    \State \textbf{Step 2:} Define $x_{k+1} = x_k^+$, $\alpha_{k+1} = (0.5)^{\ell_k - 1} \alpha_k$, set $k \coloneqq k + 1$ and go back to Step 1.
     \end{algorithmic}
 \end{algorithm}
 \section{Problems with convex constraints}
@@ -192,11 +192,11 @@ We will here consider problems of the form
 where \(f(\cdot)\) is L-smooth and \(\phi :\mathbb{R}^n\rightarrow \mathbb{R}\cup \{+\infty\}\) is convex, possibly nonsmooth. \\
 In this case, the formula for \(x_{k+1}\) is 
 \begin{equation}
-    x_{k+1} = \arg\min_{y\in \mathbb{R}^n} f(x_k) + \langle \nabla f(x_k),y-x_k\rangle + \frac{L}{2}\lvert y-x_k\rvert_2^2 + l(y)
+    x_{k+1} = \arg\min_{y\in \mathbb{R}^n} f(x_k) + \langle \nabla f(x_k),y-x_k\rangle + \frac{L}{2}\lVert y-x_k\rVert_2^2 + \phi(y)
 \end{equation}
 which can be re-expressed as 
 \begin{equation}
-    x_{k+1} = \arg\min_{y\in \mathbb{R}^n} \frac{1}{2}\lVert y-(x_k-\frac{1}{L}\nabla f(x_k))\rVert^2+\frac{1}{L}l(y)
+    x_{k+1} = \arg\min_{y\in \mathbb{R}^n} \frac{1}{2}\lVert y-(x_k-\frac{1}{L}\nabla f(x_k))\rVert^2+\frac{1}{L}\phi(y)
 \end{equation}
 Given a convex function \(h\), we define the proximal operator \(prox_h:\mathbb{R}^n\rightarrow\mathbb{R}^n\) by
 \begin{equation}
@@ -284,7 +284,7 @@ This algorithm converges in \(\mathcal{O}(n\varepsilon^{-2})\).
 \section{Stochastic Gradient Method}
 Consider a dataset \(\{(a^{(i)},b^{(i)})\}_{i=1}^N\subset \R^p\times \R\). Let \(m_X:\R^p\rightarrow \R\) be defined by a parameter \(x\in \R^n\). In ML, we want to find \(x^*\) that solves the optimization problem
 \begin{equation}
-    \min_{x\in \R^n}\frac{1}{N}\sum_{i=1}^N \underbrace{\left(m_x\left(a^{(i)}\right)-b\right)^2}_{=f_i(x)}
+    \min_{x\in \R^n}\frac{1}{N}\sum_{i=1}^N \underbrace{\left(m_x\left(a^{(i)}\right)-b^{(i)}\right)^2}_{=f_i(x)}
 \end{equation}
 The cost to compute \(\nabla f(x)\) is thus \(\mathcal{O}(Nn^p)\). We will use the SGD method when N is big.
 \begin{algorithm}
@@ -312,7 +312,7 @@ where $\beta \in (0,1)$ is a discount factor. To get this, we can define (using 
 and $\alpha = \gamma(1-\beta)$.\\
 This trick can be used with SGD to improve its efficiency. Pushing this to its extremity, we get the AdaGrad method.
 \section{AdaGrad}
-At the beginning of the $k$th iteration, we choose $i_k\in \{1,\dots,N\}$ ranodmly with uniform probability and then set 
+At the beginning of the $k$th iteration, we choose $i_k\in \{1,\dots,N\}$ randomly with uniform probability and then set 
 \begin{align}
     [v_{k+1}]_j &= [v_k]_j + [\nabla f_{i_k}(x_k)]_j^2 \qquad j = 1,\dots, n\nonumber \\
     [x_{k+1}]_j &= [x_k]_j - \frac{\eta}{\delta + \sqrt{[v_{k+1}]_j}}[\nabla f_{i_k}(x_k)]_j\qquad j=1,\dots, n
@@ -320,7 +320,7 @@ At the beginning of the $k$th iteration, we choose $i_k\in \{1,\dots,N\}$ ranodm
 with $v_0=0$ and $\eta, \delta >0$.
 We can now mix the Momentum trick with AdaGrad.
 \section{RMSprop}
-At the beginning of the $k$th iteration, we choose $i_k\in \{1,\dots,N\}$ ranodmly with uniform probability and then set 
+At the beginning of the $k$th iteration, we choose $i_k\in \{1,\dots,N\}$ randomly with uniform probability and then set 
 \begin{align}
     [v_{k+1}]_j &= \beta[v_k]_j + (1-\beta)[\nabla f_{i_k}(x_k)]_j^2 \qquad j = 1,\dots, n\nonumber \\
     [x_{k+1}]_j &= [x_k]_j - \frac{\eta}{\delta + \sqrt{[v_{k+1}]_j}}[\nabla f_{i_k}(x_k)]_j\qquad j=1,\dots, n
@@ -328,7 +328,7 @@ At the beginning of the $k$th iteration, we choose $i_k\in \{1,\dots,N\}$ ranodm
 with $v_0=0$ and $\eta, \delta >0$.
 \section{Adam}
 Even more extreme is the Adam method: RMSprop + Momentum trick.
-At the beginning of the $k$th iteration, we choose $i_k\in \{1,\dots,N\}$ ranodmly with uniform probability and then set 
+At the beginning of the $k$th iteration, we choose $i_k\in \{1,\dots,N\}$ randomly with uniform probability and then set 
 \begin{align}
     m_{k+1} &= \beta_1m_k + (1-\beta_1)\nabla f_{i_k}(x_k)\nonumber \\
     [v_{k+1}]_j &= \beta_2[v_k]_j + (1-\beta_2)[\nabla f_{i_k}(x_k)]_j^2 \qquad j = 1,\dots, n\nonumber \\
