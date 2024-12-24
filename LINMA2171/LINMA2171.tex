@@ -254,7 +254,7 @@ Given \(\Phi = \frac{p_\mu}{q_\nu}\), let \(\tilde{\Phi}=\frac{\tilde{p}\mu}{\ti
 \end{thm}
 \section{Best approximation in the \texorpdfstring{$\infty$}{infinity}-norm}
 \begin{definition}
-    A polynomial f best approximation of degree $n$ to the function $f$ in the $\infty$-norm is $p_n\in \mathcal{P}_n$ such that 
+    A polynomial of best approximation of degree $n$ to the function $f$ in the $\infty$-norm is $p_n\in \mathcal{P}_n$ such that 
     \begin{equation}
         \lVert f-p_n\rVert_\infty = \inf_{q\in \mathcal{P}_n} \lVert f-q\rVert_\infty
     \end{equation}
@@ -409,7 +409,7 @@ By the previous results, the polynomial $p_n$ is of the form
     p_n(x) = \sum_{j=0}^n \gamma_j\varphi_j(x) \qquad \gamma_j = \frac{\langle f,\varphi_j\rangle}{\langle \varphi_j,\varphi_j\rangle} \qquad j=0,\dots,n
 \end{equation}
 \begin{thm}
-    Suppose that $\varphi_j$, $j=0,1,\dots,$ is a system of orthogonal polynomials on the interval $(a,b)$ with respevt to $w$. $\varphi_j$ are of exact degree $j$. Then, for $j\ge1$, the zeros of the polynomial $\varphi_j$ are real and distinct, and lie in the interval $(a,b)$.
+    Suppose that $\varphi_j$, $j=0,1,\dots,$ is a system of orthogonal polynomials on the interval $(a,b)$ with respect to $w$. $\varphi_j$ are of exact degree $j$. Then, for $j\ge1$, the zeros of the polynomial $\varphi_j$ are real and distinct, and lie in the interval $(a,b)$.
 \end{thm}
 \chapter{Piecewise polynomial approximation}
 \section{Definition}
@@ -455,7 +455,7 @@ where the parameters \(d_j\) satisfy
 \end{equation}
 Playing with arithmetics and algebra, we finally get the general formula for a B-spline:
 \begin{equation}\label{eq:bspline}
-    B_p(x) = \sum_{j=p}^{p+k+1}\left(\prod_{l=p\\ l\neq j}^{p+k+1}\frac{1}{x_\ell-x_j}\right)(x-x_j)^k_+,\qquad x\in \R
+    B_p(x) = \sum_{j=p}^{p+k+1}\left(\prod_{\substack{l=p\\ l\neq j}}^{p+k+1}\frac{1}{x_\ell-x_j}\right)(x-x_j)^k_+,\qquad x\in \R
 \end{equation}
 It belongs to \(\mathcal{S}\) and verifies the condition \eqref{eq:cond_bspline}. It is well-defined for \((p=0,\dots,m-k-1)\) and thus gives \(m-k\) B-splines. To define a basis of \(\mathcal{S}\), we need \(2k\) more functions. We are going to add \(k\) knots on the left of \(x_0\) and on the right of \(x_m\):
 \begin{equation}\label{eq:bspline_set}
@@ -566,7 +566,7 @@ where the matrices are:
     \end{equation}
 \end{thm}
 \begin{thm}
-    Let $s$ be the function in $\mathcal{S}_N(k=3;\xi_0,\dots,\xi_m)$ such that $s(\xi_i)=y_i$, $i=0,\dots,m$. Let $v$ be any function in $H^2[a,b]$ that satisfiers the same interpolation conditions. Then 
+    Let $s$ be the function in $\mathcal{S}_N(k=3;\xi_0,\dots,\xi_m)$ such that $s(\xi_i)=y_i$, $i=0,\dots,m$. Let $v$ be any function in $H^2[a,b]$ that satisfies the same interpolation conditions. Then 
     \begin{equation}
         \int_{\xi_0}^{\xi_m} \left(v''(x)\right)^2dx\ge \int_{\xi_0}^{\xi_m} \left(s''(x)\right)^2dx
     \end{equation}
@@ -623,25 +623,6 @@ Meaning that \eqref{eq:smoothing} has one and only one solution. The easiest way
     \item When $\lambda \rightarrow 0$, we get a simple interpolation problem and there is an infinity of solutions.
     \item When $\lambda \rightarrow \infty$, we find the linear regression solution.
 \end{itemize}
-\section{Interpolation by natural splines}
-We define the linear space of natural splines as follows:
-\begin{equation}
-    \mathcal{S}_N(2\kappa +1) = \{s\in \mathcal{S}(2\kappa+1):s^{(j)}(a)=s^{(j)}(b)=0,j=\kappa+1,\dots,2\kappa\} \qquad \kappa \ge 1
-\end{equation}
-Provided that $m\ge\kappa$, the dimension of $\mathcal{S}_N(2\kappa+1)$ is $m+1$. Given a function $f\in \mathcal{C}[a,b]$, the set of interpolatory natural splines is 
-\begin{equation}
-    I_f\mathcal{S}_N(2\kappa+1)=\{s\in \mathcal{S}_N(2\kappa+1):s(x_i)=f(x_i), i=0,\dots,m\}
-\end{equation}
-\begin{thm}
-    If $m\ge \kappa$, then $I_f\mathcal{S}_N(2\kappa+1)$ is a singleton, meaning that the interpolating natural spline exists and is unique. 
-\end{thm}
-\begin{thm}
-    Let $m\ge \kappa$ and let $s$ ne the unique element of $I_f\mathcal{S}_N(2\kappa+1)$. Then, for all $v\in H^{\kappa+1}(a,b)$ that also interpolate $f$ at $x_0,\dots,x_m$, it holds that 
-    \begin{equation}
-        \lVert s^{(\kappa+1)}\rVert_2 \le \lVert v^{(\kappa+1)}\rVert_2
-    \end{equation}
-    with equality iff $v=s$. In particular, the interpolating natural cubic spline, i.e. $\kappa=1$, is the unique minimizer of the mean square acceleration under the interpolation conditions. 
-\end{thm}
 \section{Error bounds of interpolation by natural splines}
 \begin{thm}
     Let $s$ be the natural cubic spline interpolant of $f\in \mathcal{C}^4[a,b]$, where the interpolation is at equally spaced knots. Then, 
@@ -656,7 +637,7 @@ Vector-valued splines just work component-wise:
     \textbf{s}(x) = \sum_{j=-k}^{m-1}\textbf{c}_jB_j(x)
 \end{equation}
 where $x$ and $B_j(x)$ are real and scalar, but $\textbf{s}$ and $\textbf{c}_j$ are in $\R^n$ for all $j$.\\
-We deifne the Bernstein polynomials of degree $n$ as 
+We define the Bernstein polynomials of degree $n$ as 
 \begin{equation}
     b_i^n(x) = \begin{pmatrix}
         n\\i\\
@@ -666,86 +647,11 @@ They form a basis of $\mathcal{P}_n$ and a partition of unity, i.e. $\sum_{i=0}^
 \begin{equation}
     \textbf{s}|_{[x_j,x_{j+1}]} = \sum_{i=0}^k\textbf{c}_i^jb_i^k\frac{x-x_j}{x_{j+1}-x_j}
 \end{equation}
-aka the Bézier curve on $[x_j,x_{j+1}]$ with control points $\textbf{c}_0^j,\dots, \textbf{c}_k^j$.
-\section{Thin plate splines}
-Thin plate splines consist of generalizing equation \eqref{eq:smoothing} to fit a function $s:\R^d\rightarrow \R$ to support points $(\textbf{t}_i,z_i)$, $i=0,\dots, N$:
-\begin{equation}\label{eq:smoothing-tps}
-    \arg_s \min F_\lambda (s)\coloneqq \sum_{i=0}^N (z_i-s(\textbf{t}_i))^2 + \lambda \sum_{i_1,i_2=1}^d \int_{\R^d} \left(\partial_{i_1,i_2}s(\textbf{t})\right)^2d\textbf{t}
-\end{equation}
-In the bivariate case, i.e. $d=2$, we denote $\textbf{t}=(x,y)$, and the equation reduces to 
-\begin{equation}
-    \arg_s \min F_\lambda (s)\coloneqq \underbrace{\sum_{i=0}^N (z_i-s(x_i,y_i))^2}_{DA} + \lambda \underbrace{\int_{\R^2} \left(\frac{\partial^2s}{\partial x^2}\right)^2 + 2\left(\frac{\partial^2 s(x,y)}{\partial x\partial y}\right)^2 + \left(\frac{\partial^2 s}{\partial y^2}\right)^2 dxdy}_{PEN}
-\end{equation}
-\begin{definition}\label{def:tps}
-    A function $s$ is a thin plate spline on the data set $\textbf{t}_0,\dots,\textbf{t}_N\in \R^2$ if it takes the form
-    \begin{equation}
-        s(\textbf{t}) = \sum_{i=0}^N \delta_i \eta (\lVert \textbf{t}-\textbf{t}_i\rVert) + \sum_{j=1}^3 a_j\phi_j(\textbf{t})
-    \end{equation}
-    where $\delta_i,a_i$ are real numbers, 
-    \begin{equation}
-        \eta_r = \begin{cases}
-            \frac{1}{16\pi} r^2\log(r^2) & \text{ if } r>0\\
-            0& \text{ if } r=0
-        \end{cases}
-    \end{equation}
-    and the $\phi_i$ simply denote the functions $\phi_1(x,y) = 1$, $\phi_2(x,y) = x$, $\phi_3(x,y)=y$. \\
-
-    If $\pmb{\delta}=[\delta_0 \dots \delta_N]^T$ satisfies $T\pmb{\delta} = 0$, where 
-    \begin{equation}
-        T = \begin{bmatrix}
-            1 & 1& \dots & 1\\
-            \textbf{t}_0 & \textbf{t}_1 & \dots & \textbf{t}_N
-        \end{bmatrix}
-    \end{equation}
-    then $s$ is said to be a natural thin plate spline.
-\end{definition}
-\begin{thm}
-    Let $s$ ba a thin plate spline. Then, $PEN(s)$ is finite iff $s$ is a natural thin plate spline. If $s$ is a natural thin plate spline, then $PEN(s) = \pmb{\delta}^TE\pmb{\delta}$, where $E_{ij} \coloneqq \eta(\lVert \textbf{t}_i-\textbf{t}_j\rVert)$.
-\end{thm}
-\subsection{Interpolation by thin plate splines}
-Let $\textbf{t}_0,\dots,\textbf{t}_m$ be non-collinear and let $\lambda \ge 0$. Then 
-\begin{equation}
-    \begin{bmatrix}
-        E+\lambda I& T^T\\
-        T & 0\\
-    \end{bmatrix}
-\end{equation}
-is nonsingular. 
-\begin{thm}
-    Let $\textbf{t}_0,\dots,\textbf{t}_N$ be distinct non-collinear points in $\R^2$. Given any values $z_0,\dots, z_N$, there is one and only one natural thin plate spline $s$ on the set $\textbf{t}_0,\dots,\textbf{t}_N$ such that $s(\textbf{t}_i)=z_i$ for all $i=0,\dots,N$.
-\end{thm}
-\subsection{Optimality of thin plate splines}
-\begin{thm}
-    The natural thin plate spline interpolant uniquely minimizes PEN subject to the interpolation conditions $s(\textbf{t}_i)=z_i$ for all $i$. 
-\end{thm}
-\subsection{Thin plate spline smoother}
-\begin{thm}
-    If $\Hat s$ is a solution of the smoothing problem \eqref{eq:smoothing-tps}, then $\Hat s$ admits the thin late spline form of \ref{def:tps} with the natural spline condition $T\pmb{\delta} =0$.
-\end{thm}
-The objective function can be rewritten as 
-\begin{equation}
-    F_\lambda (s) = \begin{bmatrix} \pmb{\delta}^T &\pmb{a}^T\end{bmatrix}\underbrace{\begin{bmatrix}
-    E^2+\lambda E & ET^T\\ TE & TT^T
-    \end{bmatrix}}_{= \begin{bmatrix} E&0\\ T& -\lambda I\end{bmatrix}\begin{bmatrix} E+\lambda I& T^T\\ T & 0\end{bmatrix}} \begin{bmatrix}
-        \pmb{\delta}\\ \pmb{a}\\
-    \end{bmatrix} - \begin{bmatrix} \pmb{\delta}^T &\pmb{a}^T\end{bmatrix} \begin{bmatrix}
-        E\\T
-    \end{bmatrix} \pmb{z} + \pmb{z}^T\pmb{z}
-\end{equation}
-The unique solution of the minimization of the above function is 
-\begin{equation}
-    \begin{bmatrix}
-        E+\lambda I & T^T\\ T & 0\\
-    \end{bmatrix} \begin{bmatrix}
-        \pmb{\delta}\\ \pmb{a}\\
-    \end{bmatrix} = \begin{bmatrix}
-        \pmb{z} \\ 0
-    \end{bmatrix}
-\end{equation}
+aka the B\'ezier curve on $[x_j,x_{j+1}]$ with control points $\textbf{c}_0^j,\dots, \textbf{c}_k^j$.
 \section{Tensor product splines}
 In the last section, thin plate splines are not piecewise polynomials. If we want the admissible functions restrict to piecewise polynomials, we need other approaches, as the tensor product splines. \\
 \begin{definition}\textbf{Tensor product}
-    Let $\mathcal{R}$ and $\mathcal{S}$ be two linear spaces of real-valued univariate functions. The tensor product of two functiuons $r\in \mathcal{R}$ and $s\in \mathcal{S}$ is $r \otimes s:\R^2\rightarrow \R:(t_1,t_2)\rightarrow r(t_1)s(t_2)$. The tensor product of the two spaces is the linear space 
+    Let $\mathcal{R}$ and $\mathcal{S}$ be two linear spaces of real-valued univariate functions. The tensor product of two functions $r\in \mathcal{R}$ and $s\in \mathcal{S}$ is $r \otimes s:\R^2\rightarrow \R:(t_1,t_2)\rightarrow r(t_1)s(t_2)$. The tensor product of the two spaces is the linear space 
     \begin{equation}
         \mathcal{R}\otimes \mathcal{S} = \left\{ \sum_{i,j} c_{ij}r_i\otimes s_j| c_{ij}\in \R\right\}
     \end{equation}
@@ -863,8 +769,7 @@ We want to choose the points $x_k$ such that all $V_k$ are zero and the function
 \begin{equation}
     \int_a^b w(x)f(x)dx \approx\mathcal{G}_n(f)= \sum_{k=0}^n W_kf(x_k)
 \end{equation}
-\textcolor{red}{To complete with notes: how to choose the $x_k$}\\
-The quadrature points are chosen as the zeros of the polynomial of degree $n+1$ from a system of orthogonal polynomials over the interval $(a,b)$ with respect to the weight function $w$.
+The quadrature points are chosen as the zeros of the polynomial of degree $n+1$ from a system of orthogonal polynomials over the interval $(a,b)$ with respect to the weight function $w$, i.e. they are the zeros of $\phi_{n+1}(x)$.
 This gives the formula 
 \begin{equation}
     W_k = \int_a^b w(x)[L_k(x)]^2dx 

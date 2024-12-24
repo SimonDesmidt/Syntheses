@@ -510,7 +510,7 @@ An attractive equilibrium \(\bar x\) is thus a point to which each solution \(x\
 \begin{thm}
     \begin{itemize}
         \item If the equilibrium is attractive in the linearised system, i.e. all eigenvalues of the Jacobian matrix have a negative real part, then the equilibrium \((\bar x,\bar u)\) is exponentially stable.
-        \item If the equilibrium is repulsive or a saddle point in the linearised syste, i.e. the Jacobian matrix has at least one eigenvalue with a positive real part, then the equilibrium \((\bar x,\bar u)\) is unstable. 
+        \item If the equilibrium is repulsive or a saddle point in the linearised system, i.e. the Jacobian matrix has at least one eigenvalue with a positive real part, then the equilibrium \((\bar x,\bar u)\) is unstable. 
     \end{itemize}
 \end{thm}
 This theorem does not conclude on the stability of a non-hyperbolic equilibrium. 
@@ -600,7 +600,7 @@ The trajectory of the system is
 \begin{equation}
     x(t) = e^{A(t-t_0)}x_0 + \int_{t_0}^t e^{A(t-\tau)}Bu(\tau)d\tau
 \end{equation}
-The equilibrium is \((\bar x,\bar u)= (0,0)\). IT is asymptotically stable iff the matrix \(A\) is a Hurwitz matrix. This would mean that \(\lVert e^{At}\rVert\) is bounded for all \(t\ge t_0\) and there are nonnegative constants \(k\) and \(\lambda\) such that 
+The equilibrium is \((\bar x,\bar u)= (0,0)\). It is asymptotically stable iff the matrix \(A\) is a Hurwitz matrix. This would mean that \(\lVert e^{At}\rVert\) is bounded for all \(t\ge t_0\) and there are nonnegative constants \(k\) and \(\lambda\) such that 
 \begin{equation}
     \lVert e^{A(t-t_0)}\rVert \le ke^{-\lambda(t-t_0)}
 \end{equation}
@@ -662,7 +662,7 @@ From that, we define a state transformation
 The new state-space model is 
 \begin{align}
     \dot z_a &= U_aAT_az_a + U_aAT_bz_b + U_aBu\\
-    \dot z_b &= U_bAT_bz_b\\
+    \dot z_b &= U_bAT_bz_b
 \end{align}
 The part \(z_b\) is the non controllable part of the system, it is not influenced by the input \(u\).
 \section{Controllability of nonlinear systems}
