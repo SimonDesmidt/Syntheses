@@ -453,9 +453,9 @@ Optimality measure $\lVert \nabla f(x)\rVert$ is not suitable, as it is not affi
 \begin{definition}
     Given a self-concordant function $f$, the local norm at $x$ is 
     \begin{equation}
-        \lVert z\rVert_x = (z^T\nabla^2f(x)z)^1/2
+        \lVert z\rVert_x = (z^T\nabla^2f(x)z)^{1/2}
     \end{equation}
-    The corresponding dual norml is given by
+    The corresponding dual norm is given by
     \begin{equation}
         \lVert z\rVert_x^* = (z^T\nabla^2f(x)^{-1}z)^{1/2}
     \end{equation}
@@ -467,7 +467,7 @@ Using the dual local norm defined in the last section, we define the optimality 
 \end{equation}
 Because of convexity, $x$ is optimal iff $\nabla f(x) = 0\Longleftrightarrow \delta(x)=0$.
 \section{Improving Newton}
-Given an open convex domain $X$ and a self-concordnat function $f:X\rightarrow \R$, we want $\min_{x\in X} f(x)$.\\
+Given an open convex domain $X$ and a self-concordant function $f:X\rightarrow \R$, we want $\min_{x\in X} f(x)$.\\
 Let $x\in X$ such that $\delta(x)<1$:
 \begin{itemize}
     \item A global minimum $x^*$ of $f$ exists;
@@ -665,7 +665,7 @@ A cone is proper if it is solid, pointed and closed.
 \begin{thm}
     The conic hull is always a close cone, and a set is convex iff its conic hull is convex.
 \end{thm}
-Hence the convew problem \eqref{eq:short_step} is equivalent to 
+Hence the convex problem \eqref{eq:short_step} is equivalent to 
 \begin{equation}
     \min_{x,t} \begin{pmatrix}
         c & 0

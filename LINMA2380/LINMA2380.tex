@@ -741,28 +741,6 @@ As $t$ increases, $x$ tends to a constant vector $(1/2, 1/2)^T$ whatever the ini
         \check \rho(\Sigma) = \lim_{t\rightarrow \infty} \check \rho_t(\Sigma) = \lim_{t\rightarrow \infty} \underbar{$\rho$}_t
     \end{equation}
 \end{definition}
-\section{Theorems}
-\begin{thm}
-    For any bounded set of matrices $\Sigma \subseteq\R^{n\times n}$, the values $\check \rho(\Sigma)$ and $\rho(\Sigma)$ are equal.
-\end{thm}
-\begin{thm}
-    For any bounded set of matrices $\Sigma \subseteq\R^{n\times n}$, there exists a left-infinite product $\dots A_2A_1$ that does not converge to zero iff $\rho(\Sigma) \ge 1$.
-\end{thm}
-\begin{corollary}
-    For any bounded set of matrices $\Sigma \subseteq\R^{n\times n}$, the corresponding switched dyanmical system like the one in the Markov chains is stable iff $\rho(\Sigma) < 1$.
-\end{corollary}
-\begin{corollary}
-    For any bounded set of matrices $\Sigma \subseteq\R^{n\times n}$, there is an infinite product of these matrices reaching the joint spectral radius, i.e. there is a sequence of matrices $A_0,A_1,\dots$ in $\Sigma$ such that 
-    \begin{equation}
-        \lim_{t\rightarrow \infty} \lVert A_t\dots A_1 A_0\rVert^{1/t} = \rho(\Sigma)
-    \end{equation}
-\end{corollary}
-\begin{corollary}
-    For any set of matrices $\Sigma \subseteq \R^{n\times n}$, there is an infinite product of these matrices reaching the joint spectral subradius, i.e. there is a sequence of matrices $A_0,A_1,\dots$ in $\Sigma$ such that
-    \begin{equation}
-        \lim_{t\rightarrow \infty} \lVert A_t\dots A_1 A_0\rVert^{1/t} = \check \rho(\Sigma)
-    \end{equation}
-\end{corollary}
 \chapter{Summary}
 \begin{figure}[H]
     \centering
