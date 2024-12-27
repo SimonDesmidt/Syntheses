@@ -357,7 +357,7 @@ Let us define the matrix \(\Tilde M\) defined by the following:
         1 & \text{ if } j\in \delta^{(+)}(i)\\
         -1 & \text{ if } j\in \delta^{(-)}(i)\\
         0 & \text{ otherwise}\\
-    \end{cases} \forall i\in \{2,\dots,m-1\},j\in \{1,\dots, n\}
+    \end{cases} \qquad \forall i\in \{2,\dots,m-1\},\qquad j\in \{1,\dots, n\}
 \end{equation}
 where 
 \begin{equation}
@@ -368,7 +368,7 @@ where
 \end{equation}
 In matrix form, the problem is
 \begin{equation}
-    \max_{x\in \R^n} \sum_{j\in \delta^{(-)}(i)}x_j \text{   such that   } \Tilde M=0\qquad 0\le x_j\le c_j \: \forall j=1,\dots,n
+    \max_{x\in \R^n} \sum_{j\in \delta^{(-)}(i)}x_j \text{   such that   } \Tilde Mx=0\qquad 0\le x_j\le c_j \qquad \forall j=1,\dots,n
 \end{equation}
 The constraint containing \(\Tilde M\) is the conservation law. 
 \section{Assignment Problem}
@@ -479,7 +479,7 @@ Given a dataset $E\subset \R^n$ finite, find a subset $M\subset E$ with at most 
 \end{equation}
 This is equivalent to 
 \begin{equation}
-    \max{M\subset E} f(M)\equiv L(\{e_0\})-L(M\cup \{e_0\})\text{    such that    } |M|\le k
+    \max_{M\subset E} f(M)\equiv L(\{e_0\})-L(M\cup \{e_0\})\text{    such that    } |M|\le k
 \end{equation}
 where $e_0$ is a phantom medoid. Practically, we have a dataset and find two medoids using Algorithm \ref{algo:cardinal}. With the above problem, we find the clusters of the dataset by assigning the points to the closest medoid. 
 \chapter{Dynamic Programming}
