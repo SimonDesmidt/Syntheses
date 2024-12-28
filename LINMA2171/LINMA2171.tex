@@ -81,14 +81,14 @@ Let \(x_0,\dots,x_n\) be distinct real numbers. The Lagrange polynomial \(L_k\) 
     \item Note: we usually denote \(L_k(x;x_0,\dots,x_n)\) or let \(\chi = (x_0,\dots,x_n)\) and \(L_k(x;\chi)\). 
 \end{itemize}
 \begin{thm}
-    Assume that $n\ge 0$. Let $x_i,i=0,\dots,n$ be distinct real number and suppose that $y_i,i=0,\dots,n$ are real numbers. Then, there is a unique polynomial $p_n\in \mathcal{P}_n$ such that $p_n(x_i)=y_i$ for all $i=0,\dots,n$.
+    Assume that $n\ge 0$. Let $x_i,\: i=0,\dots,n$ be distinct real number and suppose that $y_i,\: i=0,\dots,n$ are real numbers. Then, there is a unique polynomial $p_n\in \mathcal{P}_n$ such that $p_n(x_i)=y_i$ for all $i=0,\dots,n$.
 \end{thm}
 \begin{definition}
     The polynomial $p_n$ defined by 
     \begin{equation}\label{eq:lagrange}
         p_n(x) = \sum_{k=0}^n y_kL_k(x)
     \end{equation}
-    with $L_k$ the Lagrange polynomial ($L_0(x) \equiv 1$), is the Lagrange interpolation polynomial of degree $n$ for the points $(x_i,y_i),i=0,\dots,n$.
+    with $L_k$ the Lagrange polynomial ($L_0(x) \equiv 1$), is the Lagrange interpolation polynomial of degree $n$ for the points $(x_i,y_i),\: i=0,\dots,n$.
 \end{definition}
 \begin{thm}
     Let $f:\R\mapsto \R$, $f\in \mathcal{C}^{n+1}[a,b]$. Then, given that $x\in[a,b]$, there exists $\xi=\xi(x)$ on $(a,b)$ such that 
@@ -146,7 +146,7 @@ And the recursive formula is
     P_{i_0i_1\dots i_k}= P_{i_0i_1\dots i_{k-1}}(x) + y_{i_0i_1\dots i_k}(x-x_{i_0})(x-x_{i_1})\dots(x-x_{i_{k-1}})
 \end{equation}
 \section{Linear algebra approach}
-Let \((\phi_0,\dots,\phi_n)\) ba a basis of \(\mathcal{P}_n\), which is known to be an \((n+1)\)-dimensional linear space. The interpolation polynomial can thus be expressed in a unique way in the basis:
+Let \((\phi_0,\dots,\phi_n)\) be a basis of \(\mathcal{P}_n\), which is known to be an \((n+1)\)-dimensional linear space. The interpolation polynomial can thus be expressed in a unique way in the basis:
 \begin{equation}
     p_n(x) = \sum_{i=0}^n a_i\phi_i(x)
 \end{equation}
@@ -188,7 +188,7 @@ For the polynomial \(p_n(x) = 1\), we have the following expression:\[1 = \pi_{n
 \begin{equation}\label{eq:barycentric2}
     p_n(x) = \sum_{j=0}^n \frac{\lambda_jy_j}{x-x_j} / \sum_{j=0}^n \frac{\lambda_j}{x-x_j}
 \end{equation}
-for all \(x\notin \{x_n,\dots,x_n\}\).
+for all \(x\notin \{x_0,\dots,x_n\}\).
 \section{Trigonometric interpolation}
 Let us consider the evenly spaced points \(x_j = \frac{2\pi j}{N}\), \(j=0,\dots,N\), on the interval \([0,2\pi]\), and the interpolation values \(f_0,\dots, f_N\in \mathbb{C}\), with \(f_0=f_N\). The trigonometric interpolation problem consists of finding \(\beta_k\) such that 
 \begin{equation}
@@ -217,10 +217,9 @@ Let the interpolation points be \(x_0< x_1<\dots<x_\sigma\), with the values \(y
 \end{align}
 The interpolation polynomial can be written 
 \begin{equation}
-    \Phi(x) = \frac{\sum_{k=0}^\mu a_kx^k}{\sum_{k=0}^\nu b_kx^k} = \frac{\lambda p_\mu(x)}{q\nu(x)}
+    \Phi(x) = \frac{\sum_{k=0}^\mu a_kx^k}{\sum_{k=0}^\nu b_kx^k} = \frac{\lambda p_\mu(x)}{q_\nu(x)}
 \end{equation}
-The number of constraints, i.e. points needed for the interpolation is then \(\sigma=\mu +\nu\). This implies that\\
-If \(\Phi\) is a solution to the equation \eqref{eq:rational}, then \(p_\mu,q_\nu\) are solutions of 
+The number of constraints, i.e. points needed for the interpolation is then \(\sigma=\mu +\nu\). This implies that if \(\Phi\) is a solution to the equation \eqref{eq:rational}, then \(p_\mu,q_\nu\) are solutions of 
 \begin{align}\label{eq:rational2}
     p_\mu(x_i) - y_i q_\nu(x_i) = 0&\qquad i = 0,\dots,\mu + \nu\\
     \left(\sum_{k=0}^\mu a_kx_i^k\right) - y_i\left(\sum_{k=0}^\nu b_kx_i^k\right) &= 0
@@ -231,7 +230,7 @@ The theorem of uniqueness states that if \(\Phi_1\) and \(\Phi_2\) are non trivi
 \begin{itemize}
     \item \(p_\mu,q_\nu\) are relatively prime if they do not have zeros in common.
 \end{itemize}
-Given \(\Phi = \frac{p_\mu}{q_\nu}\), let \(\tilde{\Phi}=\frac{\tilde{p}\mu}{\tilde{q}_\nu}\) be the equivalent expression for which \(\tilde{p}_\mu\) and \(\tilde{q}_\nu\) are relatively prime. \(\Phi\) is the solution of \eqref{eq:rational} \(\Longleftrightarrow \tilde{p}_\mu(x_i)-y_i \tilde{q}_\nu(x_i)=  0\), \(i=0,\dots,\mu+\nu\).  
+Given \(\Phi = \frac{p_\mu}{q_\nu}\), let \(\tilde{\Phi}=\frac{\tilde{p}_\mu}{\tilde{q}_\nu}\) be the equivalent expression for which \(\tilde{p}_\mu\) and \(\tilde{q}_\nu\) are relatively prime. \(\Phi\) is the solution of \eqref{eq:rational} \(\Longleftrightarrow \tilde{p}_\mu(x_i)-y_i \tilde{q}_\nu(x_i)=  0\), \(i=0,\dots,\mu+\nu\).  
 \chapter{Polynomial approximation}
 \section{Definitions}
 \begin{definition}
@@ -413,7 +412,7 @@ By the previous results, the polynomial $p_n$ is of the form
 \end{thm}
 \chapter{Piecewise polynomial approximation}
 \section{Definition}
-Let \(\mathcal{S}=\mathcal{S}(k)=\mathcal{S}(k;x_0,\dots,x_m)=\{s\in \mathcal{C}^{k-1}[a,b]:s|_{[x_{i-1},x_i]}\in \mathcal{P}_k,i=1,\dots,m\}\) denote the linear space of splines of degree \(k\ge 1\), with knots \(a=x_0<x_1<\dots <x_m=b\). \\
+Let \(\mathcal{S}=\mathcal{S}(k)=\mathcal{S}(k;x_0,\dots,x_m)=\{s\in \mathcal{C}^{k-1}[a,b]:s|_{[x_{i-1},x_i]}\in \mathcal{P}_k,\: i=1,\dots,m\}\) denote the linear space of splines of degree \(k\ge 1\), with knots \(a=x_0<x_1<\dots <x_m=b\). \\
 The conditions at the knots are the following:
 \begin{equation}
     s^{(j)}(x_i^-) = s^{(j)}(x_i^+) \quad j=0,\dots, k-1
@@ -759,7 +758,7 @@ The same reasoning can be done on the Simpson rule, and we find the bound
 \section{Gauss quadrature}
 Gauss quadrature consists in approximating the integral of $f$ over the interval $[a,b]$ by the integral of its Hermite polynomial on the same interval. 
 \begin{equation}
-    \int_a^b w(x)f(x)dx \approx \int_a^b w(x)p_{2n+1}(x)dx  = \sum_{k=0}^n W_kf(x_k)+\sum_{k=0}^m V_k f'(x_k)
+    \int_a^b w(x)f(x)dx \approx \int_a^b w(x)p_{2n+1}(x)dx  = \sum_{k=0}^n W_kf(x_k)+\sum_{k=0}^n V_k f'(x_k)
 \end{equation}
 where 
 \begin{equation}
