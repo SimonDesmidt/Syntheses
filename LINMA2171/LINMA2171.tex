@@ -141,6 +141,10 @@ Newton's interpolation formula is used to evaluate polynomials with a computer, 
 \begin{equation}
     p_n(x) = \left(\left(\dots\left(y_{0\dots n}(x-x_n)+y_{0\dots n-1}\right)(x-x_{n-1})+y_{0\dots n-2}\right)(x-x_{n-2})+\dots\right) + y_0
 \end{equation}
+with
+\begin{equation}
+    y_{i_0i_1\dots i_k} = \frac{y_{i_1\dots i_{k}}-y_{i_0\dots i_{k-1}}}{x_{i_k}-x_{i_0}}
+\end{equation}
 And the recursive formula is
 \begin{equation}
     P_{i_0i_1\dots i_k}= P_{i_0i_1\dots i_{k-1}}(x) + y_{i_0i_1\dots i_k}(x-x_{i_0})(x-x_{i_1})\dots(x-x_{i_{k-1}})
