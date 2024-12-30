@@ -80,7 +80,7 @@
 \chapter{Reminders}
 \section{Algebraic structures}
 \begin{itemize}
-    \item A semigroupe is a set together with an associative binary operation \((E,+)\).
+    \item A semigroup is a set together with an associative binary operation \((E,+)\).
     \item A monoid is a semigroup with a neutral element.
     \item A group is a monoid in which every element has an inverse.
     \item A commutative group is a group whose binary operation is commutative.
@@ -88,7 +88,7 @@
     \begin{itemize}
         \item [\(\bullet\)] \((E,+)\) is a commutative group;
         \item [\(\bullet\)] \((E,\cdot)\) is a monoid;
-        \item [\(\bullet\)] $\cdot$ is distirbutive with respect to \(+\).
+        \item [\(\bullet\)] $\cdot$ is distributive with respect to \(+\).
     \end{itemize}
     \item An integral domain is a commutative ring in which the product of any two nonzero elements in nonzero : \[\forall x,y\in E, x,y\neq 0\qquad xy\neq 0\]. This implies that the equation \(ax=b\) with \(a\neq 0\) has at most one solution. 
     \item An Euclidean domain is an integral domain such that for every two elements in the domain, we can perform the Euclidean division: \[\forall (a_1,a_2), \quad \exists (q,r) : \quad a_1=a_2q+r \text{ with }r<a_2\]
@@ -103,7 +103,7 @@
             \item \(1\cdot x = x\)
         \end{itemize}
     \end{itemize}
-    \item If, in addition to that, \((K,\cdot,+)\) is a field, then \((K,E,+)\) is a vector space over \((K,+,\cdot)\).
+    \item If, in addition to that, \((K,+,\cdot)\) is a field, then \((K,E,+)\) is a vector space over \((K,+,\cdot)\).
     \item \((K,E,+,\cdot)\) is an algebra if 
     \begin{itemize}
         \item [\(\bullet\)] \((K,E,+)\) is a module or a vector space;
@@ -121,7 +121,7 @@ Apart from the usual sum and product of two matrices, we can define the Hadamard
         a_{m1}B & \dots & a_{mn}B\\
     \end{bmatrix}\]
 \end{itemize}
-A square matrix \(A\in \mathbb{C}^{n\times n}\) is said normal if \(AA^* = A^*\). In the real case, it is said to be orthogonal and \(*\) is equivalent to the transpose. Furthermore, it is said to be unitary if it satisfies the relations \(AA^* = I_n = A^*A\). 
+A square matrix \(A\in \mathbb{C}^{n\times n}\) is said normal if \(AA^* = A^*A\). In the real case, it is said to be orthogonal and \(*\) is equivalent to the transpose. Furthermore, it is said to be unitary if it satisfies the relations \(AA^* = I_n = A^*A\). 
 \subsection{Determinant}
 We define the quasi-diagonals of a matrix as the \(n\)-tuples of elements of a matrix \(A\), \(a_{1j_1,2j_2,\dots,nj_n}\) where the indices \(\textbf{j} = (j_1,\dots,j_n)\) constitute a permutation of the set \(\{1,2,\dots,n\}\). Thus a quasi-diagonal consists of \(n\) elements of the matrix \(A\) in such a way that no two of them lie in the same row or column of \(A\). For each quasi-diagonal, we define the parity \(t(\textbf{j})\). It is the number of inversions \(j_k>j_p\) for \(k<p\) in \(\textbf{j}\).
 \begin{itemize}
@@ -284,7 +284,7 @@ for any arbitrary matrix \(A_{m\times n}\), and with \(R,Q\) being unitary (if \
 \underline{Properties:}
 \begin{itemize}
     \item If the matrix \(A\) is real, \(U,V\) are orthogonal matrices;
-    \item The transformations \(U,V\) diagonalize the matrices \(AA^*\) and \(A^*A\) respectively, since \(U^*AA^*A = \Sigma \Sigma^T\), \(V^*A^*AV=\Sigma^T\Sigma\), and the columns of \(U,V\) are the eigenvectors of \(AA^*\) and \(A^*A\) respectively.
+    \item The transformations \(U,V\) diagonalize the matrices \(AA^*\) and \(A^*A\) respectively, since \(U^*AA^*U = \Sigma \Sigma^T\), \(V^*A^*AV=\Sigma^T\Sigma\), and the columns of \(U,V\) are the eigenvectors of \(AA^*\) and \(A^*A\) respectively.
     \item The transformations \(U,V\) are not uniquely defined. 
 \end{itemize}
 \section{Linear operator point of view}
@@ -324,7 +324,7 @@ with \(H_1\) a positive definite Hermitian matrix, \(Q\) unitary and \(H_2\) als
 A matrix norm is unitarily invariant if, for every \(A\in \C^{m\times n}\), we have \(\lVert A\rVert = \lVert U^*AV\rVert\) if \(U,V\) are unitary.\\
 The 2-norm and the Frobenius norm of \(A\in \C^{m\times n}\) are unitarily invariant.
 \begin{equation}
-    \lVert A \rVert_2 \coloneqq \sup_{x\neq 0}\frac{\lVert Ax\rVert_2}{\lVert x\rVert_2} \qquad \lVert A\rVert_F \coloneqq \left(\sum_{i,j}|a_{i,j}^2\right)^{1/2}
+    \lVert A \rVert _2 \coloneqq \sup_{x\neq 0}\frac{\lVert Ax \rVert _2}{\lVert x \rVert _2} \qquad \lVert A \rVert _F \coloneqq \left(\sum_{i,j} \lvert a_{i,j} \rvert^2 \right)^{1/2}
 \end{equation}
 \section{Canonical angles}
 \begin{thm}
