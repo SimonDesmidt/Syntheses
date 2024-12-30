@@ -496,7 +496,7 @@ Let $p^*$ be the problem instance that we want to solve. Dynamic programming sup
 \end{equation}
 where $f_{p,q}(S_q)$ is a way of building a solution of $p$ by extending the optimal solution of $q$\footnote{It is supposed to be easy to compute.}, and $S_p^0$ represents a "trivial" solution for $p$. 
 \begin{ex}
-    In the case of the shortest paths from the source $s$ to node $v$, the set $\mathbb{P}$ of problems consist of computing the shortest apths of length at most $k$ ($k=0,\dots,n)$ from the source $s$ to every node $i$, and the problem order relation can be defined by $D_k(i)<D_{k'}(i')$ if $k<k'$, i.e. the max length is shorter. The set of immediate predecessors $R_p$ of $p=D_k(i)$ is the set of $D_{k-1}(j)$ for all $j$ from which $i$ can be reached. 
+    In the case of the shortest paths from the source $s$ to node $v$, the set $\mathbb{P}$ of problems consist of computing the shortest paths of length at most $k$ ($k=0,\dots,n)$ from the source $s$ to every node $i$, and the problem order relation can be defined by $D_k(i)<D_{k'}(i')$ if $k<k'$, i.e. the max length is shorter. The set of immediate predecessors $R_p$ of $p=D_k(i)$ is the set of $D_{k-1}(j)$ for all $j$ from which $i$ can be reached. 
 \end{ex}
 \begin{algorithm}
     \caption{Dynamic Programming}\label{algo:dp}

@@ -415,7 +415,7 @@ The problem with this method is that it does not find a minimizer, it only compu
 \begin{thm}
     Let $f\in \mathcal{C}^2$. If $\nabla^2f$ is M-Lipschitz and $x^*$ is a minimum of $f$ such that $\nabla^2f(x^*)\succeq \mu I$, with $\mu>0$, then for any $x$ such that $\lVert x-x^*\rVert\le \frac{\mu}{2M}$, we have
     \begin{equation}
-        \lvert x^+-x^*\rVert \le \frac{M}{\mu}\lVert x-x^*\rVert^2
+        \lVert x^+-x^*\rVert \le \frac{M}{\mu}\lVert x-x^*\rVert^2
     \end{equation}
     where $x^+ = x - \nabla^2f(x)^{-1}\nabla f(x)$ is well-defined.
 \end{thm}
@@ -431,7 +431,7 @@ Newton's method is invariant with respect to linear changes of variables, while 
     with 
     \begin{itemize}
         \item $\nabla f(x)[h] = \nabla f(x) \cdot h$
-        \item $\nabla^2f(x)[h,h] = h^T\nabla f(x)h$
+        \item $\nabla^2f(x)[h,h] = h^T\nabla^2 f(x)h$
         \item $\nabla^3f(x)[h,h,h] = \sum_i\sum_j\sum_k \frac{\partial^3 f}{\partial x_i \partial x_j \partial x_k}h_ih_jh_k$
     \end{itemize}
 \end{definition}
@@ -682,7 +682,7 @@ Hence the convex problem \eqref{eq:short_step} is equivalent to
 \begin{itemize}
     \item The only convex cones in $\R$ are $\emptyset, \R,\R_+,\R_-$. 
     \item In $\R^2$, a convex cone is either $\emptyset, \R^2$, a line through the origin, or a region between two half-lines from the origin, with an angle of less than $\pi$. 
-    \item Lorentz-cone: $\mathbb{L}^n = \{(x_0,\dots,x_n)\in \R^{n+1}|\sqrt{x_1^2+\dots+x_n^2}\le x_0\}$. 
+    \item Lorentz-cone: $\mathbb{L}^n = \left\{(x_0,\dots,x_n)\in \R^{n+1}|\sqrt{x_1^2+\dots+x_n^2}\le x_0\right\}$. 
     \item Semi-definite cone: $K=\mathbb{S}_+^n$, i.e. the set of symmetric positive semidefinite matrices. 
 \end{itemize}
 \section{Dual cone}
@@ -708,7 +708,7 @@ Some cones are self-dual:
 \end{itemize}
 and the cartesian product works with duality: $(K_1\times K_2)^* = K_1^* \times K_2^*$.
 \begin{thm}
-    If $x$ is feasible for the primal problem and $y$ is feasible for the dual problem, then inequality $b^Ty \le c^tx$ holds. This is weak duality. 
+    If $x$ is feasible for the primal problem and $y$ is feasible for the dual problem, then inequality $b^Ty \le c^Tx$ holds. This is weak duality. 
 \end{thm}
 \begin{thm}
     If both problems admit feasible solutions, the primal optimal value $p^*$ and dual optimal value $d^*$ are finite and satisfy $d^*\le p^*$. If both problems admit feasible solutions $x$ and $y$ such that $c^Tx=b^Ty$, then both $x$ and $y$ are optimal.
@@ -721,7 +721,7 @@ and the cartesian product works with duality: $(K_1\times K_2)^* = K_1^* \times 
 \end{itemize}
 \section{Strong duality}
 \begin{definition}
-    A feasible solution to a conic problem is stricly feasible iff it belongs to the interior of the cone:
+    A feasible solution to a conic problem is strictly feasible iff it belongs to the interior of the cone:
     \begin{itemize}
         \item $x$ is strictly feasible for the primal iff we have both $Ax=b$ and $x\succeq_K0$;
         \item $y$ is strictly feasible for the dual iff $A^Ty\prec_{K^*}c$.
@@ -731,7 +731,7 @@ and the cartesian product works with duality: $(K_1\times K_2)^* = K_1^* \times 
     If both the primal and the dual problems admit a strictly feasible solution, they are both solvable and their optimal solutions $x^*$ and $y^*$ satisfy $c^Tx^*=b^Ty^*$.
 \end{thm}
 \section{Cones and barriers}
-\subsection{Nonegative/linear cone}
+\subsection{Nonnegative/linear cone}
 \begin{equation}
     \R_+=\{x\in\R \text{ such that }x\ge 0\}
 \end{equation}
