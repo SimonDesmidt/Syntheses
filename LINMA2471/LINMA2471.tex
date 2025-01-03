@@ -178,7 +178,7 @@ For a L-smooth function for the problem \eqref{eq:convex_problem}, we define
 \end{equation}
 where \(x_{k+1}\) is given by the general formula\footnote{This definition of \(x_{k+1}\) is true for any type of gradient method, the first case seen being with \(\Omega = \mathbb{R}^n\).}
 \begin{equation}
-    x_{k+1} = \arg \min_{y\in \Omega} f(x_k) + \langle \nabla f(x_k),y-x_k\rangle +\frac{L}{2}\lvert y-x_k\rVert_2^2
+    x_{k+1} = \arg \min_{y\in \Omega} f(x_k) + \langle \nabla f(x_k),y-x_k\rangle +\frac{L}{2}\lVert y-x_k\rVert_2^2
 \end{equation}
 From this, we can show as we did in the previous sections that there is a lower bound for the method:
 \begin{equation}

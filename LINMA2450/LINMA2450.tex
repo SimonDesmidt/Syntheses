@@ -650,7 +650,7 @@ The goal here is to find a trade-off between obtaining polytopes as close as pos
 \section{Chvatal-Gomory procedure}
 Suppose that a polytope $P$ is described by $\{x\in \R_+^n:Ax\le b\}$ and that $\mathbb{X}=P\cap \mathbb{Z}_n^+$, i.e.
 \begin{equation}
-    P\coloneqq \{x\in \R^n_+{j=1}^n a_jx_j\le b\}
+    P\coloneqq \{x\in \R^n_+\:|\sum_{j=1}^n a_jx_j\le b\}
 \end{equation}
 the inequality being componentwise and the $a_j$ being the columns of $A$. The Chvatal-Gomory procedure consists in selecting a nonnegative vector $u\in \R_+^n$ and applying the following steps:
 \begin{enumerate}
@@ -685,7 +685,7 @@ $Ax=b$ consists of $m$ constraints and $x\ge0$ $n$ constraints. The $m$ equality
 \end{equation}
 Assuming $A_B$ is invertible (without loss of generality), 
 \begin{equation}
-    x_B + \underbrace{A_B^{-1}A_{NB}}_{\tilde A_{NB}} x_{NB} = \underbrace{A_Bb}_{\tilde b}
+    x_B + \underbrace{A_B^{-1}A_{NB}}_{\tilde A_{NB}} x_{NB} = \underbrace{A_B^{-1}b}_{\tilde b}
 \end{equation}
 and we rewrite problem \eqref{eq:LP} as 
 \begin{equation}
@@ -714,7 +714,7 @@ with $b\ge0, a_j>0$ and $x_j\in \{0,1\}$. Any binary problem can be reformulated
     A cover $C$ for a constraint in the Knapsack form is a subset $C\subseteq \{1,\dots,n\}$ such that $\sum_{j\in C}a_j\ge b$. If $C$ is a cover, then $\sum_{j\in C}x_j\le |C|-1$ is a valid inequality. 
 \end{definition}
 \begin{definition}
-    A cover is minimla if, for every $i\in C$, the smaller set $C\setminus \{i\}$ is not a cover.
+    A cover is minimal if, for every $i\in C$, the smaller set $C\setminus \{i\}$ is not a cover.
 \end{definition}
 Let $C$ be a cover and let the extension of $C$ $E(C) = \{k:a_k\ge a_j,\forall j\in C\}$ be the set of the indices of the coefficients larger than or equal to all those of the cover. Then
 \begin{equation}
@@ -773,7 +773,7 @@ as $\mathbb{X}$ is finite and its elements are $x^1,\dots, x^N$. This is convex 
 \begin{definition}
     The vector $\gamma$ is a subgradient of the convex function $f$ at point $x$ if it holds $f(y) \ge f(x)+\gamma^T(y-x)$ for every $y$. 
 \end{definition}
-$(d-)Dx(u)$ is a subgradient of $z(u)$, where $x(u)\in \mathbb{X}$ is the value of the optimum $x$ for the relaxation with vectors $u$. We can solve using a subgradient descent, verifying the conditions from the course LINMA2471:
+$(d-Dx(u))$ is a subgradient of $z(u)$, where $x(u)\in \mathbb{X}$ is the value of the optimum $x$ for the relaxation with vectors $u$. We can solve using a subgradient descent, verifying the conditions from the course LINMA2471:
 \begin{algorithm}[H]
     \caption{Subgradient Algorithm}\label{algo:subgradient}
     \begin{algorithmic}[1]
