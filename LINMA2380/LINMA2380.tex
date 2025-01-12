@@ -183,7 +183,7 @@ We also define the complementary cofactors of \(A\) as
 \end{equation}
 where \(s = \sum_{k=1}^p(i_k+j_k)\) and \(\textbf{i}_p^c\) is the set complement of \(\textbf{i}_p\) (same for \(\textbf{j}_p\)). \\
 \underline{Laplace Theorem:}\\
-Let \(A\) ne a matrix of dimensions \(n\times n\) and \(\textbf{i}_p\) be a \(p\)-tuple of rows (and \(\textbf{j}_p\) for the columns). Then, \(\det(A)\) is equal to the sum of the products of all possibles minors located in these rows/columns with their complementary cofactors:
+Let \(A\) be a matrix of dimensions \(n\times n\) and \(\textbf{i}_p\) be a \(p\)-tuple of rows (and \(\textbf{j}_p\) for the columns). Then, \(\det(A)\) is equal to the sum of the products of all possible minors located in these rows/columns with their complementary cofactors:
 \begin{equation}
     \begin{cases}
         \det(A) = \sum_{\textbf{j}_p}A\begin{pmatrix}
@@ -201,9 +201,9 @@ Let \(A\) ne a matrix of dimensions \(n\times n\) and \(\textbf{i}_p\) be a \(p\
 \underline{Binet-Cauchy Theorem:}\\
 Let \(\textbf{m}\) be the \(m\)-tuple \((1,\dots,m)\). Let \(A\) and \(B\) be matrices of dimensions \(m\times n\) and \(n\times m\) respectively. If \(m\le n\), then 
 \begin{equation}
-    \det(AB) = \sum_{\textbf{j}_m} = A\begin{pmatrix}
+    \det(AB) = \sum_{\textbf{j}_m} \det A\begin{pmatrix}
         \textbf{m}\\ \textbf{j}_m
-    \end{pmatrix} B\begin{pmatrix}
+    \end{pmatrix} \det B\begin{pmatrix}
         \textbf{j}_m\\ \textbf{m}
     \end{pmatrix}
 \end{equation}
@@ -279,7 +279,7 @@ for any arbitrary matrix \(A_{m\times n}\), and with \(R,Q\) being unitary (if \
                      & 0_{(m-r)\times r} & & 0_{(m-r)\times (n-r)}\\
           \end{pNiceArray}
         \end{equation}
-    with real positive singular values \(\sigma_1\ge \dots \ge \sigma_r > 0\). The value \(r\) and the \(r\)-tuple \((\sigma_1,\dots,\sigma_r)\) are uniquely defined and, as a consequence, the matrix \(\Sigma\) constitutes a canonical form under unitary transformations, i.e. under transformations of the forme \(B = \tilde U^* A\tilde V\). Where \(\tilde U, \tilde V\) are two unitary matrices. 
+    with real positive singular values \(\sigma_1\ge \dots \ge \sigma_r > 0\). The value \(r\) and the \(r\)-tuple \((\sigma_1,\dots,\sigma_r)\) are uniquely defined and, as a consequence, the matrix \(\Sigma\) constitutes a canonical form under unitary transformations, i.e. under transformations of the form \(B = \tilde U^* A\tilde V\). Where \(\tilde U, \tilde V\) are two unitary matrices. 
 \end{thm}
 \underline{Properties:}
 \begin{itemize}
@@ -675,7 +675,7 @@ From this it comes that the invertible polynomial matrices are exactly the unimo
     If $A\ge 0\in \R^{n\times n}$ is irreducible and stochastic, then $\rho(A)=1$ and 1 is a simple eigenvalue of $A$. Hence, there is a unique vector $x>0\in \R^n$ such that $Ax=x$ and $u^Tx=1$.
 \end{thm}
 \begin{corollary}
-    If $A\ge0\in \R^{n\times n}$ is primitive and stochastic, then $\lim_{m\times \infty}A^m =  xu^T$, where $x$ is as in Theorem \ref{thm:7.5}.
+    If $A\ge0\in \R^{n\times n}$ is primitive and stochastic, then $\lim_{m\rightarrow \infty}A^m =  xu^T$, where $x$ is as in Theorem \ref{thm:7.5}.
 \end{corollary}
 \section{Graph-theoretic characterization}
 \begin{definition}
