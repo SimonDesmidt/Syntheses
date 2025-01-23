@@ -90,7 +90,7 @@
         \item [\(\bullet\)] \((E,\cdot)\) is a monoid;
         \item [\(\bullet\)] $\cdot$ is distributive with respect to \(+\).
     \end{itemize}
-    \item An integral domain is a commutative ring in which the product of any two nonzero elements in nonzero : \[\forall x,y\in E, x,y\neq 0\qquad xy\neq 0\]. This implies that the equation \(ax=b\) with \(a\neq 0\) has at most one solution. 
+    \item An integral domain is a commutative ring in which the product of any two nonzero elements is nonzero : \[\forall x,y\in E, x,y\neq 0\qquad xy\neq 0\] This implies that the equation \(ax=b\) with \(a\neq 0\) has at most one solution. 
     \item An Euclidean domain is an integral domain such that for every two elements in the domain, we can perform the Euclidean division: \[\forall (a_1,a_2), \quad \exists (q,r) : \quad a_1=a_2q+r \text{ with }r<a_2\]
     \item A field is a commutative ring \((E,+,\cdot)\) such that every \(a\in E\setminus \{0\}\) has a multiplicative inverse.
     \item \((K,E,+)\) is a module over the ring \((K,+,\cdot)\) if 
@@ -255,8 +255,8 @@ for any arbitrary matrix \(A_{m\times n}\), and with \(R,Q\) being unitary (if \
     \begin{equation}
         U^*AU = \begin{pmatrix}
             \lambda_1 & 0 & \dots & 0\\
-            0&\ddots &\ddots \vdots \\
-            \dots & \ddots & \ddots & 0\\
+            0&\ddots &\ddots & \vdots \\
+            \vdots & \ddots & \ddots & 0\\
             0 & \dots & 0 & \lambda_n\\
         \end{pmatrix}
     \end{equation}
