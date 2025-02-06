@@ -68,7 +68,7 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-\chapter{Definitions and Notations}
+\chapter{Definitions, notations and random properties}
 \begin{itemize}
 	\item The Taylor expansion of order $p$ of the function $f$ around $x_k$ and evaluated at $y$ is: 
 	\begin{equation}
@@ -95,6 +95,12 @@
 		\item $\C^1_L(\R^n)$: Class of continuously differentiable functions with L-Lipschitz gradient;
     \item $\C^2_L(\R^n)$: Class of continuously differentiable functions with L-Lipschitz hessian.
 	\end{itemize}
+\end{itemize}
+\section{Properties}
+\begin{itemize}
+	\item For a function $f\in \C^1(\Omega)$ and $\Omega$ is bounded, the following holds: $\lVert \nabla f(x)\rVert \le L$ for all $x\in \Omega$ for some $L\ge 0$.
+	\item By the mean value theorem, for a continuously differentiable function $f$, $\forall x,y\in \Omega,\: \exists \ z\in \Omega:$ $f(y)-f(x) = \langle \nabla f(z),y-x\rangle$.
+	\item For a matrix $A$ and a scalar $b$, $\lVert A\rVert \le b\Longrightarrow |\lambda (A)|\le b \Longrightarrow |A| \preceq bI_n$, where the absolute value of the matrix is taken component wise. 
 \end{itemize}
 \chapter{TODO}
 We can generalise the property of a L-Lipschitz function to $f\in \C_L^p(\R^n)$. For $p=1$, we had 
