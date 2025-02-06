@@ -85,7 +85,7 @@
 	\begin{itemize}
 		\item The state space is the set of all values of the system at each stage. 
 		\begin{equation}
-			S_0 = \{C\},\quad S_1 = \{C_u, C_d\},\quad S_2 = \{C_{uu}, C_{ud}, C_{dd}\}
+			S_0 = \{C\},\qquad S_1 = \{C_u, C_d\},\qquad S_2 = \{C_{uu}, C_{ud}, C_{dd}\}
 		\end{equation}
 		\item  The sample space is the set of all possible combination of the system.
 		\begin{equation}
@@ -103,7 +103,7 @@
 	\item Consider the following problem with $x \in \R^n$ and domain $\mathcal{D}$:
 	\begin{equation}
 		\begin{aligned}
-			&min f_0(x), \quad s.t.\\
+			&\min f_0(x), \qquad s.t.\\
 			&f_i(x) \leq 0, i = 1, \dots, m\\
 			&h_j(x) = 0, j = 1, \dots, p
 		\end{aligned}
@@ -116,7 +116,61 @@
 	\begin{equation}
 		g(\lambda, \nu) = \inf_{x \in \mathcal{D}} L(x, \lambda, \nu)
 	\end{equation}
-	\item \textcolor{red}{TODO: suite, stopped at CM1 (background), slide 35}
+	\item The Lagrange dual problem is a lower bound on the optimal value of the primal problem
+	\item Lagrange relaxation of Stochastic Programs, consider the two problems:
+	\begin{equation}
+		\begin{aligned}
+			\min f_1(x) + \mathbb{E}_\omega[f_2(y(\omega), \omega)] \qquad & \qquad \min f_1(x) + \mathbb{E}_\omega[f_2(y(\omega), \omega)]\\
+			s.t \qquad h_{1i}(x) \leq 0, i = 1, \dots, m_1 \qquad & \qquad s.t. \qquad h_{1i}(x) \leq 0, i = 1, \dots, m_1\\
+			h_{2i}(x,y(\omega),\omega) \leq 0, i = 1, \dots, m_2 \qquad & \qquad h_{2i}(x(\omega),y(\omega),\omega) \leq 0, i = 1, \dots, m_2\\
+			& \textcolor{red}{\qquad x(\omega) = x} 
+		\end{aligned}
+	\end{equation}
+	The red constraint is the non-anticipativity constraint, it transforms the deterministic variable into a stochastic variable. \textcolor{red}{A VERIFIER}
+	\item The dual of a stochastic program is:
+	\begin{equation}
+		\begin{aligned}
+			& g(\nu) = g1(\nu) + \mathbb{E}_\omega(g2(\nu, \omega))\\
+			where \qquad &  \\
+			& g_1(\nu) = \inf f_1(x) + \left( \displaystyle \sum_{\omega \in \Omega} \nu(\omega) \right)^T x\\
+			& s.t. \quad h_{1i} (x) \leq 0, i = 1, \dots, m_1\\
+			and \qquad &  \\
+			& g_2(\nu, \omega) = \inf f_2(y(\omega) \omega) - \nu x(\omega)\\
+			& s.t. \quad h_{2i}(x(\omega), y(\omega), \omega) \leq 0, i = 1, \dots, m_2
+		\end{aligned}
+	\end{equation}
+	\item  With $p^*$ the solution of the primal problem and $d^*$ the solution of the dual problem, we have:
+	\begin{itemize}
+		\item Weak duality: $d^* \leq p^*$
+		\item Strong duality: $d^* = p^*$
+	\end{itemize}
+	\item The KKT conditions are necessary and sufficient for optimality in convex optimization, there aren't unique. They are:
+	\begin{itemize}
+		\item Primal constraint: $f_i(x) \leq 0, i = 1, \dots, m$, $h_j(x) = 0, j = 1, \dots, p$
+		\item Dual constraint: $\lambda \geq 0$
+		\item Complemetarity slackness: $\lambda_i f_i(x) = 0, i = 1, \dots, m$
+		\item Gradient of the Lagrangian: $\nabla_x L(x, \lambda, \nu) = 0$
+	\end{itemize}
+	\item  For a certains sequence of events: $x \to \omega \to y(\omega)$, where $\omega$ is the uncertainty:
+	\begin{itemize}
+		\item A first-stage decision is a decision that is made before the uncertainty is revealed (in $x$)
+		\item A second-stage decision is a decision that is made after the uncertainty is revealed (in $y(\omega)$)
+	\end{itemize}
+	\item We can have a mathematic formulation like this:
+	\begin{equation}
+		\begin{aligned}
+			&\min c^T x + \mathbb{E}[\min q(\omega)^T y(\omega)]\\
+			& Ax = b\\
+			& T(\omega) x + W(\omega)y(\omega) = h(\omega)\\
+			& x \geq 0, y(\omega) \geq 0
+		\end{aligned}
+	\end{equation}
+	\begin{itemize}
+		\item First-stage decision: $x \in \R^{n_1}$
+		\item First-stage parameter: $c \in \R^{n_1}$, $b \in \R^{m_1}$ and $A \in \R^{m_1 \times n_1}$
+		\item Second-stage decision: $y(\omega) \in \R^{n_2}$
+		\item Second-stage data: $q(\omega) \in \R^{n_2}$, $h(\omega) \in \R^{m_2}$ and $T(\omega) \in \R^{m_2 \times n_1}$, $W(\omega) \in \R^{m_2 \times n_2}$
+	\end{itemize}
 \end{itemize}
 \chapter{TO DO}
 \end{document}
