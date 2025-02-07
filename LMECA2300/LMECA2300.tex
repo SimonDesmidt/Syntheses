@@ -67,5 +67,29 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-\chapter{}
+\chapter{2-D acoustic and electromagnetic waves}
+\section{Physical laws}
+The expression of the force of the source applied to its surrounding is derived from Newton's law $F=ma$:
+\begin{equation}
+  \rho_0 \frac{\partial \vec{u}}{\partial t} + \nabla p = r_v
+\end{equation}
+where $\rho_0$ is the average density of the surrounding, $\vec{u}$ is the velocity field, $p$ is the variation of pressure and $r_v$ is the "pressure force". \\
+The conservation law of energy is 
+\begin{equation}
+  \nabla \cdot \vec{u} + \chi \frac{\partial p}{\partial t}=s_v
+\end{equation}
+where $\chi$ is the compressibility $[kg^{-1}ms^2]$ and is given by the equation $\frac{\rho}{\rho_0}=\chi p$. $s_v$ is the "velocity source".\\
+\section{Wave equation}
+The wave equation is
+\begin{equation}
+	\nabla^2p-\rho_0\chi \frac{\partial^2 p}{\partial t^2} - -\rho_0 \frac{\partial s_V}{\partial t}
+\end{equation}
+In 1D, with $s_V=0$, the solution is any function $f\left(t-\frac{x}{v}\right)$ or $g\left(x-tv\right)$ with $v=1/\sqrt{\rho_0\chi}$. 
+\section{Plane wave}
+In the plane, the standard wave is given by 
+\begin{equation}
+	p(x,t)=p_0 \cos(\omega t-kx)
+\end{equation}
+where the phase velocity is $v_{ph} = \frac{\omega}{k}=\frac{1}{\sqrt{\chi \rho_0}}$.\\
+The wave impedance is $\nu = \frac{p}{u_x} = \sqrt{\frac{\rho_0}{\chi}} \ [kgm^{-2}s^{-1}]$.
 \end{document}
