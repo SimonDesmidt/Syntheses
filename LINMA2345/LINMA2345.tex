@@ -67,5 +67,72 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-\chapter{}
+\chapter{Basic models}
+In a model, we need to define the actions, the knowledge, the randomness and the outcomes. \\
+A private information is any knowledge on the state of the world that is not a common knowledge. An information $X$ is said to be common knowledge if the statement (everybody knows that$)^{K}$ everybody knows $X$ holds for any integer $K$
+\section{Extensive form games}
+The extensive form is a tree. The nodes trigger something: they can be triggered by a player of by chance. The edges are the actual events of the game, from a player or from chance. The leaves are the payoffs, containing one item per player. 
+\begin{figure}[H]
+  \centering 
+  \includegraphics[scale=.15]{img/extensive.png}
+\end{figure}
+The extensive form contains the following elements:
+\begin{itemize}
+	\item $N$: the set of players (e.g. by name);
+	\item $S$: the set of information states, i.e. the information to which each player has access;
+	\item $D$: the set of moves for a player that is at a certain information states (meet or pass, raise or stop, etc.);
+	\item $V$: the set of nodes (e.g. numbered);
+	\item $V_0$: the set of chance nodes;
+	\item $Y$: the set of action nodes, i.e. where someone does something;
+	\item $X$: the set of leaves;
+	\item $t$: the transitions, i.e. the outgoing edges from a node;
+	\item $p$: the probability distribution for the random transitions;
+	\item $w$: the payoffs for each player at each leaf.
+\end{itemize}
+\subsection{Concepts}
+\begin{itemize}
+	\item Perfect recall: Players remember their past states and moves;
+	\item Perfect information: Every player knows where they are in the game;
+	\item Pure strategy: A function associates a move to each information state, i.e. if something happens, the strategy says what to do next;
+	\item Payoff of a strategy: It is the expected final value, i.e. the probability of an result times its payoff;
+	\item Randomized strategy: We assign, at each information state, a probability distribution on the moves.
+\end{itemize}
+\section{Strategic form games}
+A strategic game is a tuple $\Gamma=(N,C,u)$ where $N$ is the set of players, $C$ the set of pure strategies for all players, and $u$ the payoff function. Using a randomized strategy, we have the following expected payoff formula, with the probability distribution $\sigma_i$:
+\begin{equation}
+	E_\sigma (u_i(c)) = \sum_{c\in C}\sigma(x)u_i(x) = \sum_{c_i\in C_i} \sigma_i(c_i)\sum_{c_{-i}\in C_{-i}}\sigma_{-i}(c_{-i})u_i(c_i,c_{-i})
+\end{equation}
+where $-i$ denotes the set of all players except $i$, and $\sigma_{-i}(c_{-i}) =\prod_{j\neq i}\sigma_j(c_j)$.\\
+Consider a player $i\in N$. If the players $-i$ play following the strategy profile $\sigma_{-i}$, then the set of best response strategies for player $i$ is given by 
+\begin{equation}
+	\arg\max_{c_i\in C_i} \sum_{c_{-i}\in C_{-i}}\sigma_{-i}(c_{-i})u_i(c_i,c_{-i})
+\end{equation}
+\subsection{Strong domination}
+A strategy is strongly dominated if it cannot be a best response. 
+\begin{figure}[H]
+	\centering 
+	\includegraphics[scale=.15]{img/strong_dom.png}
+\end{figure}
+It means that, for a given column, there exists another one where all the second numbers are strictly bigger than in the considered one. This works too for the rows, using the first numbers. In that case, the column or row can be completely removed, as the player never has an interest in using that strategy. In the example above, column B is strongly dominated by column D.
+\begin{itemize}
+	\item [$\rightarrow$] Note: once a column or row has been removed, we can continue to iterate on the smaller table until no row or column can be removed again. The convergence to a certain table is guaranteed, whatever the order of removal.
+\end{itemize}
+\subsection{Weak domination}
+Weak domination changes the strictly bigger into a bigger or equal. In that case, it is not always a good move to remove the strategy, particularly if the game includes randomness. 
+\begin{itemize}
+	\item [$\rightarrow$] Note: Removing the weakly dominated strategies does not conserve convergence. 
+\end{itemize}
+\section{Equivalent models}
+Two games are fully equivalent if 
+\begin{equation}
+	\forall i \in N, \ \exists A_i>0, B_i\ : \ \hat u_i(c) = A_iu_i(c)+B_i \qquad \forall c\in C
+\end{equation}
+This means that the scale of the payoffs changes nothing. 
+\subsection{Best-reponse equivalence}
+Two games are best-response equivalent iff they have the best response sets, i.e.
+\begin{equation}
+	c_i'\in \arg\max_{c_i\in C_i} \sum_{c_{-i}\in C_{-i}} \sigma_{-i}(c_{-i})u_i(c_i,c_{-i}) \iff c_i'\in \arg\max_{c_i\in C_i} \sum_{c_{-i}\in C_{-i}} \sigma_{-i}(c_{-i})\hat u_i(c_i,c_{-i})
+\end{equation}
+\section{Bayesian game}
+In a Bayesian game, we add the set of player types $T$ and the belief functions. What was before a set of players is now a set of agents, each of which is a player in a certain state depending on the randomness of some piece of information.
 \end{document}
