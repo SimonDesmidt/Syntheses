@@ -125,7 +125,7 @@
 		\hline
 	\end{tabular}
 \end{center}
-\chapter{TODO}
+\chapter{TODO}\label{chap:right_oracle}
 We can generalise the property of a L-Lipschitz function to $f\in \C_L^p(\R^n)$. For $p=1$, we had 
 \begin{equation}
 	f(y)\le f(x_k) + \langle \nabla f(x_k),y-x_k\rangle + \frac{L}{2}\lVert y-x_k\rVert^2 \qquad \forall y\in \R^n 
@@ -176,6 +176,43 @@ Let $T(\varepsilon) = \inf \{k\in \mathbb{N}:\: \lVert \nabla f(x_k)\rVert\le \v
 		\Longrightarrow T(\varepsilon) &\le 1 + \frac{f(x_0)-f_{low}}{C(L)} \varepsilon^{-\frac{p+1}{p}} \equiv \O\left(\varepsilon^{-\frac{p+1}{p}}\right)
 	\end{aligned}
 \end{equation}
-\chapter{Gradient descent without gradient}
-For this problem consider an adversarial attack on block-based image classifier. We have a machine learning model that given an image $a\in\R^p$ it return $c(a)\in\R^m$, where $c_j(a) \in [0,1]$ is the probability of image $a$ to be in class $j$. The classifier prediction is: $j(a) = \arg\max_{j\in [1,\dots,m]} c_j(a)$.
+\chapter{Gradient descent without gradient}\label{chap:}
+For this problem consider an adversarial attack on block-based image classifier. We have a machine learning model that given an image $a\in\R^p$ it returns $c(a)\in\R^m$, where $c_j(a) \in [0,1]$ is the probability of image $a$ to be in class $j$. The classifier prediction is: $j(a) = \arg\max_{j\in [1,\dots,m]} c_j(a)$.
+\textcolor{red}{TODO}
+
+Given $x_k$ let us decide:
+\begin{equation}
+	x_{k+1} = x_k - \frac{1}{\sigma} g_{h_k}(x_k) \quad \quad \quad h_k > 0, \: \sigma > 0
+\end{equation}
+where $g_{h_k}(x_k) \in \R^n$ is given by:
+\begin{equation}
+	[g_{h_k}(x_k)]_j = \frac{f(x_k+he_j)-f(x_k)}{h_k} \quad \quad \quad \forall j\in [1,\dots,m]
+\end{equation}
+\textcolor{blue}{Suppose that $f\in \C^1_L(\R^n)$}. Then,
+\begin{equation}
+	\|\nabla f(x_k) - g_{h_k}(x_k)\| \leq \frac{L \sqrt{n}}{2} h_k
+\end{equation}
+Thus 
+\begin{equation}
+	\begin{aligned}
+		f(x_{k+1}) &\leq f(x_k) &&+ \langle \nabla f(x_k), x_{k+1}-x_k\rangle + \frac{L}{2}\lVert x_{k+1}-x_k\rVert^2\\
+		&= f(x_k) &&+ \langle g_{h_k}(x_k), x_{k+1}-x_k\rangle + \frac{\sigma}{2} \|x_{k+1}-x_k\|\\
+		& &&+ \langle \nabla f(x_k) - g_{h_k}(x_k), x_{k+1}-x_k\rangle + \frac{(L-\sigma)}{2}\lVert x_{k+1}-x_k\rVert^2\\
+		&\leq f(x_k) &&- \frac{1}{\sigma} \|g_{h_k}(x_k)\|^2 + \frac{1}{2\sigma} \|g_{h_k}(x_k)\|^2 \\
+		& &&+ \| \nabla f(x_k) - g_{h_k}(x_k)\| \frac{1}{\sigma} \|g_{h_k}(x_k)\| + \frac{(L-\sigma)}{2\sigma^2} \|g_{h_k}\|^2\\
+		& \leq f(x_k) &&- \frac{1}{2\sigma} \|g_{h_k}(x_k)\|^2 + \frac{L \sqrt{n}}{2} h_k \frac{1}{\sigma} \|g_{h_k}\| + \frac{(L-\sigma)}{2\sigma^2} \|g_{h_k}\|^2\\
+	\end{aligned}
+\end{equation}
+
+\chapter{Tips and Tricks}
+\begin{itemize}
+	\item Approximation of the max:
+	\begin{equation}
+		\begin{aligned}
+			\max\{Z,0\} = \frac{Z+|Z|}{2} = \frac{Z + \sqrt{Z^2}}{2} = \frac{Z + \sqrt{Z^2 + \delta}}{2}
+		\end{aligned}	
+	\end{equation}
+	\item $ab \leq \frac{a^2+b^2}{2}$
+	\item $(a+b)^2 \leq 2a^2+2b^2$
+\end{itemize}
 \end{document}
