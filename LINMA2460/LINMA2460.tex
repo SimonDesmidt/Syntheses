@@ -24,6 +24,7 @@
 \usepackage{caption}
 \usepackage{tabularray}
 \usepackage{subcaption}
+\usepackage{cancel}
 \usepackage[bottom]{footmisc}
 \usepackage{pdfpages}
 \usepackage{tabularx}
@@ -95,6 +96,10 @@
 		\item $\C^1_L(\R^n)$: Class of continuously differentiable functions with L-Lipschitz gradient;
     \item $\C^2_L(\R^n)$: Class of continuously differentiable functions with L-Lipschitz hessian.
 	\end{itemize}
+	\item  p order method (generalization of GM):
+	\begin{equation}
+		x_{k+1} = \arg\min_{y\in \R^n} \Omega_{x_k,y,p}(y) \equiv T_{x_k,p}(y) + \frac{M}{(p+1)!}\|y-x_k\|^{p+1}
+	\end{equation}
 \end{itemize}
 \section{Properties}
 \begin{itemize}
@@ -102,6 +107,24 @@
 	\item By the mean value theorem, for a continuously differentiable function $f$, $\forall x,y\in \Omega,\: \exists \ z\in \Omega:$ $f(y)-f(x) = \langle \nabla f(z),y-x\rangle$.
 	\item For a matrix $A$ and a scalar $b$, $\lVert A\rVert \le b\Longrightarrow |\lambda (A)|\le b \Longrightarrow |A| \preceq bI_n$, where the absolute value of the matrix is taken component wise. 
 \end{itemize}
+\section{Complexity table}
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		Method & Lipschitz & $\nabla f$ & $\nabla^2 f$ & \dots & $\nabla^p f$ \\
+		\hline
+		Zero order & & $O(n\epsilon^{-2})$ & & & \\
+		\hline
+		First order & $p=1$ & $O(\epsilon^{-2})$ & & & \\
+		\hline
+		Second order & $p=2$ & \textcolor{red}{\cancel{X}} & $O(\epsilon^{-3/2})$ & & \\
+		\hline
+		\vdots & & \textcolor{red}{\cancel{X}} & \textcolor{red}{\cancel{X}} & $\ddots$ & \\
+		\hline
+		p order & & \textcolor{red}{\cancel{X}} & \textcolor{red}{\cancel{X}} & \textcolor{red}{\cancel{X}} & $O(\epsilon^{-\frac{p+1}{p}})$ \\
+		\hline
+	\end{tabular}
+\end{center}
 \chapter{TODO}
 We can generalise the property of a L-Lipschitz function to $f\in \C_L^p(\R^n)$. For $p=1$, we had 
 \begin{equation}
@@ -153,4 +176,6 @@ Let $T(\varepsilon) = \inf \{k\in \mathbb{N}:\: \lVert \nabla f(x_k)\rVert\le \v
 		\Longrightarrow T(\varepsilon) &\le 1 + \frac{f(x_0)-f_{low}}{C(L)} \varepsilon^{-\frac{p+1}{p}} \equiv \O\left(\varepsilon^{-\frac{p+1}{p}}\right)
 	\end{aligned}
 \end{equation}
+\chapter{Gradient descent without gradient}
+For this problem consider an adversarial attack on block-based image classifier. We have a machine learning model that given an image $a\in\R^p$ it return $c(a)\in\R^m$, where $c_j(a) \in [0,1]$ is the probability of image $a$ to be in class $j$. The classifier prediction is: $j(a) = \arg\max_{j\in [1,\dots,m]} c_j(a)$.
 \end{document}
