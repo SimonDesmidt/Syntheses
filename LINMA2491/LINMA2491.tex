@@ -214,5 +214,18 @@ A process satisfies serial independence if, for every stage $t$, $\xi_t$ has a p
 	\item We implicitly enforce non-anticipativity by requiring that $x_t$ and $\xi_t$ are adapted to filtration $\{\mathcal{A}\}_{t\in \{1, \dots, H\}}$ 
 	\item $\forall A \in \mathcal{A}_k \setminus \mathcal{A}_{k-1}, \: x_t(\omega_1)=x_t(\omega_2) \: \forall\omega_1,\omega_2 \in A$
 \end{itemize}
-\subsection{General formulation}
+\subsection{General formulation of the MSLP}
+The extended formulation of the MSLP is:
+\begin{equation}
+	\begin{aligned}
+		&\min c_1^Tx_1 + \mathcal{E}[c_2(\omega)^T x_2(\omega)+ \dots + c_H(\omega)^T]\\
+		&s.t. \quad W_1x_1 = h_1\\
+		&T_1(\omega)x_1 + W_2(\omega)x_2(\omega) = h_2(\omega), \omega \in \Omega\\
+		\vdots\\
+		&T_{t-1}(\omega)x_{t-1}(\omega) + W_t(\omega)x_t(\omega) = h_t(\omega), \omega \in \Omega\\
+		\vdots\\
+		&T_{H-1}(\omega)x_{H-1}(\omega) + W_H(\omega)x_H(\omega) = h_H(\omega), \omega \in \Omega\\
+		&x_1 \geq 0, x_t(\omega) \geq 0, t=2, \dots, H
+	\end{aligned}
+\end{equation}
 \end{document}
