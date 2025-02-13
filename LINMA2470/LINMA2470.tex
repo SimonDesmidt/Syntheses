@@ -47,7 +47,7 @@
 \begin{titlepage}
     \begin{sffamily}
     \begin{center}
-        \includegraphics[scale=0.25]{img/page_de_garde.png} \\[1cm]
+        \includegraphics[scale=0.5]{img/page_de_garde.png} \\[1cm]
         \HRule \\[0.4cm]
         { \huge \bfseries LINMA2470 Stochastic Modelling \\[0.4cm] }
     
@@ -142,15 +142,87 @@ From the memoryless property, here is another definition of a Poisson process: \
 \section{Distribution of $N(t)$}
 $S_n$ is the sum $n$ IID random variables and $f_{S_n}$ is the convolution of $n$ times $f_X$:
 \begin{equation}
-  f_{S_n}(t) = \frac{\lambda^n t^{n-1}e^{-\lambda t}}{(n-1)!}
+  f_{S_n}(t) = \frac{\lambda^n t^{n}e^{-\lambda t}}{(n-1)!}
 \end{equation}
 From this, 
-\begin{equation}
+\begin{equation}\label{eq:poisson_distrib}
   P[N(t)=n-1] = \frac{(\lambda t)^{n}e^{-\lambda t}}{(n)!}
 \end{equation}
 and finally, 
 \begin{equation}
   \E[N(t)] = \lambda t\qquad Var[N(t)] = \lambda t
 \end{equation}
+From equation \eqref{eq:poisson_distrib}, the Poisson process verifies the following probability conditions:
+\begin{itemize}
+  \item $P[\tilde N(t,t+\delta)=0]=1-\lambda \delta +o(\delta)$;
+  \item $P[\tilde N(t,t+\delta)=1]=\lambda \delta +o(\delta)$;
+  \item $P[\tilde N(t,t+\delta)\ge2]=o(\delta)$;
+\end{itemize}
+where we use a first-order approximation of the exponential term, with $o(\delta)$ its residual. As $o(\delta)$ is negligible, we can approximate the Poisson process as a Bernoulli process. 
+\subsection{Combining Poisson processes}
+Let $N_1(t)$ and $N_2(t)$ be tow independent Poisson processes. Let the process $N(t)=N_1(t)+N_2(t)$. We can show using the three properties above that $N(t)$ is a Poisson process with rate $\lambda_1+\lambda_2$.
+\subsection{Subdividing a Poisson process}
+Let $N(t)$ be a Poisson process with rate $\lambda$. We split the arrivals in 2 subprocesses $N_1(t)$ and $N_2(t)$. Each arrival of $N(t)$ is sent to $N_1(t)$ with probability $p$ and to $N_2(t)$ with probability $(1-p)$, each split being independent from all others. \\
+Then, the resulting processes $N_1(t)$ and $N_2(t)$ are two independent Poisson processes with respective rate $p\lambda$ and $(1-p)\lambda$.
+\subsection{Conditional arrival distribution}
+The density probability function when we have $n$ Poisson processes, under the condition that $N(t)=n$, is
+\begin{equation}
+  f(s_1,\dots,s_n|N(t)=n)=\frac{n!}{t^n}
+\end{equation}
+From the previous results, we can compute that 
+\begin{equation}
+  P[S_1>\tau|N(t)=n]=\left(\frac{t-\tau}{t}\right)^n
+\end{equation}
+and the expectation is 
+\begin{equation}
+  E[S_1|N(t)=n] = \frac{t}{n+1}
+\end{equation}
+And from this, we derive that 
+\begin{equation}
+  P[X_i>\tau|N(t)=n] = \left(\frac{t-\tau}{t}\right)^n
+\end{equation}
+with expectation 
+\begin{equation}
+  E[X_i] = \frac{t}{n+1}
+\end{equation}
+And thus the density function is 
+\begin{equation}
+  f_{S_i}(x|N(t)=n) = \frac{x^{i-1}(t-x)^{n-i}n!}{t^n (n-i)!(i-1)!}
+\end{equation}
+\section{Non-homogenous Poisson processes}
+A non-homogenous Poisson rocess $N(t)$ is a counting process with increments that are independent but not stationary, with
+\begin{itemize}
+  \item $P[\tilde N(t,t+\delta)=0]=1-\lambda (t)\delta + o(\delta)$;
+  \item $P[\tilde N(t,t+\delta)=1]=\lambda (t)\delta + o(\delta)$;
+  \item $P[\tilde N(t,t+\delta)\ge2]=o(\delta)$;
+\end{itemize}
+where $\tilde N(t,t+\delta)=N(t+\delta)-N(t)$. The time-varying arrival rate $\lambda(t)$ is assumed to be continuous and stricly positive.
+\section{Bernoulli process approximation}
+We can approximate the non-homogenous Poisson process with a Bernoulli process where the time is partitioned into increments of lengths inversely proportional to $\lambda (t)$ (i.e. using a nonlinear time scale).
+\begin{itemize}
+  \item $P[\tilde N(t,t+\epsilon/\lambda(t))=0]=1-\epsilon + o(\epsilon)$;
+  \item $P[\tilde N(t,t+\epsilon/\lambda(t))=1]=\epsilon + o(\epsilon)$;
+  \item $P[\tilde N(t,t+\epsilon/\lambda(t))\ge2]=o(\epsilon)$;
+\end{itemize}
+Letting $\epsilon$ tend to zero, we obtain
+\begin{equation}
+  P[N(t)=n]=\frac{(m(t))^ne^{-m(t)}}{n!}\qquad P[\tilde N(t,t')=n]=\frac{(m(t,t'))^n e^{-m(t,t')}}{n!}
+\end{equation}
+with 
+\begin{equation}
+  m(t)=\int_0^t \lambda(\tau)d\tau \qquad m(t,t')=\int_t^{t'} \lambda(\tau)d\tau 
+\end{equation}
+\section{Classification of queueing systems}
+\begin{itemize}
+  \item We note $A/B/k$ where $A$ is the type of distribution for the arrival process, $B$ for the service time and $k$ the number of servers.
+\end{itemize}
+We suppose that the arrivals wait in a single queue.
+Commonly used letters are 
+\begin{itemize}
+  \item M: exponential distribution (for A) or Poisson process (for B);
+  \item D: deterministic time intervals;
+  \item E: Erlang distribution;
+  \item G: general distribution.
+\end{itemize}
 
 \end{document}
