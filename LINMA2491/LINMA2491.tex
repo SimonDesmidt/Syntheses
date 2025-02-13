@@ -36,7 +36,9 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
+\renewcommand{\P}{\mathbb{P}}
 \newcommand{\A}{\mathcal{A}}
+\newcommand{\Z}{\mathbb{Z}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
@@ -151,6 +153,10 @@
 		\item Complemetarity slackness: $\lambda_i f_i(x) = 0, i = 1, \dots, m$
 		\item Gradient of the Lagrangian: $\nabla_x L(x, \lambda, \nu) = 0$
 	\end{itemize}
+\end{itemize}
+\chapter{Modelling}
+\section{Introduction}
+\begin{itemize}
 	\item  For a certains sequence of events: $x \to \omega \to y(\omega)$, where $\omega$ is the uncertainty:
 	\begin{itemize}
 		\item A first-stage decision is a decision that is made before the uncertainty is revealed (in $x$)
@@ -172,5 +178,28 @@
 		\item Second-stage data: $q(\omega) \in \R^{n_2}$, $h(\omega) \in \R^{m_2}$ and $T(\omega) \in \R^{m_2 \times n_1}$, $W(\omega) \in \R^{m_2 \times n_2}$
 	\end{itemize}
 \end{itemize}
-\chapter{TO DO}
+\section{Representations}
+\subsection{Scenario Trees}
+A scenario tree is a graphical representation of a Markov process $\{\xi_t\}_{t\in \Z}$, where the nodes are the histoires of realizations ($\xi_{[t]}=(\xi_1,\dots,\xi_t)$), and the edges are the transitions from $\xi_{[t]}$ to $\xi_{[t+1]}$.
+\begin{itemize}
+	\item We denote the root as $t=1$;
+	\item An ancestor of a node $\xi_{[t]}$, $A(\xi_{[t]})$ is a unique adjacent node which precedes $\xi_t$;
+	\item The children of a node, $C(\xi_{[t]})$ are the nodes that are adjacent to $\xi_{[t]}$ and occur at stage $t+1$.
+\end{itemize}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width = .3\textwidth]{img/tree.png}
+\end{figure}
+\subsection{Lattice}
+A lattice is a graphical representation of a Markov process $\{\xi_t\}_{t\in \Z}$, where the nodes are the realizations $\xi_t$ and the edges correspond to the transitions from $\xi_t$ to $\xi_{t+1}$. 
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width = .3\textwidth]{img/lattice.png}
+\end{figure}
+\subsection{Serial Independence}
+A process satisfies serial independence if, for every stage $t$, $\xi_t$ has a probability distribution that does not depend on the history of the process. Thus, the probability measure is 
+\begin{equation}
+	\P[\xi_t(\omega)=i|\xi_{[t-1]}(\omega)] = p_t(i) \qquad \forall \xi_{[t-1]}\in\Xi_{[t-1]}, i\in\Xi_t
+\end{equation}
+Slide 20.
 \end{document}
