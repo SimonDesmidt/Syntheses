@@ -201,5 +201,18 @@ A process satisfies serial independence if, for every stage $t$, $\xi_t$ has a p
 \begin{equation}
 	\P[\xi_t(\omega)=i|\xi_{[t-1]}(\omega)] = p_t(i) \qquad \forall \xi_{[t-1]}\in\Xi_{[t-1]}, i\in\Xi_t
 \end{equation}
-Slide 20.
+\textcolor{red}{Slide 20 => maybe rajouter un truc mais jsp quoi}
+\section{Multi Stage Stochastic Linear Program}
+\subsection{Notation}
+\begin{itemize}
+	\item Probability space: $(\Omega, 2^\Omega, \P)$ with filtration $\{\A\}_{t\in \{1, \dots, H\}}$
+	\item $c_t(\omega) \in \R^{n_t}$: cost coeficients
+	\item $h_t(\omega) \in \R^{m_t}$: right-hand side parameters
+	\item $W_t(\omega) \in \R^{m_t \times n_t}$: coeficients of $x_t(\omega)$
+	\item $T_{t-1}(\omega) \in \R^{m_t \times n_{t-1}}$: coeficients of $x_{t-1}(\omega)$
+	\item $x_t(\omega)$: set of state and action variables in period $t$
+	\item We implicitly enforce non-anticipativity by requiring that $x_t$ and $\xi_t$ are adapted to filtration $\{\mathcal{A}\}_{t\in \{1, \dots, H\}}$ 
+	\item $\forall A \in \mathcal{A}_k \setminus \mathcal{A}_{k-1}, \: x_t(\omega_1)=x_t(\omega_2) \: \forall\omega_1,\omega_2 \in A$
+\end{itemize}
+\subsection{General formulation}
 \end{document}
