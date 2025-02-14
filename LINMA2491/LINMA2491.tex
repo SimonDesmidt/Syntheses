@@ -206,10 +206,10 @@ A process satisfies serial independence if, for every stage $t$, $\xi_t$ has a p
 \subsection{Notation}
 \begin{itemize}
 	\item Probability space: $(\Omega, 2^\Omega, \P)$ with filtration $\{\A\}_{t\in \{1, \dots, H\}}$
-	\item $c_t(\omega) \in \R^{n_t}$: cost coeficients
+	\item $c_t(\omega) \in \R^{n_t}$: cost coefficients
 	\item $h_t(\omega) \in \R^{m_t}$: right-hand side parameters
-	\item $W_t(\omega) \in \R^{m_t \times n_t}$: coeficients of $x_t(\omega)$
-	\item $T_{t-1}(\omega) \in \R^{m_t \times n_{t-1}}$: coeficients of $x_{t-1}(\omega)$
+	\item $W_t(\omega) \in \R^{m_t \times n_t}$: coefficients of $x_t(\omega)$
+	\item $T_{t-1}(\omega) \in \R^{m_t \times n_{t-1}}$: coefficients of $x_{t-1}(\omega)$
 	\item $x_t(\omega)$: set of state and action variables in period $t$
 	\item We implicitly enforce non-anticipativity by requiring that $x_t$ and $\xi_t$ are adapted to filtration $\{\mathcal{A}\}_{t\in \{1, \dots, H\}}$ 
 	\item $\forall A \in \mathcal{A}_k \setminus \mathcal{A}_{k-1}, \: x_t(\omega_1)=x_t(\omega_2) \: \forall\omega_1,\omega_2 \in A$
@@ -218,7 +218,7 @@ A process satisfies serial independence if, for every stage $t$, $\xi_t$ has a p
 The extended formulation of the MSLP is:
 \begin{equation}
 	\begin{aligned}
-		&\min c_1^Tx_1 + \mathcal{E}[c_2(\omega)^T x_2(\omega)+ \dots + c_H(\omega)^T]\\
+		&\min c_1^Tx_1 + \mathbb{E}[c_2(\omega)^T x_2(\omega)+ \dots + c_H(\omega)^Tx_H(\omega)]\\
 		&s.t. \quad W_1x_1 = h_1\\
 		&T_1(\omega)x_1 + W_2(\omega)x_2(\omega) = h_2(\omega), \omega \in \Omega\\
 		\vdots\\
@@ -228,4 +228,36 @@ The extended formulation of the MSLP is:
 		&x_1 \geq 0, x_t(\omega) \geq 0, t=2, \dots, H
 	\end{aligned}
 \end{equation}
+We can now consider two specific instantiations of the MSLP: the scenario tree (MSLP-ST) and the lattice (MSLP-L). Using these notation:
+\begin{itemize}
+	\item $\omega_t \in S_t$ (interpretation: index in the support $\Xi_t$ of random input $\xi_t$)
+	\item $\omega_{[t]} \in \S_1 \times \dots \times S_T$ (interpretation: index in $\Xi_{[t]} = \Xi_1 \times \dots \times \Xi_t$, which is the history of realizations, up to period $t$)
+\end{itemize}
+The scenario tree case can be formulated as:
+\begin{equation}
+	 \begin{aligned}
+		&\min c_1^Tx_1 + \mathbb{E}[c_2(\omega_{[2]})^T x_2(\omega_{[2]})+ \dots + c_H(\omega_{[H]})^Tx_H(\omega_{[H]})]\\
+		&s.t. \quad W_1x_1 = h_1\\
+		&T_1(\omega_{[2]})x_1 + W_2(\omega_{[2]})x_2(\omega_{[2]}) = h_2(\omega_{[2]}), \omega_{[2]} \in S_1 \times S_2\\
+		\vdots\\
+		&T_{t-1}(\omega_{[t]})x_{t-1}(\omega_{[t-1]}) + W_t(\omega_{[t]})x_t(\omega_{[t]}) = h_t(\omega_{[t]}), \omega_{[t]} \in S_1 \times \dots \times S_t\\
+		\vdots\\
+		&T_{H-1}(\omega_{[H]})x_{H-1}(\omega_{[H-1]}) + W_H(\omega_{[H]})x_H(\omega_{[H]}) = h_H(\omega_{[H]}), \omega_{[H]} \in S_1 \times \dots \times S_H\\
+		&x_1 \geq 0, x_t(\omega_{[t]}) \geq 0, t=2, \dots, H
+	 \end{aligned}
+\end{equation}
+The lattice case can be formulated as:
+\begin{equation}
+	\begin{aligned}
+		&\min c_1^Tx_1 + \mathbb{E}[c_2(\omega_{2})^T x_2(\omega_{[2]})+ \dots + c_H(\omega_{H})^Tx_H(\omega_{[H]})]\\
+		&s.t. \quad W_1x_1 = h_1\\
+		&T_1(\omega_{2})x_1 + W_2(\omega_{2})x_2(\omega_{[2]}) = h_2(\omega_{2}), \omega_{[2]} \in S_1 \times S_2\\
+		\vdots\\
+		&T_{t-1}(\omega_{t})x_{t-1}(\omega_{[t-1]}) + W_t(\omega_{t})x_t(\omega_{[t]}) = h_t(\omega_{t}), \omega_{[t]} \in S_1 \times \dots \times S_t\\
+		\vdots\\
+		&T_{H-1}(\omega_{H})x_{H-1}(\omega_{[H-1]}) + W_H(\omega_{H})x_H(\omega_{[H]}) = h_H(\omega_{H}), \omega_{[H]} \in S_1 \times \dots \times S_H\\
+		&x_1 \geq 0, x_t(\omega_{[t]}) \geq 0, t=2, \dots, H
+	\end{aligned}
+\end{equation}
+slide 28
 \end{document}
