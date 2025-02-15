@@ -157,22 +157,22 @@
 \chapter{Modelling}
 \section{Introduction}
 \begin{itemize}
-	\item  For a certains sequence of events: $x \to \omega \to y(\omega)$, where $\omega$ is the uncertainty:
+	\item  For a certain sequence of events $x \to \omega \to y(\omega)$, where $\omega$ is the uncertainty,
 	\begin{itemize}
-		\item A first-stage decision is a decision that is made before the uncertainty is revealed (in $x$)
-		\item A second-stage decision is a decision that is made after the uncertainty is revealed (in $y(\omega)$)
+		\item A first-stage decision is a decision that is made before the uncertainty is revealed (i.e. in $x$);
+		\item A second-stage decision is a decision that is made after the uncertainty is revealed (i.e. in $y(\omega)$).
 	\end{itemize}
-	\item We can have a mathematic formulation like this:
+	\item We can have the following mathematical formulation:
 	\begin{equation}
 		\begin{aligned}
-			&\min c^T x + \mathbb{E}[\min q(\omega)^T y(\omega)]\\
-			& Ax = b\\
-			& T(\omega) x + W(\omega)y(\omega) = h(\omega)\\
-			& x \geq 0, y(\omega) \geq 0
+			\min c^T x &+ \mathbb{E}[\min q(\omega)^T y(\omega)]\\
+			Ax &= b\\
+			T(\omega) x &+ W(\omega)y(\omega) = h(\omega)\\
+			x \geq 0&, y(\omega) \geq 0
 		\end{aligned}
 	\end{equation}
 	\begin{itemize}
-		\item First-stage decision: $x \in \R^{n_1}$
+		\item First-stage decision variable: $x \in \R^{n_1}$
 		\item First-stage parameter: $c \in \R^{n_1}$, $b \in \R^{m_1}$ and $A \in \R^{m_1 \times n_1}$
 		\item Second-stage decision: $y(\omega) \in \R^{n_2}$
 		\item Second-stage data: $q(\omega) \in \R^{n_2}$, $h(\omega) \in \R^{m_2}$ and $T(\omega) \in \R^{m_2 \times n_1}$, $W(\omega) \in \R^{m_2 \times n_2}$
@@ -180,7 +180,7 @@
 \end{itemize}
 \section{Representations}
 \subsection{Scenario Trees}
-A scenario tree is a graphical representation of a Markov process $\{\xi_t\}_{t\in \Z}$, where the nodes are the histoires of realizations ($\xi_{[t]}=(\xi_1,\dots,\xi_t)$), and the edges are the transitions from $\xi_{[t]}$ to $\xi_{[t+1]}$.
+A scenario tree is a graphical representation of a Markov process $\{\xi_t\}_{t\in \Z}$, where the nodes are the history of realizations ($\xi_{[t]}=(\xi_1,\dots,\xi_t)$), and the edges are the transitions from $\xi_{[t]}$ to $\xi_{[t+1]}$.
 \begin{itemize}
 	\item We denote the root as $t=1$;
 	\item An ancestor of a node $\xi_{[t]}$, $A(\xi_{[t]})$ is a unique adjacent node which precedes $\xi_t$;
@@ -199,9 +199,8 @@ A lattice is a graphical representation of a Markov process $\{\xi_t\}_{t\in \Z}
 \subsection{Serial Independence}
 A process satisfies serial independence if, for every stage $t$, $\xi_t$ has a probability distribution that does not depend on the history of the process. Thus, the probability measure is 
 \begin{equation}
-	\P[\xi_t(\omega)=i|\xi_{[t-1]}(\omega)] = p_t(i) \qquad \forall \xi_{[t-1]}\in\Xi_{[t-1]}, i\in\Xi_t
+	\P\left[\xi_t(\omega)=i\left|\xi_{[t-1]}(\omega)\right.\right] = p_t(i) \qquad \forall \ \xi_{[t-1]}\in\Xi_{[t-1]}, i\in\Xi_t
 \end{equation}
-\textcolor{red}{Slide 20 => maybe rajouter un truc mais jsp quoi}
 \section{Multi Stage Stochastic Linear Program}
 \subsection{Notation}
 \begin{itemize}
@@ -215,49 +214,52 @@ A process satisfies serial independence if, for every stage $t$, $\xi_t$ has a p
 	\item $\forall A \in \mathcal{A}_k \setminus \mathcal{A}_{k-1}, \: x_t(\omega_1)=x_t(\omega_2) \: \forall\omega_1,\omega_2 \in A$
 \end{itemize}
 \subsection{General formulation of the MSLP}
-The extended formulation of the MSLP is:
+The extended formulation of the MSLP is: 
 \begin{equation}
 	\begin{aligned}
 		&\min c_1^Tx_1 + \mathbb{E}[c_2(\omega)^T x_2(\omega)+ \dots + c_H(\omega)^Tx_H(\omega)]\\
 		&s.t. \quad W_1x_1 = h_1\\
 		&T_1(\omega)x_1 + W_2(\omega)x_2(\omega) = h_2(\omega), \omega \in \Omega\\
-		\vdots\\
+		&\qquad \qquad \vdots\\
 		&T_{t-1}(\omega)x_{t-1}(\omega) + W_t(\omega)x_t(\omega) = h_t(\omega), \omega \in \Omega\\
-		\vdots\\
+		&\qquad \qquad \vdots\\
 		&T_{H-1}(\omega)x_{H-1}(\omega) + W_H(\omega)x_H(\omega) = h_H(\omega), \omega \in \Omega\\
 		&x_1 \geq 0, x_t(\omega) \geq 0, t=2, \dots, H
 	\end{aligned}
 \end{equation}
-We can now consider two specific instantiations of the MSLP: the scenario tree (MSLP-ST) and the lattice (MSLP-L). Using these notation:
+We can now consider two specific instantiations of the MSLP: the scenario tree (MSLP-ST) and the lattice (MSLP-L). Using these notations:
 \begin{itemize}
-	\item $\omega_t \in S_t$ (interpretation: index in the support $\Xi_t$ of random input $\xi_t$)
-	\item $\omega_{[t]} \in \S_1 \times \dots \times S_T$ (interpretation: index in $\Xi_{[t]} = \Xi_1 \times \dots \times \Xi_t$, which is the history of realizations, up to period $t$)
+	\item $\omega_t \in S_t$ : index in the support $\Xi_t$ of random input $\xi_t$
+	\item $\omega_{[t]} \in S_1 \times \dots \times S_t$ (interpretation: index in $\Xi_{[t]} = \Xi_1 \times \dots \times \Xi_t$, which is the history of realizations, up to period $t$)
 \end{itemize}
-The scenario tree case can be formulated as:
+\subsection{Scenario Tree formulation}
 \begin{equation}
 	 \begin{aligned}
-		&\min c_1^Tx_1 + \mathbb{E}[c_2(\omega_{[2]})^T x_2(\omega_{[2]})+ \dots + c_H(\omega_{[H]})^Tx_H(\omega_{[H]})]\\
+		&\min c_1^Tx_1 + \mathbb{E}\left[c_2(\omega_{[2]})^T x_2(\omega_{[2]})+ \dots + c_H(\omega_{[H]})^Tx_H(\omega_{[H]})\right]\\
 		&s.t. \quad W_1x_1 = h_1\\
 		&T_1(\omega_{[2]})x_1 + W_2(\omega_{[2]})x_2(\omega_{[2]}) = h_2(\omega_{[2]}), \omega_{[2]} \in S_1 \times S_2\\
-		\vdots\\
+		&\qquad \qquad \vdots\\
 		&T_{t-1}(\omega_{[t]})x_{t-1}(\omega_{[t-1]}) + W_t(\omega_{[t]})x_t(\omega_{[t]}) = h_t(\omega_{[t]}), \omega_{[t]} \in S_1 \times \dots \times S_t\\
-		\vdots\\
+		&\qquad \qquad \vdots\\
 		&T_{H-1}(\omega_{[H]})x_{H-1}(\omega_{[H-1]}) + W_H(\omega_{[H]})x_H(\omega_{[H]}) = h_H(\omega_{[H]}), \omega_{[H]} \in S_1 \times \dots \times S_H\\
 		&x_1 \geq 0, x_t(\omega_{[t]}) \geq 0, t=2, \dots, H
 	 \end{aligned}
 \end{equation}
-The lattice case can be formulated as:
+\subsection{Lattice formulation}
 \begin{equation}
 	\begin{aligned}
-		&\min c_1^Tx_1 + \mathbb{E}[c_2(\omega_{2})^T x_2(\omega_{[2]})+ \dots + c_H(\omega_{H})^Tx_H(\omega_{[H]})]\\
+		&\min c_1^Tx_1 + \mathbb{E}\left[c_2(\omega_{2})^T x_2(\omega_{[2]})+ \dots + c_H(\omega_{H})^Tx_H(\omega_{[H]})\right]\\
 		&s.t. \quad W_1x_1 = h_1\\
 		&T_1(\omega_{2})x_1 + W_2(\omega_{2})x_2(\omega_{[2]}) = h_2(\omega_{2}), \omega_{[2]} \in S_1 \times S_2\\
-		\vdots\\
+		&\qquad \qquad \vdots\\
 		&T_{t-1}(\omega_{t})x_{t-1}(\omega_{[t-1]}) + W_t(\omega_{t})x_t(\omega_{[t]}) = h_t(\omega_{t}), \omega_{[t]} \in S_1 \times \dots \times S_t\\
-		\vdots\\
+		&\qquad \qquad \vdots\\ 
 		&T_{H-1}(\omega_{H})x_{H-1}(\omega_{[H-1]}) + W_H(\omega_{H})x_H(\omega_{[H]}) = h_H(\omega_{H}), \omega_{[H]} \in S_1 \times \dots \times S_H\\
 		&x_1 \geq 0, x_t(\omega_{[t]}) \geq 0, t=2, \dots, H
 	\end{aligned}
 \end{equation}
-slide 28
+\begin{itemize}
+	\item [$\rightarrow$] Note: There exists some relations to other decision making problems such as statistical decision theory, dynamic programming, online optimization and stochastic control.
+\end{itemize}
+
 \end{document}
