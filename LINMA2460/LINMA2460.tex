@@ -244,6 +244,69 @@ Let $T(\varepsilon) = \inf \{k\in \mathbb{N}: \|\nabla f(x_k)\| \leq \varepsilon
 \end{equation}
 In terms of call to the oracle, we have a complexity bound of $O(n\varepsilon^2)$
 
+\chapter{Local rate of convergence for the GM and Newton's method}
+\section{Linear rate of GM}
+Let $f \in C_M^{2,2}(\R^n)$. Assume $f$ has a local minimizer $x^*$ such that 
+\begin{equation}\label{eq:hessian_bound}
+	\mu I_n \preceq \nabla^2 f(x^*) \preceq MI_n
+\end{equation}
+Let $x_{k+1} = x_k - \frac{1}{L} \nabla f(x_k)$ for a given $x_0 \in \R^n$\\
+Notice that
+\begin{equation}
+	\begin{aligned}
+		\nabla f(x_k) &= \nabla f(x_k) - \nabla f(x^*)\\
+		&= \int_{0}^{1} \nabla^2 f(x^* + \tau(x_k-x^*)) (x_k-x^*) d\tau\\
+		&= \int_{0}^{1} \nabla^2 f(x^* + \tau(x_k-x^*)) d\tau (x_k-x^*) \\
+		&= G_k (x_k-x^*)
+	\end{aligned}
+\end{equation}
+Then,
+\begin{equation}
+	\begin{aligned}
+		\|x_{k+1} - x^*\| &= \|x_k - \frac{1}{L} \nabla f(x_k) - x^*\|\\
+		&= \|(I_n-\frac{1}{L}G_k)(x_k-x^*)\|\\
+		&\leq \|I_n - \frac{1}{L}G_k\| \|x_k-x^*\|
+	\end{aligned}
+\end{equation}
+Since $f \in C_M^{2,2}(\R^n)$, we have $\|\nabla^2f(x^*+\tau(x_k-x^*))-\nabla^2f(x^*)\| \leq \tau M \|x_k -x^*\|$ and using this we get:
+\begin{equation}
+	|\langle \nabla^2f(x^*+\tau(x_k-x^*))-\nabla^2f(x^*) v, v\rangle| \leq \tau M \|x_k -x^*\| \|v\|^2 \quad \forall v \in \R^n
+\end{equation}
+Using the bound \eqref{eq:hessian_bound} and the previous inequality, we get:
+\begin{equation}
+		\tau M \|x_k -x^*\| \|v\|^2 \leq |\langle \nabla^2f(x^*+\tau(x_k-x^*))-\nabla^2f(x^*) v, v\rangle| \leq \tau M \|x_k -x^*\| \|v\|^2\\
+\end{equation}
+\begin{equation}
+	\nabla^2 f(x^*) - \tau M \|x_k -x^*\| I_n \preceq \nabla^2f(x^*+\tau(x_k-x^*)) \preceq \nabla^2 f(x^*) + \tau M \|x_k -x^*\|I_n 
+\end{equation}
+\begin{equation}
+	(\mu - \tau M \|x_k -x^*\|)I_n \preceq \nabla^2f(x^*+\tau(x_k-x^*)) \preceq (L + \tau M \|x_k -x^*\|) I_n 
+\end{equation}
+By the properties of the semi-definite matrices, and the trick \eqref{eq:vtrick}, we have:
+\begin{equation}
+	\begin{aligned}
+		\int_{0}^{1} (\mu - \tau M \|x_k -x^*\|) \|v\|^2 d\tau &\leq \int_{0}^{1} \langle \nabla^2f(x^*+\tau(x_k-x^*)) v,v \rangle d\tau\\ 
+		&\leq \int_{0}^{1} (L + \tau M \|x_k -x^*\|) \|v\|^2 d\tau \quad \forall v \in \R^n
+	\end{aligned}
+\end{equation}
+By using $G_k$ and some constants, we get:
+\begin{equation}
+	-\frac{1}{L}(L+\frac{M}{2}\|x_k -x^*\|)I_n \preceq - \frac{1}{L} G_k \preceq -\frac{1}{L}(\mu - \frac{M}{2}\|x_k -x^*\|)I_n
+\end{equation}
+\begin{equation}
+	\left(1-\frac{1}{L}(L+\frac{M}{2}\|x_k -x^*\|)\right)I_n \preceq I_n - \frac{1}{L}G_k \preceq \left(1-\frac{1}{L}(\mu - \frac{M}{2}\|x_k -x^*\|)\right)I_n
+\end{equation}
+And finally, we get:
+\begin{equation}\label{eq:eq3cm3}
+	\begin{aligned}
+		\|I_n - \frac{1}{L}G_k\| &\leq \max\{|1-\frac{1}{L}(L + \frac{M}{2}\|x_k -x^*\|)|,|1-\frac{1}{L}(\mu - \frac{M}{2}\|x_k -x^*\|)|\}\\
+		&= \max\{\frac{M}{2L}\|x_k -x^*\|, 1-\frac{\mu}{L}+\frac{M}{2L}\|x_k -x^*\|\}\\
+		&= 1-\frac{\mu}{L}+\frac{M}{2L}\|x_k -x^*\|
+	\end{aligned}
+\end{equation}
+
+\section{Local quadratic convergence of Newton's method}
+
 \chapter{Tips and Tricks}
 \begin{itemize}
 	\item Approximation of the max:
@@ -254,5 +317,10 @@ In terms of call to the oracle, we have a complexity bound of $O(n\varepsilon^2)
 	\end{equation}
 	\item $ab \leq \frac{a^2+b^2}{2}$
 	\item $(a+b)^2 \leq 2a^2+2b^2$
+	\item 
+	\begin{equation}\label{eq:vtrick}
+		\langle xv,v\rangle \leq \|x\|\|v\|^2
+	\end{equation}
+	
 \end{itemize}
 \end{document}
