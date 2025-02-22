@@ -168,11 +168,26 @@ In a Bayesian game, we add the set of player types $T$ and the belief functions.
 	\begin{equation}
 		\sigma_1\in \arg\max_{\tau_1\in \Delta (C_1)}\min_{\tau_2\in \Delta (C_2)}u_1(\tau_1,\tau_2)
 	\end{equation}
+	and 
+	\begin{equation}
+		\sigma_2\in \arg\min_{\tau_2\in \Delta (C_2)}\max_{\tau_1\in \Delta (C_1)}u_1(\tau_1,\tau_2)
+	\end{equation}
+	If $(\sigma_1,\sigma_2)$ is a Nash equilibrium, then 
+	\begin{equation}
+		u_1(\sigma_1,\sigma_2)= \max_{\tau_1\in \Delta (C_1)}\min_{\tau_2\in \Delta (C_2)}u_1(\tau_1,\tau_2)=\min_{\tau_2\in \Delta (C_2)}\max_{\tau_1\in \Delta (C_1)}u_1(\tau_1,\tau_2) 
+	\end{equation}
+	\item In a game containing $N$ players and $M$ moves, the total number of pairs of strategies is $(2^M-1)^N$. 
 \end{itemize}
 \section{How to find them}
 \begin{itemize}
 	\item Remove all strongly dominated strategies;
 	\item Check if some of the remaining strategies will never be played, whatever the opponents choose. 
 \end{itemize}
-
+\section{Drawbacks}
+\begin{itemize}
+	\item There is no way to choose between the several equilibria, when there are more than one.
+	\item No communication between agents can lead to a non optimal solution (see for example the prisoner's dilemma).
+	\item The table form when looking for equilibria does not display all the information of the game.
+	\item Finding the equilibria can be computationnally intensive.
+\end{itemize}
 \end{document}
