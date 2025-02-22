@@ -244,15 +244,15 @@ Let $T(\varepsilon) = \inf \{k\in \mathbb{N}: \|\nabla f(x_k)\| \leq \varepsilon
 \end{equation}
 In terms of call to the oracle, we have a complexity bound of $O(n\varepsilon^2)$
 
-\chapter{Local rate of convergence for the GM and Newton's method}
+\chapter{Local rates of convergence}
 \section{Linear rate of GM}
-Let $f \in C_M^{2,2}(\R^n)$. Assume $f$ has a local minimizer $x^*$ such that 
+Let $f \in \C_M^{2,2}(\R^n)$. Assume $f$ has a local minimizer $x^*$ such that 
 \begin{equation}\label{eq:hessian_bound}
 	\mu I_n \preceq \nabla^2 f(x^*) \preceq MI_n
 \end{equation}
 Let $x_{k+1} = x_k - \frac{1}{L} \nabla f(x_k)$ for a given $x_0 \in \R^n$\\
 Notice that
-\begin{equation}
+\begin{equation}\label{eq:G_k}
 	\begin{aligned}
 		\nabla f(x_k) &= \nabla f(x_k) - \nabla f(x^*)\\
 		&= \int_{0}^{1} \nabla^2 f(x^* + \tau(x_k-x^*)) (x_k-x^*) d\tau\\
@@ -304,8 +304,89 @@ And finally, we get:
 		&= 1-\frac{\mu}{L}+\frac{M}{2L}\|x_k -x^*\|
 	\end{aligned}
 \end{equation}
+\textcolor{blue}{Suppose that $\frac{M}{2L} \|x_k -x^*\| \leq \frac{\mu}{2L} \Longleftrightarrow \|x_k -x^*\| \leq \frac{\mu}{M}$}\\
+Then, in \eqref{eq:eq3cm3}, we get:
+\begin{equation}
+	\|I_n - \frac{1}{L}G_k\| \leq 1-\frac{\mu}{2L} < 1
+\end{equation}
+And so, by \eqref{eq:G_k}
+\begin{equation}\label{eq:bound_by_G_k}
+	\|x_{k+1} - x^*\| \leq \|I_n - \frac{1}{L}G_k\| \|x_k -x^*\| < \|x_k -x^*\|
+\end{equation}
+If $\|x_0 - x^* \|< \frac{\mu}{M}$, it follows from the previous reasoning that:
+\begin{equation}
+	\|x_2 - x^*\| \leq  (1-\frac{\mu}{2L}) \|x_1-x^*\| \leq (1-\frac{\mu}{2L})^2 \|x_0-x^*\|\leq \frac{\mu}{M}
+\end{equation} 
+And so by induction, we can conclude that:
+\begin{equation}\label{eq:bound_x_k_induction}
+	\|x_k - x^*\| \leq (1-\frac{\mu}{2L})^k \|x_0-x^*\| \quad \forall k \geq 0
+\end{equation}
+\color{red}
+\boxed{\color{black} \Rightarrow \text{Linear rate of convergence}}
+\color{black}\\
+Given $\varepsilon > 0$, let $T(\varepsilon) = \inf\{k\in \mathbb{N} : \|x_k -x^*\|\leq \varepsilon\}$\\
+Then, if $T(\varepsilon) \geq 1$ and using \eqref{eq:bound_x_k_induction}, we get:
+\begin{equation}
+	\begin{aligned}
+		\varepsilon < \|x_{T(\varepsilon)-1} - x^*\| &\leq (1-\frac{\mu}{2L})^{T(\varepsilon)-1} \|x_0 - x^*\|\\
+		\log \left(\frac{\varepsilon}{\|x_0 - x^*\|}\right) &\leq (T(\varepsilon)-1) \log \left(1-\frac{\mu}{2L}\right)\\
+		T(\varepsilon)-1 &\leq \frac{\log \left(\frac{\varepsilon}{\|x_0 - x^*\|}\right)}{\log \left(1-\frac{\mu}{2L}\right)} = \frac{\log \left(\|x_0 - x^*\|\varepsilon^{-1}\right)}{|\log \left(1-\frac{\mu}{2L}\right)|}
+	\end{aligned}
+\end{equation}
+\color{red}
+\boxed{\color{black} T(\varepsilon) \leq \mathcal{O}(\log(\varepsilon^{-1})) }
+\color{black}\\
+$\Longrightarrow$ Convexity was never assumed
 
 \section{Local quadratic convergence of Newton's method}
+Let $f \in \C_M^{2,2}(\R^n)$. Assume $f$ has a local minimizer $x^*$ such that
+\begin{equation}\label{eq:hessian_bound2}
+	\mu I_n \preceq \nabla^2 f(x^*) \quad \mu > 0
+\end{equation}
+Given $x_0 \in \R^n$, let:
+\begin{equation}\label{eq:newton}
+	x_{k+1} = x_k - \nabla^{-2} f(x_k) \nabla f(x_k)
+\end{equation}
+We have by the previous equation and the definition of $G_k$ \eqref{eq:G_k}:
+\begin{equation}\label{eq:bound_x_k+1}
+	\begin{aligned}
+		\|x_{k+1}-x^*\| &= \|x_k - \nabla^{-2} f(x_k) \nabla f(x_k) - x^*\|\\
+		&= \|(x_k-x^*)-\nabla^{-2} f(x_k)G_k(x_k-x^*)\|\\
+		&= \|\nabla^{-2} f(x_k) \left(\nabla^2f(x_k)-\int_{0}^{1}\nabla^2f(x^*+\tau(x_k-x^*))d\tau\right)(x_k-x^*)\|\\
+		&= \|\nabla^{-2} f(x_k) \left( \int_{0}^{1} \nabla^2f(x_k)-\nabla^2f(x^*+\tau(x_k-x^*))d\tau\right)(x_k-x^*)\|\\
+		&\leq \|\nabla^{-2} f(x_k)\| \left( \int_{0}^{1} \|\nabla^2f(x_k)-\nabla^2f(x^*+\tau(x_k-x^*))\|d\tau\right)\|x_k-x^*\|\\
+		&\leq \|\nabla^{-2} f(x_k)\| \left( \int_{0}^{1} M(1-\tau) \|x_k-x^*\|d\tau\right)\|x_k-x^*\|\\
+		&\leq \|\nabla^{-2} f(x_k)\|\|x_k-x^*\|^2\frac{M}{2}
+	\end{aligned}
+\end{equation}
+Since $f\in \C^{2,2}_M(\R^n)$, we have
+\begin{equation}
+	\nabla^2 f(x^*+\tau(x_k-x^*)) - \nabla^2 f(x^*) \succeq \tau M \|x_k-x^*\|I_n
+\end{equation}
+\begin{equation}
+	\begin{aligned}
+		\nabla^2 f(x_k) &\succeq \nabla^2 f(x^*) - M \|x_k-x^*\|I_n\\
+		&\succeq (\mu - M \|x_k-x^*\|)I_n\\
+		\lambda_{\min}(\nabla^2 f(x_k)) &\geq \mu - M \|x_k-x^*\|
+	\end{aligned}
+\end{equation}
+Suppose that $-M \|x_k-x^*\| \geq - \frac{\mu}{2} \Leftrightarrow \|x_k-x^*\| \leq \frac{\mu}{2M}$\\
+Then,
+\begin{equation}
+	\begin{aligned}
+		\lambda_{\min}(\nabla^2 f(x_k)) &\geq \frac{\mu}{2}\\
+		\lambda_{\max}(\nabla^{-2} f(x_k)) &\leq \frac{2}{\mu}\\
+		\Rightarrow \|\nabla^{-2} f(x_k)\| &\leq \frac{2}{\mu}
+	\end{aligned}
+\end{equation}
+Therefore, by \eqref{eq:bound_x_k+1}, we conclude that:
+\begin{equation}
+	\begin{aligned}
+		\|x_{k+1}-x^*\| &\leq \frac{M}{2}\|\nabla^{-2}f(x_k)\|\|x_k-x^*\|\\
+		&\leq \frac{M}{\mu}\|x_k-x^*\|^2
+	\end{aligned}
+\end{equation}
+
 
 \chapter{Tips and Tricks}
 \begin{itemize}
@@ -317,7 +398,7 @@ And finally, we get:
 	\end{equation}
 	\item $ab \leq \frac{a^2+b^2}{2}$
 	\item $(a+b)^2 \leq 2a^2+2b^2$
-	\item 
+	\item V-trick:
 	\begin{equation}\label{eq:vtrick}
 		\langle xv,v\rangle \leq \|x\|\|v\|^2
 	\end{equation}
