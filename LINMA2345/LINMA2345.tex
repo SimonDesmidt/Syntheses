@@ -158,15 +158,21 @@ In a Bayesian game, we add the set of player types $T$ and the belief functions.
 	\end{equation}
 	\item [$\to$] Note: the product in those equations corresponds to the probabilities of the other players strategies, and the $u_i$ next to it correspond to the rewards considering each player's strategy. The first equation means that all selected strategies have the same payoff, and the second one means that all strategies are the best response. 
 	\item The support of a game consists in the set of all possible combinations of strategies for all players. It can contain pure strategies as well as randomized strategies. 
+	\item A zero-sum game is such that the sum of payoffs is equal to zero in all situations, i.e. some players win what the other lose.
 \end{itemize}
 \section{Properties}
 \begin{itemize}
 	\item There always exists at least one Nash equilibrium.
-	\item If there exists more than one Nash equilibrium in pure strategies, then there exists an infinity of them in randomized strategies, as any linear combination of the Nash equilibria is also a Nash equilibrium. 
+	\item If there exists more than one Nash equilibrium in pure strategies, then there exists an infinity of them in randomized strategies, as any linear combination of the Nash equilibria is also a Nash equilibrium.
+	\item Given a two-person zero-sum game $\Gamma({1,2},(C_1,C_2), (u_1,-u_1))$, the strategy profile $\sigma=(\sigma_1,\sigma_2)$ is a Nash equilibrium iff 
+	\begin{equation}
+		\sigma_1\in \arg\max_{\tau_1\in \Delta (C_1)}\min_{\tau_2\in \Delta (C_2)}u_1(\tau_1,\tau_2)
+	\end{equation}
 \end{itemize}
-\section{How do find them}
+\section{How to find them}
 \begin{itemize}
 	\item Remove all strongly dominated strategies;
 	\item Check if some of the remaining strategies will never be played, whatever the opponents choose. 
 \end{itemize}
+
 \end{document}
