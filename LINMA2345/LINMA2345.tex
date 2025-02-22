@@ -135,4 +135,38 @@ Two games are best-response equivalent iff they have the best response sets, i.e
 \end{equation}
 \section{Bayesian game}
 In a Bayesian game, we add the set of player types $T$ and the belief functions. What was before a set of players is now a set of agents, each of which is a player in a certain state depending on the randomness of some piece of information.
+\section{Nash Equilibrium}
+\subsection{Definitions}
+\begin{itemize}
+	\item Given a game in extensive form $\Gamma_e$, a pure strategy for a player $i\in N$ is an element $c\in C_i = \times_{s\in S_i}D_s$, acting as a function that associates to each information state of the player a move to be played at that state. A pure strategy is such that, for any move of the opponent(s) and at any time in the game, it prescribes a move to be played.
+	\item A randomized strategy $(\sigma_1,\dots, \sigma_N)$ consists in choosing one of the pure strategies with a certain probability. For example, in rock paper scissors, a strategy is to do one of the three possibilities with probability 1/3 for each.\\
+	They verify the following conditions:
+	\begin{equation}
+		\begin{aligned}
+			&\sum_{c_i\in D_i}\sigma_i(c_i)=1\\
+			\forall d_i\in D_i\ :\qquad &\sigma_i(d_i)\ge 0\\
+			\forall e_i\in C_i\setminus D_i\ : \qquad &\sigma_i(e_i)=0\\
+		\end{aligned}
+	\end{equation}
+	\item A Nash equilibrium is such that no player alone has an interest to deviate from his current situation. For example, in the prisoner's dilemma, the Nash equilibrium is that both players defect, because none of them can decide to cooperate and have a higher payoff.\\
+	In a Nash equilibrium, all strategies are best responses to $\sigma_{-i}$, and thus they payoffs are equal:
+	\begin{equation}
+		\begin{aligned}
+			\forall d_i\in D_i\ : \qquad &\sum_{c_{-i}\in D_{-i}} \left(\prod_{j\in N-i}\sigma_j(c_j)\right) u_i(c_{-i},d_i)=w_i\\
+			\forall e_i\in C_i\setminus D_i\ : \qquad &\sum_{c_{-i}\in D_{-i}} \left(\prod_{j\in N-i}\sigma_j(c_j)\right) u_i(c_{-i},e_i)\le w_i
+		\end{aligned}
+	\end{equation}
+	\item [$\to$] Note: the product in those equations corresponds to the probabilities of the other players strategies, and the $u_i$ next to it correspond to the rewards considering each player's strategy. The first equation means that all selected strategies have the same payoff, and the second one means that all strategies are the best response. 
+	\item The support of a game consists in the set of all possible combinations of strategies for all players. It can contain pure strategies as well as randomized strategies. 
+\end{itemize}
+\section{Properties}
+\begin{itemize}
+	\item There always exists at least one Nash equilibrium.
+	\item If there exists more than one Nash equilibrium in pure strategies, then there exists an infinity of them in randomized strategies, as any linear combination of the Nash equilibria is also a Nash equilibrium. 
+\end{itemize}
+\section{How do find them}
+\begin{itemize}
+	\item Remove all strongly dominated strategies;
+	\item Check if some of the remaining strategies will never be played, whatever the opponents choose. 
+\end{itemize}
 \end{document}
