@@ -224,5 +224,157 @@ Commonly used letters are
   \item E: Erlang distribution;
   \item G: general distribution.
 \end{itemize}
-
+\chapter{Renewal Processes}
+A renewal process is a counting process with IID interarrival intervals. We note $X_i$ the interval between arrivals, $\bar X=\E[X]$ is supposed to be finite with probability $P[X_i]>0=1$\footnote{A probability of 1 means that the opposite can happen, but is so rare that the probability is 0.}, $\sigma$ can be finite, and we denote $S_n=\sum_{i=1} X_i$ the time of the $n$-th arrival.\\
+\section{Strong law of large numbers}
+Let $\{N(t);t\ge 0\}$ be a renewal process, then 
+\begin{equation}
+  \lim_{t\to \infty} N(t) = \infty \qquad \qquad \lim_{t\to \infty} \E[N(t)] = \infty 
+\end{equation}
+This implies that 
+\begin{equation}
+  \lim_{t\to \infty} \frac{N(t)}{t} = \frac{1}{\bar X} \text{ with probability 1}
+\end{equation}
+\section{Central limit theorem}
+If the interarrival intervals of the renewal process $N(t)$ have a finite standard deviation, then from the CLT for IID random variables, we have 
+\begin{equation}
+  \lim_{t\to \infty} P\left[\frac{S_n-n\bar X}{\sqrt{n}\sigma}\le \alpha\right] = \Phi(\alpha)
+\end{equation}
+\textcolor{red}{What is $\Phi(\alpha)$?}\\
+and 
+\begin{equation}
+  \lim_{t\to \infty} P\left[\frac{N(t)-t/\bar X}{\sigma \bar X^{-3/2}\sqrt{t}}<\alpha \right] = \Phi(\alpha)
+\end{equation}
+\begin{itemize}
+  \item [$\to$] Note: The reliability of the observed mean of successive results that are supposed to be IID depends a lot on the rule used to decide when we stop repeating the experiment.
+\end{itemize}
+\section{Stopping time}
+Let $N$ be the rv corresponding to the total number of experiments observed. Let $I_n$ be a series of rv being the indicator fucnction of $\{N\ge n\}$:
+\begin{equation}
+  I_n = \begin{cases}
+    1 & \text{if the $n$-th experiment is observed}\\
+    0 & \text{otherwise}
+  \end{cases}
+\end{equation}
+$N$ is a stopping time if $I_n$ depends only on $X_1,\dots,X_{n-1}$. This means that stopping at 3pm, for example, is not a stopping time, because it can depend on $X_n$, depending if the $n$-th arrival is before or after 3pm.\\
+\subsection{Wald's inequality}
+Let $N$ be a stopping time for $\{X_n;n\ge 1\}$. Then, $\E[S_N]=\E[N]\bar X$.
+\section{Blackwell's renewal theorem}
+\subsection{Arithmetic distribution}
+If interarrival intervals can only have a length that is a multiple of some real number $d$, the interarrival distribution will be called an arithmetic distribution, and $d$ the span of the distribution. 
+\subsection{Blackwell's inequality}
+If the interarrival distribution of a renewal process $N(t)$ is not arithmetic, then 
+\begin{equation}
+  \lim_{t\to\infty } \left(m(t+\delta)-m(t)\right) = \frac{\delta}{\bar X} \qquad \forall \delta 
+\end{equation}
+If the interarrival distribution is arithmetic with span $d$, then 
+\begin{equation}
+  \lim_{t\to\infty } \left(m(t+nd)-m(t)\right) = \frac{nd}{\bar X} \qquad \forall n\ge 1
+\end{equation}
+\subsection{Relationship with a Poisson process}
+The sum of many renewal processes tends to a Poisson process: for a non-arithmetic renewal process with $P[X_i=0]=0$, we have 
+\begin{equation}
+  \begin{aligned}
+    &\lim_{t\to\infty} P[N(t+\delta)-N(t)=0]=1-\delta/\bar X + o(\delta)\\
+    &\lim_{t\to\infty} P[N(t+\delta)-N(t)=1]=\delta/\bar X + o(\delta)\\
+	&\lim_{t\to\infty} P[N(t+\delta)-N(t)\ge 2]=o(\delta)
+  \end{aligned}
+\end{equation}
+The increments are asymptotically stationary, but not independent. 
+|section{Renewal reward process}
+Along to the renewal process $N(t)$, we can add a reward function $R(t)$. It models the rate at which the process is accumulating a reward or cost. It can however only depend on the current renewal but not the previous ones. \\
+Let $Y(y)$ be the residual life at time $t$ for the current renewal:
+\begin{equation}
+	R(t)=Y(t)=S_{N(t)+1}-t
+\end{equation}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{img/reward.png}
+\end{figure}
+The time average residual life is $\frac{1}{t}\int_0^t Y(\tau)d\tau$.\\
+From the definition of $Y(t)$, we can calculate that 
+\begin{equation}
+	\lim_{t\to \infty} \frac{1}{t}\int_0^t Y(\tau)d\tau = \frac{\E[X^2]}{2\E[X]} = \frac{1}{2}\E[X] + \frac{Var(X)}{\E[X]} > \frac{1}{2}\E[X]\text{ with probability 1}
+\end{equation}
+\subsection{Time average age}
+Let $Z(t)$ be the age of the current renewal at time $t$: $R(t)=Z(t)=t-S_{N(t)}$. The time average age is $\lim_{t\to \infty} \frac{1}{t}\int_0^t Z(\tau)d\tau= \frac{\E[X^2]}{2\E[X]}$.\\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{img/age.png}
+\end{figure}
+\subsection{Time average duration}
+Let $X(t)$ be the duration of the renewal containing time $t$: $R(t)=X(t)=S_{N(t)+1}-S_{N(t)}$. The time average duration is $\lim_{t\to \infty} \frac{1}{t}\int_0^t X(\tau)d\tau = \frac{\E[X^2]}{\E[X]}$.\\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{img/duration.png}
+\end{figure}
+|subsection{General renewal reward functions}
+Let $R(t)$ be a reward function for a renewal process with expected inter-renewal times $\bar X<\infty$, then with probability 1, 
+\begin{equation}
+	\lim_{t\to \infty} \frac{1}{t}\int_0^t R(\tau)d\tau = \frac{\E[R_n]}{\E[X]}
+\end{equation}
+where $R_n$ is defined as 
+\begin{equation}
+	R_n = \int_{S_n}^{S_{n+1}} R(\tau)d\tau
+\end{equation}
+\subsection{Distribution of residual life}
+We are interested in the fraction of time that $Y(t)\le y$: 
+\begin{equation}
+	R(t)= I\{Y(t)\le y\} \qquad \qquad R_n = \min\{y, X_n\}
+\end{equation}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{img/residual.png}
+\end{figure}
+And we can calculate that 
+\begin{equation}
+	\begin{aligned}
+		\E[R_n]= \int_0^y P[X>x]dx \\
+		F_Y(y) = \frac{1}{\E[X]}\int_0^y P[X>x]dx
+	\end{aligned}
+\end{equation}
+\subsection{Key theorem}
+Let $N(t)$ be a non-arithmetic renewal process, let $R(z,x)\ge 0$ be such that $r(z)=\int_{x=z}^\infty R(z,x)dF_X(x)$ is directly Rieman integrable. Then, 
+\begin{equation}
+	\lim_{t\to \infty} \E[R(t)] = \frac{\E[R_n]}{\bar X}
+\end{equation}
+\section{Little's Law}
+Let a queueing system be such that 
+\begin{itemize}
+	\item $A(t)$ is the number of arrivals between $0$ and $t$;
+	\item $D(t)$ is the number of departures between $0$ and $t$;
+	\item $L(t)=A(t)-D(t)$ is the number of customers in the system at time $t$;
+	\item $w_i$ the time the $i^{th}$ customer spends in the system;
+	\item $N(t)$ is the renewal process counting the number of busy periods of the system (each time a customer arrives when the system is empty).
+\end{itemize}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{img/queue.png}
+\end{figure}
+Let us use $L(t)$ as a reward function for the renewal process $N(t)$. This implies 
+\begin{equation}
+	\begin{aligned}
+		\sum_{n=1}^{N(t)} R_n \le \int_0^t L(\tau)d\tau &\le \sum_{i=1}^{A(t)} w_i \le \sum_{n=1}^{N(t)+1} R_n\\
+		\lim_{t\to \infty} \frac{1}{t}\int_0^t L(\tau)d\tau &= \frac{\E[R_n]}{\E[X]}	
+	\end{aligned}
+\end{equation}
+Putting all this together, we can show that $\bar L=\lim_{t\to \infty}\frac{1}{t}\int_0^tL(\tau)d\tau = \bar  W\lambda$.
+\subsection{M/G/1 queue}
+Let $R(t)$ be the remaining time for the customer being served. Let $U(t)$ be the time an arrival at time $t$ would have to wait before being served. Let $L_q(t)$ be the number of customers in queue at time $t$, independent of the $Z_i$. We define 
+\begin{equation}
+	U(t)=\sum_{i=1}^{L_q(t)}Z_i + R(t) \Longrightarrow \E[U(t)]=\E[L_q(t)]\E[Z]+\E[R(t)]
+\end{equation}
+We can show that 
+\begin{equation}
+	\int_0^{S_N(t)} R(\tau)d\tau \le \int_0^{S_N(t)+1} R(\tau)d\tau
+\end{equation}
+And from Little's Law,
+\begin{equation}
+	\lim_{t\to \infty} \E[L_q(t)] = \lambda \bar W_q \Longrightarrow \lim_{t\to \infty} \E[U(t)] = \lambda \bar W_q \E[Z] + \lambda \frac{\E[Z^2]}{2} 
+\end{equation}
+Poisson arrival process implies that arrivals occur with identical probability at any moment, this implies independence with $U(t)$. Hence $\E[W_q(t)]=\E[U(t)]$. Hence $\bar W_q = \lambda \bar W_q\E[Z] + \lambda \frac{\E[Z^2]}{2}$. And we can isolate $\bar W_q$:
+\begin{equation}
+	\bar W_q = \frac{\lambda (\E[Z]^2+\sigma^2)}{2(1-\lambda \E[Z])}
+\end{equation}
+And we remember $\bar W = \bar W_q + \E[Z]$.\\
 \end{document}
