@@ -39,6 +39,7 @@
 \renewcommand{\P}{\mathbb{P}}
 \newcommand{\A}{\mathcal{A}}
 \newcommand{\Z}{\mathbb{Z}}
+\newcommand{\E}{\mathbb{E}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
@@ -122,7 +123,7 @@
 	\item Lagrange relaxation of Stochastic Programs, consider the two problems:
 	\begin{equation}
 		\begin{aligned}
-			\min f_1(x) + \mathbb{E}_\omega[f_2(y(\omega), \omega)] \qquad & \qquad \min f_1(x) + \mathbb{E}_\omega[f_2(y(\omega), \omega)]\\
+			\min f_1(x) + \E_\omega[f_2(y(\omega), \omega)] \qquad & \qquad \min f_1(x) + \E_\omega[f_2(y(\omega), \omega)]\\
 			s.t \qquad h_{1i}(x) \leq 0, i = 1, \dots, m_1 \qquad & \qquad s.t. \qquad h_{1i}(x) \leq 0, i = 1, \dots, m_1\\
 			h_{2i}(x,y(\omega),\omega) \leq 0, i = 1, \dots, m_2 \qquad & \qquad h_{2i}(x(\omega),y(\omega),\omega) \leq 0, i = 1, \dots, m_2\\
 			& \textcolor{red}{\qquad x(\omega) = x} 
@@ -132,7 +133,7 @@
 	\item The dual of a stochastic program is:
 	\begin{equation}
 		\begin{aligned}
-			& g(\nu) = g1(\nu) + \mathbb{E}_\omega(g2(\nu, \omega))\\
+			& g(\nu) = g1(\nu) + \E_\omega(g2(\nu, \omega))\\
 			where \qquad &  \\
 			& g_1(\nu) = \inf f_1(x) + \left( \displaystyle \sum_{\omega \in \Omega} \nu(\omega) \right)^T x\\
 			& s.t. \quad h_{1i} (x) \leq 0, i = 1, \dots, m_1\\
@@ -163,9 +164,9 @@
 		\item A second-stage decision is a decision that is made after the uncertainty is revealed (i.e. in $y(\omega)$).
 	\end{itemize}
 	\item We can have the following mathematical formulation:
-	\begin{equation}
+	\begin{equation}\label{eq:TSSLP_formulation}
 		\begin{aligned}
-			\min c^T x &+ \mathbb{E}[\min q(\omega)^T y(\omega)]\\
+			\min c^T x &+ \E[\min q(\omega)^T y(\omega)]\\
 			Ax &= b\\
 			T(\omega) x &+ W(\omega)y(\omega) = h(\omega)\\
 			x \geq 0&, y(\omega) \geq 0
@@ -217,7 +218,7 @@ A process satisfies serial independence if, for every stage $t$, $\xi_t$ has a p
 The extended formulation of the MSLP is: 
 \begin{equation}
 	\begin{aligned}
-		&\min c_1^Tx_1 + \mathbb{E}[c_2(\omega)^T x_2(\omega)+ \dots + c_H(\omega)^Tx_H(\omega)]\\
+		&\min c_1^Tx_1 + \E[c_2(\omega)^T x_2(\omega)+ \dots + c_H(\omega)^Tx_H(\omega)]\\
 		&s.t. \quad W_1x_1 = h_1\\
 		&T_1(\omega)x_1 + W_2(\omega)x_2(\omega) = h_2(\omega), \omega \in \Omega\\
 		&\qquad \qquad \vdots\\
@@ -235,7 +236,7 @@ We can now consider two specific instantiations of the MSLP: the scenario tree (
 \subsection{Scenario Tree formulation}
 \begin{equation}
 	 \begin{aligned}
-		&\min c_1^Tx_1 + \mathbb{E}\left[c_2(\omega_{[2]})^T x_2(\omega_{[2]})+ \dots + c_H(\omega_{[H]})^Tx_H(\omega_{[H]})\right]\\
+		&\min c_1^Tx_1 + \E\left[c_2(\omega_{[2]})^T x_2(\omega_{[2]})+ \dots + c_H(\omega_{[H]})^Tx_H(\omega_{[H]})\right]\\
 		&s.t. \quad W_1x_1 = h_1\\
 		&T_1(\omega_{[2]})x_1 + W_2(\omega_{[2]})x_2(\omega_{[2]}) = h_2(\omega_{[2]}), \omega_{[2]} \in S_1 \times S_2\\
 		&\qquad \qquad \vdots\\
@@ -248,7 +249,7 @@ We can now consider two specific instantiations of the MSLP: the scenario tree (
 \subsection{Lattice formulation}
 \begin{equation}
 	\begin{aligned}
-		&\min c_1^Tx_1 + \mathbb{E}\left[c_2(\omega_{2})^T x_2(\omega_{[2]})+ \dots + c_H(\omega_{H})^Tx_H(\omega_{[H]})\right]\\
+		&\min c_1^Tx_1 + \E\left[c_2(\omega_{2})^T x_2(\omega_{[2]})+ \dots + c_H(\omega_{H})^Tx_H(\omega_{[H]})\right]\\
 		&s.t. \quad W_1x_1 = h_1\\
 		&T_1(\omega_{2})x_1 + W_2(\omega_{2})x_2(\omega_{[2]}) = h_2(\omega_{2}), \omega_{[2]} \in S_1 \times S_2\\
 		&\qquad \qquad \vdots\\
@@ -262,4 +263,85 @@ We can now consider two specific instantiations of the MSLP: the scenario tree (
 	\item [$\rightarrow$] Note: There exists some relations to other decision making problems such as statistical decision theory, dynamic programming, online optimization and stochastic control.
 \end{itemize}
 
+\chapter{Performance}
+\section{Notation}
+Using \eqref{eq:TSSLP_formulation}, let's define the following:
+\begin{itemize}
+	\item $z(x,\xi) = c^Tx+Q(x,\xi)+\delta(x|K_1)$
+	\item $Q(x,\xi) = \displaystyle \min_y\{q(\omega)^Ty|W(\omega)y=h(\omega)-T(\omega)x\}$
+	\item $K_1 = \{x|Ax=b,x\geq0\}$ is the set of feasible first-stage decisions
+	\item $K_2(\omega)=\{x|\exists y\geq0:W(\omega)y=h(\omega)-T(\omega)x\}$ is the set of first-stage decisions that have a feasible reaction in the second stage for $\omega \in \Omega$
+	\item It can be that $z(x,\xi) = + \infty$ (if $x \notin K_1 \cap K_2(\omega)$)
+	\item It can be that $z(x,\xi) = - \infty$ (unbounded below)
+\end{itemize}
+\section{The expected value of perfect information}
+There is 2 tactics:
+\begin{itemize}
+	\item \textbf{wait-and-see} value is the expected value of reacting with perfect
+	foresight $x^*(\xi)$ to $\xi$: 
+	\begin{equation}
+		WS = \E[\displaystyle \min_x z(x,\xi)] = \E[z(x^*(\xi),\xi)]
+	\end{equation}
+	\item \textbf{here-and-now} value is the expected value of the recourse problem (remove non-anticipativity):
+	\begin{equation}
+		SP = \displaystyle \min_x \E[z(x,\xi)]
+	\end{equation}
+\end{itemize}
+The \textbf{expected value of perfect information} is like the value of a perfect forecast for the future and is thus defined like this:
+\begin{equation}
+	EVPI = SP - WS
+\end{equation}
+\section{The value of the stochastic solution}
+Here too there is 2 tactics:
+\begin{itemize}
+	\item \textbf{Expected value problem}
+	\begin{equation}
+		EV = \displaystyle \min_x z(x,\bar{\xi}) = \E[\xi]
+	\end{equation}
+	and it's \textbf{expected value solution} is noted $x^*(\bar{\xi})$
+	\item \textbf{expected value of using the EV solution} measures the performance of $x^*(\bar{\xi})$:
+	\begin{equation}
+		EEV = \E[z(x^*(\bar{\xi}),\xi)]
+	\end{equation}
+\end{itemize}
+% We also have $EEV \geq SP$.\\
+The \textbf{value of the stochastic solution} is noted like this:
+\begin{equation}
+	VSS = EEV - SP
+\end{equation}
+\section{Basic inequalities}
+\subsection{Crystal Ball}
+For every $\xi$, we have $z(x^*(\xi),\xi) \leq z(x^*,\xi)$ where $x^*$ is the optimal solution to the stochastic program. And if we take the expectation of this inequality, we have $WS \leq SP$, because $WS$ is a relaxation. It explains that we can do better with a Crystal Ball. 
+\subsection{Lazy solution}
+Knowing that $x^*$ is the optimal solution of $\displaystyle \min_x \E[z(x,\xi)]$ and $x^*(\bar{\xi})$ is a solution but not necessarily optimal then we have $SP \leq EEV$, because:
+\begin{equation}
+	\displaystyle \min_x \E[z(x,\xi)] = SP \leq EEV = \E[z(x^*(\bar{\xi}),\xi)]
+\end{equation}
+\subsection{Link between all the values}
+We know that:
+\begin{itemize}
+	\item $VSS \geq 0$
+	\item $EVPI \geq 0$
+	\item $VSS \leq EEV - EV$
+	\item $EVPI \leq EEV -EV$
+	\item If $EEV - EV = 0$ then $VSS = EVPI = 0$
+\end{itemize}
+and the inequalities can be summarized in the following diagram:
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{img/link_ineq.png}
+\end{figure}
+\section{Bounds on EVPI and VSS}
+First let's introduce the \textbf{sum of pairs expected value (SPEV)}:
+\begin{equation}
+	SPEV = \frac{1}{1-p^r} \sum_{k=1,k \neq r}^{K} p^k \min z^p(x, \xi^r,\xi^k)
+\end{equation}
+When $\xi^r \notin \Xi$ then $SPEV = WS$: When $p^r = 0, z^p(x,\xi^r,\xi^k)$ coincides with $z(x,\xi^k)$. Therefore $SPEV = \sum_{k=1}^{K} p^k \min_x z(x,\xi^k) = WS$.\\
+We then know $WS \leq SPEV \leq SP$.
+\subsection{Upper bound on SP: EVRS and EPEV}
+\begin{itemize}
+	\item The \textbf{expected value of the reference scenario} is $EVRS =  \E_\xi(\bar{x}^r,\xi)$, where $\bar{x}^r$ is the optimal solution to $z(x,\xi^r)$ 
+	\item The \textbf{expectation of pairs of expected value} is defined as $EPEV = \min_{k=1,\dots,K\cup\{r\}}\E_\xi(\bar{x}^r,\xi)$ where $(\bar{x}^k,\bar{y}^k, y(\xi^K))$ is the optimal solution to the pairs subproblem of $\xi^r$ and $\xi^k$
+\end{itemize}
+\textcolor{red}{Slides 34/39}
 \end{document}
