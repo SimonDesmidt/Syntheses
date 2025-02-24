@@ -332,16 +332,42 @@ and the inequalities can be summarized in the following diagram:
 	\includegraphics[scale=0.5]{img/link_ineq.png}
 \end{figure}
 \section{Bounds on EVPI and VSS}
-First let's introduce the \textbf{sum of pairs expected value (SPEV)}:
+First let's introduce the pairs subproblem of $\xi^r$ and $\xi^k$ is
 \begin{equation}
-	SPEV = \frac{1}{1-p^r} \sum_{k=1,k \neq r}^{K} p^k \min z^p(x, \xi^r,\xi^k)
+	\begin{aligned}
+		\min \: &z^P (x, \xi^r,\xi^k) = c^Tx + p^rq^Ty(\xi^r) + (1-p^r)q^Ty(\xi^k)\\
+		s.t. \: &Ax = b\\
+		&Wy(\xi^r) = \xi^r-Tx\\
+		&Wy(\xi^k) = \xi^k-Tx\\
+		&x,y\geq0
+	\end{aligned}
 \end{equation}
-When $\xi^r \notin \Xi$ then $SPEV = WS$: When $p^r = 0, z^p(x,\xi^r,\xi^k)$ coincides with $z(x,\xi^k)$. Therefore $SPEV = \sum_{k=1}^{K} p^k \min_x z(x,\xi^k) = WS$.\\
+\begin{itemize}
+	\item $(\bar{x}^k , \bar{y}^k , y(\xi^r ))$ denotes an optimal solution to the problem and zk is the optimal objective function value $z^P (\bar{x}^k , \bar{y}^k , y(\xi^k ))$
+	\item $z^P (x, \xi^r , \xi^r)$ corresponds to the deterministic optimization against the
+	reference scenario
+	\item if $\xi^r \notin \Xi$, $p^r = 0$ and $z^P (x, \xi^r , \xi^k ) = z(x, \xi^k )$
+\end{itemize}
+The \textbf{sum of pairs expected value (SPEV)}:
+\begin{equation}
+	SPEV = \frac{1}{1-p^r} \sum_{k=1,k \neq r}^{K} p^k \min z^P(x, \xi^r,\xi^k)
+\end{equation}
+When $\xi^r \notin \Xi$ then $SPEV = WS$: When $p^r = 0, z^P(x,\xi^r,\xi^k)$ coincides with $z(x,\xi^k)$. Therefore $SPEV = \sum_{k=1}^{K} p^k \min_x z(x,\xi^k) = WS$.\\
 We then know $WS \leq SPEV \leq SP$.
 \subsection{Upper bound on SP: EVRS and EPEV}
 \begin{itemize}
 	\item The \textbf{expected value of the reference scenario} is $EVRS =  \E_\xi(\bar{x}^r,\xi)$, where $\bar{x}^r$ is the optimal solution to $z(x,\xi^r)$ 
-	\item The \textbf{expectation of pairs of expected value} is defined as $EPEV = \min_{k=1,\dots,K\cup\{r\}}\E_\xi(\bar{x}^r,\xi)$ where $(\bar{x}^k,\bar{y}^k, y(\xi^K))$ is the optimal solution to the pairs subproblem of $\xi^r$ and $\xi^k$
+	\item The \textbf{expectation of pairs of expected value} is defined as \\$EPEV = \min_{k=1,\dots,K\cup\{r\}}\E_\xi(\bar{x}^r,\xi)$ where $(\bar{x}^k,\bar{y}^k, y(\xi^K))$ is the optimal solution to the pairs subproblem of $\xi^r$ and $\xi^k$
 \end{itemize}
-\textcolor{red}{Slides 34/39}
+As $SP,EPEV,EVRS$ are the optimal values of $\min_x \E_\xi z(x,\xi)$ over smaller feasible sets:
+\begin{equation}
+	SP \leq EPEV \leq EVRS
+\end{equation}
+Because
+\begin{itemize}
+	\item $SP$: $x \in K_1 \cap K_2$
+	\item $EPEV$: $x \in K_1 \cap K_2 \cap \{\bar{x}^k,k=1,\dots,K\cup\{r\}\}$
+	\item $EVRS$: $x \in \bar{x}^r \cap K_1 \cap K_2$
+\end{itemize}
+
 \end{document}
