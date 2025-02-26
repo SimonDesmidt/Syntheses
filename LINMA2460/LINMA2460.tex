@@ -96,7 +96,7 @@
 		\item $\C^1_L(\R^n)$: Class of continuously differentiable functions with L-Lipschitz gradient;
     \item $\C^2_L(\R^n)$: Class of continuously differentiable functions with L-Lipschitz hessian.
 	\end{itemize}
-	\item  p order method (generalization of GM):
+	\item  pth-order method (generalization of GM):
 	\begin{equation}
 		x_{k+1} = \arg\min_{y\in \R^n} \Omega_{x_k,y,p}(y) \equiv T_{x_k,p}(y) + \frac{M}{(p+1)!}\|y-x_k\|^{p+1}
 	\end{equation}
@@ -155,12 +155,11 @@ On the other hand, using the triangular inequality,
 \begin{equation}
 	\begin{aligned}
 		\lVert \nabla f(x_{k+1})\rVert & \le \lVert \nabla f(x_{k+1})-\nabla_y T_p(x_{k+1};x_k)\lVert\\
-		& + \underbrace{\left \lVert \nabla_y T_p(x_{k+1};x_k)\textcolor{red}{+}\nabla \left.\left(\frac{M}{(p+1)!} \lVert \cdot -x_k\rVert^{p+1}\right)\right|_{y=x_{k+1}}\right \rVert}_{=0}	\\
+		& + \underbrace{\left \lVert \nabla_y T_p(x_{k+1};x_k)+\nabla \left.\left(\frac{M}{(p+1)!} \lVert \cdot -x_k\rVert^{p+1}\right)\right|_{y=x_{k+1}}\right \rVert}_{=0}	\\
 		& + \left\lVert \nabla \left.\left(\frac{M}{(p+1)!}\lVert \cdot -x_k\rVert^{p+1}\right)\right|_{y=x_{k+1}}\right \rVert \\
 		& \le \frac{L}{p!}\lVert x_{k+1}-x_k\rVert^p + \frac{M}{p!} \lVert x_{k+1}-x_k\rVert^p
 	\end{aligned}
 \end{equation}
-\textcolor{red}{Le + rouge doit être un -?}
 \begin{equation}\label{eq:bound_on_x}
 	\Longrightarrow \lVert x_{k+1}-x_k\rVert \ge \left(\frac{p!}{L+M}\right)^{1/p}\lVert \nabla f(x_{k+1})\rVert^{1/p}
 \end{equation}
@@ -178,7 +177,7 @@ Let $T(\varepsilon) = \inf \{k\in \mathbb{N}:\: \lVert \nabla f(x_k)\rVert\le \v
 \end{equation}
 \chapter{Gradient descent without gradient}\label{chap:}
 For this problem consider an adversarial attack on block-based image classifier. We have a machine learning model that given an image $a\in\R^p$ it returns $c(a)\in\R^m$, where $c_j(a) \in [0,1]$ is the probability of image $a$ to be in class $j$. The classifier prediction is: $j(a) = \arg\max_{j\in [1,\dots,m]} c_j(a)$.\\
-\textcolor{red}{TODO}
+\textcolor{red}{TODO - Add mise en situation ou pas?}
 \newline
 
 Given $x_k$ let us decide:
@@ -221,7 +220,7 @@ On the other hand, we have
 		&\leq \frac{L \sqrt{n}}{2} h_k + \|g_{h_k}(x_k)\|\\
 	\end{aligned}
 \end{equation}
-Using \textcolor{red}{Trick n°3}
+Using trick \eqref{eq:sq2} in chapter \ref{chap:tricks},
 \begin{equation}
 	\begin{aligned}
 		\Longrightarrow \|\nabla f(x_k)\|^2 &\leq 2 \left( \frac{L \sqrt{n}}{2} h_k \right)^2 + 2 \|g_{h_k}(x_k)\|^2\\
@@ -240,17 +239,17 @@ Let $T(\varepsilon) = \inf \{k\in \mathbb{N}: \|\nabla f(x_k)\| \leq \varepsilon
 \end{equation}
 \textcolor{blue}{If $\{h_k^2\}$ is summable}
 \begin{equation}
-	\Longrightarrow T(\varepsilon) \leq 8 \sigma ( f(x_0) - f_{low} + \frac{5 \sigma n}{4} \sum_{k=0}^{T(\varepsilon)-1} h_k^2) \varepsilon^2 = O(\varepsilon^2)
+	\Longrightarrow T(\varepsilon) \leq 8 \sigma \left( f(x_0) - f_{low} + \frac{5 \sigma n}{4} \sum_{k=0}^{T(\varepsilon)-1} h_k^2\right) \varepsilon^2 = \O(\varepsilon^2)
 \end{equation}
-In terms of call to the oracle, we have a complexity bound of $O(n\varepsilon^2)$
+In terms of call to the oracle, we have a complexity bound of $\O(n\varepsilon^2)$.
 
 \chapter{Local rates of convergence}
 \section{Linear rate of GM}
-Let $f \in \C_M^{2,2}(\R^n)$. Assume $f$ has a local minimizer $x^*$ such that 
+Let \textcolor{blue}{$f \in \C_M^{2,2}(\R^n)$}. Assume \textcolor{blue}{$f$ has a local minimizer $x^*$ such that 
 \begin{equation}\label{eq:hessian_bound}
 	\mu I_n \preceq \nabla^2 f(x^*) \preceq MI_n
-\end{equation}
-Let $x_{k+1} = x_k - \frac{1}{L} \nabla f(x_k)$ for a given $x_0 \in \R^n$\\
+\end{equation}}
+Let $x_{k+1} = x_k - \frac{1}{L} \nabla f(x_k)$ for a given $x_0 \in \R^n$.\\
 Notice that
 \begin{equation}\label{eq:G_k}
 	\begin{aligned}
@@ -273,15 +272,15 @@ Since $f \in C_M^{2,2}(\R^n)$, we have $\|\nabla^2f(x^*+\tau(x_k-x^*))-\nabla^2f
 	|\langle \nabla^2f(x^*+\tau(x_k-x^*))-\nabla^2f(x^*) v, v\rangle| \leq \tau M \|x_k -x^*\| \|v\|^2 \quad \forall v \in \R^n
 \end{equation}
 Using the bound \eqref{eq:hessian_bound} and the previous inequality, we get:
-\begin{equation}
+\begin{equation*}
 		\tau M \|x_k -x^*\| \|v\|^2 \leq |\langle \nabla^2f(x^*+\tau(x_k-x^*))-\nabla^2f(x^*) v, v\rangle| \leq \tau M \|x_k -x^*\| \|v\|^2\\
-\end{equation}
-\begin{equation}
+\end{equation*}
+\begin{equation*}
 	\nabla^2 f(x^*) - \tau M \|x_k -x^*\| I_n \preceq \nabla^2f(x^*+\tau(x_k-x^*)) \preceq \nabla^2 f(x^*) + \tau M \|x_k -x^*\|I_n 
-\end{equation}
-\begin{equation}
+\end{equation*}
+\begin{equation*}
 	(\mu - \tau M \|x_k -x^*\|)I_n \preceq \nabla^2f(x^*+\tau(x_k-x^*)) \preceq (L + \tau M \|x_k -x^*\|) I_n 
-\end{equation}
+\end{equation*}
 By the properties of the semi-definite matrices, and the trick \eqref{eq:vtrick}, we have:
 \begin{equation}
 	\begin{aligned}
@@ -299,8 +298,8 @@ By using $G_k$ and some constants, we get:
 And finally, we get:
 \begin{equation}\label{eq:eq3cm3}
 	\begin{aligned}
-		\|I_n - \frac{1}{L}G_k\| &\leq \max\{|1-\frac{1}{L}(L + \frac{M}{2}\|x_k -x^*\|)|,|1-\frac{1}{L}(\mu - \frac{M}{2}\|x_k -x^*\|)|\}\\
-		&= \max\{\frac{M}{2L}\|x_k -x^*\|, 1-\frac{\mu}{L}+\frac{M}{2L}\|x_k -x^*\|\}\\
+		\|I_n - \frac{1}{L}G_k\| &\leq \max\left\{\left|1-\frac{1}{L}(L + \frac{M}{2}\|x_k -x^*\|)\right|,\left|1-\frac{1}{L}(\mu - \frac{M}{2}\|x_k -x^*\|)\right|\right\}\\
+		&= \max\left\{\frac{M}{2L}\|x_k -x^*\|, 1-\frac{\mu}{L}+\frac{M}{2L}\|x_k -x^*\|\right\}\\
 		&= 1-\frac{\mu}{L}+\frac{M}{2L}\|x_k -x^*\|
 	\end{aligned}
 \end{equation}
@@ -319,42 +318,46 @@ If $\|x_0 - x^* \|< \frac{\mu}{M}$, it follows from the previous reasoning that:
 \end{equation} 
 And so by induction, we can conclude that:
 \begin{equation}\label{eq:bound_x_k_induction}
-	\|x_k - x^*\| \leq (1-\frac{\mu}{2L})^k \|x_0-x^*\| \quad \forall k \geq 0
+	\|x_k - x^*\| \leq \left(1-\frac{\mu}{2L}\right)^k \|x_0-x^*\| \quad \forall k \geq 0
 \end{equation}
-\color{red}
-\boxed{\color{black} \Rightarrow \text{Linear rate of convergence}}
-\color{black}\\
-Given $\varepsilon > 0$, let $T(\varepsilon) = \inf\{k\in \mathbb{N} : \|x_k -x^*\|\leq \varepsilon\}$\\
-Then, if $T(\varepsilon) \geq 1$ and using \eqref{eq:bound_x_k_induction}, we get:
+\begin{center}
+	\color{red}\boxed{\textcolor{black}{\Rightarrow \text{Linear rate of convergence}}}\color{black}\\
+\end{center}
+
+Given $\varepsilon > 0$, let $T(\varepsilon) = \inf\{k\in \mathbb{N} : \|x_k -x^*\|\leq \varepsilon\}$. Then, if $T(\varepsilon) \geq 1$ and using \eqref{eq:bound_x_k_induction}, we get:
 \begin{equation}
 	\begin{aligned}
-		\varepsilon < \|x_{T(\varepsilon)-1} - x^*\| &\leq (1-\frac{\mu}{2L})^{T(\varepsilon)-1} \|x_0 - x^*\|\\
+		\varepsilon < \|x_{T(\varepsilon)-1} - x^*\| &\leq \left(1-\frac{\mu}{2L}\right)^{T(\varepsilon)-1} \|x_0 - x^*\|\\
 		\log \left(\frac{\varepsilon}{\|x_0 - x^*\|}\right) &\leq (T(\varepsilon)-1) \log \left(1-\frac{\mu}{2L}\right)\\
 		T(\varepsilon)-1 &\leq \frac{\log \left(\frac{\varepsilon}{\|x_0 - x^*\|}\right)}{\log \left(1-\frac{\mu}{2L}\right)} = \frac{\log \left(\|x_0 - x^*\|\varepsilon^{-1}\right)}{|\log \left(1-\frac{\mu}{2L}\right)|}
 	\end{aligned}
 \end{equation}
-\color{red}
-\boxed{\color{black} T(\varepsilon) \leq \mathcal{O}(\log(\varepsilon^{-1})) }
-\color{black}\\
-$\Longrightarrow$ Convexity was never assumed
+\begin{center}
+	\color{red}
+	\boxed{\color{black} T(\varepsilon) \leq \mathcal{O}(\log(\varepsilon^{-1})) }
+	\color{black}\\
+\end{center}
+\begin{itemize}
+	\item [$\rightarrow$] Note: convexity was never assumed!
+\end{itemize}
 
 \section{Local quadratic convergence of Newton's method}
-Let $f \in \C_M^{2,2}(\R^n)$. Assume $f$ has a local minimizer $x^*$ such that
+\textcolor{blue}{Let $f \in \C_M^{2,2}(\R^n)$. Assume $f$ has a local minimizer $x^*$ such that
 \begin{equation}\label{eq:hessian_bound2}
 	\mu I_n \preceq \nabla^2 f(x^*) \quad \mu > 0
-\end{equation}
+\end{equation}}
 Given $x_0 \in \R^n$, let:
 \begin{equation}\label{eq:newton}
 	x_{k+1} = x_k - \nabla^{-2} f(x_k) \nabla f(x_k)
 \end{equation}
-We have by the previous equation and the definition of $G_k$ \eqref{eq:G_k}:
+We have, by the previous equation and the definition of $G_k$ \eqref{eq:G_k}:
 \begin{equation}\label{eq:bound_x_k+1}
 	\begin{aligned}
 		\|x_{k+1}-x^*\| &= \|x_k - \nabla^{-2} f(x_k) \nabla f(x_k) - x^*\|\\
 		&= \|(x_k-x^*)-\nabla^{-2} f(x_k)G_k(x_k-x^*)\|\\
 		&= \|\nabla^{-2} f(x_k) \left(\nabla^2f(x_k)-\int_{0}^{1}\nabla^2f(x^*+\tau(x_k-x^*))d\tau\right)(x_k-x^*)\|\\
 		&= \|\nabla^{-2} f(x_k) \left( \int_{0}^{1} \nabla^2f(x_k)-\nabla^2f(x^*+\tau(x_k-x^*))d\tau\right)(x_k-x^*)\|\\
-		&\leq \|\nabla^{-2} f(x_k)\| \left( \int_{0}^{1} \|\nabla^2f(x_k)-\nabla^2f(x^*+\tau(x_k-x^*))\|d\tau\right)\|x_k-x^*\|\\
+		&\leq \|\nabla^{-2} f(x_k)\| \left( \int_{0}^{1} \left\|\nabla^2f(x_k)-\nabla^2f(x^*+\tau(x_k-x^*))\right\|d\tau\right)\|x_k-x^*\|\\
 		&\leq \|\nabla^{-2} f(x_k)\| \left( \int_{0}^{1} M(1-\tau) \|x_k-x^*\|d\tau\right)\|x_k-x^*\|\\
 		&\leq \|\nabla^{-2} f(x_k)\|\|x_k-x^*\|^2\frac{M}{2}
 	\end{aligned}
@@ -388,20 +391,23 @@ Therefore, by \eqref{eq:bound_x_k+1}, we conclude that:
 \end{equation}
 
 
-\chapter{Tips and Tricks}
-\begin{itemize}
+\chapter{Tips and Tricks}\label{chap:tricks}
+\begin{enumerate}
 	\item Approximation of the max:
-	\begin{equation}
+	\begin{equation}\label{eq:approx_max}
 		\begin{aligned}
 			\max\{z,0\} = \frac{z+|z|}{2} = \frac{z + \sqrt{z^2}}{2} \approx \frac{z + \sqrt{z^2 + \delta}}{2}
 		\end{aligned}	
 	\end{equation}
-	\item $ab \leq \frac{a^2+b^2}{2}$
-	\item $(a+b)^2 \leq 2a^2+2b^2$
+	\item \begin{equation}\label{eq:sq1}
+		ab \leq \frac{a^2+b^2}{2}	
+	\end{equation}
+	\item \begin{equation}\label{eq:sq2}
+		(a+b)^2 \leq 2a^2+2b^2
+	\end{equation}
 	\item V-trick:
 	\begin{equation}\label{eq:vtrick}
 		\langle xv,v\rangle \leq \|x\|\|v\|^2
 	\end{equation}
-	
-\end{itemize}
+\end{enumerate}
 \end{document}
