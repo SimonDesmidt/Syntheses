@@ -36,6 +36,7 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
+\newcommand{\E}{\mathbb{E}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
@@ -190,4 +191,64 @@ In a Bayesian game, we add the set of player types $T$ and the belief functions.
 	\item The table form when looking for equilibria does not display all the information of the game.
 	\item Finding the equilibria can be computationnally intensive.
 \end{itemize}
+\chapter{Decision theory}
+Decision theory consists in studying a rational and intelligent agent, taking decisions in an uncertain context to achieve a specific goal. 
+\begin{itemize}
+	\item Intelligence: to take in sylla
+	\item Rationality: same
+\end{itemize}
+\section{Lottery function}
+Uncertainty can be objective (e.g. dice) or subjective (e.g. a horse race).\\
+A lottery function is $f:\Omega \to \Delta(X)$, where $\Omega$ is the set of all possible states of the world, i.e. the possible realizations of the uncertainty (subejective part). $\Delta (X)$ is the distribution of probabilities $\Delta$ over the set of payoffs $X$. 
+\begin{itemize}
+	\item We denote $P(\Omega)$ the set of all non-empty subsets of the set of states of the world $\Omega$.
+	\item An event $S\in P(\Omega)$ is a non-empty subset of $\Omega$.
+\end{itemize}
+\section{Preferences}
+Given two lotteries $f$ and $g$, and an event $S\in P(\Omega)$, 
+\begin{itemize}
+	\item $f  \succcurlyeq_S g$ if the player considers $f$ to be at least as good as $g$ when the tru state of the world belongs to $S$;
+	\item $f\sim_S g$ if both $f\succcurlyeq_S g$ and $g\succcurlyeq_S f$, i.e. the player is indifferent between the two lotteries given $S$;
+	\item $f\succ_S g$ if $f\succcurlyeq_S g$, but $g\not \sim_S f$, i.e. the player stricly prefers $g$ over $f$ given $S$.
+\end{itemize}
+\section{Axioms}
+\begin{enumerate}
+	\item \textbf{Completeness:} either $f\succcurlyeq_S g$ or $g\succcurlyeq_S f$;
+	\item \textbf{Transitivity:} if $f\succcurlyeq_S g$ and $g\succcurlyeq_S h$, then $f\succcurlyeq_S h$;
+	\item \textbf{Relevance:} if $f(\cdot |t)=g(\cdot |t)$ for all $t\in S$, then $f\sim_S g$;
+	\item \textbf{Monotonicity:} if $f\succ_S h$ and $0\le \beta \le \alpha \le 1$, then $\alpha f+(1-\alpha)h\succ_S \beta f+(1-\beta)h$;
+	\item \textbf{Continuity:} if $f\succcurlyeq_S g\succcurlyeq_S h$, then $\exists \alpha\in [0,1]$ such that $g\sim_S\alpha f+(1-\alpha)h$;
+	\item \textbf{Objective substitution:} if $e\succcurlyeq_S f$ and $g\succcurlyeq_S h$ and $\alpha \in (0,1]$, then $\alpha e+(1-\alpha)g\succcurlyeq_S \alpha f+(1-\alpha)h$;
+	\item \textbf{Strict objective substitution:} Identical with strict conditions;
+	\item \textbf{Subjective substitution:} if $f\succcurlyeq_S g$ and $f\succcurlyeq_T g$ and $S\cap T=\emptyset$, then $f\succcurlyeq_{S\cup T} g$;
+	\item \textbf{Strict subjective substitution:} Identical with strict conditions;
+	\item \textbf{Interest:} for every state $t\in \Omega$, there exists $x,y\in X$ such that $x\succ_t [y]$;
+	\item \textbf{State neutrality (optional):} For any states $t,r\in \Omega$, if $f(\cdot,t)=f(\cdot, r), g(\cdot,t)=g(\cdot,r)$ and $f\succcurlyeq_r g$, then $f\succcurlyeq_t g$.
+\end{enumerate}
+\section{Utility maximization theorem}
+\begin{itemize}
+	\item A utility function is a function $u:X\times \Omega\to \R$ that assigns a value to each prize in each state of the world. 
+	\item A conditional probability function on $\Omega$ is a function $p:P(\Omega)\to \Delta(\Omega)$ that specifies for all $S\in P(\Omega)$ a probability distribution on $\Omega$ such that, for all $t\in\Omega$, \[p(t|S)=0 \text{ if }t\not \in S\text{ and } \sum_{r\in S}p(r|S)=1.\]
+	\item The expected utility value of a lottery $f$ given an event $S$ and a conditional probability function $p$ is given by \[\E_p(u(f)|S)=\sum_{t\in S}\left[p(t|S)\sum_{x\in X}u(x,t)f(x,t)\right].\]
+	$p(t|S)$ is the probability of each outcome occuring, $u(x,t)$ the utility for said outcome and prize, and $f(x,t)$ the probability of said outcome and prize. 
+\end{itemize}
+Consider a decision problem. The axioms 1 to 10 are satisfied iff there exists a utility function $u$ and a conditional probability function $p:P(\Omega)\to \Delta(\Omega)$ such that 
+\begin{enumerate}
+	\item \textbf{Normative assumption:} the utility function satisfies $\displaystyle \max_{x\in X}u(x,t)=1$ and $\displaystyle \min_{x\in X}u(x,t)=0 \ \forall t\in \Omega$;
+	\item \textbf{Bayes:} the conditional probability function satisfies, for all sets $R\subseteq S\subseteq T\subseteq \Omega$ with $S\neq \emptyset$,\[p(R|T)=p(R|S)p(S|T),\] where, for two sets $A,B\subseteq \Omega$, $p(A|B)=\sum_{a\in A}p(a|B)$.
+	\item for any two lotteries $f$ and $g$ and for any event $S$, the preference relation $f\succcurlyeq_S g$ holds iff \[\E_p(u(f)|S)\ge \E_p(u(g)|S).\]
+\end{enumerate}
+Axiom 11 is also satisfied on top of the others iff the above holds with a state-independent utility function, i.e. there exists a function $U:X\rightarrow \R$ such that $u(x,t)=U(x)$ for all $t\in \Omega$.
+\subsection{Equivalence of the representations}
+Let us consider two decision making problems, the first with a utility function $u$ and a conditional probability function $p$, and the second with a utility function $v$ and a conditional probability function $q$. The two problems are equivalent iff, $\forall S\subseteq \Omega$, $\forall t\in S$, $\forall x\in X$, there exists $A>0$ and $B:S\to\R$ such that $q(t|S)v(x,t) = Ap(t|S)u(x,t)+B(t)$. 
+\section{Bayesian probability system}
+A conditional probability function $p:P(\Omega)\to \Delta(\Omega)$ is a Bayesian probability system on the set $\Omega$ if $\forall S\subseteq \Omega, S\neq \emptyset,\ p(\cdot|S)$ is a probability distribution on $\Omega$ such that $\forall R\subseteq S, \ \forall T\supseteq S \ : \ p(S|S)=1$ and $p(R|T)=p(R|S)p(S|T)$.
+\section{General method for decision making}
+\begin{enumerate}
+	\item Compute the probability distribution;
+	\item Express the loss function for each decision;
+	\item Compute the expected values of the loss function for each decision;
+	\item Select the decision that minimizes the loss.
+\end{enumerate}
+\textcolor{red}{Add the syllabus information in all previous chapters.}
 \end{document}
