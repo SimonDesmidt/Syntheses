@@ -377,4 +377,50 @@ Poisson arrival process implies that arrivals occur with identical probability a
 	\bar W_q = \frac{\lambda (\E[Z]^2+\sigma^2)}{2(1-\lambda \E[Z])}
 \end{equation}
 And we remember $\bar W = \bar W_q + \E[Z]$.\\
+\chapter{Finite State Markov Chains}
+\section{Definitions}
+A Markov chain is a stochastic process with fixed intervals $\{X_n,n\ge 0\}$ such that each random variable $X_n,n\ge 1$ depends on the past only through the most recent random variable $X_{n-1}$:
+\begin{equation}
+	P[X_n=j|X_{n-1}=i, X_{n-2}=k,\dots,X_0=m] = P[X_n=j|X_{n-1}=i] = P_{ij}
+\end{equation}
+The rv $X_n$ is called the state of the Markov chain, and the set of possible sample values for the states lie in a countable set. A Markov chain can be represented under a graph or matrix form:\\
+\begin{minipage}{.5\textwidth}
+	\begin{figure}[H]
+		\centering 
+		\includegraphics[width=\textwidth]{img/markov_graph.png}
+	\end{figure}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+	\begin{equation}
+		P = \begin{pmatrix}
+		0.70 & 0.20 & 0.10 \\
+		0.10 & 0.80 & 0.10 \\
+		0.30 & 0.30 & 0.40 \\
+		\end{pmatrix}
+	\end{equation}
+\end{minipage}
+\begin{itemize}
+	\item We say that a state $j$ is accessible from $i$ ($i\to j$) if there exists a xalk in the graph from $i$ to $j$: $i\to j$ iff $P_{ij}^n = P[X_n=j|X_0=i]>0$ for some $n$.
+	\item Two distinct states $i,j$ communicate ($i\leftrightarrow j$) if $i$ is accessible from $j$ and vice versa. 
+	\item A class $C$ of states is a non-empty set of states such that for each $i\in C$, each state $j\neq i$ satisfies $j\in C$ if $i\leftrightarrow j$ and $j\not \in C$ if $i\not \leftrightarrow j$.
+	\item A state $i$ is recurrent if it is accessible from all states that are accessible from $i$. A transient state is a state that is not recurrent.
+	\item [$\to$] Note: all states of a same class are of the same type.
+	\item A finite-state Markov chain has at least one recurrent class.
+	\item The period of a state $i$, denoted $d(i)$, is the greatest common divisor of all $n$ such that $P_{ii}^n>0$. A state is aperiodic if $d(i)=1$.
+	\item [$\to$] Note: All states of a class have the same periodicity.
+	\item If a class has a period $d>1$, then there existsa  partition $\{C_i\}_{i=1}^d$ of the states of the class such that all the transitions from a state of $C_n$ go to a state of class $C_{n+1}$ and all transitions from $C_d$ go to a state of $C_1$, i.e. we make a cycle of subclasses. 
+	\item A class is called ergodic if it is aperiodic and recurrent.
+	\item A matrix is stochastic iff it is square, non negative ad each row sums to 1, i.e. $P\mathbb{1}_n=\mathbb{1}_n$. 
+\end{itemize}
+\section{Transition probabilities}
+We can calculate that 
+\begin{equation}
+	P[X_{n+2}=j|X_n=i] = P_{ij}^2 = \sum_{k=1}^J P_{ik}P_{kj} \Longrightarrow P^2 = P\cdot P \Longrightarrow P^n = P\cdot... \cdot P
+\end{equation}
+More generally, $P_{ij}^{n+m} = \sum_{k=1}^J P_{ik}^nP_{kj}^m$.\\
+Because of ergodicity, all rows converge to the same value, and we store those values in a row vector called $\pi$. Then, $\pi = \pi P$ and the sum of all values of $\pi$ is 1.\\ 
+
+From this, we induce that $\pi$ is a left eigenvector of $P$ for the eigenvalue $1$, and the number of linearly independent solutions corresponds to the multiplicity of the eigenvalue $1$. There will be one independent solution for each recurrent class of $P$. Moreover, if $P$ is ergodic, then $\displaystyle \lim_{n\to \infty} P^n = \mathbb{1}_n \pi$, else $\pi$ will be the average over the different subclasses. \\
+\section{MArkov chains with rewards}
+
 \end{document}
