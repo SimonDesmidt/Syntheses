@@ -37,6 +37,7 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathcal{C}}
+\newcommand{\N}{\mathbb{N}}
 \renewcommand{\O}{\mathcal{O}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
@@ -125,6 +126,23 @@
 		\hline
 	\end{tabular}
 \end{center}
+\section{GM VS Newton: table}
+\begin{center}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		& cost per iteration & cost of memory & Local rate\\
+		\hline
+		GM & $\O (n)$ & $\O (n)$ & Linear\\
+		\hline
+		Quasi-Newton & $\O (n^2)$ & $\O (n^2)$ & Super Linear\\
+		\hline
+		Newton & $\O (n^3)$ & $\O (n^2)$ & Quadratic\\
+		\hline
+	\end{tabular}
+\end{center}
+\begin{itemize}
+	\item [$\rightarrow$] For the GM, we assume that we don't need to compute the gradient at each iteration.
+\end{itemize}
 \chapter{TODO}\label{chap:right_oracle}
 We can generalise the property of a L-Lipschitz function to $f\in \C_L^p(\R^n)$. For $p=1$, we had 
 \begin{equation}
@@ -394,7 +412,39 @@ If $\|x_k-x^*\| \leq \frac{\mu}{2M}$ then,
 	\|x_{k+1}-x^*\| \leq \frac{M}{\mu} \|x_k - x^*\|^2 = \frac{1}{2} \|x_k - x^*\|
 \end{equation}
 If $\|x_0-x^*\| \leq \frac{\mu}{2M}$ then $\{x\}_{k\geq0} \subset B[x^*,\frac{\mu}{2M}]$.\\
-Denote $\delta_k = \frac{M}{\mu} \|x_k-x^*\|$
+Denote $\delta_k = \frac{M}{\mu} \|x_k-x^*\|$, then we have $\delta_0 = \frac{M}{\mu} \|x_0-x^*\| \leq \frac{1}{2}$, and if we combine this with \eqref{eq:bound_of_x_k1_by_x_k}, we get:
+\begin{equation}
+	\delta_{k+1} \leq \delta_k^2 \quad \forall k \geq 0
+\end{equation}
+And if we proceed by recurcence, we get:
+\begin{equation}
+	\begin{aligned}
+		\delta_1 \leq &\delta_0^2 \leq \left(\frac{1}{2}\right)^2\\
+		\delta_2 \leq &\delta_1^2 \leq \left(\frac{1}{2}\right)^4\\
+		&\vdots\\
+		&\delta_k \leq \left(\frac{1}{2}\right)^{2^k} \quad \forall k \geq 0
+	\end{aligned}
+\end{equation}
+\begin{equation}\label{eq:quadratic_rate_of_convergence}
+	\Rightarrow \|x_k-x^*\|\leq \frac{\mu}{M} \left(\frac{1}{2}\right)^{2^k}
+\end{equation}
+Let $T(\varepsilon) = \inf\{k\in\N: \|x_k-x^*\|\leq \varepsilon\}$ and suppose that $T(\varepsilon) \geq 1$. Then using the convergence rate \eqref{eq:quadratic_rate_of_convergence}, we can state the maximal number of iterations:
+\begin{equation}
+	\varepsilon \leq \|x_{T(\varepsilon)-1}-x^*\| \leq \frac{\mu}{M} \left(\frac{1}{2}\right)^{2^{T(\varepsilon)-1}}
+\end{equation}
+\begin{equation}
+	2^{2^{T(\varepsilon)-1}} \leq \frac{\mu}{M} \varepsilon^{-1}
+\end{equation}
+\color{red}
+\boxed{\color{black} \Rightarrow T(\varepsilon) \leq \log_2(\log_2(\frac{\mu}{M} \varepsilon^{-1}))}
+\color{black}
+
+\section{Quasi Newton methods}
+One step of a Quasi-Newton method is given by:
+\begin{equation}\label{eq:quasi_newton}
+	x_{k+1} = x_k -B_k \nabla f(x_k)
+\end{equation}
+With $B_k \in \R^{n\times n}$, symmetric and non-singular
 
 
 \chapter{Tips and Tricks}\label{chap:tricks}
