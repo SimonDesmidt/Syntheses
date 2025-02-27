@@ -389,6 +389,12 @@ Therefore, by \eqref{eq:bound_x_k+1}, we conclude that:
 		&\leq \frac{M}{\mu}\|x_k-x^*\|^2
 	\end{aligned}
 \end{equation}
+If $\|x_k-x^*\| \leq \frac{\mu}{2M}$ then,
+\begin{equation}\label{eq:bound_of_x_k1_by_x_k}
+	\|x_{k+1}-x^*\| \leq \frac{M}{\mu} \|x_k - x^*\|^2 = \frac{1}{2} \|x_k - x^*\|
+\end{equation}
+If $\|x_0-x^*\| \leq \frac{\mu}{2M}$ then $\{x\}_{k\geq0} \subset B[x^*,\frac{\mu}{2M}]$.\\
+Denote $\delta_k = \frac{M}{\mu} \|x_k-x^*\|$
 
 
 \chapter{Tips and Tricks}\label{chap:tricks}
@@ -408,6 +414,10 @@ Therefore, by \eqref{eq:bound_x_k+1}, we conclude that:
 	\item V-trick:
 	\begin{equation}\label{eq:vtrick}
 		\langle xv,v\rangle \leq \|x\|\|v\|^2
+	\end{equation}
+	\item Triangular inequality by the minimizer: 
+	\begin{equation}
+		\|x_{k+1}-x_k\| \leq \|x_{k+1}-x^*\|+\|x_k-x^*\|
 	\end{equation}
 \end{enumerate}
 \end{document}
