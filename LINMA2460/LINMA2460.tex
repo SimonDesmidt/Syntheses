@@ -101,6 +101,21 @@
 	\begin{equation}
 		x_{k+1} = \arg\min_{y\in \R^n} \Omega_{x_k,y,p}(y) \equiv T_{x_k,p}(y) + \frac{M}{(p+1)!}\|y-x_k\|^{p+1}
 	\end{equation}
+	\item Convergence rate: 
+	\begin{itemize}
+		\item Linear:
+		\begin{equation}\label{eq:linear_convergence_rate}
+			\|x_{k+1}-x^*\| \leq \alpha \|x_k-x^*\| \quad \forall k\geq 0, \alpha \in (0,1)
+		\end{equation}
+		\item Super Linear:
+		\begin{equation}\label{eq:super_linear_convergence_rate}
+			\lim_{k \to +\infty} \frac{\|x_{k+1}-x^*\|}{\|x_k-x^*\|} = 0
+		\end{equation}
+		\item Quadratic:
+		\begin{equation}\label{eq:quadratic_convergence_rate}
+			\|x_{k+1}-x^*\| \leq \beta \|x_k-x^*\|^2 \quad \forall k\geq 0, \beta > 0
+		\end{equation}
+	\end{itemize}
 \end{itemize}
 \section{Properties}
 \begin{itemize}
@@ -444,8 +459,52 @@ One step of a Quasi-Newton method is given by:
 \begin{equation}\label{eq:quasi_newton}
 	x_{k+1} = x_k -B_k \nabla f(x_k)
 \end{equation}
-With $B_k \in \R^{n\times n}$, symmetric and non-singular
-
+With $B_k \in \R^{n\times n}$, symmetric and non-singular\\
+Suppose that $x_k \to x^*$ when $k \to \infty$, and that $\nabla^2f(x_k) \succeq \mu I_n$ with $\mu \geq 0$\\
+We want the condition on $B_k$ to have a Super Linear convergence \eqref{eq:super_linear_convergence_rate} of the Quasi-Newton method. So lets assume that $f \in \C_M^{2,2}(\R^n)$.\\
+Then,
+\begin{equation}\label{eq:bound_hessian_difference}
+	\|\nabla^2f(x_{k+1}-\nabla^2f(x_k))\| \leq M \|x_{k+1}-x_k\|
+\end{equation}
+\textcolor{red}{GOOD LABEL ?}
+\begin{equation}\label{eq:M_smoothness}
+	\|\nabla f(x_{k+1}-\nabla f(x_k)-\nabla^2 f(x_k)(x_{k+1}-x_k))\| \leq \frac{M}{2} \|x_{k+1}-x_k\|^2
+\end{equation}
+Therefore
+\begin{equation}
+	\begin{aligned}
+		\nabla f(x_{k+1}) = \nabla f(x_{k+1}) &  \color{red}  - \nabla f(x_k) - \nabla^2 f(x_k) (x_{k+1}-x_k)  \color{black} \\ &  \color{red} + \nabla f(x_k) + \nabla^2 f(x_k) (x_{k+1}-x_k) \color{black}
+	\end{aligned}
+\end{equation}
+Using the relation \eqref{eq:quasi_newton} we get:
+\begin{equation}
+	\begin{aligned}
+		\nabla f(x_{k+1}) &= \nabla f(x_{k+1}) &&- \nabla f(x_k)- \nabla^2 f(x_k) (x_{k+1}-x_k)\\ 
+		& &&- B_k^{-1}  (x_{k+1}-x_k)\\ 
+		& &&+ \nabla^2 f(x_k) (x_{k+1}-x_k)\\
+		&= \nabla f(x_{k+1})  &&- \nabla f(x_k) - \nabla^2 f(x_k) (x_{k+1}-x_k)\\
+		& &&- \left(B_k^{-1} - \nabla^2 f(x^*)\right) (x_{k+1}-x_k)\\
+		& &&+ \left( \nabla^2 f(x_k) - \nabla^2 f(x^*)\right) (x_{k+1}-x_k)\\
+		\|\nabla f(x_{k+1})\| &\leq \|\nabla f(x_{k+1})  &&- \nabla f(x_k) - \nabla^2 f(x_k) (x_{k+1}-x_k) \| \\
+		& &&+ \|\left(B_k^{-1} - \nabla^2 f(x^*)\right) (x_{k+1}-x_k)\|\\
+		& &&+ \|\left( \nabla^2 f(x_k) - \nabla^2 f(x^*)\right) \| \|(x_{k+1}-x_k)\|\\ 
+		&\leq \frac{M}{2} \|x_{k+1}-x_k\|^2 &&+ M \|x_k-x^*\| \|x_{k+1}-x_k\|\\
+		& &&\color{red}+ \|\left(B_k^{-1}-\nabla^2f(x_k)\right)(x_{k+1}-x_k)\|
+	\end{aligned}
+\end{equation}
+On the line before we used \eqref{eq:bound_hessian_difference} and \eqref{eq:M_smoothness}. And so we can write:
+\begin{equation}\label{eq:eq4cm4}
+	\frac{\|\nabla f(x_{k+1})\|}{\|x_{k+1}-x_k\|} \leq \frac{M}{2} \|x_{k+1}-x_k\| + M \|x_k - x^* \| + \color{red} \frac{\|\left(B_k^{-1}-\nabla^2f(x_k)\right)(x_{k+1}-x_k)\|}{\|x_{k+1}-x_k\|}\color{black}
+\end{equation}
+From now on , suppose that this condition (Dimis-Mori condition) is true:
+\begin{equation}\label{eq:dimis_mori_condition}
+	\lim_{k\to \infty} \frac{\|\left(B_k^{-1}-\nabla^2f(x_k)\right)(x_{k+1}-x_k)\|}{\|x_{k+1}-x_k\|} = 0
+\end{equation}
+Under this condition and by \eqref{eq:eq4cm4}, we have:
+\begin{equation}
+	\lim_{k \to \infty} \frac{\|\nabla f(x_{k+1})\|}{\|x_{k+1}-x_k\|} = 0
+\end{equation}
+As $\|x_{k+1}-x_k\| \to 0$, we conclude that $\lim_{x \to \infty} \|\nabla f(x_{k+1})\| = 0$ and so $\|\nabla f(x^*)\| = 0 \Rightarrow \nabla f(x^*) = 0$. ($x^*$ is a stationary point of f)
 
 \chapter{Tips and Tricks}\label{chap:tricks}
 \begin{enumerate}
