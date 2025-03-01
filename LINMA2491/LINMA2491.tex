@@ -154,6 +154,41 @@
 		\item Complemetarity slackness: $\lambda_i f_i(x) = 0, i = 1, \dots, m$
 		\item Gradient of the Lagrangian: $\nabla_x L(x, \lambda, \nu) = 0$
 	\end{itemize}
+	\item An extreme point of a polyhedron $P$ is a point $x\in P$ such that it cannot be expressed as a linear combination of two distinct points in $P$, i.e. an extreme point is a vertex of the polyhedron.
+	\item An extreme ray of a polyhedron $P$ is $\sigma\in \R^n$ such that for all $x\in P$, for all $\lambda \in [0,1]$, 
+	\begin{equation}\label{eq:extreme}
+		(x+\lambda \sigma)\in P
+	\end{equation}
+	i.e. it is a direction in which we can travel infinitely without leaving the polyhedron. 
+\end{itemize}
+\section{Reminders on subgradients}
+$\pi$ is a subgradient of the function $g$ at $u$ if 
+\begin{equation}
+	g(w)\ge g(u)+ \pi^T(w-u)\qquad \forall w
+\end{equation}
+If $g=\max \{g_1,g_2\}$ with $g_{1,2}$ convex and differentiable, the subgradient of $g$ at $u_0$ is 
+\begin{itemize}
+	\item $\pi=\nabla g_1(u_0)$ if $g_1(u_0)>g_2(u_0)$
+	\item $\pi=\nabla g_2(u_0)$ if $g_2(u_0)>g_1(u_0)$
+	\item The line segment $[\nabla g_1(u_0),\nabla g_2(u_0)]$ if $g_1(u_0)=g_2(u_0)$
+\end{itemize}
+The subdifferential of $g$ at $u$ is the set of all subgradients of $g$ at $u$, denoted $\partial g(u)$. If $g$ is convex, then its subdifferential is nonempty on its domain, and $g$ is differentiable at $u$ if its $\partial g(u) = \{\pi\}$. 
+\subsection{Use in duality}
+Define $c(u)$ as the optimal value of 
+\begin{equation}
+	\begin{aligned}
+		c(u)&=\min f_0(x)\\
+		f_i(x) &\le u_i \qquad i=1,\dots,m\\
+	\end{aligned}
+\end{equation}
+where $x\in dom f_0$ and $f_0,f_i$ are convex functions.
+\begin{itemize}
+	\item $c(u)$ is convex;
+	\item If strong duality holds, denote $\lambda^\star$ as the maximizer of the dual function 
+	\begin{equation}
+		\inf_{x\in dom f_0} (f_0(x) - \lambda^T(f(x)-u))
+	\end{equation}
+	for $\lambda \le 0$. Then, $\lambda^\star \in \partial c(u)$. $\lambda_i$ represents the sensitivity of $c(u)$ to a marginal change in the right-hand side of the $i$-th constraint. 
 \end{itemize}
 \chapter{Modelling}
 \section{Introduction}
@@ -374,5 +409,106 @@ Because
 	\item $EPEV$: $x \in K_1 \cap K_2 \cap \{\bar{x}^k,k=1,\dots,K\cup\{r\}\}$
 	\item $EVRS$: $x \in \bar{x}^r \cap K_1 \cap K_2$
 \end{itemize}
-
+\section{Estimations of WS and EEV}
+An estimation of WS and EEv can be done through a sample mean approximation: from samples $\xi_i = \xi(\omega_i)$ for $i=1,\dots,K$, 
+\begin{enumerate}
+	\item Compute $x^\star (\bar \xi)$;
+	\item Compute $WS_i = z(x^\star (\xi_i), \xi_i)$ and $EEV_i = c^Tx^\star (\xi_i) + Q(x^\star (\bar \xi), \xi_i)$;
+	\item Estimate $\Bar{WS} = \frac{1}{K}\sum_{i=1}^K WS_i$ and $\bar{EEV} = \frac{1}{K}\sum_{i=1}^K EEV_i$.  
+\end{enumerate}
+\subsection{Central Limit Theorem}
+Suppose $\{X_1, \dots, X_K\}$ is a sequence of iid rv with $\E[X_i]=\mu$ and $Var[X_i] = \sigma^2<\infty$. Then, as $n$ approaches infinity, $\sqrt{n}(S_n-\mu)$ converge in distribution to a normal $\mathcal{N}(0,\sigma^2)$:
+\begin{equation}
+	\sqrt{n}\left(\left(\frac{1}{n}\sum_{i=1}^n X_i\right)-\mu\right) \xrightarrow{d} \mathcal{N}(0,\sigma^2)
+\end{equation}
+The central limit theorem is useful to decrease the importance of rare but extreme events. 
+\subsection{Importance sampling}
+Suppose we wish to estimate $\E[C(\omega)]$, where $\omega$ is distributed according to $f(\omega)$ and estimates $\E[C(\omega)]$ with $\displaystyle \sum_{i=1}^N \frac{1}{N}C(\omega_i)$. A sample average pulls samples $\omega_i$ according to the distribution function $f(\omega)$, while the importance sampling pulls the samples $\omega_i$ according to the distribution $\displaystyle g(\omega) = \frac{f(\omega)C(\omega)}{\E[C(\omega)]}$, where the $\E[C(\omega)]$ is an approximation of the real expectation. It then estimates $\E[C(\omega)]$ with $\displaystyle \sum_{i=1}^N \frac{1}{N}\frac{f(\omega_i)C(\omega_i)}{g(\omega_i)}$. 
+\chapter{Benders Decomposition}
+\section{Cutting plane methods}
+A cutting plane method is an optimisation method based on the idea of iteratively refining the objective function, or a set of feasible constraints of a problem through linear inequalities (see LINMA2450). 
+\subsection{Nomenclature}
+\begin{itemize}
+	\item The benders decomposition is a specific method for obtaining the cutting planes when $F(x)$ is the value function of a second-stage linear program. 
+	\item The L-shaped method is a specific instance of Benders decomposition when the second-stage linear program is decomposable into a set of scenarios.
+	\item The multi-cut L-shaped method is an alternative to the L-shaped method which generates multiple cutting planes at step 1 of Kelley's method (see \ref{sec:Kelley}). 
+\end{itemize}
+\subsection{Kelley's Cutting Plane Algorithm}\label{sec:Kelley}
+This algorithm is designed to solve convex but non-differentiable optimization problems of the form
+\begin{equation}
+	\begin{aligned}
+		z^\star &= \min c^Tx + F(x)\\
+		\text{s.t. }& x\in X\\
+	\end{aligned}
+\end{equation}
+where $X\subseteq \R^n$ is convex and compact, $F:\R^n\to \R$ is convex and $c\in \R^n$ is a parameter vector. \\
+Let us define 
+\begin{itemize}
+	\item $L_k:\R^n\to \R$ a lower bound function of $F(x)$ at iteration $k$;
+	\item A lower bound $L_k$ of $z^\star$ at iteration $k$;
+	\item An upper bound $U_k$ of $z^\star$ at iteration $k$.
+\end{itemize}
+\begin{algorithm}
+    \caption{Kelley's Cutting plane algorithm}\label{algo:Kelley}
+    \begin{algorithmic}[1]
+    \State \textbf{Step 0:} Set $k=0$ and assume $x_1\in X$ is given. Set $L_0(x)=-\infty$ for all $x\in X$, $U_0 = c^Tx_1 + F(x_1)$, and $L_0 = -\infty$.
+	\State \textbf{Step 1:} Set $k=k+1$. Find $a_k\in \R$ and $b_k\in \R^n$ such that \[F(x_k)=a_k+b_k^Tx_k\] \[F(x)\ge a_k + b_k^Tx\qquad x\in X\]
+	\State \textbf{Step 2:} Set \[U_k = \min(U_{k-1},c^Tx_k + F(x_k))\] and \[L_k(x) = \max(L_{k-1}(x),a_k+b_k^Tx) \qquad x\in X\]
+	\State \textbf{Step 3:} Compute \[L_k = \min_{x\in X} L_k(x) + c^Tx\] and denote $x_{k+1}$ as the optimal solution of this problem.
+	\State \textbf{Step 4:} If $U_k - L_k =0$, stop. Otherwise, go to step 1.
+    \end{algorithmic}
+\end{algorithm}
+\section{Context and description}
+Consider the following optimization problem:
+\begin{equation}
+	\begin{aligned}
+		z^\star &= \min c^Tx + q^Ty\\
+		Ax&=b\\
+		Tx + Wy&=h\\
+		x, y\geq0\\
+	\end{aligned}
+\end{equation}
+with $x\in \R^{n_1}$, $y\in \R^{n_2}$, $c\in \R^{n_1}$, $q\in \R^{n_2}$, $A\in \R^{m_1\times n_1}$, $b\in \R^{m_1}$, $T\in \R^{m_2\times n_1}$, $W\in \R^{m_2\times n_2}$, $h\in \R^{m_2}$\footnote{It is not necessarily a stochastic problem}.\\
+We use Benders decomposition when the entire problem is difficult to solve, and if the constraint $Tx+Wy=h$ is ignored, the problem becomes easy to solve, or if fixing $x$ simplifies the computation of the solution. 
+\subsection{Idea of Benders decomposition}
+Define the value function $V:\R^{n_1}\to \R$:
+\begin{equation}\label{eq:benders}
+	\begin{aligned}
+		V(x) &= \min_y\{q^Ty\}\\
+		Wy&=h-Tx\\
+		y\geq0
+	\end{aligned}
+\end{equation}
+Or equivalently,
+\begin{equation}
+	\begin{aligned}
+		\min \ &c^Tx+V(x)\\
+		Ax&=b\\
+		x&\in dom(V)\\
+		x&\ge 0
+	\end{aligned}
+\end{equation}
+where $dom(V) = \{x\in \R^{n_1}\ |\ \exists y\geq0:Wy=h-Tx\}$.\\
+The dual of \eqref{eq:benders} is 
+\begin{equation}
+	\begin{aligned}
+		\max_{\pi}& \pi^T(h-Tx)\\
+		\pi^TW&\le q^T
+	\end{aligned}
+\end{equation}
+Let us call $E$ the set of extreme points of $\pi^TW\le q^T$ and $R$ the set of extreme rays of $\pi^TW\le q^T$ (see \eqref{eq:extreme} for definitions). 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.35\textwidth]{img/extreme.png}
+\end{figure}
+We can see that $V(x)$ is a piecewise linear convex function of $x$ and, defining $x_0$ as the dual optimal multiplier of \eqref{eq:benders} given $x_0$, then $\pi_0^T(h-Tx_0)$ is a supporting hyperplane of $V(x)$ at $x_0$, because it belongs to the subdifferential of $V(x)$ at $h-Tx_0$.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\textwidth]{img/supporting_hyperplane.png}
+\end{figure}
+From this, we can also express the domain of $V$ as follows:
+\begin{equation}
+	dom(V) = \{x\ |\ \sigma^T(h-Tx)\le 0,\ \sigma\in R\}
+\end{equation}
+where $\sigma\in R$ is the set of extreme rays of $\pi^TW\le q^T$.
 \end{document}
