@@ -504,7 +504,53 @@ Under this condition and by \eqref{eq:eq4cm4}, we have:
 \begin{equation}
 	\lim_{k \to \infty} \frac{\|\nabla f(x_{k+1})\|}{\|x_{k+1}-x_k\|} = 0
 \end{equation}
-As $\|x_{k+1}-x_k\| \to 0$, we conclude that $\lim_{x \to \infty} \|\nabla f(x_{k+1})\| = 0$ and so $\|\nabla f(x^*)\| = 0 \Rightarrow \nabla f(x^*) = 0$. ($x^*$ is a stationary point of f)
+As $\|x_{k+1}-x_k\| \to 0$, we conclude that $\lim_{x \to \infty} \|\nabla f(x_{k+1})\| = 0$ and so $\|\nabla f(x^*)\| = 0 \Rightarrow \nabla f(x^*) = 0$. ($x^*$ is a stationary point of f)\\
+We have $\nabla^2 f(x^*) \succeq \mu I_n$ and given $y \in \R^n$, we have:
+\begin{equation}
+	\begin{aligned}
+		\nabla^2f(y)-\nabla^2f(x^*) &\succeq - M \|y-x^*\| I_n\\
+		\nabla^2f(y) &\succeq (\mu - M \|y-x^*\|) I_n\\
+	\end{aligned}
+\end{equation}
+Thus, if $-M \|y-x^*\| \geq - \frac{\mu}{2}$ then $\nabla^2f(y) \succeq \frac{\mu}{2} I_n$.\\
+Since $x_k \to x^*$, there exists $k_0 \in \N$ such that $\|x_{k+1}*x^*\| \leq \frac{\mu}{2M}$ $\forall k \geq k_0$. Thus for any $\tau \in [0,1]$:
+\begin{equation}
+	\|x^*+\tau(x_{k+1}-x^*)-x^*\| \leq \frac{\mu}{2M}, \quad \forall k \geq k_0
+\end{equation}
+and so $\nabla^2f(x^*+\tau(x_{k+1}-x^*)) \succeq \frac{\mu}{2} I_n$ $\forall k \geq k_0$.
+\begin{equation}
+	\begin{aligned}
+		\|x_{k+1}-x^*\|\|\nabla f(x_{k+1})\| &\geq (x_{k+1}-x^*)^T\nabla f(x_{k+1})\\
+		&= (x_{k+1}-x^*)^T \left( \nabla f(x_{k+1}) - \nabla f(x^*)\right)\\
+		&= (x_{k+1}-x^*)^T \int_{0}^{1} \nabla^2 f(x^*+\tau(x_{k+1}-x^*)) (x_{k+1}-x^*) d\tau\\
+		&\geq \int_{0}^{1} (x_{k+1}-x^*)^T \frac{\mu}{2} I_n (x_{k+1}-x^*) d\tau\\
+		&= \frac{\mu}{2} \|x_{k+1}-x^*\|^2
+	\end{aligned}
+\end{equation}
+\begin{equation}\label{eq:bound_norm_hessian}
+	\|\nabla f(x_{k+1})\| \geq \frac{\mu}{2} \|x_{k+1}-x^*\|
+\end{equation}
+Let $\rho_k = \frac{\|x_{k+1}-x^*\|}{\|x_k-x^*\|}$ then, using \eqref{eq:triangular_inequality_by_min}, we obtain:
+\begin{equation}\label{eq:bound_rho_k}
+	\begin{aligned}
+		\frac{\|\nabla f(x_{k+1})\|}{\|x_{k+1}-x_k\|} &\geq \frac{(\frac{\mu}{2})\|x_{k+1}-x^*\|}{\|x_{k+1}-x_k\|}\\
+		&\geq \frac{(\frac{\mu}{2})\|x_{k+1}-x^*\|}{\|x_{k+1}-x^*\| + \|x_k-x^*\|}\\
+		&= \frac{(\frac{\mu}{2}) \rho_k}{\rho_k + 1}
+	\end{aligned}
+\end{equation}
+Combining \eqref{eq:bound_rho_k} and \eqref{eq:eq4cm4}, we get:
+\begin{equation}
+	\frac{\mu}{2} \frac{\rho_k}{\rho_k + 1} \leq \frac{M}{2} \|x_{k+1}-x_k\| + M \|x_k-x^*\| + \frac{\|\left(B^{-1}_k - \nabla^2f(x^*)\right) (x_{k+1}-x_k)\|}{\|x_{k+1}-x_k\|}
+\end{equation}
+Since the right hand side goes to zero when $k \to +\infty$, then we have:
+\textcolor{red}{IDK how to write that}
+\begin{equation}
+	\begin{aligned}
+		\lim_{k \to \infty} \frac{\rho_k}{1 + \rho_k} &= 0\\
+		\lim_{k \to \infty} \frac{1}{\frac{1}{\rho_k} + 1} &= 0\\
+		\Rightarrow \lim_{k \to \infty} \frac{\|x_{k+1}-x^*\|}{\|x_k-x^*\|} &\Rightarrow \lim_{k \to \infty} \rho_k = 0  
+	\end{aligned}
+\end{equation}
 
 \chapter{Tips and Tricks}\label{chap:tricks}
 \begin{enumerate}
@@ -525,7 +571,7 @@ As $\|x_{k+1}-x_k\| \to 0$, we conclude that $\lim_{x \to \infty} \|\nabla f(x_{
 		\langle xv,v\rangle \leq \|x\|\|v\|^2
 	\end{equation}
 	\item Triangular inequality by the minimizer: 
-	\begin{equation}
+	\begin{equation}\label{eq:triangular_inequality_by_min}
 		\|x_{k+1}-x_k\| \leq \|x_{k+1}-x^*\|+\|x_k-x^*\|
 	\end{equation}
 \end{enumerate}
