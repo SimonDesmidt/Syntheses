@@ -21,7 +21,7 @@ jobs:
 
       - name: Commit and Push PDFs
         run: |
-          git config --global --add safe.directory /__w/Synth/Synth  # Mark repo as safe
+          git config --global --add safe.directory /__w/Syntheses/Syntheses  # Mark repo as safe
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions@github.com"
           git add *.pdf
