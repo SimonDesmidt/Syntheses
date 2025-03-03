@@ -78,26 +78,26 @@ To store the data that it will use, the CPU uses memory. Memory is hierarchical 
     \caption{Memory hierarchy}
     \label{fig:memory_hierarchy}
 \end{figure}
-First we need to define a cycle. It's an unit of time that is defined like this: $cycle = \frac{1}{\text{CPU freq}}$. For example, for the CPU \textit{AMD Ryzen 5 5600X}, the maximum frequency is $4.6 GHz$, so the cycle is $cycle = \frac{1}{4.6 GHz} \approx 0.217 ns$. The \textbf{bandwidth} is the number of bytes that can be transferred in one cycle. And the \textbf{latency} is the number of cycle required to access a level of memory. There's also the \textbf{latency} but for a number of bytes, it's formula is $\alpha + \beta n$ where $\alpha$ is the level latency, $\beta$ is the inverse of the bandwidth and $n$ is the number of bytes.\\
+First we need to define a cycle. It's an unit of time that is defined like this: $cycle = \frac{1}{\text{CPU freq}}$. For example, for the CPU \textit{AMD Ryzen 5 5600X}, the maximum frequency is $4.6 GHz$, so the cycle is $cycle = \frac{1}{4.6 GHz} \approx 0.217 ns$. The \textbf{bandwidth} is the number of bytes that can be transferred in one cycle. And the \textbf{latency} is the number of cycles required to access a level of memory. There's also the \textbf{latency} but for a number of bytes, its formula is $\alpha + \beta n$ where $\alpha$ is the level latency, $\beta$ is the inverse of the bandwidth and $n$ is the number of bytes.\\
 \begin{tabularx}{\textwidth}{|c|X|X|X|X|X|}
 	\hline
 	Level & Level \newline Latency $[cycle]$  & Bandwidth $[bytes/cycle]$ & Size & What \newline is stored & example \\
 	\hline
-	Register & $3$ & No limit & $\pm 192B$ & "Immeditate" data for the CPU & Results of addition, memory address\\
+	Register & $3$ & No limit & $\pm 192B$ & "Immediate" data for the CPU & Results of addition, memory address\\
 	\hline
-	Cache L1 & $15$ & $32-64$ & $\pm 64KB$ & Instructions and \newline "Immeditate" data & Local variable\\
+	Cache L1 & $15$ & $32-64$ & $\pm 64KB$ & Instructions and \newline "Immediate" data & Local \newline variable\\
 	\hline
 	Cache L2 & $57$ & $16-32$ & $\pm 512KB$ & Data used recently & Data struct, code part\\
 	\hline
-	Cache L3 & $230-360$ & $4-10$ & $\pm 64MB$ & Data shared between core& Global variable\\
+	Cache L3 & $230-360$ & $4-10$ & $\pm 64MB$ & Data shared between core& Global \newline variable\\
 	\hline
-	RAM & $300-500$ & $9-50GB/s$ & $+4GB$ & Running programs & Running software, open document\\
+	RAM & $300-500$ & $9-50GB/s$ & $\geq 4GB$ & Running programs & Running software, open \newline document\\
 	\hline
-	Disks & $+10^6$ & Usually $\leq 3GB/s$ & $+128GB$ & Persistent data & Document, OS, etc\\
+	Disks & $\geq 10^5$ & Usually $\leq 3GB/s$ & $\geq 128GB$ & Persistent data & Document, OS, etc\\
 	\hline
 \end{tabularx}
 \subsection{Caches lines and prefetching}
-A \textbf{cache line} is a small fixed-size contiguous block of memory, usually $64$ or $128$ bytes. It's not necessarly stored in the cache. We use them to organize the memory, because it is easier to deal with fixed size block. When the CPU need to access a memory location, it loads the entire cache line into the cache of the CPU.
+A \textbf{cache line} is a small fixed-size contiguous block of memory, usually $64$ or $128$ bytes. It's not necessarily stored in the cache. We use them to organize the memory, because it is easier to deal with fixed size block. When the CPU need to access a memory location, it loads the entire cache line into the cache of the CPU.
 If the wanted data is not in the cache, there will be a \textbf{cache miss}. After that the CPU will load the entire cache line into the cache.\\
 The \textbf{prefetching} is the fact that the CPU will load the cache line that is next to the one that is needed. It's because of the spacial locality. Spacial locality is the reason why we use cache lines. For example, if we store an array of data, it may use some space greater than one cache line so for precaution, the CPU will load the next cache line too. And so we save time, by anticipating.\\
 For example of the importance of data locality we have:
@@ -133,6 +133,8 @@ With some algebra, we can find the \textbf{number of operations per second}:
 \begin{equation}
 	\max \left( \text{CPU freq}, a \times \text{bandwidth} \right)
 \end{equation}
+If $a$ is low then the performance is memory-bounded.\\
+If $a$ is high then the performance is compute-bounded.
 \subsection{The roofline model}
 \subsection{cache hierarchy for a multi-core CPU}
 \end{document}
