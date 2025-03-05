@@ -551,7 +551,58 @@ Since the right hand side goes to zero when $k \to +\infty$, then we have:
 		\Rightarrow \lim_{k \to \infty} \frac{\|x_{k+1}-x^*\|}{\|x_k-x^*\|} &\Rightarrow \lim_{k \to \infty} \rho_k = 0  
 	\end{aligned}
 \end{equation}
-
+Suppose that $n=1$, then the quasi-newton update is writed:
+\begin{equation}
+	x_{k+1}=x_k-b_kf'(x_k), \quad k \geq 0
+\end{equation}
+with $b_k \in \R$. We want $b_k \approx f''(x_k)^{-1}$ and by finite difference we can express it like that $b_k^{-1} \approx \frac{f'(x_{k-1}+h)-f'(x_{k-1})}{h}$. And with $h = x_h-x_{k-1}$, we can define:
+\begin{equation}\label{eq:def_b_k_1D}
+	b_k^{-1} = \frac{f'(x_k)-f'(x_{k-1})}{x_{k}-x_{k-1}}
+\end{equation}
+Thus if $x_k \to x^*$ then:
+\begin{equation}
+	\lim_{k \to \infty} \frac{|(b_k^{-1}-f''(x^*))(x_k-x_{k-1})|}{|x_k-x_{k-1}|} = 0
+\end{equation}
+Because we can notice that:
+\begin{equation}
+	\frac{|(b_k^{-1}-f''(x^*))(x_k-x_{k-1})|}{|x_k-x_{k-1}|} = |b_k^{-1}-f''(x_{k-1})|+|f''(x_{k-1})-f''(x^*)|
+\end{equation}
+Since $x_k \to x^*$, we have $h=x_k-x_{k-1}$ and so:
+\begin{equation}
+	b_k^{-1} = \frac{f'(x_k)-f'(x_{k-1})}{x_k-x_{k-1}} \to f''(x_{k-1})
+\end{equation}
+Thus, $\lim_{k \to \infty} |b_k^{-1} - f''(x_k)| = 0$.\\ Assuming that $f''$ is continuous, we have $\lim_{k \to \infty} |f''(x_k) - f''(x^*)| = 0$.\\
+If we define $S_{k-1} = x_k-x_{k-1}$ and $y_{k-1}=f'(x_k)-f'(x_{k-1})$ and knowing \eqref{eq:def_b_k_1D}, we can write:
+\begin{equation}
+	\begin{aligned}
+		b_k (f'(x_k)-f'(x_{k-1})) &= x_k-x_{k-1}\\
+		b_k y_{k-1} &= S_{k-1}
+	\end{aligned}
+\end{equation}
+This suggests that for $n > 1$, we should define the secant condition, $B_k$ such that:
+\begin{equation}\label{eq:secant_condition}
+	B_k y_{k-1} = S_{k-1}
+\end{equation}
+Lets define $f(x) = \frac{1}{2} \|Ax-b\|^2 = \frac{1}{2} x^TA^TAx - (A^Tb)^Tx + \frac{1}{2} b^Tb$. If $A$ is full rank then $f$ is a strongly convex quadratic function. And we have $\nabla f(x_k) = A^TAx_k-A^Tb$. Then,
+\begin{equation}
+	y_{k-1} = \nabla f(x_k) - \nabla f(x_{k-1}) = A^TA(x_k-x_{k-1}) = \nabla^2 f(x_{k}) S_{k-1}
+\end{equation} 
+And so
+\begin{equation}
+	\nabla^2 f(x_k) y_{k-1} = S_{k-1}
+\end{equation}
+Therefore, $\nabla^{-2} f$ satisfies the secant condition \eqref{eq:secant_condition}, when f is a strongly convex quadratic function. Thus it is reasonnable to require the secant for any approximation to $\nabla^{-2}f(x_k)$.\\
+\newline
+Now, how can we compute $B_k$ such that it satisfies the secant condition \eqref{eq:secant_condition}?\\
+Given a matrix $B_{k-1}$, our goal is to find a perturbation matrix $P_{k-1} \in \R^{n \times n}$ such that:
+\begin{equation}
+	\left(B_{k-1} + P_{k-1}\right) y_{k-1} = S_{k-1}
+\end{equation}
+If we get such $P_{k-1}$, we can define $B_k = B_{k-1} + P_{k-1}$, which would satisfy the secant condition \eqref{eq:secant_condition}.\\
+For that we need at least $n$ degrees of freedom and a symmetric matrix, so it is natural to try:
+\begin{equation}
+	P_{k-1} = V_{k-1} V_{k-1}^T \quad V_{k-1} \in \R^{n}
+\end{equation}
 \chapter{Tips and Tricks}\label{chap:tricks}
 \begin{enumerate}
 	\item Approximation of the max:
