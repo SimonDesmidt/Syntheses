@@ -601,8 +601,42 @@ Given a matrix $B_{k-1}$, our goal is to find a perturbation matrix $P_{k-1} \in
 If we get such $P_{k-1}$, we can define $B_k = B_{k-1} + P_{k-1}$, which would satisfy the secant condition \eqref{eq:secant_condition}.\\
 For that we need at least $n$ degrees of freedom and a symmetric matrix, so it is natural to try:
 \begin{equation}
-	P_{k-1} = V_{k-1} V_{k-1}^T \quad V_{k-1} \in \R^{n}
+	P_{k-1} = v_{k-1} v_{k-1}^T \quad v_{k-1} \in \R^{n}
 \end{equation}
+So we get:
+\begin{equation}
+	\left(B_{k-1} + v_{k-1} v_{k-1}^T\right) y_{k-1} = S_{k-1}
+\end{equation}
+By algebraic manipulations, we get:
+\begin{equation}\label{eq:secant_condition_v}
+	\begin{aligned}
+		\left(v_{k-1}^T y_{k-1}\right) v_{k-1} &= S_{k-1} - B_{k-1} y_{k-1}\\
+		v_{k-1} &= \frac{S_{k-1}-B_{k-1} y_{k-1}}{\beta} \quad \text{for } \beta = v_{k-1}^T y_{k-1} 
+	\end{aligned}
+\end{equation}
+Combining the two previous equations, we get:
+\begin{equation}
+	\begin{aligned}
+		\left(\frac{1}{\beta} \left(S_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1} \right)\frac{1}{\beta} \left(S_{k-1} - B_{k-1} y_{k-1}\right) &= S_{k-1} - B_{k-1} y_{k-1}\\
+		\frac{1}{\beta^2} \left(S_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1} &= 1
+	\end{aligned}
+\end{equation}
+We can isolate $\beta$:
+\begin{equation}\label{eq:beta_secant}
+	\beta = \sqrt{\left(S_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1}}
+\end{equation}
+Combining \eqref{eq:secant_condition_v} and \eqref{eq:beta_secant}, we get:
+\begin{equation}
+	v_{k-1} = \frac{S_{k-1}-B_{k-1} y_{k-1}}{\sqrt{\left(S_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1}}}
+\end{equation}
+This leads us to the following update for $B_k$:
+\begin{equation}
+	\begin{aligned}
+		B_k &= B_{k-1} + v_{k-1} v_{k-1}^T\\
+		&= B_{k-1} + \frac{\left(S_{k-1}-B_{k-1} y_{k-1}\right)\left(S_{k-1}-B_{k-1} y_{k-1}\right)^T}{\left(S_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1}}
+	\end{aligned}
+\end{equation}
+This is called the \textbf{SR1 update} (symmetric rank 1 update).\\
 \chapter{Tips and Tricks}\label{chap:tricks}
 \begin{enumerate}
 	\item Approximation of the max:
