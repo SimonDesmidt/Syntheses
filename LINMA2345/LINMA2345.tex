@@ -76,6 +76,8 @@ The extensive form is a tree. The nodes trigger something: they can be triggered
 \begin{figure}[H]
   \centering 
   \includegraphics[scale=.15]{img/extensive.png}
+  \caption{Tree form of a game.}
+  \label{fig:tree}
 \end{figure}
 The extensive form contains the following elements:
 \begin{itemize}
@@ -136,8 +138,8 @@ Two games are best-response equivalent iff they have the best response sets, i.e
 \end{equation}
 \section{Bayesian game}
 In a Bayesian game, we add the set of player types $T$ and the belief functions. What was before a set of players is now a set of agents, each of which is a player in a certain state depending on the randomness of some piece of information.
-\section{Nash Equilibrium}
-\subsection{Definitions}
+\chapter{Nash Equilibrium}
+\section{Definitions}
 \begin{itemize}
 	\item Given a game in extensive form $\Gamma_e$, a pure strategy for a player $i\in N$ is an element $c\in C_i = \times_{s\in S_i}D_s$, acting as a function that associates to each information state of the player a move to be played at that state. A pure strategy is such that, for any move of the opponent(s) and at any time in the game, it prescribes a move to be played.
 	\item A randomized strategy $(\sigma_1,\dots, \sigma_N)$ consists in choosing one of the pure strategies with a certain probability. For example, in rock paper scissors, a strategy is to do one of the three possibilities with probability 1/3 for each.\\
@@ -251,4 +253,76 @@ A conditional probability function $p:P(\Omega)\to \Delta(\Omega)$ is a Bayesian
 	\item Select the decision that minimizes the loss.
 \end{enumerate}
 \textcolor{red}{Add the syllabus information in all previous chapters.}
+\chapter{Sequential Equilibria}
+\section{Rational and irrational equilibrium}
+In this chapter, we only work in extensive form, to be able to be rational at each state. Nash equilibria are not necessarily rational, and this chapter aims to find tools to distinguish this characterization.
+\begin{thm}
+	If $\Gamma^e$ is an extensive form game with perfect information, then there exists at least one sequential equilibrium of $\Gamma^e$ in pure strategies. Furthermore, for all generic games with perfect information, there is exactly one equential equilibrium. 
+\end{thm}
+\section{Behavioural strategies}
+\begin{definition}\textbf{Game in extensive form.}
+	For a game in extensive form $\Gamma^e$, we define the following:
+	\begin{itemize}
+		\item $N$: set of players;
+		\item $S = \cup_{i\in N}S_i$: set of all information states, where $S_i$ are the information states of $i\in N$, and $S_i\cap S_j=\emptyset$;
+		\item $D=\cup_{s\in S}D_s$: set of all possibles moves, where $D_s$ is the set of moves availables at state $s\in S$;
+		\item $Y_s$: set of nodes having information state $s\in S$;
+		\item $X=\cup_{s\in S}Y_s$: set of nodes in the tree;
+		\item $\Omega\subset X$: set of leafs in the tree, with $X^0$ the root. 
+	\end{itemize}
+\end{definition}
+See figure \ref{fig:tree} to distinguish states (1.a, 1.b, etc.) and nodes ($X_0,X_1,\dots$).\\
+
+Let us call $C_i$ the set of pure strategies available to player $i$, and $\Delta C_i$ the set of mixed strategies available to player $i$. 
+\begin{definition}
+	A behavioural strategy for player $i\in N$ specifies, at each information state $s\in S_i$, a probability distribution on the moves $D_s$ of the player. For $s\in S_i$, $d\in D_s$, and $\tau_i\in \times_{s\in S_i} \Delta D_s$, $\tau_{i,s}(d)$ is the probability of occurrence of the move $d$ at information state $s$ when implementing $\tau_i$. 
+\end{definition}
+\begin{figure}[H]
+	\begin{subfigure}[b]{.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/mixed.png}
+	\end{subfigure}
+	\begin{subfigure}[b]{.5\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/behavioural.png}
+	\end{subfigure}
+	\caption{Those strategies represent the same thing, they just display information in different form.}
+\end{figure}
+\begin{definition}\textbf{Expected utility at node $x$.}
+	Consider a game in extensive form $\Gamma^e$. Given a player $i\in N$, a node $x\in X$ and a behavioural strategy profile $\tau$, we let 
+	\begin{equation}
+		U_i(\tau,x) = \sum_{y\in \Omega} P(y|\tau,x)w_i(y)
+	\end{equation}
+	where $w_i(y)$ is the payoff of $i$ at the terminal node $y\in \Omega$. $U_i(\tau,x)$ denotes the expected utility of $i$ at $x$ following $\tau$. 
+\end{definition}
+The difference between a Nash equilibrium and a sequential equilibrium is that the Nash equilibrium is rational at the start of the game, while a sequential equilibrium is rational at each node. Thus, every sequential equilibrium is Nash, but not the other way around. 
+\begin{definition}\textbf{Belief vector.}
+	A belief vector for player $i$ is such that each of the component is the probability assigned by player $i$ to be at node $x$ given the fact that $i$ knows his information state $s$. This supposes that there is some incomplete information for player $i$.
+	\begin{equation}
+		\pi_s(y) = \frac{P(y|\tau,x^0)}{\sum_{x\in Y_s}P(x|\tau,x^0)}
+	\end{equation}
+\end{definition}
+\begin{definition}\textbf{Sequential value.}
+	The sequential value of a move $d$ for player $i$ is the sum on the states $x$ of the utilities weighted by the belief vector:
+	\begin{equation}
+		U_i(d|s,(\tau,\pi)) = \sum_{x\in Y_s} \pi_s(x)U_i((\tau_{-i},d),x)
+	\end{equation}
+\end{definition}
+\subsection{Weak consistency}
+\begin{definition}
+	A belief vector $\pi$ is weakly consistent with a behavioural strategy profile $\tau$ if it satisfies 
+	\begin{equation}
+		\forall s\in S \ \forall y\in Y_s \qquad \left(\sum_{x\in Y_s} P(x|\tau,x^0)\right)\pi_s(y) = P(y|\tau,x^0)
+	\end{equation}
+	This simply means that it must satisfy Bayes' theorem. 
+\end{definition}
+\subsection{Strong consistency}
+\begin{definition}
+	A belief vector $\pi$ is strongly consistent with a behavioural strategy profile $\tau$ in the game $\Gamma^e$ if there exists a sequence of profiles $(\tau^k)_{k=1}^\infty$ such that
+	\begin{itemize}
+		\item there is a non-zero probabilities on every move;
+		\item $\tau(d)=\lim_{k\to \infty}\tau^k(d)$, $\forall i \in N$, $\forall s \in S$, $\forall x \in Y_s$. This means that the sequence converges to the strategy;
+		\item $\pi_s(x) = \lim_{k\to \infty} \frac{P(x|\tau^k,x^0)}{\sum_{y\in Y_s}P(y|\tau^k,x^0)}$, $\forall s \in S$, $\forall x\in Y_s$. The belief vector is the limit of the sequence of beliefs given by the Bayes rule. 
+	\end{itemize}
+\end{definition}
 \end{document}
