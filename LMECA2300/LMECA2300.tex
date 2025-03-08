@@ -127,13 +127,13 @@ and there exists an approximation of the Hankel function $H_0^{(2)}$ for $x\gg 1
 \begin{equation}
   H_0^{(2)}(x) \approx \sqrt{\frac{2}{\pi x}} e^{j\pi/4}e^{-jx}
 \end{equation}
-\subsection{From velocity source to pressure}
+\subsection{From velocity source to pressure}\label{sec:pressure}
 The pressure due to a velocity source spread over infinitesimal segment $\Gamma'$:
 \begin{equation}
   p(r) = G(\vec r-\vec r') (j\omega \rho_0) v_n(\vec r')d\Gamma'
 \end{equation}
 To get the total pressure, we have to do an integral:
-\begin{equation}
+\begin{equation}\label{eq:pressure}
   p = p_{inc} + \frac{\omega \rho_0}{4} \int_\Gamma H_0^{(2)}(k|r-r'|)v_n(\vec r')d\Gamma'  
 \end{equation}
 Which is obtained from the velocity source $-j\omega \rho_0S_v$ from equation \eqref{eq:wave}, and doing a convolution with the Green function. \\
@@ -143,4 +143,32 @@ This integral can be approximated with a pointwise approach:
   I\approx C\sum_i v_iG(\rho_i)dl_i
 \end{equation}
 where $C=-j\omega\rho_0$, $v_i$ is the normal component of the velocity vector, and $dl_i$ the length of the segment.  
+\section{Singularity}
+In the case of a singularity, the Green function is infinite. We thus need to find a workaround. For this, we use the following trick:
+\begin{equation}
+    H_0^{(2)}(x) = \left(H_0^{(2)}(x) + \frac{2j}{\pi}\ln(x)\right) - \frac{2j}{\pi}\ln(x)
+\end{equation}
+The first term will be integrate numerically, while the second can be done analytically. When $x\approx 0$, we use a series development of the Green function for the integral of the first term:
+\begin{equation}
+    H_0^{(2)}(x) \approx 1-\frac{2j}{\pi}\left(\ln(x/2)+\gamma\right)
+\end{equation}
+where $\gamma$ is the Euler constant. For the second term near zero, the integral is finite and no approximation is required.
+\section{Radiated wave from an incident wave}
+Let us now imagine the situation where a planar wave is coming from a certain direction. The object on which we analyse the radiation is discretized into $m$ segments. On each segment, we define a basis function $v_{n,i}$ for the normal speed. It is piecewise constant, i.e. it has a certain value on the segment, and 0 on the rest of the object. To determine the overall normal speed on each segment, we write it as a linear combination of the $v_{n,i}$:
+\begin{equation}
+    v_n = \sum_i x_i v_{n,i}
+\end{equation}
+where the $x_i$ are unknown. We impose on the middle of each segment that the radiated pressure is 0, so that we get a system $Ax=b$ to solve, where 
+\begin{equation}
+    \begin{aligned}
+        A_{ij} &= \frac{\omega\rho_0}{4} \int_{\Gamma_i'}H_0^{(2)}(k|r_{0,j}-r'|)v_{n,i}d\Gamma_i'\\
+        b_j &= -p_{incident}(r_{0,j})
+    \end{aligned}
+\end{equation}
+from equation \eqref{eq:pressure}. Once the coefficients $x_i$ are computed, the pressure field on the domain can be computed as it was previously in section \ref{sec:pressure}. \\
+
+If we define $\hat u$ as the unit vector in the direction of propagation of the incident wave, the final pressure in the domain is 
+\begin{equation}
+    p(\vec{r}) = P_0 e^{-jk\hat u \cdot \vec{r}}
+\end{equation}
 \end{document}
