@@ -474,9 +474,9 @@ We use Benders decomposition when the entire problem is difficult to solve, and 
 Define the value function $V:\R^{n_1}\to \R$:
 \begin{equation}\label{eq:benders}
 	\begin{aligned}
-		V(x) &= \min_y\{q^Ty\}\\
-		Wy&=h-Tx\\
-		y\geq0
+		(S)\ :\ &V(x) = \min_yq^Ty\\
+		&Wy=h-Tx\\
+		&y\geq0
 	\end{aligned}
 \end{equation}
 Or equivalently,
@@ -511,4 +511,91 @@ From this, we can also express the domain of $V$ as follows:
 	dom(V) = \{x\ |\ \sigma^T(h-Tx)\le 0,\ \sigma\in R\}
 \end{equation}
 where $\sigma\in R$ is the set of extreme rays of $\pi^TW\le q^T$.
+\begin{itemize}
+	\item [$\to$] Note: when a domain is unbounded in a direction that does not improve the objective value, it is not a problem to its resolution.
+\end{itemize}
+\subsection{Reformulation}
+The objective of the reformulation is to find a general form for the algorithm. That way, each iteration simply adds constraints of the same form, involving the minimum number of changes to the problem.
+\begin{equation}
+	\begin{aligned}
+		&\min c^Tx + \theta \\
+		&Ax=b\\
+		&\sigma_r^T(h-Tx)\le0\quad \sigma_r\in R\\
+		&\theta \ge \pi_e^T(h-Tx)\quad \pi_e\in E\\
+		&x\ge0 
+ 	\end{aligned}
+\end{equation}
+where $\theta$ is a free variable.\\
+The idea is to relax some inequalities that define $V(x)$ and $dom\ V$:\\
+\begin{minipage}{.5\textwidth}
+	\begin{equation}
+		\begin{aligned}
+			(M): \ \ & z_k = \min c^Tx+\theta\\
+			& Ax= b\\
+			&\sigma_r^T(h-Tx)\le0\quad \sigma_r\in R_k\subseteq R\\
+			&\theta \ge \pi_e^T(h-Tx)\quad \pi_e\in E_k\subseteq E\\
+			&x\ge0 
+		\end{aligned}
+	\end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+	\begin{equation}
+		\begin{aligned}
+			(S): \ \ & V(\bar x) = \min_{x,y} q^Ty\\
+			& Wy=h-Tx\\
+			&x = \bar x\\
+			&y\ge 0
+		\end{aligned}
+	\end{equation}
+\end{minipage}
+The solution of the main problem (M) above provides:
+\begin{itemize}
+	\item A lower bound $z_k\le z^\star$;
+	\item A candidate solution $x_k$;
+	\item An under-estimator of $V(x_k)$, $\theta_k \le V(x_k)$.
+\end{itemize}
+The solution of the subproblem (S) with input $x_k$ provides:
+\begin{itemize}
+	\item An upper bound $c^Tx_k+q^Ty_{k+1}\ge z^\star$;
+	\item A new vertex $\pi_{k+1}$ or a new extreme ray $\sigma_{k+1}$.
+\end{itemize}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.4\textwidth]{img/reformulation.png}
+\end{figure}
+In addition to the two problems defined above, we have the dual of (S):
+\begin{equation}
+	\begin{aligned}
+		(D) \ : \ & \max_{\pi,\lambda} \lambda^Tx + \pi^Th
+		& \pi^TW\le g^T\\
+		& \pi^T T + \lambda = 0
+	\end{aligned}
+\end{equation}
+With this, the formulation of the optimality cut becomes 
+\begin{equation}
+	\theta \ge \lambda^T(x-\bar x) + V(\bar x)
+\end{equation}
+\section{Benders Decomposition Algorithm}
+\begin{algorithm}
+	\caption{Benders Decomposition Algorithm}
+	\begin{algorithmic}[1]
+		\State \textbf{Step 0:} Set $k=0$, $E_0=R_0=\emptyset$;
+		\State \textbf{Step 1:} Solve (M);
+		\If {(M) is feasible}
+		\State Store $x_k$;
+		\Else \State break;\EndIf
+		\State \textbf{Step 2:} Solve (S) (or (D)) with $x_k$ as input;
+		\If {(S) is infeasible}
+		\State Let $R_{k+1} = R_k\cup \{\sigma_{k+1}\}$;
+		\State $k\gets k+1$;
+		\Else \State Let $E_{k+1} = E_k \cup \{\pi_{k+1}\}$;
+		\If {$E_{k+1} = E_k$} \State terminate with $(x_k,y_{k+1})$ as optimal solution;
+		\Else \State Let $k\gets k+1$ and back to step 1.
+		\EndIf 
+		\EndIf 
+	\end{algorithmic}
+\end{algorithm}
+\begin{itemize}
+	\item [$\to$] Note: The algorithm takes finite time, as $E$ and $R$ are finite. 
+\end{itemize}
 \end{document}
