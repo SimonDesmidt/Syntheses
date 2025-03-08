@@ -455,6 +455,7 @@ Let $T(\varepsilon) = \inf\{k\in\N: \|x_k-x^*\|\leq \varepsilon\}$ and suppose t
 \color{black}
 
 \section{Quasi Newton methods}
+\subsection{SR1 Update}
 One step of a Quasi-Newton method is given by:
 \begin{equation}\label{eq:quasi_newton}
 	x_{k+1} = x_k -B_k \nabla f(x_k)
@@ -637,6 +638,113 @@ This leads us to the following update for $B_k$:
 	\end{aligned}
 \end{equation}
 This is called the \textbf{SR1 update} (symmetric rank 1 update).\\
+\subsection{BFGS Update}
+Lets take back $B_{k+1} y_k = s_k$ and defining $H_{k+1} = B_{k+1}^{-1} \approx \nabla^2 f(x_{k+1})$, we get $H_{k+1} s_k = y_k$.\\
+The idea is to find a rank 2 update that consist of finding $a,b \in \R$ and $v,u \in \R^n$ such that:
+\begin{equation}\label{eq:rank2_update_idea}
+	\left(H_k + a uu^T + b vv^T\right)s_k = y_k
+\end{equation}
+Noticing that $u^Ts_k$ and $v^Ts_k$ are scalars, we can impose that:
+\begin{equation}
+	\begin{cases}
+		a(u^Ts_k) u = -H_ks_k\\
+		b(v^Ts_k) v = y_k
+	\end{cases}
+\end{equation}
+It suggests that we should take $a= \frac{1}{u^Ts_k}$ and $b = \frac{1}{v^Ts_k}$. Which gives us:
+\begin{equation}
+	\begin{cases}
+		u = -H_ks_k\\
+		v = y_k
+	\end{cases}
+\end{equation}
+Combining the two equations, we get:
+\begin{equation}
+	H_{k+1} = H_k - \frac{H_ks_ks_k^TH_k}{s_k^TH_ks_k} + \frac{y_ky_k^T}{y_k^Ts_k}
+\end{equation}
+Using linear algebra, we can compute:\\
+\begin{center}
+	\color{red}
+	\boxed{
+	\color{black}
+	\begin{aligned}
+		B_{k+1} &= H_{k+1}^{-1}\\
+		&= \left(I-\rho_ks_ky_k^T\right) B_k \left(I-\rho_ky_ks_k^T\right) + \rho_k s_k s_k^T \text{ with } \rho_k = \frac{1}{y_k^Ts_k}
+	\end{aligned}}
+	\color{black}
+\end{center}
+\textbf{Remarks:}
+\begin{itemize}
+	\item If $B_k \succ 0$ and $s_k^Ty_k > 0$ then $B_{k+1} \succ 0$.
+	\item If $B_k \succ 0$ and $d_k = - B_k \nabla f(x_k)$, then 
+	\begin{equation}
+		\langle \nabla f(x_k), d_k \rangle = - \langle \nabla f(x_k), B_k \nabla f(x_k) \rangle < 0
+	\end{equation}
+	and so $d_k$ is a descent direction for $f$ at $x_k$.
+	\item The LBFGS is a low memory of BFGS, that does not require the storage of the matrices $B_k$. Given a vector $v \in \R^n$, it computes $B_kv$, which is all that we need to implement QN method.
+\end{itemize}
+\chapter{Constrained nonlinear programming problems}
+Consider the constrained problem 
+\begin{equation}\label{eq:constrained_problem}
+	\min_{x \in \R^n} f(x) \quad \text{subject to} \quad c_i(x) = 0, \quad i \in \{1,\dots,m\}	
+\end{equation}
+where $f,c_i : \R^n \to \R$ are $\C^1$ and there exists a $\hat{x}$ such that $c_i(\hat{x}) = 0$.\\
+A natural approach to solve this problem is to consider the related unconstrained problem in which we try to minimize $f(x)$ plus a term that penalizes the violation of the constraints (quadratic penalty function).
+\begin{equation}\label{eq:penalty_function}
+	\min_{x \in \R^n} Q_{\sigma} (x) \equiv f(x) + \frac{\sigma}{2} \|c(x)\|_2^2
+\end{equation}
+For the problem \eqref{eq:constrained_problem}, we would like to find a KKT point $x^*$ for which there exists $\lambda^* \in \R^m$ such that:
+\begin{equation}\label{eq:KKT}
+	\begin{cases}
+		\nabla f(x^*) - \displaystyle \sum_{i=1}^m \lambda_i^* \nabla c_i(x^*) = 0  \quad \quad &(stationarity)\\
+		c(x^*) = 0 &(feasibility)
+	\end{cases}
+\end{equation}
+In practice, we are happy if we can find an $(\varepsilon_1,\varepsilon_2)$-KKT point for \eqref{eq:constrained_problem}, i.e. a point $x^+$ such that there exists $\lambda^+$ with:
+\begin{equation}
+	\begin{cases}
+		\|\nabla f(x^+) - \displaystyle \sum_{i=1}^m \lambda_i^+ \nabla c_i(x^+) \| \leq \varepsilon_1\\
+		\|c(x^+)\| \leq \varepsilon_2\\
+	\end{cases}
+\end{equation}
+Let us relate \eqref{eq:penalty_function} and \eqref{eq:constrained_problem}. Notice that:
+\begin{equation}
+	\begin{aligned}
+		\| \nabla Q_{\sigma} (x) \| &= \|\nabla f(x) + \sigma \mathbf{J}_c(x)^T c(x)\|\\
+		&= \|\nabla f(x) + \sigma \sum_{i=1}^{m} c_i(x) \nabla c_i(x)\|\\
+		&= \|\nabla f(x) - \sum_{i=1}^{m} \lambda_i^+ \nabla c_i(x)\| \quad \text{with} \lambda_i^+ = - \sigma c_i(x^+)\\
+	\end{aligned}
+\end{equation}
+Therefore, if $\| \nabla Q_{\sigma} (x^+) \| \leq \varepsilon_1$, then there exists $\lambda^+ \in \R^m, \lambda^+ = - \sigma c(x^+)$ such that $\|\nabla f(x^+) - \displaystyle \sum_{i=1}^{m} \lambda_i^+ \nabla c_i(x^+)\| \leq \varepsilon_1$.\\
+Given $\bar{x} \in \R^n$, suppose that we compute $x^+$ such that
+\begin{equation}
+	\begin{aligned}
+		Q_\sigma(x^+) &\leq Q_\sigma(\bar{x})\\
+		f(x^+) + \frac{\sigma}{2} \|c(x^+)\|^2 &\leq f(\bar{x}) + \frac{\sigma}{2} \|c(\bar{x})\|^2\\
+		\frac{\sigma}{2} \|c(x^+)\|^2 &\leq f(\bar{x}) - f(x^+) + \frac{\sigma}{2} \|c(\bar{x})\|^2\\
+		\|c(x^+)\|^2 &\leq \frac{2}{\sigma} \left( f(\bar{x}) - f(x^+) \right) + \|c(\bar{x})\|^2
+	\end{aligned}
+\end{equation}
+If $f(x) \geq f_{low} \quad \forall x \in \R^n$, we get $\|c(x^+)\|^2 \leq \frac{2}{\sigma} (f(\bar{x}) - f_{low}) + \|c(\bar{x})\|^2$.\\
+If $\|c(\bar{x})\| \leq \frac{\varepsilon_2}{\sqrt{2}}$ and $\sigma \geq \frac{4}{\varepsilon_2^2} (f(\bar{x})-f_{low})$, then $\|c(x^+)\|^2 \leq \varepsilon_2^2$ and so $\|c(x^+)\| \leq \varepsilon_2$.\\
+In summary, if we have $\bar{x} \in \R^n$ such that $\|c(\bar{x})\| \leq \frac{\varepsilon_2}{\sqrt{2}}$, and using a method for unconstrained optimization (e.g. GM), we compute $x^+$ with
+\begin{equation}
+	Q_\sigma(x^+) \leq Q_\sigma(\bar{x}) \quad \text{and} \quad \|\nabla Q_\sigma(x^+)\| \leq \varepsilon_1
+\end{equation}
+for $\sigma \geq \frac{4}{\varepsilon_2^2} (f(\bar{x}-f_{low}))$, then $x^+$ is a $(\varepsilon_1,\varepsilon_2)$-KKT point for the unconstrained problem \eqref{eq:constrained_problem}.\\
+\newline
+\textbf{Example:}
+\begin{equation}
+	\min f(x) \quad \text{such that} \quad Ax=b  \quad \text{and} \quad \nabla f(x)  \quad L_f \text{-Lipschitz}
+\end{equation}
+\begin{equation}
+	\begin{aligned}
+		Q_{\sigma}(x) &= f(x) + \frac{\sigma}{2} \|Ax-b\|_2^2\\
+		\nabla Q_{\sigma}(x) &= \nabla f(x) + \sigma A^T(Ax-b)\\
+		\nabla^2 Q_{\sigma}(x) &= \nabla^2 f(x) + \sigma A^TA\\
+	\end{aligned}
+\end{equation}
+so $\nabla Q_\sigma$ is $L_{Q_\sigma}$-Lipschitz with $L_{Q_\sigma} = L_f + \sigma \|A^TA\|$ so GM takes $\O (L_{Q_\sigma} \varepsilon_1^{-2})$ iterations to find $x^+$ with $\|\nabla Q_\sigma(x^+)\| \leq \varepsilon_1$, and $Q_\sigma (x^+) \leq Q_\sigma(\bar{x})$, if initialized with $\bar{x}$. Since $L_{Q_\sigma}=\O(\sigma)$ and $\sigma = \O(\varepsilon_2^{-2})$, we get a complexity bound of $\O(\varepsilon_1^{-2}\varepsilon_2^{-2})$.
 \chapter{Tips and Tricks}\label{chap:tricks}
 \begin{enumerate}
 	\item Approximation of the max:
