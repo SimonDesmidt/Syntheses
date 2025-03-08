@@ -420,7 +420,97 @@ We can calculate that
 More generally, $P_{ij}^{n+m} = \sum_{k=1}^J P_{ik}^nP_{kj}^m$.\\
 Because of ergodicity, all rows converge to the same value, and we store those values in a row vector called $\pi$. Then, $\pi = \pi P$ and the sum of all values of $\pi$ is 1.\\ 
 
-From this, we induce that $\pi$ is a left eigenvector of $P$ for the eigenvalue $1$, and the number of linearly independent solutions corresponds to the multiplicity of the eigenvalue $1$. There will be one independent solution for each recurrent class of $P$. Moreover, if $P$ is ergodic, then $\displaystyle \lim_{n\to \infty} P^n = \mathbb{1}_n \pi$, else $\pi$ will be the average over the different subclasses. \\
-\section{MArkov chains with rewards}
+From this, we induce that $\pi$ is a left eigenvector of $P$ for the eigenvalue $1$, and the number of linearly independent solutions corresponds to the multiplicity of the eigenvalue $1$. There will be one independent solution for each recurrent class of $P$. Moreover, if $P$ is ergodic, then $\displaystyle \lim_{n\to \infty} P^n = \mathbb{1}_m \pi$, else $\pi$ will be the average over the different subclasses. \\
+\section{Markov chains with rewards}
+Let $r_i$ be the reward associated with state $i$. In the case where the reward is on the edge from node $i$ to $j$ and not the states, the reward is $r_{ij}$ and we have $\displaystyle r_i = \sum_j P_{ij}r_{ij}$. For an ergodic chain, we observe that the average reward per period will be 
+\begin{equation}
+	g = \sum_i r_i\pi_i
+\end{equation}
+where $\pi_i$ is the steady state probability. 
+\subsection{Expected reward over multiple transitions}
+Let $X_m$ be the state at time $m$ and let $R_m=R(X_m)$ be the reward at time $m$. Under the condition $X_m=i$ (starting point), the aggregate expected reward $v_i(n)$ over $n$ periods from $X_m$ to $X_{m+n-1}$ is 
+\begin{equation}
+	v_i(n) = \E[R(X_m) + \dots + R(X_{m+n-1})|X_m = i] = r_i + \sum_j P_{ij}r_j + \dots + \sum_j P_{ij}^{n-1}r_j
+\end{equation}
+And in vector notation 
+\begin{equation}
+	v(n) = r+ [P]r + \dots + [P^{n-1}]r = \sum_{h=0}^{n-1}[P^h]r
+\end{equation}
+\subsection{Relative gain vector}
+Assuming the Markov chain is an ergodic unichain, i.e. it has a single ergodic class with possibly some transient classes, we know that $\lim_{n\to \infty}[P^n] = \mathbb{1}_m \pi$ and thus 
+\begin{equation}
+	\lim_{n\to \infty} [P^n]r = \mathbb{1}_m \pi r = g\mathbb{1}_m 
+\end{equation}
+This means that the expected reward per period converges to $g$. From this, we can evaluate the transient effect and define the relative-gain vector, denoted by $w$:
+\begin{equation}
+	w = \lim_{n\to \infty}(v(n)-ng\mathbb{1}_m) = \lim_{n\to \infty}\sum_{h=0}^{n-1} [P^h-\mathbb{1}_m\pi]r
+\end{equation}
+It can also be computed by solving the following equations instead of calculating the limit:
+\begin{equation}\label{eq:rel_gain}
+	w+g\mathbb{1}_m = [P]w + r \qquad \pi w=0
+\end{equation}
+The second equation means that the sum (weighted by the probabilities) of all gains is 0.
+\section{Markov decision processes}
+Suppose that in each state $i$, we can choose between $K_i$ different possibilities with rewards $r_i^{(1)},\dots,r_i^{(K_i)}$. This means that we choose between different Markov chains that have the same states but not necessarily the same edges. We want to find the optimal (stationary or dynamic) policy for this problem. 
+\subsection{Dynamic programming algorithm for the dynamic optimal policy}
+This section aims to find a dynamic programming algorithm for the dynamic optimal policy. We assume here that for any policy $A$, the resulting Markov chain with matrix $[P^A]$ is an ergodic unichain.\\
 
+Let $v(0)$ be the final reward vector. Through a recurrence method, we can show that 
+\begin{equation}
+	v_i^*(n) = \max_k \{r_i^{(k)}+\sum_j P_{ij}^{(k)}v_j^*(n-1)\}
+\end{equation}
+or in vector form:
+\begin{equation}
+	v^*(n) = \max_A \{r^A + [P^A]v^*(n-1)\}
+\end{equation}
+for a policy $A$, i.e. a decision $k_i$ for each state $i$. From equations \eqref{eq:rel_gain}, we know that 
+\begin{equation}
+	w^A = r^A - g^A\mathbb{1}_m + [P^A]w^A
+\end{equation}
+and thus 
+\begin{equation}
+	v^A(n) = ng^A\mathbb{1}_m + w^A + [P^A]^n (v(0)-w^A)
+\end{equation}
+If $v(0)=w^B$ for a policy $B$ such that 
+\begin{equation}
+	r^B + [P^B]w^B \ge r^A +[P^A]w^A \quad \forall A
+\end{equation}
+then $B$ is the dynamic optimal policy for each time period, and 
+\begin{equation}
+	v^*(n) = w^B + ng^B\mathbb{1}_m
+\end{equation}
+This relation is an equivalence. 
+\subsection{Policy improvement algorithm}
+\begin{algorithm}
+	\caption{Policy improvement algorithm}
+	\begin{algorithmic}[1]
+		\State \textbf{Step 1:} Choose an arbitrary policy $B$;
+		\While{$\exists A\ : \ r^B +[P^B]w^B\stackrel{\le}{\neq} r^A + [P^A]w^B$}
+		\State \textbf{Step 2:} Compute $w^B$;
+		\State \textbf{Step 3:} Find $A$ such that $r^A + [P^A]w^B \stackrel{\neq}{\ge} r^B +[P^B]w^B$;
+		\State \textbf{Step 4:} $B\gets A$;
+		\EndWhile
+	\end{algorithmic}
+\end{algorithm}
+\begin{thm}
+	Assuming for any policy $A$ that the Markov chain $[P^A]$ is an ergodic unichain, if $B$ is an optimal stationary policy, then 
+	\begin{equation}
+		\lim_{n\to \infty} v^*(n) - ng^B\mathbb{1}_m = w^B + (\beta - \pi^B w^B)\mathbb{1}_m
+	\end{equation}
+	\textcolor{red}{What is $\beta$?}
+\end{thm}
+\section{Dynamic programming algorithm for the stationary optimal policy}
+\begin{algorithm}
+	\caption{Dynamic programming algorithm for the stationary optimal policy}
+	\begin{algorithmic}[1]
+		\State \textbf{Step 1:} Fix an arbitrary vector $v(0)$;
+		\While{l < u}
+		\State \textbf{Step 2:} Compute 
+		\begin{equation}
+			l = \min_i [v_i^*(n)-v_i^*(n-1)] \qquad u = \max_i [v_i^*(n)-v_i^*(n-1)]
+		\end{equation}
+		\EndWhile
+		$l=u=g^A$ and $A$ is the optimal stationary policy.
+	\end{algorithmic}
+\end{algorithm}
 \end{document}
