@@ -96,7 +96,7 @@ First we need to define a cycle. It's an unit of time that is defined like this:
 	Disks & $\geq 10^5$ & Usually $\leq 3GB/s$ & $\geq 128GB$ & Persistent data & Document, OS, etc\\
 	\hline
 \end{tabularx}
-\subsection{Caches lines and prefetching}
+\subsection{Caches lines and prefetching}\label{caches_lines}
 A \textbf{cache line} is a small fixed-size contiguous block of memory, usually $64$ or $128$ bytes. It's not necessarily stored in the cache. We use them to organize the memory, because it is easier to deal with fixed size block. When the CPU need to access a memory location, it loads the entire cache line into the cache of the CPU.
 If the wanted data is not in the cache, there will be a \textbf{cache miss}. After that the CPU will load the entire cache line into the cache.\\
 The \textbf{prefetching} is the fact that the CPU will load the cache line that is next to the one that is needed. It's because of the spacial locality. Spacial locality is the reason why we use cache lines. For example, if we store an array of data, it may use some space greater than one cache line so for precaution, the CPU will load the next cache line too. And so we save time, by anticipating.\\
@@ -133,8 +133,101 @@ With some algebra, we can find the \textbf{number of operations per second}:
 \begin{equation}
 	\max \left( \text{CPU freq}, a \times \text{bandwidth} \right)
 \end{equation}
-If $a$ is low then the performance is memory-bounded.\\
-If $a$ is high then the performance is compute-bounded.
+To resume:
+\begin{itemize}
+	\item If $a$ is low then the performance is memory-bounded $\Rightarrow$ \textbf{Need cache optimization}.
+	\item If $a$ is high then the performance is compute-bounded $\Rightarrow$ \textbf{Need more CPU cores or vectorization}.
+\end{itemize}
+The arithmetic intensity can be represented with the \textbf{roofline model} which we'll talk now.
 \subsection{The roofline model}
+The two following graph links the performances of a program with the arithmetic intensity. The "performances" means the number of operations per second and the "arithmetic intensity" is the number of operations per byte of memory transferred. The right graph is the case where we consider a perfect usage of the PC, and the left graph is the case where we consider a bad usage of the PC.  
+\begin{figure}[H]
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[scale=0.10]{img/roofline.jpeg}
+		\caption{Roofline model}
+		\label{fig:roofline}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[scale=0.10]{img/roofline2.jpeg}
+		\caption{Model with wrose performances}
+		\label{fig:roofline2}
+	\end{subfigure}
+\end{figure}
+As we can clearly see, we have two limitations:
+\begin{itemize}
+	\item Bandwidth limit (slopped line)
+	\item Computing limit (flat line)
+\end{itemize}
+These two limit line are upper bound for performances and are limited from above by the hardware (we can't do better than what our CPU can do), but they can be lower if the program is not optimized. For example the slopped line can be lower if we don't use the cache correctly. The flat line can be lower if we don't use the CPU correctly (e.g. using SIMD).\\
 \subsection{cache hierarchy for a multi-core CPU}
+In the case where we have a multi-core CPU, the organization of the memory isn't always the same, it depends of the CPU architecture. For example, we can have a hierarchy like this:
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{img/multicore-cache.png}
+	\caption{Cache hierarchy for a multi-core CPU}
+	\label{fig:multi_core_cache}
+\end{figure}
+Here the L1 cache is private to each core, the L2 cache is shared between two cores and the L3 cache is shared between all cores, as well as the RAM. 
+\section{Parallelism}
+In this course, we use \textit{OpenMP} to parallelize our code instead of \textit{lpthread}. The advantages of \textit{OpenMP} are detailed in the chapter \textbf{Usefull tools} at the section \ref{OpenMP}.\\ 
+Parallelism is a very usefull tool to optimize the performances of a program. It allows to use multiple cores of the CPU to do multiple tasks at the same time. But sometimes it may arise some problems of performances or computationnal error.
+\subsection{Computationnal error}
+When using multi-threading, we may modify and use some variables at the same time which could cause computationnal error. So to avoid that we can either protect the variable (with some adapted tools) but this option is not very efficient because it takes some time to \textit{lock} and \textit{unlock} and to wait for the variable to be available. Or we can make each thread use it's own version of the variable, this introduce the next problems.
+\subsection{Race condition}
+The race condition is a problem that occurs when two or more threads try to modify the same variable at the same time, here there are no computationnal error possible. For example if all the threads want to modify a variable a the same time, they will need to wait for the variable to be available, and it is a waste of time. The solution for that, as we said before is to make each thread use it's own version of the variable. Let's say they need to compute the sum of an array. The solution is to make each thread compute the sum of a part of the array and then by "reduction" sum all the sums. We will see this in more detail in the next chapter.
+\subsection{False sharing}
+As we say before, in the section about cache lines \ref{caches_lines}, the CPU loads the entire cache line into the cache when it need to use some data that is on the cache line. So here is the problem, let's say that all of the partial sum of the array are stored in the same cache line, when a thread modify it's partial sum, the entire cache line is loaded into the cache of the CPU, and so the other threads will have to wait for the cache line to be available. The solution is to make each thread use it's own cache line. We can solve this by adding some padding (shift the data) to the data structure.
+\section{Amdahl's law}
+First let's define the \textbf{speedup} of a program, it represents the improvement of running time while using $p$ threads. It is defined by:
+\begin{equation}
+	S_p = \frac{T_1}{T_p}
+\end{equation}
+Where $T_1$ is the time needed to run the program with one thread and $T_p$ is the time needed to run the program with $p$ threads.\\
+Then let's define the \textbf{efficiency} of a program, is mesures how well the parallelization is done. It is defined by:
+\begin{equation}
+	E_p = \frac{S_p}{p}
+\end{equation}
+Where $S_p$ is the speedup of the program with $p$ threads. We get 3 cases:
+\begin{itemize}
+	\item If $E_p = 1 \Rightarrow$ \textbf{Ideal case}, the parallelization is perfect.
+	\item If $E_p < 1 \Rightarrow$ \textbf{Realistic case}, there's some inefficiency.
+	\item If $E_p > 1 \Rightarrow$ \textbf{Unrealistic case}, would imply a super-linear speedup.
+\end{itemize}
+We can now define \textbf{Amdahl's law}, which explain the limitation of parallelization due to the presence of a sequential portion in a program. It is defined like this:
+\begin{equation}
+	T_p = F_sT_1 + \frac{(1 - F_s)T_1}{p}
+\end{equation}
+$F_s$ is the percentage of the program that is sequential (impossible to parallelize). With that we can redefine the \textbf{speedup} and the \textbf{efficiency} of a program:
+\begin{equation}
+	S_p = \frac{T_1}{F_sT_1 + \frac{(1 - F_s)T_1}{p}} = \frac{1}{F_s + \frac{1 - F_s}{p}} \Rightarrow \lim_{p \to \infty} S_p = \frac{1}{F_s}
+\end{equation}
+And
+\begin{equation}
+	E_p = \frac{S_p}{p} = \frac{1}{pF_s + 1 - F_s} = \frac{1}{F_s(p - 1) + 1}
+\end{equation}
+\subsection{Application of Amdahl's law to parallel sum}
+Let's consider the sum of an array, we want to parallelize it. The time without parallelization is $n$ and with parallelization is $\frac{n}{p} + \log_2(p)$, the log term is the time needed to sum all the partial sums. So the speedup is:
+\begin{equation}
+	S_p = \frac{n}{\frac{n}{p} + \log_2(p)} = \frac{1}{\frac{1}{p} + \frac{\log_2(p)}{n}}
+\end{equation}
+And the efficiency is:
+\begin{equation}
+	E_p = \frac{S_p}{p} = \frac{1}{1 + \frac{p}{n}\log_2(p)}
+\end{equation}
+We clearly see that if we use more than $n$ processes the efficiency will decrease. Because if $p \geq n$ then we have $T_p = \log_2(n)$ and $\lim_{s \to \infty} S_p = \frac{1}{\log_2(n)}$ and $F_s = \log_2(n)$
+\chapter{Distributed Computing with MPI}
+\chapter{Usefull tools}
+\section{OpenMP}\label{OpenMP}
+\textcolor{red}{TODO: Improve}\\
+\textit{OpenMP} is a library that allows to parallelize code, it is better than \textit{lpthread} for multiple reasons:
+\begin{itemize}
+	\item Easy to add to an existing code, because of the compilation directives (\texttt{\#pragma omp}). It's an implicit gestion of the threads unlike \textit{lpthreads} that require an explicit gestion. It allows to parallelize a code without changing the whole structure of the code.
+	\item Automatic gestion of the threads, for example if you want to parallelize a loop, you don't have to create the threads, the library will do it for you and optimize the number of threads.
+	\item Simplified synchronization with tools. \textit{OpenMP} provides tools to synchronize the threads like \texttt{critical}, \texttt{atomic}, \texttt{barrier}, etc. They help to protect the shared data between the threads.
+	\item Optimized use of the cache
+	\item Compatible with \textit{SIMD}
+	\item Portability: it is compatible with \textit{Windows}, \textit{Linux}, \textit{MacOS}. With multiple CPU architectures like \textit{Intel}, \textit{AMD}, \textit{ARM}, etc.
+\end{itemize}
 \end{document}
