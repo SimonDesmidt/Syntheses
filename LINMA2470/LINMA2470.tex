@@ -510,7 +510,80 @@ This relation is an equivalence.
 			l = \min_i [v_i^*(n)-v_i^*(n-1)] \qquad u = \max_i [v_i^*(n)-v_i^*(n-1)]
 		\end{equation}
 		\EndWhile
-		$l=u=g^A$ and $A$ is the optimal stationary policy.
+		\State $l=u=g^A$ and $A$ is the optimal stationary policy.
 	\end{algorithmic}
 \end{algorithm}
+\chapter{Markov Decision Processes and Reinforcement Learning}
+\section{MDP and Policies}
+\subsection{Markov Decision Process}
+A Markov Decision Process models a sequential decision-making process under uncertainty, where moving to the next stage only depends on the current action-state pair.
+\begin{definition}
+	A Markov Decision Process (MDP) is defined by 
+	\begin{itemize}
+		\item a set of system states $S$;
+		\item a set of actions $\mathcal{A}$;
+		\item a set of rewards $R$;
+		\item probabilities $p(s',r|s,a)$ of getting a reward $r$ and moving to state $s'$ if action $a$ is taken in state $s$.
+	\end{itemize}
+	The MDP is finite if the three sets are finite. 
+\end{definition}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.6\textwidth]{img/MDP.png}
+\end{figure}
+From the definition, we can derive 3 quantities:
+\begin{itemize}
+	\item Transition probabilities: $p(sé|s,a) = \sum_r p(s',r|s,a)$;
+	\item Reward probabilities: $p(r|s,a) = \sum_{s'}p(s',r|s,a)$;
+	\item Expected reward knowing $s,a$: $r(s,a) = \E[R|s,a] = \sum_rr\sum_{s'}p(s',r|s,a)$.
+\end{itemize}
+\subsection{Policies}
+A policy defines the decision making in each state;
+\begin{definition}
+	A policy is a mapping $\pi:s\in S\to \pi(a|s)$, where $\pi(a|s)$ represents the probability of taking action $a$ in state $s$.
+\end{definition}
+\subsection{Policy values and state-action values}
+The policy value $v_\pi(s)$ at a given state $s$ corresponds to the expected rewards collected over time by applying policy $\pi$ starting from state $s$. 
+\begin{equation}
+	v_\pi(s) = \E_\pi \left[\sum_{k=0}^\infty \gamma^k R_{t+k+1}|S_t=s\right] 
+\end{equation}
+where $\gamma \in [0,1[$ is a discounted factor. The state-action value function is the same idea, but has a dependance on the action we intend to take.
+\begin{equation}
+	q_\pi(s,a) = \E_\pi \left[\sum_{k=0}^\infty \gamma^k R_{t+k+1}|S_t=s,A_t=a\right]
+\end{equation}
+We can show that 
+\begin{equation}
+	v_\pi(s) = \E_{A\sim \pi(a|s)}[q_\pi(s,A)]
+\end{equation}
+Those definitions induce the Bellman equations, a linear system in $v_\pi(s)$:
+\begin{equation}\label{eq:bellman}
+	\forall s\in S,\quad v_\pi(s) = \sum_a \pi(a|s) \sum_{s'|r}p(s',r|s,a)[r+\gamma v_\pi(s')]
+\end{equation}
+\subsection{Policy evaluation}
+Given the policy $\pi$ and the MDP probabilites $p$, we can rewrite the Bellman equations as 
+\begin{equation}
+	V=R+\gamma PV \Longleftrightarrow (I-\gamma P)V = R
+\end{equation}
+where $I-\gamma P$ is invertible as $\|P\|_\infty \le 1$ and $\gamma < 1$. \\
+Another way to solve this is by an iterative process: introducing the linear operator $L:V\to \gamma PV+R$, we want to find $V$ such that $V\approx L(V)$. This appraoch is guaranteed to converge since $L$ is $\gamma$-Lipschitz (affine application). Defining $V^* = \lim_{t\to \infty} L^t(V_0)$, with $V_0$ the first iterate, we can show that 
+\begin{equation}
+	\|V^*-V_{n+1}\|_{\infty} \le \frac{\gamma}{1-\gamma}\|V_{n+1}-V_n\|_\infty 
+\end{equation}
+\begin{algorithm}[H]
+	\caption{Policy Evaluation Algorithm}
+	\begin{algorithmic}[1]
+		\State \textbf{Input:} $\pi$ the policy to be evaluated, and $\theta$ the guaranteed accuracy of estimation
+		\State \textbf{Initialization:} $V(s)$ the arbitrary initial value for all $s$ 
+		\While {$\Delta \ge \theta$}
+		\State $\Delta =0$
+		\For {each state $s$}
+		\State $v = V(s)$
+		\State $V(s) = \sum_a\pi(a|s)\sum_{s',r} p(s',r|s,a)[r+\gamma V(s')]$
+		\State $\Delta = \max(\Delta, |v-V(s)|)$
+		\EndFor
+		\EndWhile
+	\end{algorithmic}
+\end{algorithm}
+\section{Optimizing Policies}
+
 \end{document}
