@@ -47,6 +47,8 @@
 \definecolor{mGray}{rgb}{0.5,0.5,0.5}
 \definecolor{mPurple}{rgb}{0.58,0,0.82}
 \definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+\definecolor{light-gray}{gray}{0.95}
+\newcommand{\code}[1]{\colorbox{light-gray}{\texttt{#1}}}
 
 \lstdefinestyle{CppStyle}{
     backgroundcolor=\color{backgroundColour},   
@@ -104,7 +106,7 @@ To store the data that it will use, the CPU uses memory. Memory is hierarchical 
     \caption{Memory hierarchy}
     \label{fig:memory_hierarchy}
 \end{figure}
-First we need to define a cycle \label{cycle_def}. It's an unit of time that is defined like this: $cycle = \frac{1}{\text{CPU freq}}$. For example, for the CPU \textit{AMD Ryzen 5 5600X}, the maximum frequency is $4.6 GHz$, so the cycle is $cycle = \frac{1}{4.6 GHz} \approx 0.217 ns$. The \textbf{bandwidth} is the number of bytes that can be transferred in one cycle. And the \textbf{latency} is the number of cycles required to access a level of memory. There's also the \textbf{latency} but for a number of bytes, its formula is $\alpha + \beta n$ where $\alpha$ is the level latency, $\beta$ is the inverse of the bandwidth and $n$ is the number of bytes.\\
+First we need to define a cycle \label{cycle_def}. It's an unit of time that is defined like this: $cycle = \frac{1}{\text{CPU freq}}$. For example, for the CPU \textit{AMD Ryzen 5 5600X}, the maximum frequency is $4.6 GHz$, so the cycle is $cycle = \frac{1}{4.6 GHz} \approx 0.217 ns$. The \textbf{bandwidth} is the number of bytes that can be transferred in one cycle. And the \textbf{latency} is the number of cycles required to access a level of memory. There's also the \textbf{latency} \label{def_latency} but for a number of bytes, its formula is $\alpha + \beta n$ where $\alpha$ is the level latency, $\beta$ is the inverse of the bandwidth and $n$ is the number of bytes.\\
 \begin{tabularx}{\textwidth}{|c|X|X|X|X|X|}
 	\hline
 	Level & Level \newline Latency $[cycle]$  & Bandwidth $[bytes/cycle]$ & Size & What \newline is stored & example \\
@@ -255,26 +257,135 @@ Let's do a little example, consider the following code:
 	int a[] = {...};
 	int b[] = {...};
 	int c[size];
-	for(int i = 0; i < size; i++)
+	for(int i = 0; i < size; i++){
 		c[i] = a[i] + b[i];
+	}
 \end{lstlisting}
 Here we use \texttt{int} which is $32$ bytes so if we use SIMD with AVX2 registers, we can store $(512/32 =) 16$ integers in a register. And so SIMD with that type of registers will automatically translate the previous code to:
 \begin{lstlisting}[style=CppStyle]
 	int a[] = {...};
 	int b[] = {...};
 	int c[size];
-	for(int i = 0; i < size; i+=16)
+	for(int i = 0; i < size; i+=16){
     __m512_add_epi16(c + i, a + i, b+i);
+	}
 \end{lstlisting}
-We can write the code with the intrinsics (\texttt{\_\_m512\_add\_epi16}) but it's not necessarily. The compiler will do it for you.\\
+We can write the code with the intrinsics (\code{\_\_m512\_add\_epi16}) but it's not necessarily. The compiler will do it for you.\\
 To use SIMD, you need to give to your compiler some flags, for example:
 \begin{itemize}
-	\item \texttt{-O2} or \texttt{-O3} for optimization
-	\item \texttt{-mavx} for AVX
-	\item \texttt{-mavx2} for AVX2
-	\item \texttt{-mavx512} for AVX512
+	\item \code{-O2} or \code{-O3} for optimization
+	\item \code{-mavx} for AVX
+	\item \code{-mavx2} for AVX2
+	\item \code{-mavx512} for AVX512
 \end{itemize}
 \chapter{Distributed Computing with MPI}
+\section{Single Program Multiple Data (SPMD)}
+Single Program Multiple Data means that we make multiple processes execute the same program but operate on different data. It's a kind of parallel computing that we call distributed computing.
+\subsection{Message Passing Interface (MPI)}
+MPI is a standardized and portable message-passing system used to enable parallel computing across multiple nodes.
+Here are some key steps with MPI:
+\begin{itemize}
+	\item Initialization: \code{MPI\_Init(\&argc, \&argv);}, initialize MPI and the processes.
+	\item Getting the number of processes: \code{MPI\_Comm\_size(MPI\_COMM\_WORLD, \&nprocs);}, determines how many processes are running (\code{nprocs} is the same for all processes.)
+	\item Getting the rank of the process: \code{MPI\_Comm\_rank(MPI\_COMM\_WORLD, \&procid);} Give a unique ID (rank) to each process, which allows them to perform different tasks despite running the same program.
+	\item Finalizing MPI:  \code{MPI\_Finalize();}, finalize MPI and free the ressources.
+\end{itemize}
+\newpage
+\section{Collectives}
+Lets consider a system that can support $4$ processes for the explcit examples (tables). And for the bounds consider as usual $p$ proccess and the variables defined for the latency \ref{def_latency} ($\alpha,\beta,n$) and an arithmetic intensity parameter ($\gamma$). Here is some illustration of how collectives work:
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{img/collectives.jpeg}
+	\caption{Collectives}
+	\label{fig:collectives}
+\end{figure}
+\subsection{Broadcast}
+\textbf{Broadcast} makes a process gives a variable to the other processes.\\
+\begin{center}
+	\begin{tabular}{ccccc|c|ccccc}
+		Before &&&&& $\Longrightarrow$ &After&&&&\\
+		\hline
+		procid & 0 & 1 & 2 & 3 & & procid & 0 & 1 & 2 & 3\\
+		\hline
+		& $x$ &&&&& & $x$ & $x$ & $x$ & $x$\\
+		\hline
+	\end{tabular}
+\end{center}
+Using \textit{spanning tree algorithm}, we can \textbf{broadcast} in $\log_2(p)(\alpha + \beta n)$.
+\subsection{Gather}
+\textbf{Gather} makes a process gather the variables of the other processes.\\
+\begin{center}
+	\begin{tabular}{ccccc|c|ccccc}
+		Before &&&&& $\Longrightarrow$ &After&&&&\\
+		\hline
+		procid & 0 & 1 & 2 & 3 & & procid & 0 & 1 & 2 & 3\\
+		\hline
+		& $x_0$ &&&&& & $x_0$ &&&\\
+		&& $x_1$ &&&& & $x_1$ &&&\\
+		&&& $x_2$ &&& & $x_2$ &&&\\
+		&&&& $x_3$ && & $x_3$ &&&\\
+		\hline
+	\end{tabular}
+\end{center}
+Using \textit{spanning tree algorithm}, we \textbf{gather} in $\log_2(p)\alpha + \beta n$.
+\subsection{Reduce}
+\textbf{Reduce} sums up all the values of the variables on the differents processes and store the sum on one process.\\
+\begin{center}
+	\begin{tabular}{ccccc|c|ccccc}
+		Before &&&&& $\Longrightarrow$ &After&&&&\\
+		\hline
+		procid & 0 & 1 & 2 & 3 & & procid & 0 & 1 & 2 & 3\\
+		\hline
+		& $x_0$ & $x_1$ & $x_2$ & $x_3$ && & $\displaystyle \sum_{i=0}^{3} x_i$ &&&\\
+		\hline
+	\end{tabular}
+\end{center}
+Using \textit{spanning tree algorithm}, we can \textbf{reduce} in $\log_2(p)(\alpha + \beta n) + \log_2(p) \gamma n$. To simplify we have: $\log_2(p)(\alpha + (\beta + \gamma) n)$.
+\subsection{All gather}
+\textbf{All gather} is a sort of combination of \textbf{gather} and \textbf{broadcast}. It gathers all the variables of the processes and broadcast them to all the processes but more efficiently.\\
+\begin{center}
+	\begin{tabular}{ccccc|c|ccccc}
+		Before &&&&& $\Longrightarrow$ &After&&&&\\
+		\hline
+		procid & 0 & 1 & 2 & 3 & & procid & 0 & 1 & 2 & 3\\
+		\hline
+		& $x_0$ &&&&& & $x_0$ & $x_0$ & $x_0$ & $x_0$\\
+		&& $x_1$ &&&& & $x_1$ & $x_1$ & $x_1$ & $x_1$\\
+		&&& $x_2$ &&& & $x_2$ & $x_2$ & $x_2$ & $x_2$\\
+		&&&& $x_3$ && & $x_3$ & $x_3$ & $x_3$ & $x_3$\\
+		\hline
+	\end{tabular}
+\end{center}
+Using \textit{spanning tree algorithm}, we can \textbf{all gather} in $\log_2(p)\alpha + \beta n$.
+\subsection{Reduce scatter}
+\textbf{Reduce scatter} is a sort of combination of \textbf{reduce} and \textbf{scatter}. It reduces the variables of the processes and scatter them to all the processes, but more efficiently.\\
+\begin{center}
+	\begin{tabular}{ccccc|c|ccccc}
+		Before &&&&& $\Longrightarrow$ &After&&&&\\
+		\hline
+		procid & 0 & 1 & 2 & 3 & & procid & 0 & 1 & 2 & 3\\
+		\hline
+		& $x_{0,0}$ & $x_{0,1}$ & $x_{0,2}$ & $x_{0,3}$ &&& $\displaystyle \sum_{j=0}^{3} x_{0,j}$ &&&\\
+		& $x_{1,0}$ & $x_{1,1}$ & $x_{1,2}$ & $x_{1,3}$ &&&& $\displaystyle \sum_{j=0}^{3} x_{1,j}$ &&\\
+		& $x_{2,0}$ & $x_{2,1}$ & $x_{2,2}$ & $x_{2,3}$ &&&&& $\displaystyle \sum_{j=0}^{3} x_{2,j}$ &\\
+		& $x_{3,0}$ & $x_{3,1}$ & $x_{3,2}$ & $x_{3,3}$ &&&&&& $\displaystyle \sum_{j=0}^{3} x_{3,j}$ \\
+		\hline
+	\end{tabular}
+\end{center}
+Using \textit{spanning tree algorithm}, we can \textbf{reduce scatter} in $\log_2(p)\alpha + (\beta + \gamma) n$
+\subsection{All reduce}
+\textbf{All reduce} is a sort of combination of \textbf{reduce} and \textbf{broadcast}.\\
+\begin{center}
+	\begin{tabular}{ccccc|c|ccccc}
+		Before &&&&& $\Longrightarrow$ &After&&&&\\
+		\hline
+		procid & 0 & 1 & 2 & 3 & & procid & 0 & 1 & 2 & 3\\
+		\hline
+		& $x_0$ & $x_1$ & $x_2$ & $x_3$ && & $\displaystyle \sum_{i=0}^{3} x_i$ & $\displaystyle \sum_{i=0}^{3} x_i$ & $\displaystyle \sum_{i=0}^{3} x_i$ & $\displaystyle \sum_{i=0}^{3} x_i$\\
+		\hline
+	\end{tabular}
+\end{center}
+We explained above that we can do a combination of \textbf{reduce} and \textbf{broadcast}, but we can \textbf{all reduce} more efficiently doing \textbf{reduce scatter} then \textbf{all gather}, and we can do it in $\log_2(p)\alpha + \beta n$.
 \chapter{Useful tools}
 \section{OpenMP}\label{OpenMP}
 \textcolor{red}{TODO: Improve}\\
