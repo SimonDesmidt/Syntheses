@@ -598,5 +598,55 @@ With this, the formulation of the optimality cut becomes
 \begin{itemize}
 	\item [$\to$] Note: The algorithm takes finite time, as $E$ and $R$ are finite. 
 \end{itemize}
+\chapter{The L-Shaped Method}
+For this resolution method, we start from the extensive form of the two-stage stochastic linear program:
+\begin{equation}
+    \begin{aligned}
+        &\min c^Tx + \E_\omega[q(\omega)^Ty(\omega)]\\
+        &Ax = b\\
+        &T(\omega)x + W(\omega)y(\omega) = h(\omega)\\
+        &x\ge 0,y\ge 0\\
+    \end{aligned}
+\end{equation}
+\section{Complete recourse}
+In order to define the concept of recourse, we need the following sets:
+\begin{itemize}
+    \item $K_1 = \{x\ : \ Ax=b,x\ge 0\}$;
+    \item $K_2 (\omega) = \{x\ : \ \exists y ,T_\omega x + W_\omega y = h_\omega,y\ge 0\}$;
+    \item $K_2 = dom(V)\equiv \{x \ | \ V(x)<\infty\}$;
+    \item if $\Omega$ is discrete, $K_2 = \cap_{\omega\in \Omega}K_2(\omega)$.
+\end{itemize}
+Relative complete recourse is when obeying the first-stage constraints ($Ax=b$) ensures that some feasible second-stage decisions exist, i.e. $K_1\subseteq K_2$.\\
+Complete recourse is when a feasible second-stage decision exists, regardless of the first-stage decision and realization of uncertainty, i.e.
+\begin{equation}
+    \exists y\ge 0\text{ s.t. }Wy=t, \ \forall t\in \R^{m_2} \Longleftrightarrow \textcolor{red}{pos} W=\R^{m_2}
+\end{equation}
+\section{Value function}
+Here, the second-stage value function and its dual are \\
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \begin{aligned}
+            (S_\omega): \ &Q_\omega(x) = \min_y q^T_\omega y\\
+            & W_\omega y=h_\omega - T_\omega x\\
+            & y\ge 0
+        \end{aligned}
+    \end{equation}
+\end{minipage} 
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \begin{aligned}
+            (D_\omega)\ : \ &\max_\pi \pi^T (h_\omega-T_\omega x)\\
+            & \pi^TW_\omega \le q^T_\omega 
+        \end{aligned}
+    \end{equation}
+\end{minipage} 
+and thus the expected value function is $V(x) = \sum_{\omega = 1}^Np_\omega Q_\omega (x)$. 
+\subsection{Properties}
+Given a $x_0$, we denote $\pi_{\omega0}$ the dual optimal multipliers.
+\begin{itemize}
+    \item $V(x)$ and $Q_\omega(x)$ are piecewise linear convex functions of $x$;
+    \item $\pi_{\omega0}^T(h_\omega-T_\omega x)$ is a supporting hyperplane of $Q_\omega(x)$ at $x_0$;
+    \item $\sum_{\omega =1}^N p_\omega\pi_{\omega0}^T(h_\omega-T_\omega x)$ is a supporting hyperplane of $V(x)$ at $x_0$.
+\end{itemize}
 
 \end{document}
