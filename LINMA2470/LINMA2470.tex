@@ -585,5 +585,52 @@ Another way to solve this is by an iterative process: introducing the linear ope
 	\end{algorithmic}
 \end{algorithm}
 \section{Optimizing Policies}
-
+\subsection{Policy Improvement Theorem}
+\begin{thm}
+	\begin{equation}
+		\left[\forall s\in S,\ q_\pi(s,\pi^{new}(s)) \ge q_\pi(s,\pi(s)) \right] \Longrightarrow v_{\pi^{new}}(s)\ge v_\pi(s)
+	\end{equation}
+	A strict inequality on the left implies a strict one on the right too. This theorem means that a new policy will be at least as good as a given policy $\pi$ if changing any action of $\pi$ by the corresponding action of $\pi^{new}$ yields a better total gain at the end. 
+\end{thm}
+\subsection{Bellman optimality conditions}
+\begin{definition}
+	A policy $\pi^*$ is optimal if for any state $s \in S$ and any other policy $\pi$, $v_{\pi^*}(s)\ge v_\pi (s)$.
+\end{definition}
+\begin{thm}
+	A policy $\pi$ is optimal iff for any state action pair $(s,a)$ with a positive probability to be selected by the policy, i.e. $\pi(a|s)>0$, we have 
+	\begin{equation}
+		a\in \arg\max_{a'\in A}q_\pi(s,a')
+	\end{equation}
+	Meaning that any action with a nonzero probability to be taken maximizes the gain of the state at which it is taken.\\
+	It can be shown that this implies that any finite MDP admits an optimal policy which is deterministic. 
+\end{thm}
+This theorem yields the two following equations for optimal policies:
+\begin{equation}\label{eq:bellman}
+	\begin{aligned}
+		v_*(s) &= \max_a q_{\pi^*}(s,a) = \max_{a\in A(s)}\sum_{s',r}p(s',r|s,a)(r+\gamma v_*(s'))\\
+		q^*(s,a) &= \sum_{s',r}p(s',r|s,a)(r+\gamma \max_{a'}q^*(s',a'))
+	\end{aligned}
+\end{equation}
+\section{Value Iteration Algorithm}
+In the same idea as we did in the evaluation section, let us define the operator $\Phi:V\to \Phi(V)$ such that 
+\begin{equation}
+	\Phi(V)(s) \coloneqq \max_{a\in A(s)} \sum_{s',r}p(s',r|s,a)(r+\gamma V(s'))
+\end{equation}
+And thus the Bellman optimality equation (\eqref{eq:bellman}) is equivalent to $V=\Phi(V)$, which can be solved iteratively from the starting point $V_0$. This method is guaranteed because $\Phi$ is a contracting operator ($\sim$ L-Lipschitz function). 
+\begin{algorithm}
+	\caption{Value Iteration Algorithm}
+	\begin{algorithmic}[1]
+		\State \textbf{Input: } the guaranteed accuracy of estimation $\theta$;
+		\State \textbf{Initialization: } $V(s)\coloneqq$ an arbitrary initial value for all $s$;\\ 
+		\quad \qquad \qquad \qquad $\Delta \ge \theta$;
+		\While {$\Delta \ge \theta$}
+		\State $\Delta = 0$;
+		\For {each state $s$}
+		\State $v=V(s)$
+		\State $V(s) = \max_a \sum_{s',r}p(s',r|s,a)(r+\gamma V(s'))$;
+		\State $\Delta = \max (\Delta, |v-V(s)|)$;
+		\EndFor
+		\EndWhile
+	\end{algorithmic}
+\end{algorithm}
 \end{document}
