@@ -600,7 +600,7 @@ With this, the formulation of the optimality cut becomes
 \end{itemize}
 \chapter{The L-Shaped Method}
 For this resolution method, we start from the extensive form of the two-stage stochastic linear program:
-\begin{equation}
+\begin{equation}\label{eq:EF}
     \begin{aligned}
         &\min c^Tx + \E_\omega[q(\omega)^Ty(\omega)]\\
         &Ax = b\\
@@ -624,7 +624,7 @@ Complete recourse is when a feasible second-stage decision exists, regardless of
 \section{Value function}
 Here, the second-stage value function and its dual are \\
 \begin{minipage}{.5\textwidth}
-    \begin{equation}
+    \begin{equation}\label{eq:Sw}
         \begin{aligned}
             (S_\omega): \ &Q_\omega(x) = \min_y q^T_\omega y\\
             & W_\omega y=h_\omega - T_\omega x\\
@@ -640,7 +640,15 @@ Here, the second-stage value function and its dual are \\
         \end{aligned}
     \end{equation}
 \end{minipage} 
-and thus the expected value function is $V(x) = \sum_{\omega = 1}^Np_\omega Q_\omega (x)$. 
+and thus the expected value function is $V(x) = \sum_{\omega = 1}^Np_\omega Q_\omega (x)$, from which we can define the following problem
+\begin{equation}
+	\begin{aligned}
+		(S) \ : \ & \min_y \sum_{\omega = 1}^N p_\omega q_\omega^Ty_\omega \\
+		& Wy=h-Tx\\
+		& y\ge 0
+	\end{aligned}
+\end{equation}
+where $y$ and $h$ are the vectors of the $y_i,h_i$, and $T,W$ are the diagonal matrices of the $T_\omega,W_\omega$. 
 \subsection{Properties}
 Given a $x_0$, we denote $\pi_{\omega0}$ the dual optimal multipliers.
 \begin{itemize}
@@ -648,5 +656,137 @@ Given a $x_0$, we denote $\pi_{\omega0}$ the dual optimal multipliers.
     \item $\pi_{\omega0}^T(h_\omega-T_\omega x)$ is a supporting hyperplane of $Q_\omega(x)$ at $x_0$;
     \item $\sum_{\omega =1}^N p_\omega\pi_{\omega0}^T(h_\omega-T_\omega x)$ is a supporting hyperplane of $V(x)$ at $x_0$.
 \end{itemize}
+We denote $E$ the set of extreme points of $\{\pi:\pi^TW\le q^T\}$ and $R$ its set of extreme rays, while $E_\omega$ is the set of extreme points of $\{\pi:\pi^TW_\omega \le q_\omega^T\}$ and $R_\omega$ its set of extreme rays. \\
+\subsection{Deterministic version}
+The original problem \eqref{eq:EF} can be written as a deterministic equivalent program:
+\begin{equation}\label{eq:M}
+	\begin{aligned}
+		(M)\ : \ &z_k = \min c^T_x+\theta \\
+		& Ax=b\\
+		& \sigma^T (p\cdot (h-Tx))\le 0,\sigma\in R_k \subseteq R\\
+		&\theta \ge \pi^T (p\cdot (h-Tx)), \pi\in E_k \subseteq E \\
+		&x\ge 0
+	\end{aligned}
+\end{equation}
+where $p^T = (p_1\mathbb{1}_{n_2}^T, \cdot, p_N\mathbb{1}_{n_2}^T)$ and $\cdot$ is the componentwise product. The $\theta$ inequality can also be written in the following form:
+\begin{equation}\label{eq:cut}
+	\theta \ge \sum_{\omega = 1}^N p_\omega \pi_\omega^T (h_\omega-T_\omega x)
+\end{equation}
+Our main problem to solve is now this deterministic version, where the $\sigma$ inequalities are feasibility cuts, and the $\pi$ inequalities are the optimality cuts. 
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.5\textwidth]{img/cuts.png}
+\end{figure}
+The goal of these cuts are to provide bounds on the solution of problem \eqref{eq:EF}. \\
+\section{Bounds}
+\begin{itemize}
+	\item The solution of the main problem \eqref{eq:M} provides the following:
+	\begin{itemize}
+		\item A lower bound $z_k\le z^\star$;
+		\item A candidate solution $x_k$;
+		\item An under-estimator $\theta_k \le V(x_k)$;
+	\end{itemize}
+	\item The solution of all problems $(S_\omega)$ \eqref{eq:Sw} with the input $x_k$ provides the following:
+	\begin{itemize}
+		\item An upper bound $c^Tx_k + \sum_{\omega = 1}^N p_\omega q_\omega^Ty_{\omega, k+1}\ge z^\star$;
+		\item A new vertex $\pi_{k+1}=(\pi^T_{1,k+1},\dots, \pi^T_{N,k+1})$ or a new extreme ray $\sigma_{k+1}=(0,\dots,\sigma_\omega^T,\dots,0)$. 
+	\end{itemize}
+\end{itemize}
+\section{Final Algorithm}
+\begin{algorithm}
+	\caption{The L-Shaped Algorithm}
+	\begin{algorithmic}[1]
+		\State \textbf{Step 0:} Set $k=0$, $V_0 = R_0 = \emptyset$;
+		\State \textbf{Step 1:} Solve $(M)$;
+		\If{$(M)$ is feasible} \State Store $x_k$;
+		\Else \State exit: infeasible;
+		\EndIf
+		\State \textbf{Step 2:} For $\omega=1,\dots,N$, solve $(S_\omega)$ with $x_k$ as input
+		\If {$(S_\omega)$ is infeasible} \State $R_{k+1}\coloneqq R_k \cup \{\sigma_{k+1}\}$, where $\sigma_{k+1}$ is an extreme ray of $(S_\omega)$;
+		\State $k\coloneqq k+1$;
+		\State Go back to \textbf{Step 1}.
+		\Else \State Store $\pi_{\omega,k+1}$;
+		\EndIf 
+		\State \textbf{Step 3:} $E_{k+1} = E_k \cup \{(\pi_{1,k+1}, \dots, \pi_{N,k+1})\}$;
+		\If {$E_k = E_{k+1}$} \State Terminate with $(x_k,y_{k+1})$ as the optimal solution;
+		\Else \State $k\coloneqq k+1$ and return to \textbf{Step 1}.
+		\EndIf 
+	\end{algorithmic}
+\end{algorithm}
+\section{Example}
+Let us do an example to better understand this algorithm. The initial problem is 
+\begin{equation}
+	\begin{aligned}
+		&z = \min\E_\xi(y_1 + y_2)\\
+		& \text{s.t. }0\le x\le 10\\
+		& y_1-y_2 = \xi-x\\
+		& y_1,y_2\ge 0\\
+	\end{aligned}
+\end{equation}
+where we define 
+\begin{equation}
+	\xi = \begin{cases}
+		1 & p_1 = 1/3\\
+		2 & p_2 = 1/3\\
+		4 & p_3 = 1/3\\
+	\end{cases}
+\end{equation}
+The $\omega$ problems are \\
+\begin{minipage}{.5\textwidth}
+	\begin{equation}
+		\begin{aligned}
+			(S_\omega)\ : \ &\min y_1 + y_2 = |\xi-x|\\
+			& y_1 - y_2 = \xi - x\\
+			& y_1,y_2 \ge 0\\
+		\end{aligned}
+	\end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+	\begin{equation}
+		\begin{aligned}
+			(D_\omega) \ : \ & \max_\pi \pi(\xi-x)\\
+			&-1\le \pi\le 1
+		\end{aligned}
+	\end{equation}
+\end{minipage}
+The equality in the min can be added thanks to the definition of $(D\omega)$.
+\subsection{Iteration 1}
+We start the algorithm with $x_1 = 0$. We first have to solve $(S_\omega)$ (or $(D_\omega)$), to get the value of $\pi$. We decide to solve $(D_\omega)$ because it is easier and gives us immediately the value of $\pi$. 
+\begin{itemize}
+	\item $\xi=1$ : $\pi^{(1)} = 1$;
+	\item $\xi=2$ : $\pi^{(2)} = 1$;
+	\item $\xi=4$ : $\pi^{(3)} = 1$;
+\end{itemize}
+And now we can find the cut using \eqref{eq:cut}, where $h_\omega - T_\omega x=\xi-x$ in this example. This gives as a first cut
+\begin{equation}
+	\theta \ge \frac{1}{3}\cdot 1 \cdot (1-x) + \frac{1}{3}\cdot 1 \cdot (2-x) + \frac{1}{3}\cdot 1 \cdot (4-x) = \frac{7}{3}-x
+\end{equation}
+To find the next value of $x$, the one we will use to start iteration 2, we try to minimize $V(x)$ under the constraints that $0\le x\le 10$ and $V(x) \ge \frac{7}{3}-x$, i.e. the cut. This gives us the new iterate: $x_2 = 10$. 
+\subsection{Iteration 2}
+We work in the same manner as we did in iteration 1, but this time using $x_2=10$. Solving once again $(D_\omega)$, we have 
+\begin{itemize}
+	\item $\xi = 1$: $\pi^{(1)} = -1$;
+	\item $\xi = 2$: $\pi^{(2)} = -1$;
+	\item $\xi = 4$: $\pi^{(3)} = -1$
+\end{itemize}
+As $h_\omega -T_\omega x= \xi-x$ still, the cut is now $\theta \ge x-\frac{7}{3}$.\\
+To find $x_3$, we minimize $V(x)$ under the previous constraints, adding that $V(x) \ge x-\frac{7}{3}$. We find $x_3 = \frac{7}{3}$. 
+\subsection{Iterations 3-4}
+The two next iterations work in the same manner, and we find the two following cuts:
+\begin{equation}
+	\begin{aligned}
+		&\theta \ge \frac{x+1}{3} \Longrightarrow x_4 = 1.5\\
+		& \theta \ge \frac{5-x}{3} \Longrightarrow x_5 = 2\\
+	\end{aligned}
+\end{equation}
+\subsection{Iteration 5}
+At this iteration, we have $x_5=2$. As this value is optimal, no more iteration is needed.\textcolor{red}{How to show optimality?} Figure \ref{fig:l-shaped} illustrates the whole example. 
+\begin{figure}
+	\centering 
+	\includegraphics[width= .9\textwidth]{img/l_shaped_algo.pdf}
+	\caption{L-Shaped Algorithm at each iteration}
+	\label{fig:l-shaped}
+\end{figure}
+\chapter{The Multicut L-Shaped Method}
 
 \end{document}
