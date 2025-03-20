@@ -840,6 +840,16 @@ Thus, $\Psi_k(x)$ is a $\mu$-strongly convex function with $\mu=1$. Therefore:
 		&\geq A_k f(x_k) + \frac{1}{2} \|v_k-x_0\|^2
 	\end{aligned}
 \end{equation}
+And so:
+\begin{equation}
+	\begin{aligned}
+		\min_x \Psi_{k+1}(x) &= \min_x \Psi_k + b_k \left( f(y_k)+ \langle \nabla , x-y_k \rangle \right)\\
+		&\geq \min_x A_kf(x_k) + \frac{1}{2} \|v_k-x_0\|^2 + b_k \left( f(y_k)+ \langle \nabla , x-y_k \rangle \right)\\
+		&\geq \min_x A_k \left( f(x_k) + \langle \nabla , x_k-y_k \rangle \right) + b_k \left( f(y_k)+ \langle \nabla , x-y_k \rangle \right)\\
+		&\geq (A_k+b_k) f(y_k) + \langle \nabla f(y_k), A_kx_k+b_kx-A_{k+1}y_k \rangle + \frac{1}{2} \|v_k -x_0\|^2\\
+		&\geq (A_{k+1}) f(y_k) + \langle \nabla f(y_k), A_kx_k+b_kx-A_{k+1}y_k \rangle + \frac{1}{2} \|v_k -x_0\|^2
+	\end{aligned}
+\end{equation}
 \chapter{Tips and Tricks}\label{chap:tricks}
 \begin{enumerate}
 	\item Approximation of the max:
