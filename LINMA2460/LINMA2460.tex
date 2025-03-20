@@ -733,18 +733,113 @@ In summary, if we have $\bar{x} \in \R^n$ such that $\|c(\bar{x})\| \leq \frac{\
 \end{equation}
 for $\sigma \geq \frac{4}{\varepsilon_2^2} (f(\bar{x}-f_{low}))$, then $x^+$ is a $(\varepsilon_1,\varepsilon_2)$-KKT point for the unconstrained problem \eqref{eq:constrained_problem}.\\
 \newline
-\textbf{Example:}
+% \textbf{Example:}
+% \begin{equation}
+% 	\min f(x) \quad \text{such that} \quad Ax=b  \quad \text{and} \quad \nabla f(x)  \quad L_f \text{-Lipschitz}
+% \end{equation}
+% \begin{equation}
+% 	\begin{aligned}
+% 		Q_{\sigma}(x) &= f(x) + \frac{\sigma}{2} \|Ax-b\|_2^2\\
+% 		\nabla Q_{\sigma}(x) &= \nabla f(x) + \sigma A^T(Ax-b)\\
+% 		\nabla^2 Q_{\sigma}(x) &= \nabla^2 f(x) + \sigma A^TA\\
+% 	\end{aligned}
+% \end{equation}
+% so $\nabla Q_\sigma$ is $L_{Q_\sigma}$-Lipschitz with $L_{Q_\sigma} = L_f + \sigma \|A^TA\|$ so GM takes $\O (L_{Q_\sigma} \varepsilon_1^{-2})$ iterations to find $x^+$ with $\|\nabla Q_\sigma(x^+)\| \leq \varepsilon_1$, and $Q_\sigma (x^+) \leq Q_\sigma(\bar{x})$, if initialized with $\bar{x}$. Since $L_{Q_\sigma}=\O(\sigma)$ and $\sigma = \O(\varepsilon_2^{-2})$, we get a complexity bound of $\O(\varepsilon_1^{-2}\varepsilon_2^{-2})$.\\
+\textbf{Method:}
+\begin{itemize}
+	\item \textbf{Step 0:} Given $\varepsilon_1, \varepsilon_2 \in (0,1)$ let $x_0 \in \R^n$, be a point such that $\|c(x_0)\|_2 \leq \frac{\varepsilon_2}{\sqrt{2}}$, choose $\sigma_0 > 0$ and set $k=0$.
+	\item \textbf{Step 1:} Compute $x_{k+1} \in \R^n$ as an approximate solution to 
+	\begin{equation}\label{eq:step1}
+		\begin{aligned}
+			&\min_{x \in \R^n} Q_{\sigma_k}(x)\\
+			\text{such that} \quad &Q_{\sigma_k}(x_{k+1}) \leq Q_{\sigma_k}(x_0)\\
+			\text{and} \quad &\|\nabla Q_{\sigma_k}(x_{k+1})\| \leq \varepsilon_2 
+		\end{aligned}
+	\end{equation}
+	\item If $\|c(x_{k+1})\| \leq \varepsilon_1$, stop.\\
+	Else, set $\sigma_{k+1} = 2 \sigma_k$, $k = k+1$ and go to step 1.
+\end{itemize}
+\begin{itemize}
+	\item [$\to$] Note: We can compute $x_{k+1}$ satisfying \eqref{eq:step1} by using any monotone optimization method starting from:
+	\begin{equation}
+		x_k^* = \arg \min \{Q_{\sigma_k}(x_0), Q_{\sigma_k}(x_k)\}
+	\end{equation}
+	\item For a constrained problem of the form $\displaystyle \min_{x \in \R^n} f(x) \quad \text{s.t. } c_i \leq 0 \quad i=0, \dots, m$ . We can add slack variables to obtain an equivalent equality constrained problem:
+	\begin{equation}
+		\begin{aligned}
+			&\min_{x \in \R^n, s \in \R^m} f(x)\\
+			\text{s.t. } &c_i(x) + s^2_i= 0 \quad i=1,\dots,m\\
+		\end{aligned}
+	\end{equation}
+\end{itemize}
+\chapter{AGM}
 \begin{equation}
-	\min f(x) \quad \text{such that} \quad Ax=b  \quad \text{and} \quad \nabla f(x)  \quad L_f \text{-Lipschitz}
+	\min_{x \in \R^n} f(x) 
 \end{equation}
+where $f: \R^n \to \R$ is convex, $\nabla f$ is $L$-Lipschitz and has a minimizer $x^*$.\\
+AGM idea combine present and past information to obtain a point $y_k$ (prediction) and then perform a gradient step using this point as reference poitn.\\
 \begin{equation}
+	\begin{cases}
+		y_k = (1-\gamma_k)x_k + \gamma_k v_k, \quad \gamma_k \in (0,1)\\
+		x_{k+1} = x_k - \frac{1}{L} \nabla f(y_k)
+	\end{cases}
+\end{equation}
+We will identify ways to define $v_k$ and $\gamma_k$ based on the following guiding inequalities:
+\begin{equation}\label{eq:guiding_inequalities}
 	\begin{aligned}
-		Q_{\sigma}(x) &= f(x) + \frac{\sigma}{2} \|Ax-b\|_2^2\\
-		\nabla Q_{\sigma}(x) &= \nabla f(x) + \sigma A^T(Ax-b)\\
-		\nabla^2 Q_{\sigma}(x) &= \nabla^2 f(x) + \sigma A^TA\\
+		&v_k = \arg \min_{x \in \R^n} \Psi_k (x)\\
+		&\Psi_k (x) \leq A_k f(x) + \frac{1}{2} \|x-x_0\|^2\\
+		&A_k f(x_k) \leq \min_{x \in \R^n} \Psi_k (x) \equiv \Psi_k^*, \quad A_k \geq 0\\
+		&A_k \geq c(k-1)^2 \quad \forall k \geq 2
 	\end{aligned}
 \end{equation}
-so $\nabla Q_\sigma$ is $L_{Q_\sigma}$-Lipschitz with $L_{Q_\sigma} = L_f + \sigma \|A^TA\|$ so GM takes $\O (L_{Q_\sigma} \varepsilon_1^{-2})$ iterations to find $x^+$ with $\|\nabla Q_\sigma(x^+)\| \leq \varepsilon_1$, and $Q_\sigma (x^+) \leq Q_\sigma(\bar{x})$, if initialized with $\bar{x}$. Since $L_{Q_\sigma}=\O(\sigma)$ and $\sigma = \O(\varepsilon_2^{-2})$, we get a complexity bound of $\O(\varepsilon_1^{-2}\varepsilon_2^{-2})$.
+Assuming the 3 last guiding inequalities \eqref{eq:guiding_inequalities} hold, we have:
+\begin{equation}
+	\begin{aligned}
+		A_kf(x_k) &\leq \min_{x \in \R^n} \Psi_k (x)\\
+		&\leq \Psi_k(x^*)\\
+		&\leq A_k f(x^*) + \frac{1}{2} \|x^*-x_0\|^2\\
+		\left(f(x_k)-f(x^*)\right) &\leq \frac{\|x_k-x^*\|^2}{2 A_k} \quad \forall k \geq 2\\
+		&\leq \frac{\|x_k-x^*\|^2}{2 C(k-1)^2} = \O(k^{-2}) = \O(\varepsilon^{-1/2}) \quad \forall k \geq 2
+	\end{aligned}
+\end{equation}
+If we take $A_0=0$ and $\Psi_0(x) = \frac{1}{2} \|x-x_0\|^2$. Then the second inequality from \eqref{eq:guiding_inequalities} is true for $k=0$. Let us assume the inequality is true for some $k \geq 0$. Looking at the case $k=1$, it appears that we can define:
+\begin{equation}
+	\Psi_{k+1} (x) = \Psi_k(x) + b_k \left(f(y_k)+\langle \nabla f(y_k),x-y_k\rangle \right)
+\end{equation}
+with $b_k > 0$ (to be determined)
+Suppose that the inequality holds for $k \geq 0$. Then by the convexity of $f$ and doing an induction assumption:
+\begin{equation}
+	\begin{aligned}
+		\Psi_{k+1}(x) &\leq \Psi_k(x) + b_k f(x)\\
+		&\leq A_k f(x) + \frac{1}{2} \|x-x_0\|^2 +b_kf(x)\\
+		&= (A_k+b_k)f(x) + \frac{1}{2} \|x-x_0\|^2
+	\end{aligned}
+\end{equation}
+Therefore, if we define $A_{k+1}=A_k+b_k$, then the second inequality of \eqref{eq:guiding_inequalities} will also hold for $k+1$. Regarding of the third inequality of \eqref{eq:guiding_inequalities}, notice that:
+\begin{equation}
+	\begin{aligned}
+		A_0f(x_0) = 0 &= \min_{x \in \R^n} \frac{1}{2} \|x-x_0\|^2\\
+		&= 	\min_{x \in \R^n} \Psi_0(x)
+	\end{aligned}
+\end{equation}
+It holds for $k=0$, suppose that it still holds for $k\geq 0$. We want to show that it is also true for $k+1$. Notice that:
+\begin{equation}
+	\begin{aligned}
+		\Psi_1 &= \frac{1}{2} \|x-x_0\|^2 + b_0 \left(f(y_0)+ \langle \nabla f(y_0), x-y_0 \rangle\right)\\
+		\Psi_2 &= \frac{1}{2} \|x-x_0\|^2 + \sum_{i=0}^{1} b_0 \left(f(y_i)+ \langle \nabla f(y_i), x-y_i \rangle\right)\\
+		&\vdots\\
+		\Psi_k &= \frac{1}{2} \|x-x_0\|^2 + \sum_{i=0}^{k-1} b_0 \left(f(y_i)+ \langle \nabla f(y_i), x-y_i \rangle\right)
+	\end{aligned}
+\end{equation}
+Thus, $\Psi_k(x)$ is a $\mu$-strongly convex function with $\mu=1$. Therefore:
+\begin{equation}
+	\begin{aligned}
+		\Psi_k(x) &\geq \Psi_k(v_k) + \frac{1}{2} \|v_k-x_0\|^2\\
+		&= \min_{x\in\R^n} \Psi_k(x) + \frac{1}{2} \|v_k-x_0\|^2\\
+		&\geq A_k f(x_k) + \frac{1}{2} \|v_k-x_0\|^2
+	\end{aligned}
+\end{equation}
 \chapter{Tips and Tricks}\label{chap:tricks}
 \begin{enumerate}
 	\item Approximation of the max:
