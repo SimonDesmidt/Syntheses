@@ -533,7 +533,7 @@ A Markov Decision Process models a sequential decision-making process under unce
 \end{figure}
 From the definition, we can derive 3 quantities:
 \begin{itemize}
-	\item Transition probabilities: $p(sé|s,a) = \sum_r p(s',r|s,a)$;
+	\item Transition probabilities: $p(s'|s,a) = \sum_r p(s',r|s,a)$;
 	\item Reward probabilities: $p(r|s,a) = \sum_{s'}p(s',r|s,a)$;
 	\item Expected reward knowing $s,a$: $r(s,a) = \E[R|s,a] = \sum_rr\sum_{s'}p(s',r|s,a)$.
 \end{itemize}
@@ -605,7 +605,7 @@ Another way to solve this is by an iterative process: introducing the linear ope
 	It can be shown that this implies that any finite MDP admits an optimal policy which is deterministic. 
 \end{thm}
 This theorem yields the two following equations for optimal policies:
-\begin{equation}\label{eq:bellman}
+\begin{equation}\label{eq:bellman2}
 	\begin{aligned}
 		v_*(s) &= \max_a q_{\pi^*}(s,a) = \max_{a\in A(s)}\sum_{s',r}p(s',r|s,a)(r+\gamma v_*(s'))\\
 		q^*(s,a) &= \sum_{s',r}p(s',r|s,a)(r+\gamma \max_{a'}q^*(s',a'))
@@ -616,7 +616,7 @@ In the same idea as we did in the evaluation section, let us define the operator
 \begin{equation}
 	\Phi(V)(s) \coloneqq \max_{a\in A(s)} \sum_{s',r}p(s',r|s,a)(r+\gamma V(s'))
 \end{equation}
-And thus the Bellman optimality equation (\eqref{eq:bellman}) is equivalent to $V=\Phi(V)$, which can be solved iteratively from the starting point $V_0$. This method is guaranteed because $\Phi$ is a contracting operator ($\sim$ L-Lipschitz function). 
+And thus the Bellman optimality equation (\eqref{eq:bellman2}) is equivalent to $V=\Phi(V)$, which can be solved iteratively from the starting point $V_0$. This method is guaranteed because $\Phi$ is a contracting operator ($\sim$ L-Lipschitz function). 
 \begin{algorithm}
 	\caption{Value Iteration Algorithm}
 	\begin{algorithmic}[1]

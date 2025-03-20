@@ -602,7 +602,7 @@ With this, the formulation of the optimality cut becomes
 For this resolution method, we start from the extensive form of the two-stage stochastic linear program:
 \begin{equation}\label{eq:EF}
     \begin{aligned}
-        &\min c^Tx + \E_\omega[q(\omega)^Ty(\omega)]\\
+        &\min c^T x + \E_\omega[q(\omega)^T y(\omega)]\\
         &Ax = b\\
         &T(\omega)x + W(\omega)y(\omega) = h(\omega)\\
         &x\ge 0,y\ge 0\\
@@ -640,7 +640,7 @@ Here, the second-stage value function and its dual are \\
         \end{aligned}
     \end{equation}
 \end{minipage} 
-and thus the expected value function is $V(x) = \sum_{\omega = 1}^Np_\omega Q_\omega (x)$, from which we can define the following problem
+and thus the expected value function is $V(x) = \sum_{\omega = 1}^N p_\omega Q_\omega (x)$, from which we can define the following problem
 \begin{equation}
 	\begin{aligned}
 		(S) \ : \ & \min_y \sum_{\omega = 1}^N p_\omega q_\omega^Ty_\omega \\

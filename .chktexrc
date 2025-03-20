@@ -1,0 +1,14 @@
+# Chktex configuration file
+# Ignore specific warnings
+ChktexWarning {
+    id = "8"
+    state = "off"
+}
+ChktexWarning {
+    id = "25"
+    state = "off"
+}
+ChktexWarning {
+    id = "46"
+    state = "off"
+}
