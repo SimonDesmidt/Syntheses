@@ -398,4 +398,245 @@ We explained above that we can do a combination of \textbf{reduce} and \textbf{b
 	\item Compatible with \textit{SIMD}
 	\item Portability: it is compatible with \textit{Windows}, \textit{Linux}, \textit{MacOS}. With multiple CPU architectures like \textit{Intel}, \textit{AMD}, \textit{ARM}, etc.
 \end{itemize}
+\chapter{PAA - PDEs}
+\section{Introduction}
+Throughout this chapter, we will use the simple example of the diffusion equation. It is expressed as 
+\begin{equation}
+	\partial_t u(x,y,z,t) = \kappa \nabla^2 u(x,y,z,t) + f(t,x,y,z)
+\end{equation}
+To that, we add an initial condition and boundary conditions:
+\begin{itemize}
+	\item Initial condition: $u(0,x,y,z) = u_0(x,y,z)$;
+	\item General boundary condition: $ n\cdot \nabla u=0$ on $\Omega$;
+	\begin{itemize}
+		\item Dirichlet boundary condition: $u(t,0)$ given for all $t\ge0$;
+		\item Neumann boundary condition: $\partial_x(t,0)$ given for all $t\ge0$;
+	\end{itemize}
+\end{itemize}
+This equation can represent the diffusion of heat, particles, pollutants, etc. It is derived from two basic laws of physics:
+\begin{itemize}
+	\item Fourier law for heat: $\vec q=-\kappa \nabla u$;
+	\item Conservation law: $\partial_t u = -\partial_x \vec q$;
+\end{itemize}
+\section{Finite differences methods}
+We will now consider more specifically the 1D case:
+\begin{equation}
+	u_t(t,x)=u_{xx}(t,x) \qquad x\in [0,1]\qquad t\ge 0
+\end{equation}
+with conditions 
+\begin{equation}
+	\begin{cases}
+		u(t,0)=u(t,1) = 0 \quad \forall t\\
+		u(0,x) = u^0(x)
+	\end{cases}
+\end{equation}
+There is usually no analytical solution to the equation, and this is why we can use numerical method to find the solution. 
+\subsection{The $\theta$-method}
+In finite differences, we discretize the domain in a mesh, like displayed on \ref{fig:finite_diff}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = .7\textwidth]{img/finite_diff.pdf}
+	\caption{Discretization of the domain}
+	\label{fig:finite_diff}
+\end{figure}
+The $\theta$-method consists in taking a linear combination of two approximations of the derivatives through finite differences:
+\begin{equation}
+	\frac{u_j^{n+1}-u_j^n}{\Delta t} = (1-\theta)\frac{u_{j+1}^n-2u_j^n+u_{j-1}^n}{\Delta x^2} + \theta \frac{u_{j+1}^{n+1}-2u_{j}^{n+1}+u_{j-1}^{n+1}}{\Delta x^2} + T_j^n
+\end{equation}
+Where $u_j^n$ denotes the exact value of the function $u(\cdot)$ at the given point, and $T_j^n$ is called the truncation error.\\
+Using a truncation, i.e. using approximate values and deleting the truncation error term, the formula is 
+\begin{equation}\label{eq:theta}
+	\frac{U_j^{n+1}-U_j^n}{\Delta t} = (1-\theta)\frac{U_{j+1}^n-2U_j^n+U_{j-1}^n}{\Delta x^2} + \theta \frac{U_{j+1}^{n+1}-2U_{j}^{n+1}+U_{j-1}^{n+1}}{\Delta x^2}
+\end{equation}
+\subsection{Analysis principles of FD methods}
+To be valid, a finite differences method needs to verify some basic principles:
+\begin{itemize}
+	\item Consistency along a refinement path: $T_j^n \xrightarrow{h\rightarrow 0} 0$;
+\end{itemize}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.6\textwidth]{img/refinement.pdf}
+\end{figure}
+\begin{itemize}
+	\item Accuracy: $|T_j^n| \le c (\Delta t^p + \Delta x^q)$, for all $\Delta t, \Delta x$ small, $c$ a constant and $p,q$ some accuracy parameters;
+	\item Stability along a refinement path: For all solutions $v,w$ of the method and for all $t_F>0$, $\exists K_{t_F}$ such that $\| V^n - W^n \|\le K_{t_F} \|V^0 - W^0\|$ for all $n$ such that $n\Delta t\le t_F$, for $t_F$ the biggest time value;
+	\item Lyapunov stability;
+	\item Convergence along a refinement path: $U_j^n \xrightarrow{h\rightarrow 0}u(t,x)$ when $j\Delta x \rightarrow x$ and $n\Delta t \rightarrow t$. 
+\end{itemize} 
+\subsection{Value of $\theta$}
+\subsubsection{$\theta=0$: FTCS (forward time, centered space)}
+The formula becomes, when defining $\mu \coloneqq \kappa \Delta t/\Delta x^2$,
+\begin{equation}
+	U_j^{n+1} = \mu U_{j+1}^n + (1-2\mu)U_j^n + \mu U_{j-1}^n 
+\end{equation}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.4\textwidth]{img/FTCS.pdf}
+	\caption{Points used in the FTCS scheme.}
+	\label{fig:FTCS}
+\end{figure}
+\subsubsection{$\theta=1$: BTCS (backward time, centered space)}
+The formula becomes
+\begin{equation}
+	U_j^{n} = -\mu U_{j+1}^{n+1} + (1+2\mu)U_j^{n+1} - \mu U_{j-1}^{n+1} 
+\end{equation}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.4\textwidth]{img/BTCS.pdf}
+	\caption{Points used in the BTCS scheme.}
+	\label{fig:BTCS}
+\end{figure}
+\subsubsection{$\theta=1/2$: Crank-Nicholson}
+Crank Nicholson uses both the backward and forward time specifications. The formula is determined by replacing the value of $\theta$ but is tedious to write. The points it uses are displayed on figure \ref{fig:CN}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.4\textwidth]{img/CN.pdf}
+	\caption{Points used in the Crank-Nicholson scheme.}
+	\label{fig:CN}
+\end{figure}
+\subsection{Truncation error}
+By definition, the truncation error term is given by
+\begin{equation}
+	T = \frac{\delta_t u_j^{n+\frac{1}{2}}}{\Delta t} - \frac{\theta \delta_x^2u_j^{n+1} + (1-\theta)\delta_x^2u_j^n}{\Delta x^2}
+\end{equation}
+where we define $\delta_tu_j^{n+\frac{1}{2}}=u_j^{n+1}-u_j^n$ and $\delta_x^2u_j^n = u_{j+1}^n - 2 u_j^n + u_{j-1}^n$. Using a Taylor development series for each of the $u_j^n$, with reference point $(t_{n+\frac{1}{2}}, x_j)$, we can show that 
+\begin{equation}
+	T = \left(\left(\frac{1}{2}-\theta\right)\Delta t-\frac{1}{2}\Delta x^2\right) u_{xxxx} -\frac{1}{12}\Delta t^2u_{ttt} + \dots = \mathcal{O}(\Delta t, \Delta x^2)
+\end{equation}
+And for Crank-Nicholson, this becomes $\mathcal{O}(\Delta t^2, \Delta x^2)$. 
+\subsection{Fourier stability analysis}
+From equation \eqref{eq:theta}, we see that $U^{n+1}$ depends linearly in $U^n$ and we can make the guess that the solution will thus have the form 
+\begin{equation}
+	U_j^n = (\lambda(k))^n e^{ikj\Delta x} \qquad k\in \R
+\end{equation}
+Replacing in equation \eqref{eq:theta} and solving for $\lambda(k)$, we get
+\begin{equation}
+	\lambda(k) = \frac{1-4\mu(1-\theta)\sin^2\frac{k\Delta x}{2}}{1+4\mu \theta \sin^2 \frac{k\Delta x}{2}}
+\end{equation}
+By the discrete Fourier transform, every solution can be written 
+\begin{equation}
+	U_j^n = \sum_k c_k (\lambda(k))^n e^{ikj\Delta x}
+\end{equation}
+We know that, if $|\lambda(k)| \le 1$ for all $k$, then the $\theta$-scheme is Lyapunov stable. This condition is equivalent to 
+\begin{equation}
+	\mu(1-2\theta) \le \frac{1}{2}
+\end{equation}
+\begin{itemize}
+	\item [$\to$] Note: this property is sufficient but not necessary. 
+\end{itemize}
+Let us now define the matrix 
+\begin{equation}
+	C(\beta) = \begin{bmatrix}
+		1-2\beta & \beta & \ddots\\
+		\beta & 1-2\beta & \beta & \ddots \\
+		0 & \beta & 1-2\beta & \beta \\
+		& & \ddots & \ddots & \ddots \\
+		& & \beta & 1-2\beta & \beta \\
+		& & & \beta & 1-2\beta \\ 
+	\end{bmatrix} \in \R^{J-1 \times J-1}
+\end{equation}
+The $\theta$-scheme can be written in matrix form:
+\begin{equation}
+	\underbrace{C(-\mu \theta)}_{\eqqcolon B_1}U^{n+1} = \underbrace{C(\mu(1-\theta))}_{\eqqcolon B_0} U^n \Longleftrightarrow U^{n+1} = \underbrace{(C(-\mu\theta))^{-1} C(\mu(1-\theta))}_{=B_1^{-1}B_0 \eqqcolon A} U^n
+\end{equation}
+We can show that the eigenvalues of $C(\beta)$ and their corresponding eigenvectors are 
+\begin{equation}
+	v_\ell = 1-4\beta \sin^2 \frac{\pi \ell}{2J} \qquad x_\ell = \begin{bmatrix}
+		\sin\frac{\pi \ell}{J} \\ \vdots \\ \sin \frac{\pi \ell(J-1)}{J}
+	\end{bmatrix} \qquad  \ell=1,\dots, J-1 
+\end{equation}
+Hence the eigenvalues of the matrix $A$ are 
+\begin{equation}
+	v_ell = \frac{1-4\mu(1-\theta) \sin^2\frac{\pi \ell}{2J}}{1+4\mu\theta \sin^2 \frac{\pi \ell}{2J}} \qquad \ell = 1,\dots,J-1
+\end{equation}
+Their module must be smaller than 1 for the system to be Lyapunov stable (for all $\ell= 1,\dots,J-1$). This is equivalent to the condition 
+\begin{equation}
+	\frac{1-4\mu(1-\theta) \sin^2\frac{\pi (J-1)}{2J}}{1+4\mu\theta \sin^2 \frac{\pi (J-1)}{2J}} \ge -1
+\end{equation}
+\subsection{Dufort-Frankel scheme}
+\begin{equation}
+	U_j^{n+1} = U_j^{n-1} + 2\mu \left(U_{j-1}^n + U_{j+1}^n - U_j^{n+1}-U_j^{n-1}\right)
+\end{equation}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = .4\textwidth]{img/DF.pdf}
+\end{figure}
+Let us analyse the stability, given a solution of the form $U_j^n = \lambda^n e^{ikj\Delta x}$, which gives us the values
+\begin{equation}
+	\lambda_\pm = \frac{2\mu \cos(k\Delta x) \pm \sqrt{1-4\mu^2\sin^2(k\Delta x)}}{1+2\mu}
+\end{equation}
+We can show through the analysis of the $\lambda$ that this method is unconditionnaly stable, but not unconditionnaly consistent. 
+\begin{itemize}
+	\item [$\to$] Note: a scheme taking Dufort-Frankel with the additional point $(t_n, x_j)$ is unconditionnally unstable. 
+\end{itemize}
+\section{Finite volume methods}
+Let us study the Poisson equation, written in the following form
+\begin{equation}
+	\nabla \cdot (\kappa(x)\nabla u) = f \quad \text{   in   }\quad  \Omega \subseteq \R^n
+\end{equation}
+\subsection{Voronoi cells}
+The idea of finite volumes consists in creating cells given some vertices $\{x_i\}_i \subset \Omega$. The Voronoi cells are defined as 
+\begin{equation}
+	V_i = \{x\in \Omega:\ \|x-x_i\| \le \|x-x_j\| ,\ \forall j\neq i\}
+\end{equation}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = .5\textwidth]{img/voronoi.png}
+	\caption{Voronoi cells.}
+	\label{fig:voronoi}
+\end{figure}
+The method is the following: by integrating over each cell, we can then use the divergence theorem to approximate using finite differences. 
+\begin{equation}
+	\begin{aligned}
+		\int_{V_i} \nabla \cdot (\kappa(x)\nabla u)dx &= \int_{V_i} fdx \\
+		\int_{\partial V_i}\kappa(x)\nabla u\cdot n ds&\approx f_i Vol(V_i)\\
+		\sum_{j\sim i}K_{ij}\frac{u_j-u_i}{\underbrace{\|x_j-x_i\|}_{\eqqcolon h_{ij}}} \ell_{ij} \approx f_i Vol(V_i)
+	\end{aligned}
+\end{equation}
+where the notation $j\sim i$ denotes the neighbours $j$ of point $i$, $K_{ij} = \kappa \left(\frac{x_i+x_j}{2}\right)$, $\ell_{ij}$ is the length of the interface between cells $i$ and $j$. This gives the finite volume scheme:
+\begin{equation}
+	\sum_{j\sim i} K_{ij} \frac{U_j-U_i}{h_{ij}} \ell_{ij} = Vol(V_i)f_i \qquad \forall i
+\end{equation}
+\subsection{Boundary conditions}
+\begin{itemize}
+	\item Dirichlet: if the condition is $u(x)=g(x)$ $\forall x\in \partial \Omega$, we write for points $x_k$ on the boundary $U_k = g(x_k)$;
+	\item Neumann: the condition is $\nabla u\cdot n = g$ on $\partial \Omega$ and we use it in the form \[\int_{\partial V_i}\kappa(x)\nabla u\cdot n ds \approx \sum_j K_{ij}\frac{u_j-u_i}{h_{ij}}\ell_{ij} + \int_p \kappa(x)\nabla u\cdot nds,\] where $p$ is the boundary of cell $V_i$, and the integral can be approximated by quadrature.
+\end{itemize}
+\subsection{Analysis of principles}
+The analysis of principles is complicated using finite volumes. However, here are the results:
+\begin{itemize}
+	\item Consistency: finite volume schemes are not consistent in general;
+	\item Convergence: yes;
+\end{itemize}
+\section{Summary}
+\begin{center}
+	\begin{table}[ht]
+		\centering
+		\begin{tabularx}{\textwidth}{|X|X|X|}
+			\hline
+			&+ & - \\ \hline \hline
+			Finite differences & Easy to understand and program & Cumbersome for non-rectangular domains or non-Dirichlet boundary conditions \\ \hline
+			Finite volumes & Works for arbitrary geometries and meshes & Higher order methods are difficult to obtain \\ \hline
+			Finite elements & Works for arbitrary geometries and meshes; & More complicated to implement \\
+			& Higher order methods exist & \\ \hline
+		\end{tabularx}
+		\caption{Comparison of numerical methods.}
+		\label{tab:comparison}
+	\end{table}
+\end{center}
+\section{Hyperbolic equations in 1 space dimension}
+\subsection{Linear advection equation}
+\begin{equation}
+	u_t + au_x = 0 \qquad u(x,t)=u^0(x)
+\end{equation}
+\subsection{CFL condition}
+Consider the finite differences scheme:
+\begin{equation}
+	\frac{U_j^{n+1}-U_j^n}{\Delta t} + a \frac{U_j^n-U_{j-1}^n}{\Delta x} = 0
+\end{equation}
+which can also be written 
+\begin{equation}
+	U_j^{n+1} = (1-\nu)U_j^n + \nu_{j-1}^n\qquad \nu \coloneqq \frac{a\Delta t}{\Delta x}
+\end{equation}
+The CFL condition states that $\nu$ must be smaller than 1. If the scheme is convergent, then the condition holds. The meaning of the CFL condition is that the domain of dependence of the PDE, i.e. all the points that depend on $U_j^n$, is a subset of the domain of dependence of the numerical scheme. 
 \end{document}
