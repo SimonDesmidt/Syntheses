@@ -13,6 +13,7 @@
 \usepackage{algpseudocode}
 \usepackage{float}
 \usepackage{enumitem}
+\usepackage[dvipsnames]{xcolor}
 \usepackage{pythonhighlight}
 \usepackage[]{titletoc}
 \usepackage{empheq}
@@ -633,4 +634,302 @@ And thus the Bellman optimality equation (\eqref{eq:bellman2}) is equivalent to 
 		\EndWhile
 	\end{algorithmic}
 \end{algorithm}
+\section{Linear programming approach}
+The problem consists in computing the values of $v(s)$ for some abritrary weights $\alpha(s)>0$.
+\begin{equation}
+	\begin{aligned}
+		&\min_{v(s)}\sum_s \alpha(s)v(s) \\
+		& v(s)\ge \sum_{s',r}p(s',r|s,a)[r+\gamma v(s')] \qquad \forall s\in S, a\in A
+	\end{aligned}
+\end{equation}
+And the dual is 
+\begin{equation}
+	\begin{aligned}
+		&\max_{x(s,a)\ge 0} \left[\sum_{s'\in S, r\in R}p(s',r|s,a)r\right] x(s,a)\\
+		& \sum_{a\in A} x(s,a)=\alpha(s) + \gamma \sum_{s'\in S, a\in A, r\in R} p(s,r|s',a)x(s',a) \qquad \forall s\in S
+	\end{aligned}
+\end{equation}
+The variables $x(s,a)$ represent the total discounted probabilities of being in state $s$ and take action $a$.
+\section{Policy iteration algorithm}
+\begin{algorithm}
+	\caption{Policy Iteration Algorithm}
+	\begin{algorithmic}[1]
+		\State \textbf{Input: } the guaranteed accuracy of estimation $\theta$;
+		\State \textbf{Initialization: } $A(s)\coloneqq$ arbitrary action for all $s$;\\
+		\quad \qquad \qquad \qquad $V(s)\coloneqq$ an arbitrary initial value for all $s$;\\ 
+		\quad \qquad \qquad \qquad $\Delta \ge \theta$;
+		\While {$\Delta \ge \theta$}
+		\State $\Delta = 0$;
+		\For {each state $s$}
+		\State $v=V(s)$;
+		\State OldAction$\coloneqq A(s)$;
+		\State $V(s) = \max_a \sum_{s',r}p(s',r|s,a)(r+\gamma V(s'))$;
+		\State $A(s) = \arg\max_a \sum_{s',r}p(s',r|s,a)(r+\gamma V(s'))$;
+		\State $\Delta = \max (\Delta, |v-V(s)|)$;
+		\EndFor
+		\State Update the $V(s)$ by evaluating the new policy.
+		\EndWhile
+	\end{algorithmic}
+\end{algorithm}	
+\section{Reinforcement Learning}
+\subsection{Temporal Difference Learning}
+Temporal Difference Learning is used when we do not the probabilities $p(s',r|s,a=\pi(s))$. In that case, we rather use a temporal difference error, measuring the difference between the current estimate $V(s)$ and $r+\gamma V(s')$ (see blue term). 
+\begin{algorithm}
+	\caption{TD(0) for estimating $v_\pi$}
+	\begin{algorithmic}[1]
+		\State \textbf{Input: } $\pi$ the policy to be evaluated;\\
+		\qquad \qquad $\alpha$: algorithm step size with $0<\alpha \le 1$;
+		\State \textbf{Initialization: } $V(s)\coloneqq$ an arbitrary initial value for all $s$;\\ 
+		\For \text{ each episode }
+		\State $s\gets$ initial state;
+		\While {$s$ is not terminal}
+		\For \text{ each time step $t$ in the episode}
+		\State $a\gets \pi(s)$;
+		\State \text{ Take action $q$ and observe $r, s'$};
+		\State $V(s) \gets V(s)+\alpha[\color{blue}r+\gamma V(s')-V(s)\color{black}]$;
+		\State $s\gets s'$;
+		\EndFor
+		\EndWhile 
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}
+\subsection{Q-learning}
+Q-Learning works juste like TD Learning, but using $Q(s,a)$ instead of $V(s)$. The policy is then computed from the final iterate using the usual formula.
+\begin{algorithm}
+	\caption{Q-learning for estimating $\pi^*$}
+	\begin{algorithmic}[1]
+		\State \textbf{Input: } $\pi$: policy to be optimized;\\
+		\quad \: \qquad $\alpha$: algorithm step size with $0<\alpha \le 1$;
+		\State \textbf{Initialization: } $Q(s,a)\coloneqq$ an arbitrary initial value for all $(s,a)$;
+		\For \text{ each episode }
+		\State $s\gets$ arbitrary initial state;
+		\While {$s$ is not terminal}
+		\For \text{ each time step $t$ in the episode}
+		\State \text{\color{ForestGreen}Choose action $a$ according to the learning policy, e.g. $\epsilon$-greedy};
+		\State \text{ \color{ForestGreen} Take action $a$ and observe $r, s'$};
+		\State \color{SkyBlue}$Q(s,a) = Q(s,a)+\alpha[r+\gamma \max_{a'}Q(s',a')-Q(s,a)]$\color{black};
+		\State $s\gets s'$;
+		\EndFor
+		\EndWhile 
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}
+The colored lines are for the comparison with the next algorithm.
+\subsection{SARSA}
+\begin{algorithm}
+	\caption{SARSA for estimating $\pi^*$}
+	\begin{algorithmic}[1]
+		\State \textbf{Input: } $\pi$: policy to be optimized;\\
+		\quad \: \qquad $\alpha$: algorithm step size with $0<\alpha \le 1$;
+		\State \textbf{Initialization: } $Q(s,a)\coloneqq$ an arbitrary initial value for all $(s,a)$;
+		\For \text{ each episode }
+		\State $s\gets$ arbitrary initial state;
+		\State \text{\color{red}Choose $a$ according to the learning policy, e.g. $\epsilon$-greedy;}
+		\While {$s$ is not terminal}
+		\For \text{ each time step $t$ in the episode}
+		\State \text{ Take action $a$ and observe $r, s'$};
+		\State \text{\color{ForestGreen}Choose $a'$ from $s'$ according to the learning policy derived from $Q$, e.g. $\epsilon$-greedy};
+		\State \color{SkyBlue}$Q(s,a) = Q(s,a)+\alpha[r+\gamma Q(s',a')-Q(s,a)]$\color{black};
+		\State $s\gets s'$;
+		\State \color{red} $a\gets a'$\color{black};
+		\EndFor
+		\EndWhile 
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}
+\chapter{Countable-state Markov Chains}
+A countable-state Markov chain contains an infinite but countable number of states, e.g. $\mathbb{N}$. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.8\textwidth]{img/countable_markov.png}
+	\caption{Example of countable-state Markov chain}
+	\label{fig:countable_markov}
+\end{figure}
+In the example in figure \ref{fig:countable_markov}, the first state is transient if $p<0.5$ and reccurent otherwise. 
+\section{Definitions}
+\begin{itemize}
+	\item $f_{ij}(n)$ is the probability that the first passage of the Markov chain by state $j$ happens at time $n$, given that $X_0=i$. Mathematically,
+	\begin{equation}
+		f_{ij}(n) = P[X_n=j, X_k\neq j \quad \forall k<n|X_0=i]
+	\end{equation}
+	There exists a recurrence relation for $f_{ij}(n)$: $f_{ij}(n) = \sum_{k\neq j}p_{ik}f_{kj}(n-1)$, and $f_{ij}(1)=p_{ij}$.
+	\item We denote $F_{ij}(n)$ the probability that the first passage of the Markov chain by state $j$ happens at time $n$ or before, given that $X_0=i$. Mathematically,
+	\begin{equation}
+		F_{ij}(n) = \sum_{m=1}^n f_{ij}(m) = P[X_k=j \quad \text{for some } k\le n|X_0=i]
+	\end{equation}
+	\item A state is recurrent if $F_{jj}(\infty)=1$;
+	\item A state is transient if $F_{jj}(\infty)<1$;
+	\item We define the random variable $T_{ij}$ as the time until the first passage from $i$ to $j$. Hence $T_{jj}$ is the time needed to come back to state $j$ after leaving it. 
+	\item The mean of $T_{ij}$ is 
+	\begin{equation}
+		\bar T_{ij} = 1 + \sum_{n=1}^\infty (1-F_{ij}(n))
+	\end{equation}
+	\item [$\blacktriangle$] Theorem: all states from a same class are of the same type.
+	\item [$\blacktriangle$] Theorem: Let $j$ be recurrent and aperiodic, $i$ be a state in the same class, then 
+	\begin{equation}
+		\lim_n P[X_n=j|X_0=i] = \frac{1}{\bar T_{jj}}
+	\end{equation}
+	\item A Markov chain is said to be irreducible if all states communicate. 
+	\item [$\blacktriangle$] Theorem: For an irreducible Markov chain, if the system 
+	\begin{equation}
+		\begin{cases}
+			\pi_j = \sum_i \pi_i p_{ij} \quad \forall j \\
+			\sum_j \pi_j = 1\\
+			\pi_j \ge 0 \quad \forall j
+		\end{cases}
+	\end{equation}
+	has a solution, then $\pi_i = 1/\bar T_{ii}$ and all states are positive-recurrent, i.e. $f_{ii}(\infty) = 1$ and $\bar T_{ii}<\infty$.
+	Moreover, if all states are positive-recurrent, then the system has a solution.
+\end{itemize}
+\section{Birth-death Markov chains}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.8\textwidth]{img/bd_markov_chain.png}
+	\caption{Example of birth-death Markov chain}
+	\label{fig:birth_death}
+\end{figure}
+This kind of Markov chain is used to model the evolution of a population or a queueing system. If the states are positive recurrent, we must have that 
+\begin{equation}\label{eq:birth_death}
+	\pi_i p_i = \pi_{i+1}q_{i+1}
+\end{equation}
+And so by recursion, 
+\begin{equation}
+	\begin{aligned}
+		\pi_0 &= \frac{1}{1+\sum_{i=1}^\infty \prod_{j=0}^{i-1}\rho_j}\qquad \rho_j = \frac{p_i}{q_{i+1}}\\
+		\pi_i &= \pi_0 \prod_{j=0}^{i-1}\rho_j
+	\end{aligned}
+\end{equation}
+\begin{itemize}
+	\item [$\to$] Note: if $\rho_i=\rho<1$ for all $i$, then a solution exists and all states are positive recurrent.
+\end{itemize}
+\subsection{Reversibility}
+If the Markov chain is in steady state, then the backward chain is homogeneous, i.e.
+\begin{equation}
+	P[X_{n-1} = j|X_n=i] = P[X_{n} = i|X_{n-1}=j]\frac{\pi_j}{\pi_i}
+\end{equation}
+and the backward transition probabilities $p_{ij}^*$ are defined as 
+\begin{equation}
+	p_{ij}{^*} = p_{ji}\frac{\pi_j}{\pi_i} \Longleftrightarrow \pi_i p_{ij}^* = \pi_j p_{ji}
+\end{equation}
+A Markov chain is said to be reversible if $p_{ij}^* = p_{ij}$, or equivalently, $\pi_i p_{ij} = \pi_j p_{ji}$.
+\begin{thm}
+	Every birth-death chain with a steady-state probability distribution is reversible, due to the way the steady-state probabilities are computed (see equation \eqref{eq:birth_death}).
+\end{thm}
+\begin{thm}
+	Assume that an irreducible Markov chain has transition probabilities $p_{ij}$. Suppose $\{\pi_i\}$ is a set of positive numbers summing to $1$ and satisfying $\pi_i p_{ij}= \pi_j p_{ji}$ for all $i,j$. Then, $\{\pi_i\}$ is the steady-state distribution for the chain and the chain is reversible. 
+\end{thm}
+\section{Processor sharing}
+The system considered here consists in $m$ customers $c_1,\dots,c_m$ where they are each served for an increment of time $\delta$. After $c_m$ has been served, the server returns and start again. It is a cyclic serving order. When the service of $c_i$ is completed, the client leaves and $m$ is reduced, and when a client arrives, $m$ increases. 
+\begin{itemize}
+	\item [$\to$] Note: processor sharing is the limit of round-robin service as the increment $\delta$ goes to 0. 
+\end{itemize}
+\subsection{Model}
+\begin{itemize}
+	\item Assume a Bernoulli arrival process in which the probability of an arrival in an interval $\delta$ is $\lambda \delta$;
+	\item Assume the service time of customers to be IID arithmetic (i.e. mutliple of $\delta$) random variables $Z_i$ with span $\delta$.
+\end{itemize}
+Let $f(j)=P[Z_i=j\delta]$ and $\bar F(j)=P[Z>j\delta]$. Let $g(j)$ be the probability that the customer that was served during $j$ increments departs after one more increment of service: $g(j) = \frac{f(j+1)}{\bar F(j)}$.\\
+Here is the dynamical system:
+\begin{itemize}
+	\item A new customer arrives with probability $\lambda \delta$ and goes to first position;
+	\item The customer in first position is served for an increment $\delta$;
+	\item The customer that was served departs if service is complete;
+	\item Otherwise, the customer goes to the back of the queue.
+\end{itemize}
+The states of the system are $s=(m, z_1,\dots,z_m)$, and we can show that the transition probabilities are given by
+\begin{equation}
+	\begin{aligned}
+		p_{s,r(s)} &= (1-\lambda \delta)(1-g(z_1))\\
+		p_{s,d(s)} &= (1-\lambda \delta)g(z_1)\\
+		p_{s,a(s)} &= \lambda \delta (1-f(1))\\
+		p_{s,s} &= \lambda \delta f(1)
+	\end{aligned}
+\end{equation}
+where $r(s)=(m, z_2,\dots,z_m, z_1+1)$ (=rotation), $d(s)=(m-1, z_2,\dots,z_m)$ (=departure), $a(s)=(m+1, 1, z_1,\dots,z_m,1)$ (=arrival). 
+\chapter{Markov processses}
+\section{Semi-Markov processes}
+\subsection{Definitions}
+\begin{itemize}
+	\item A semi-Markov process is a Markov chain with holding times between transitions that are random variables that depend only from the starting and ending state of the transition. We denote $S_1<S_2<\dots$ the times of the successive transitions, and $X_0, X_1,\dots$ the successives states. Then, $X(t)=X_n$ for all $S_n\le t<S_{n+1}$.
+	\item The embedded Markov chain is formed by the successive states of the semi-Markov process: $P[X_n=j|X_{n-1}=i] =P_{ij}$.
+	\item $U_n\coloneqq S_n-S_{n-1}$ is a random variable depending only on $X_{n-1}$ and $X_n$:
+	\begin{equation}
+		P[U_n\le u|X_{n-1}=i, X_n=j] \eqqcolon G_{ij}(u)\qquad \E[U_n|X_{n-1}=i, X_n=j] \eqqcolon \bar U(i,j)
+	\end{equation}
+\end{itemize}
+\subsection{Stationary probabilities}
+\begin{thm}
+	If the embedded Markov chain is irreducible and positive recurrent, then the stationary probability $p_i$ of being in state $i$ is given by
+	\begin{equation}
+		p_i = \frac{\pi_i \bar U(i)}{\sum_j\pi_j \bar U(j)}
+	\end{equation}
+	where $\bar U_i = \sum_j P_{ij}\bar U(i,j)$.
+\end{thm}
+\section{Markov processes}
+\subsection{Definitions}
+\begin{itemize}
+	\item A Markov process is a semi-Markov process where the holding times between transitions are exponentially distributed. Hence the holding time depends only on the current state:
+	\begin{equation}
+		P[U_n\le x|X_{n-1}=i, X_n=j] = 1-e^{-\nu_{i}x}
+	\end{equation}
+	where $\nu_i$ is the exponential parameter [transition/hour].
+\end{itemize}
+\subsection{Transition rates}
+\begin{itemize}
+	\item [$\to$] Note: the transition rates are not transition probabilities and can thus be bigger than 1.
+\end{itemize}
+Let $Y(t)$ be the time until the next transition. 
+\begin{equation}
+	P[Y(t)\le x ,X(t+Y(t))=j|X(t)=i,\{X(\tau);\tau<t\}] = p_{ij}e^{-\nu_ix} 
+\end{equation}
+where the term $p_{ij}$ is the transition probability of the embedded Markov chain and the second term is the exponential distribution. Taking $x$ infinitesimal, we find  the transition rate between state $i$ and $j$:
+\begin{equation}
+	q_{ij} = \nu_i p_{ij}\qquad \nu_i = \sum_j q_{ij}
+\end{equation}
+\subsection{Equivalences}
+As a summary of what has been seen until now, here is an equivalence of different stochastic processes:
+\begin{itemize}
+	\item A semi-Markov process with exponentially distributed holding times.
+	\item $N$ Poisson processes with rates $\nu_i$. If $X(t)=i$, the next transition will occur when an arrival occurs for the Poisson process $i$ and the choice of the next state $j$ is made with probability $p_{ij}$.
+	\item $N^2$ Poisson processes with rates $q_{ij}$. 
+\end{itemize}
+\subsection{Stationary probabilities}
+The steady state probabilities $\{\pi_i\}$ are found solving the system $\pi_j = \sum_i \pi_i p_{ij}$, and so we can find 
+\begin{equation}
+	p_i = \frac{\pi_i/\nu_i}{\sum_k \pi_k/\nu_k}
+\end{equation}
+And if the sum at the denominator is finite, 
+\begin{equation}
+	\pi_i = \frac{p_i\nu_i}{\sum_k p_k\nu_k}
+\end{equation}
+\begin{itemize}
+	\item [$\to$] Note: A Markov process is irreducible iff the embedded Markov chain is irreducible.
+\end{itemize}
+\subsection{Chapman-Kolmogorov differential equation (what for?)} 
+Let $P_{ij}(t)=P[X(t)=j|X(0)=i]$. Then 
+\begin{equation}
+	\frac{dP_{ij}(t)}{dt} = \sum_{k\neq i}q_{ik}P_{kj}(t)-\nu_i P_{ij}(t)
+\end{equation}
+\subsection{Transient equation}
+Let us define the matrix $Q$:
+\begin{equation}
+	Q_{ij} = q_{ij}\qquad Q_{ii} = -\sum_{j\neq i}q_{ij} = -\nu_i
+\end{equation}
+Then, Chapman-Kolmogorov differential equation can be written as
+\begin{equation}
+	\frac{dP(t)}{dt} = QP(t)
+\end{equation}
+And, with $P(0)=I$, 
+\begin{equation}
+	P(t) = e^{Qt} = \sum_{n=0}^\infty \frac{Q^n}{n!}t^n
+\end{equation}
+\begin{thm}
+	Let $Q$ be the transition rate matrix associated to an irreducible Markov process with $n$ states. Then, $Q$ has an equivalue equal to 0 with the corresponding right eigenvector being $\mathbb{1}_n^T$ and left eigenvector $p=(p_1,\dots,p_n)>0$. All other eigenvalues have strictly negative real part. 
+\end{thm}
+Defining $\lambda_i$ as the eigenvalues of $Q$, 
+\begin{equation}
+	P(t) = \sum_{i=0}^n \nu_i e^{\lambda_i t}\pi_i 
+\end{equation}
+where $\nu_i$ and $\pi_i$ are respectively the right and left eigenvector associated to $\lambda_i$.
+
 \end{document}
