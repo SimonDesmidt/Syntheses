@@ -781,7 +781,7 @@ In the example in figure \ref{fig:countable_markov}, the first state is transien
 	has a solution, then $\pi_i = 1/\bar T_{ii}$ and all states are positive-recurrent, i.e. $f_{ii}(\infty) = 1$ and $\bar T_{ii}<\infty$.
 	Moreover, if all states are positive-recurrent, then the system has a solution.
 \end{itemize}
-\section{Birth-death Markov chains}
+\section{Birth-death Markov chains}\label{sec:birth_death}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.8\textwidth]{img/bd_markov_chain.png}
@@ -993,7 +993,68 @@ and
 \end{equation}
 And once again, we have some parameters:
 \begin{itemize}
-	\item Averaeg number of clients waiting in the queue: $L_q = p_0\frac{\lambda^s}{s!\mu^s}\frac{\lambda/s\mu}{(1-\lambda/s\mu)^2}$;
+	\item Average number of clients waiting in the queue: $L_q = p_0\frac{\lambda^s}{s!\mu^s}\frac{\lambda/s\mu}{(1-\lambda/s\mu)^2}$;
+	\item Average time spent in queue: $W_q = L_q/\lambda$;
+	\item Average time spent in system: $W = W_q + 1/\mu$;
+	\item Average number of clients in the system: $L = \lambda W = L_q + \frac{\lambda}{\mu}$;
 \end{itemize}
-
+\subsection{Other queues}
+There exists other types of queues used in Markov processes. 
+\begin{itemize}
+	\item M/M/1/K queue: In this queue, there is maximum number $K$ of clients in the system and only one server.
+\end{itemize}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.8\textwidth]{img/mm1k.png}
+\end{figure}
+\begin{itemize}
+	\item M/M/1//N: In this queue, there is a finite population of $N$ people and only one server.
+\end{itemize}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.8\textwidth]{img/mm1n.png}
+\end{figure}
+\begin{itemize}
+	\item [$\to$] Note: Both queues can be combined to $s$ servers.
+\end{itemize}
+\section{Reversibility}
+We already saw that the backward transition probabilities of the embedded Markov chain are given by $\pi_i p_{ij} = \pi_j p_{ji}^*$. As the holding times follow an exponential distribution, the backward process does too. This means that 
+\begin{equation}
+	q_{ij}^* = \nu_i p_{ij}^* = \frac{\nu_i \pi_j q_{ji}}{\pi_i\nu_j} \Longrightarrow \pi_i q_{ij} = \pi_j q_{ji}^* 
+\end{equation}
+And thus the process is reversible iff $q_{ij}^*=q_{ij}$.\\
+We conclude that for a MArkov process with stationary probabilities such that $\sum_i p_i\nu_i<\infty$, the embedded chain is reversible if the Markov process is reversible.
+\begin{thm}
+	For an irreducible Markov process, let the values $\{p_i>0\}$ be such that 
+	\begin{equation}
+		\sum_i p_i = 1\qquad \sum_i p_i\nu_i <\infty \qquad p_iq_{ij} = p_j q_{ji} \qquad \forall i,j
+	\end{equation}
+	Then the values $\{p_i\}$ are the stationary probabilities and the process is reversible with positive recurrent embedded Markov chain.\\
+	Furthermore, if $\{q_{ij}^*=0\}$ such that
+	\begin{equation}
+		\sum_j q_{ij} = \sum_j q_{ji}^* \qquad p_i q_{ij} = p_j q_{ji}^* \quad \forall i,j
+	\end{equation}
+	Then, $\{q_{ij}^*\}$ are the transition rates of the backward process.
+\end{thm}
+\begin{thm}
+	Birth and death processes (see section \ref{sec:birth_death}) are reversible if there exists $\{p_i\}>0$ such that 
+	\begin{equation}
+		\sum_i p_i = 1\qquad \sum_i p_i\nu_i <\infty \qquad p_i\lambda_i = p_{i+1}\mu_{i+1} \quad \forall i
+	\end{equation}
+\end{thm}
+\begin{thm}[Burke Theorem]
+	\begin{itemize}
+		\item The departure process of clients from a M/M/1 queue is a Poisson process.
+		\item The state of the system at time $t$ is independent from departures before $t$.
+		\item In case of FCFS (first come first served) service, the holding time of a customer leaving the system at time $t$ is independent from departures before $t$.
+	\end{itemize}
+\end{thm}
+\section{Serial queues}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.8\textwidth]{img/serial_queues.png}
+	\caption{Serial queues}
+	\label{fig:serial_queues}
+\end{figure}
+If the arrivals to the first queue form a Poisson Process and the service times are exponentially distributed for each server, the two systems behave as M/M/1 queues, and their states at any time $t$ are independent, as are the holding times of each customer. 
 \end{document}
