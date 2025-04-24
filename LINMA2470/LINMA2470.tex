@@ -931,5 +931,69 @@ Defining $\lambda_i$ as the eigenvalues of $Q$,
 	P(t) = \sum_{i=0}^n \nu_i e^{\lambda_i t}\pi_i 
 \end{equation}
 where $\nu_i$ and $\pi_i$ are respectively the right and left eigenvector associated to $\lambda_i$.
+\section{Markovian queueing models}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.8\textwidth]{img/queueing_model.png}
+	\caption{M/M/1 queueing model}
+	\label{fig:queueing_model}
+\end{figure}
+\subsection{M/M/1 queue}
+In a M/M/1 queue, the arrival process is a Poisson($\lambda$) and the service time follows an Exponential($\mu$). Therefore, the transition rate matrix is 
+\begin{equation}
+	Q = \begin{pmatrix}
+		-\lambda & \lambda & 0 & 0 & \dots \\
+		\mu & -(\lambda+\mu) & \lambda & 0 & \dots \\
+		0 & \mu & -(\lambda+\mu) & \lambda & \dots \\
+		0 & 0 & \mu & -(\lambda+\mu) & \dots \\
+		\vdots & \vdots & \vdots & \vdots & \ddots\\
+	\end{pmatrix}
+\end{equation}
+We make the sensible assumption that $\lambda<\mu$ (otherwise the queue would grow indefinitely). The steady-state probabilities are calculated as usual and give
+\begin{equation}
+	p_0 = \frac{1}{\sum_{i=0}^\infty \left(\frac{\lambda}{\mu}\right)^i} = 1-\frac{\lambda}{\mu} \qquad p_i = \left(\frac{\lambda}{\mu}\right)^i\left(1-\frac{\lambda}{\mu}\right) \qquad \forall i> 0
+\end{equation}
+And the average number of jobs in the system is 
+\begin{equation}
+	L = \sum_{i=0}^\infty i p_i = \left(1-\frac{\lambda}{\mu}\right)\sum_{i=0}^\infty n\left(\frac{\lambda}{\mu}\right)^n = \frac{\lambda/\mu}{1-\lambda/\mu} = \frac{\lambda}{\mu-\lambda}
+\end{equation}
+We can also calculate the following parameters:
+\begin{itemize}
+	\item Average time spent in the system: $W=L/\lambda$ = $1/(\mu-\lambda)$;
+	\item Average time spent in the queue: $W_q = W - 1/\mu = \frac{\lambda}{\mu(\mu-\lambda)}$;
+	\item Average number of clients waiting in the queue: $L_q = \lambda W_q = \frac{\lambda^2}{\mu(\mu-\lambda)}$;
+\end{itemize}
+Let us now calculate the probability to wait less than $t$ minutes in the queue. By definition,
+\begin{equation}
+	P[W<t|L=n] = \int_0^t \mu e^{-\mu \tau}\frac{(\mu\tau)^n}{n!}d\tau
+\end{equation}
+And so 
+\begin{equation}
+	P[W<t] = \sum_{n=0}^\infty P[W<t|L=n]P[L=n] = 1-e^{-(\mu-\lambda)t}
+\end{equation}
+\subsection{M/M/s queue}
+The M/M/s queue is a generalization of the M/M/1 queue to $s$ servers instead of a single one. 
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.8\textwidth]{img/mms.png}
+	\caption{M/M/s queueing model}
+	\label{fig:queueing_model2}
+\end{figure}
+\begin{itemize}
+	\item [$\to$] Note: the service time is not identical between every node: when there are less than $s$ people in the system, not all servers are working. 
+	\item [$\to$] Note: once again, we need an assumption for the convergence. Here, it is $\lambda/s\mu < 1$.
+\end{itemize}
+The steady state probabilities are 
+\begin{equation}
+	p_0 = \left(\left[\sum_{n=0}^{s-1}\frac{\lambda^n}{n!\mu^n}\right] + \frac{\lambda^s}{s!\mu^s}\frac{1}{1-\frac{\lambda}{s\mu}}\right)^{-1}
+\end{equation}
+and 
+\begin{equation}
+	p_n = \frac{\lambda^n}{n!\mu^n}p_0 \quad \forall n\le s \qquad \qquad p_n = \frac{\lambda^s}{s!\mu^s} \left(\frac{\lambda}{s\mu}\right)^{n-s}p_0 \quad \forall n>s
+\end{equation}
+And once again, we have some parameters:
+\begin{itemize}
+	\item Averaeg number of clients waiting in the queue: $L_q = p_0\frac{\lambda^s}{s!\mu^s}\frac{\lambda/s\mu}{(1-\lambda/s\mu)^2}$;
+\end{itemize}
 
 \end{document}
