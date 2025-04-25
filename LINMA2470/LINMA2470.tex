@@ -113,7 +113,7 @@ Let $X_1,\dots,X_n$ be a series of independent and uniformly distributed (IID) r
   \item $\E[X]=1/\lambda$.
   \item [$\rightarrow$] Note: the exponential distribution is memoryless.
 \end{itemize}
-\chapter{Poisson Processes}
+\chapter{Poisson Processes}\label{chap:poisson}
 A Poisson process $N(t)$ counts the number of arrivals with exponentially distributed inter-arrival times. 
 \begin{equation}
   S_n = \sum_{i=1}^n X_i \qquad \qquad X_i \sim \exp(\lambda)
@@ -1049,7 +1049,8 @@ We conclude that for a MArkov process with stationary probabilities such that $\
 		\item In case of FCFS (first come first served) service, the holding time of a customer leaving the system at time $t$ is independent from departures before $t$.
 	\end{itemize}
 \end{thm}
-\section{Serial queues}
+\section{More complex queues}
+\subsection{Serial queues}
 \begin{figure}[H]
 	\centering 
 	\includegraphics[width=.8\textwidth]{img/serial_queues.png}
@@ -1057,4 +1058,79 @@ We conclude that for a MArkov process with stationary probabilities such that $\
 	\label{fig:serial_queues}
 \end{figure}
 If the arrivals to the first queue form a Poisson Process and the service times are exponentially distributed for each server, the two systems behave as M/M/1 queues, and their states at any time $t$ are independent, as are the holding times of each customer. 
+\subsection{Feedback queues}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.8\textwidth]{img/feedback_queue.png}
+	\caption{Feedback queues}
+	\label{fig:feedback_queues}
+\end{figure}
+The external arrivals form a Poisson process, but the overall arrivals to the queue do not. However, the global system does behave like a M/M/1 queue as the return of a customer does not create a state change.
+\subsection{Network queues}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.7\textwidth]{img/network_queue.png}
+	\caption{Network queues}
+	\label{fig:network_queues}
+\end{figure}
+We make the assumption that the extarnal arrivals form a Poisson process, and that there are $K$ stations with with a single queue and $N_i$ servers. A satisfied customer is sent to another station or leaves the system with a probability that does not depend on what happened previously. 
+\begin{itemize}
+	\item The Markov process representing the system is reversible;
+	\item The steady-state probabilities of having $n$ customers at a station is identical to the distribution of an M/M/s queue;
+	\item For all time $t$, the number of customers at each station is independent;
+	\item The outgoing flows leaving the system are Poisson processes, but not the flows within the system. 
+\end{itemize}
+\section{Above and beyond}
+When the arrival and processing times are not Markovian, there exists no general analytical solution, but we have a good approximation through the Variability-Utilization-Time principle. For a single-server queue, this is equivalent to approximating the average number of customers in the queu by:
+\begin{equation}
+	L_q\approx \left(\frac{c_a^2+c_s^2}{2}\right)\frac{\rho/\mu}{1-\rho}
+\end{equation}
+where $c_a$ are respectively the coefficients of variation for the interarrival times $\sigma_a\lambda$ and $\sigma_s\mu$, and $\rho$ is the utilization rate of the server. \textcolor{red}{what does that mean?}\\
+We can also approximate the coefficient of variation for the departure flow:
+\begin{equation}
+	c_d^2 = c_s^2 \rho^2 + c_a^2(1-\rho^2)
+\end{equation}
+In the case of a $s$-server queue, the formulae become 
+\begin{equation}
+	\begin{aligned}
+		L_q&\approx \left(\frac{c_a^2+c_s^2}{2}\right)\left(\frac{\rho^{\sqrt{2(s+1)}-1}}{1-\rho}\right)\frac{1}{s\mu}\\
+		c_d^2 &= 1+\frac{c_s^2-1}{\sqrt{s}}\rho^2 + (c_a^2-1)(1-\rho^2)
+	\end{aligned}
+\end{equation}
+\chapter{Fluid approximation for non-stationary queueing systems}
+\section{Transient behaviour}
+To reach its steady state, a queueing system needs to forget itts initial situation. The relaxation time $T_0$ is defined as the time it takes for the system to forget.
+\begin{equation}
+	T_0 = \frac{\lambda/s\mu + C^2(s)}{(1-\lambda/s\mu)^2}\frac{1}{s\mu}
+\end{equation}
+If no process changes during a period of time $T_0$, then the system is said to be in steady state.\\
+\subsection{Non-stationary Poisson process}
+As seen in chapter \ref{chap:poisson}, the counting process $N(t)$ is a non-stationary Poisson process if it has independent increments, and if 
+\begin{equation}
+	\begin{aligned}
+		P[N(t+dt)-N(t)=0] &= 1-\lambda(t)dt\\
+		P[N(t+dt)-N(t)=1] &= \lambda(t)dt\\
+		P[N(t+dt)-N(t)\ge 2] &= 0
+	\end{aligned}
+\end{equation}
+with $\lambda(t)$ the arrival time at time $t$, and thus the expected number of arrivals until time $t$ is 
+\begin{equation}
+	\Lambda(t) = \int_0^t \lambda(\tau)d\tau
+\end{equation}
+From that, 
+\begin{equation}
+	P[n\text{ arrivals between times }a\text{ and }b] = \frac{(\Lambda(b)-\Lambda(a))^n}{n!}e^{-\Lambda(b)-\Lambda(a)}
+\end{equation}
+\begin{itemize}
+	\item [$\to$] Note: the memoryless property is not satisfied anymore. 
+\end{itemize}
+The distribution of the ordered arrivals is 
+\begin{equation}
+	P[\text{first arrival before time }t|N(T)=n] = 1-\left(\frac{\Lambda(T)-\Lambda(t)}{\Lambda(T)}\right)^n 
+\end{equation}
+\begin{itemize}
+	\item We use a quasi-steady state approximation when the load stays below $1$ and fluid approximation when it goes higher than 1. 
+\end{itemize}
+\section{Steady-state approximation}
+
 \end{document}
