@@ -141,7 +141,7 @@
 		\hline
 	\end{tabular}
 \end{center}
-\section{GM VS Newton: table}
+\section{GM VS Newton}
 \begin{center}
 	\begin{tabular}{|c|c|c|c|}
 		\hline
@@ -209,11 +209,11 @@ Let $T(\varepsilon) = \inf \{k\in \mathbb{N}:\: \lVert \nabla f(x_k)\rVert\le \v
 	\end{aligned}
 \end{equation}
 \chapter{Gradient descent without gradient}\label{chap:}
-For this problem consider an adversarial attack on block-based image classifier. We have a machine learning model that given an image $a\in\R^p$ it returns $c(a)\in\R^m$, where $c_j(a) \in [0,1]$ is the probability of image $a$ to be in class $j$. The classifier prediction is: $j(a) = \arg\max_{j\in [1,\dots,m]} c_j(a)$.\\
+For this problem, consider an adversarial attack on block-based image classifier. We have a machine learning model that given an image $a\in\R^p$ it returns $c(a)\in\R^m$, where $c_j(a) \in [0,1]$ is the probability of image $a$ to be in class $j$. The classifier prediction is: $j(a) = \arg\max_{j\in [1,\dots,m]} c_j(a)$.\\
 \textcolor{red}{TODO - Add mise en situation ou pas?}
 \newline
 
-Given $x_k$ let us decide:
+Given $x_k$, let us decide:
 \begin{equation}
 	x_{k+1} = x_k - \frac{1}{\sigma} g_{h_k}(x_k) \quad \quad \quad h_k > 0, \: \sigma > 0
 \end{equation}
@@ -255,10 +255,7 @@ On the other hand, we have
 \end{equation}
 Using trick \eqref{eq:sq2} in chapter \ref{chap:tricks},
 \begin{equation}
-	\begin{aligned}
-		\Longrightarrow \|\nabla f(x_k)\|^2 &\leq 2 \left( \frac{L \sqrt{n}}{2} h_k \right)^2 + 2 \|g_{h_k}(x_k)\|^2\\
-		&\leq \frac{L^2 n}{2} h_k^2 + 2 \|g_{h_k}(x_k)\|^2 
-	\end{aligned}
+	\Longrightarrow \|\nabla f(x_k)\|^2 \leq \frac{L^2 n}{2} h_k^2 + 2 \|g_{h_k}(x_k)\|^2 
 \end{equation}
 \begin{equation}
 	\Longrightarrow \frac{1}{8 \sigma} \|\nabla f(x_k)\|^2 \leq \frac{L^2n}{16\sigma} h_k^2 + \frac{1}{4\sigma} \|g_{h_k}(x_k)\|^2
@@ -266,11 +263,11 @@ Using trick \eqref{eq:sq2} in chapter \ref{chap:tricks},
 \begin{equation}\label{eq:brigitte}
 	\Longrightarrow \frac{1}{8 \sigma} \|\nabla f(x_k)\|^2 \leq f(x_k) - f(x_{k+1}) + \frac{\sigma n}{4} h_k^2 + \frac{\sigma n}{16}h_k^2
 \end{equation}
-Let $T(\varepsilon) = \inf \{k\in \mathbb{N}: \|\nabla f(x_k)\| \leq \varepsilon \}$, \textcolor{blue}{with $f(x)$ bounded below by $f_{low}$}, summing up \eqref{eq:brigitte} for $k=0,\dots, T(\varepsilon)-1$:
+Let $T(\varepsilon) = \inf \{k\in \mathbb{N}: \|\nabla f(x_k)\| \leq \varepsilon \}$, \textcolor{blue}{with $f(x)$ bounded from below by $f_{low}$}. Summing up \eqref{eq:brigitte} for $k=0,\dots, T(\varepsilon)-1$:
 \begin{equation}
 	\frac{T(\varepsilon)}{8 \sigma} \varepsilon^2 \leq f(x_0) - f_{low} + \frac{5 \sigma n}{4} \sum_{k=0}^{T(\varepsilon)-1} h_k^2
 \end{equation}
-\textcolor{blue}{If $\{h_k^2\}$ is summable}
+\textcolor{blue}{If $\{h_k^2\}_{k\ge0}$ is summable}
 \begin{equation}
 	\Longrightarrow T(\varepsilon) \leq 8 \sigma \left( f(x_0) - f_{low} + \frac{5 \sigma n}{4} \sum_{k=0}^{T(\varepsilon)-1} h_k^2\right) \varepsilon^2 = \O(\varepsilon^2)
 \end{equation}
@@ -306,7 +303,7 @@ Since $f \in C_M^{2,2}(\R^n)$, we have $\|\nabla^2f(x^*+\tau(x_k-x^*))-\nabla^2f
 \end{equation}
 Using the bound \eqref{eq:hessian_bound} and the previous inequality, we get:
 \begin{equation*}
-		\tau M \|x_k -x^*\| \|v\|^2 \leq |\langle \nabla^2f(x^*+\tau(x_k-x^*))-\nabla^2f(x^*) v, v\rangle| \leq \tau M \|x_k -x^*\| \|v\|^2\\
+		-\tau M \|x_k -x^*\| \|v\|^2 \leq \left\langle \left(\nabla^2f(x^*+\tau(x_k-x^*))-\nabla^2f(x^*)\right) v, v\right\rangle \leq \tau M \|x_k -x^*\| \|v\|^2\\
 \end{equation*}
 \begin{equation*}
 	\nabla^2 f(x^*) - \tau M \|x_k -x^*\| I_n \preceq \nabla^2f(x^*+\tau(x_k-x^*)) \preceq \nabla^2 f(x^*) + \tau M \|x_k -x^*\|I_n 
@@ -328,7 +325,7 @@ By using $G_k$ and some constants, we get:
 \begin{equation}
 	\left(1-\frac{1}{L}(L+\frac{M}{2}\|x_k -x^*\|)\right)I_n \preceq I_n - \frac{1}{L}G_k \preceq \left(1-\frac{1}{L}(\mu - \frac{M}{2}\|x_k -x^*\|)\right)I_n
 \end{equation}
-And finally, we get:
+And finally, 
 \begin{equation}\label{eq:eq3cm3}
 	\begin{aligned}
 		\|I_n - \frac{1}{L}G_k\| &\leq \max\left\{\left|1-\frac{1}{L}(L + \frac{M}{2}\|x_k -x^*\|)\right|,\left|1-\frac{1}{L}(\mu - \frac{M}{2}\|x_k -x^*\|)\right|\right\}\\
@@ -357,7 +354,7 @@ And so by induction, we can conclude that:
 	\color{red}\boxed{\textcolor{black}{\Rightarrow \text{Linear rate of convergence}}}\color{black}\\
 \end{center}
 
-Given $\varepsilon > 0$, let $T(\varepsilon) = \inf\{k\in \mathbb{N} : \|x_k -x^*\|\leq \varepsilon\}$. Then, if $T(\varepsilon) \geq 1$ and using \eqref{eq:bound_x_k_induction}, we get:
+Given $\varepsilon > 0$, let $T(\varepsilon) = \inf\{k\in \mathbb{N} : \|x_k -x^*\|\leq \varepsilon\}$. Then, \textcolor{blue}{if $T(\varepsilon) \geq 1$} and using \eqref{eq:bound_x_k_induction}, we get:
 \begin{equation}
 	\begin{aligned}
 		\varepsilon < \|x_{T(\varepsilon)-1} - x^*\| &\leq \left(1-\frac{\mu}{2L}\right)^{T(\varepsilon)-1} \|x_0 - x^*\|\\
@@ -406,8 +403,7 @@ Since $f\in \C^{2,2}_M(\R^n)$, we have
 		\lambda_{\min}(\nabla^2 f(x_k)) &\geq \mu - M \|x_k-x^*\|
 	\end{aligned}
 \end{equation}
-Suppose that $-M \|x_k-x^*\| \geq - \frac{\mu}{2} \Leftrightarrow \|x_k-x^*\| \leq \frac{\mu}{2M}$\\
-Then,
+\textcolor{blue}{Suppose that $-M \|x_k-x^*\| \geq - \frac{\mu}{2} \Leftrightarrow \|x_k-x^*\| \leq \frac{\mu}{2M}$}. Then,
 \begin{equation}
 	\begin{aligned}
 		\lambda_{\min}(\nabla^2 f(x_k)) &\geq \frac{\mu}{2}\\
@@ -426,12 +422,12 @@ If $\|x_k-x^*\| \leq \frac{\mu}{2M}$ then,
 \begin{equation}\label{eq:bound_of_x_k1_by_x_k}
 	\|x_{k+1}-x^*\| \leq \frac{M}{\mu} \|x_k - x^*\|^2 = \frac{1}{2} \|x_k - x^*\|
 \end{equation}
-If $\|x_0-x^*\| \leq \frac{\mu}{2M}$ then $\{x\}_{k\geq0} \subset B[x^*,\frac{\mu}{2M}]$.\\
+If $\|x_0-x^*\| \leq \frac{\mu}{2M}$ then $\{x_k\}_{k\geq0} \subset B[x^*,\frac{\mu}{2M}]$.\\
 Denote $\delta_k = \frac{M}{\mu} \|x_k-x^*\|$, then we have $\delta_0 = \frac{M}{\mu} \|x_0-x^*\| \leq \frac{1}{2}$, and if we combine this with \eqref{eq:bound_of_x_k1_by_x_k}, we get:
 \begin{equation}
 	\delta_{k+1} \leq \delta_k^2 \quad \forall k \geq 0
 \end{equation}
-And if we proceed by recurcence, we get:
+And if we proceed by recurrence, we get:
 \begin{equation}
 	\begin{aligned}
 		\delta_1 \leq &\delta_0^2 \leq \left(\frac{1}{2}\right)^2\\
@@ -443,26 +439,28 @@ And if we proceed by recurcence, we get:
 \begin{equation}\label{eq:quadratic_rate_of_convergence}
 	\Rightarrow \|x_k-x^*\|\leq \frac{\mu}{M} \left(\frac{1}{2}\right)^{2^k}
 \end{equation}
-Let $T(\varepsilon) = \inf\{k\in\N: \|x_k-x^*\|\leq \varepsilon\}$ and suppose that $T(\varepsilon) \geq 1$. Then using the convergence rate \eqref{eq:quadratic_rate_of_convergence}, we can state the maximal number of iterations:
+Let $T(\varepsilon) = \inf\{k\in\N: \|x_k-x^*\|\leq \varepsilon\}$ and \textcolor{blue}{suppose that $T(\varepsilon) \geq 1$}. Then using the convergence rate \eqref{eq:quadratic_rate_of_convergence}, we can state the maximal number of iterations:
 \begin{equation}
 	\varepsilon \leq \|x_{T(\varepsilon)-1}-x^*\| \leq \frac{\mu}{M} \left(\frac{1}{2}\right)^{2^{T(\varepsilon)-1}}
 \end{equation}
 \begin{equation}
 	2^{2^{T(\varepsilon)-1}} \leq \frac{\mu}{M} \varepsilon^{-1}
 \end{equation}
-\color{red}
-\boxed{\color{black} \Rightarrow T(\varepsilon) \leq \log_2(\log_2(\frac{\mu}{M} \varepsilon^{-1}))}
-\color{black}
-
+\begin{center}
+	\color{red}
+	\boxed{\color{black} \Rightarrow T(\varepsilon) \leq \log_2(\log_2(\frac{\mu}{M} \varepsilon^{-1}))}
+	\color{black}
+\end{center}
+	
 \section{Quasi Newton methods}
 \subsection{SR1 Update}
 One step of a Quasi-Newton method is given by:
 \begin{equation}\label{eq:quasi_newton}
 	x_{k+1} = x_k -B_k \nabla f(x_k)
 \end{equation}
-With $B_k \in \R^{n\times n}$, symmetric and non-singular\\
-Suppose that $x_k \to x^*$ when $k \to \infty$, and that $\nabla^2f(x_k) \succeq \mu I_n$ with $\mu \geq 0$\\
-We want the condition on $B_k$ to have a Super Linear convergence \eqref{eq:super_linear_convergence_rate} of the Quasi-Newton method. So lets assume that $f \in \C_M^{2,2}(\R^n)$.\\
+With \textcolor{blue}{$B_k \in \R^{n\times n}$, symmetric and non-singular}.\\
+\textcolor{blue}{Suppose that $x_k \to x^*$ when $k \to \infty$, and that $\nabla^2f(x_k) \succeq \mu I_n$ with $\mu \geq 0$}.\\
+We want the condition on $B_k$ to have a Super Linear convergence \eqref{eq:super_linear_convergence_rate} of the Quasi-Newton method. So let us \textcolor{blue}{assume that $f \in \C_M^{2,2}(\R^n)$}.\\
 Then,
 \begin{equation}\label{eq:bound_hessian_difference}
 	\|\nabla^2f(x_{k+1}-\nabla^2f(x_k))\| \leq M \|x_{k+1}-x_k\|
@@ -505,7 +503,7 @@ Under this condition and by \eqref{eq:eq4cm4}, we have:
 \begin{equation}
 	\lim_{k \to \infty} \frac{\|\nabla f(x_{k+1})\|}{\|x_{k+1}-x_k\|} = 0
 \end{equation}
-As $\|x_{k+1}-x_k\| \to 0$, we conclude that $\lim_{x \to \infty} \|\nabla f(x_{k+1})\| = 0$ and so $\|\nabla f(x^*)\| = 0 \Rightarrow \nabla f(x^*) = 0$. ($x^*$ is a stationary point of f)\\
+As $\|x_{k+1}-x_k\| \to 0$, we conclude that $\lim_{x \to \infty} \|\nabla f(x_{k+1})\| = 0$ and so $\|\nabla f(x^*)\| = 0 \Rightarrow \nabla f(x^*) = 0$, meaning that $x^*$ is a stationary point of $f(\cdot)$.\\
 We have $\nabla^2 f(x^*) \succeq \mu I_n$ and given $y \in \R^n$, we have:
 \begin{equation}
 	\begin{aligned}
@@ -552,7 +550,7 @@ Since the right hand side goes to zero when $k \to +\infty$, then we have:
 		\Rightarrow \lim_{k \to \infty} \frac{\|x_{k+1}-x^*\|}{\|x_k-x^*\|} &\Rightarrow \lim_{k \to \infty} \rho_k = 0  
 	\end{aligned}
 \end{equation}
-Suppose that $n=1$, then the quasi-newton update is writed:
+For $n=1$, the Quasi-Newton update is written:
 \begin{equation}
 	x_{k+1}=x_k-b_kf'(x_k), \quad k \geq 0
 \end{equation}
@@ -572,75 +570,76 @@ Since $x_k \to x^*$, we have $h=x_k-x_{k-1}$ and so:
 \begin{equation}
 	b_k^{-1} = \frac{f'(x_k)-f'(x_{k-1})}{x_k-x_{k-1}} \to f''(x_{k-1})
 \end{equation}
-Thus, $\lim_{k \to \infty} |b_k^{-1} - f''(x_k)| = 0$.\\ Assuming that $f''$ is continuous, we have $\lim_{k \to \infty} |f''(x_k) - f''(x^*)| = 0$.\\
-If we define $S_{k-1} = x_k-x_{k-1}$ and $y_{k-1}=f'(x_k)-f'(x_{k-1})$ and knowing \eqref{eq:def_b_k_1D}, we can write:
+Thus, $\lim_{k \to \infty} |b_k^{-1} - f''(x_k)| = 0$.\\ 
+\textcolor{blue}{Assuming that $f''$ is continuous}, we have $\lim_{k \to \infty} |f''(x_k) - f''(x^*)| = 0$.\\
+If we define $s_{k-1} = x_k-x_{k-1}$ and $y_{k-1}=f'(x_k)-f'(x_{k-1})$ and knowing \eqref{eq:def_b_k_1D}, we can write:
 \begin{equation}
 	\begin{aligned}
 		b_k (f'(x_k)-f'(x_{k-1})) &= x_k-x_{k-1}\\
-		b_k y_{k-1} &= S_{k-1}
+		b_k y_{k-1} &= s_{k-1}
 	\end{aligned}
 \end{equation}
 This suggests that for $n > 1$, we should define the secant condition, $B_k$ such that:
 \begin{equation}\label{eq:secant_condition}
-	B_k y_{k-1} = S_{k-1}
+	B_k y_{k-1} = s_{k-1}
 \end{equation}
-Lets define $f(x) = \frac{1}{2} \|Ax-b\|^2 = \frac{1}{2} x^TA^TAx - (A^Tb)^Tx + \frac{1}{2} b^Tb$. If $A$ is full rank then $f$ is a strongly convex quadratic function. And we have $\nabla f(x_k) = A^TAx_k-A^Tb$. Then,
+Let us define $f(x) = \frac{1}{2} \|Ax-b\|^2 = \frac{1}{2} x^TA^TAx - (A^Tb)^Tx + \frac{1}{2} b^Tb$. If $A$ is full rank then $f$ is a strongly convex quadratic function. And we have $\nabla f(x_k) = A^TAx_k-A^Tb$. Then,
 \begin{equation}
-	y_{k-1} = \nabla f(x_k) - \nabla f(x_{k-1}) = A^TA(x_k-x_{k-1}) = \nabla^2 f(x_{k}) S_{k-1}
+	y_{k-1} = \nabla f(x_k) - \nabla f(x_{k-1}) = A^TA(x_k-x_{k-1}) = \nabla^2 f(x_{k}) s_{k-1}
 \end{equation} 
 And so
 \begin{equation}
-	\nabla^2 f(x_k) y_{k-1} = S_{k-1}
+	\nabla^2 f(x_k) y_{k-1} = s_{k-1}
 \end{equation}
-Therefore, $\nabla^{-2} f$ satisfies the secant condition \eqref{eq:secant_condition}, when f is a strongly convex quadratic function. Thus it is reasonnable to require the secant for any approximation to $\nabla^{-2}f(x_k)$.\\
+Therefore, $\nabla^{-2} f$ satisfies the secant condition \eqref{eq:secant_condition}, when $f$ is a strongly convex quadratic function. Thus it is reasonnable to require the secant for any approximation to $\nabla^{-2}f(x_k)$.\\
 \newline
 Now, how can we compute $B_k$ such that it satisfies the secant condition \eqref{eq:secant_condition}?\\
 Given a matrix $B_{k-1}$, our goal is to find a perturbation matrix $P_{k-1} \in \R^{n \times n}$ such that:
 \begin{equation}
-	\left(B_{k-1} + P_{k-1}\right) y_{k-1} = S_{k-1}
+	\left(B_{k-1} + P_{k-1}\right) y_{k-1} = s_{k-1}
 \end{equation}
 If we get such $P_{k-1}$, we can define $B_k = B_{k-1} + P_{k-1}$, which would satisfy the secant condition \eqref{eq:secant_condition}.\\
 For that we need at least $n$ degrees of freedom and a symmetric matrix, so it is natural to try:
 \begin{equation}
-	P_{k-1} = v_{k-1} v_{k-1}^T \quad v_{k-1} \in \R^{n}
+	P_{k-1} = v_{k-1} v_{k-1}^T, \quad v_{k-1} \in \R^{n}
 \end{equation}
 So we get:
 \begin{equation}
-	\left(B_{k-1} + v_{k-1} v_{k-1}^T\right) y_{k-1} = S_{k-1}
+	\left(B_{k-1} + v_{k-1} v_{k-1}^T\right) y_{k-1} = s_{k-1}
 \end{equation}
 By algebraic manipulations, we get:
 \begin{equation}\label{eq:secant_condition_v}
 	\begin{aligned}
-		\left(v_{k-1}^T y_{k-1}\right) v_{k-1} &= S_{k-1} - B_{k-1} y_{k-1}\\
-		v_{k-1} &= \frac{S_{k-1}-B_{k-1} y_{k-1}}{\beta} \quad \text{for } \beta = v_{k-1}^T y_{k-1} 
+		\left(v_{k-1}^T y_{k-1}\right) v_{k-1} &= s_{k-1} - B_{k-1} y_{k-1}\\
+		v_{k-1} &= \frac{s_{k-1}-B_{k-1} y_{k-1}}{\beta} \quad \text{for } \beta = v_{k-1}^T y_{k-1} 
 	\end{aligned}
 \end{equation}
 Combining the two previous equations, we get:
 \begin{equation}
 	\begin{aligned}
-		\left(\frac{1}{\beta} \left(S_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1} \right)\frac{1}{\beta} \left(S_{k-1} - B_{k-1} y_{k-1}\right) &= S_{k-1} - B_{k-1} y_{k-1}\\
-		\frac{1}{\beta^2} \left(S_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1} &= 1
+		\left(\frac{1}{\beta} \left(s_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1} \right)\frac{1}{\beta} \left(s_{k-1} - B_{k-1} y_{k-1}\right) &= s_{k-1} - B_{k-1} y_{k-1}\\
+		\frac{1}{\beta^2} \left(s_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1} &= 1
 	\end{aligned}
 \end{equation}
 We can isolate $\beta$:
 \begin{equation}\label{eq:beta_secant}
-	\beta = \sqrt{\left(S_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1}}
+	\beta = \sqrt{\left(s_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1}}
 \end{equation}
 Combining \eqref{eq:secant_condition_v} and \eqref{eq:beta_secant}, we get:
 \begin{equation}
-	v_{k-1} = \frac{S_{k-1}-B_{k-1} y_{k-1}}{\sqrt{\left(S_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1}}}
+	v_{k-1} = \frac{s_{k-1}-B_{k-1} y_{k-1}}{\sqrt{\left(s_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1}}}
 \end{equation}
 This leads us to the following update for $B_k$:
 \begin{equation}
 	\begin{aligned}
 		B_k &= B_{k-1} + v_{k-1} v_{k-1}^T\\
-		&= B_{k-1} + \frac{\left(S_{k-1}-B_{k-1} y_{k-1}\right)\left(S_{k-1}-B_{k-1} y_{k-1}\right)^T}{\left(S_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1}}
+		&= B_{k-1} + \frac{\left(s_{k-1}-B_{k-1} y_{k-1}\right)\left(s_{k-1}-B_{k-1} y_{k-1}\right)^T}{\left(s_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1}}
 	\end{aligned}
 \end{equation}
 This is called the \textbf{SR1 update} (symmetric rank 1 update).\\
 \subsection{BFGS Update}
 Lets take back $B_{k+1} y_k = s_k$ and defining $H_{k+1} = B_{k+1}^{-1} \approx \nabla^2 f(x_{k+1})$, we get $H_{k+1} s_k = y_k$.\\
-The idea is to find a rank 2 update that consist of finding $a,b \in \R$ and $v,u \in \R^n$ such that:
+The idea is to find a rank 2 update that consists in finding $a,b \in \R$ and $v,u \in \R^n$ such that:
 \begin{equation}\label{eq:rank2_update_idea}
 	\left(H_k + a uu^T + b vv^T\right)s_k = y_k
 \end{equation}
@@ -688,7 +687,7 @@ Consider the constrained problem
 \begin{equation}\label{eq:constrained_problem}
 	\min_{x \in \R^n} f(x) \quad \text{subject to} \quad c_i(x) = 0, \quad i \in \{1,\dots,m\}	
 \end{equation}
-where $f,c_i : \R^n \to \R$ are $\C^1$ and there exists a $\hat{x}$ such that $c_i(\hat{x}) = 0$.\\
+where \textcolor{blue}{$f,c_i : \R^n \to \R$ are $\C^1$ and there exists at least a $\hat{x}$ such that $c_i(\hat{x}) = 0$}.\\
 A natural approach to solve this problem is to consider the related unconstrained problem in which we try to minimize $f(x)$ plus a term that penalizes the violation of the constraints (quadratic penalty function).
 \begin{equation}\label{eq:penalty_function}
 	\min_{x \in \R^n} Q_{\sigma} (x) \equiv f(x) + \frac{\sigma}{2} \|c(x)\|_2^2
@@ -696,8 +695,8 @@ A natural approach to solve this problem is to consider the related unconstraine
 For the problem \eqref{eq:constrained_problem}, we would like to find a KKT point $x^*$ for which there exists $\lambda^* \in \R^m$ such that:
 \begin{equation}\label{eq:KKT}
 	\begin{cases}
-		\nabla f(x^*) - \displaystyle \sum_{i=1}^m \lambda_i^* \nabla c_i(x^*) = 0  \quad \quad &(stationarity)\\
-		c(x^*) = 0 &(feasibility)
+		\nabla f(x^*) - \displaystyle \sum_{i=1}^m \lambda_i^* \nabla c_i(x^*) = 0  \quad \quad &\textcolor{blue}{\text{(stationarity)}}\\
+		c(x^*) = 0 &\textcolor{blue}{\text{(feasibility)}}
 	\end{cases}
 \end{equation}
 In practice, we are happy if we can find an $(\varepsilon_1,\varepsilon_2)$-KKT point for \eqref{eq:constrained_problem}, i.e. a point $x^+$ such that there exists $\lambda^+$ with:
@@ -707,12 +706,12 @@ In practice, we are happy if we can find an $(\varepsilon_1,\varepsilon_2)$-KKT 
 		\|c(x^+)\| \leq \varepsilon_2\\
 	\end{cases}
 \end{equation}
-Let us relate \eqref{eq:penalty_function} and \eqref{eq:constrained_problem}. Notice that:
+Let us relate \eqref{eq:penalty_function} and \eqref{eq:constrained_problem}. Notice that\footnote{$J_c(\cdot)$ is the Jacobian of $c(\cdot)$.}:
 \begin{equation}
 	\begin{aligned}
 		\| \nabla Q_{\sigma} (x) \| &= \|\nabla f(x) + \sigma \mathbf{J}_c(x)^T c(x)\|\\
 		&= \|\nabla f(x) + \sigma \sum_{i=1}^{m} c_i(x) \nabla c_i(x)\|\\
-		&= \|\nabla f(x) - \sum_{i=1}^{m} \lambda_i^+ \nabla c_i(x)\| \quad \text{with} \lambda_i^+ = - \sigma c_i(x^+)\\
+		&= \|\nabla f(x) - \sum_{i=1}^{m} \lambda_i^+ \nabla c_i(x)\| \quad \text{with}\quad \lambda_i^+ = - \sigma c_i(x^+)\\
 	\end{aligned}
 \end{equation}
 Therefore, if $\| \nabla Q_{\sigma} (x^+) \| \leq \varepsilon_1$, then there exists $\lambda^+ \in \R^m, \lambda^+ = - \sigma c(x^+)$ such that $\|\nabla f(x^+) - \displaystyle \sum_{i=1}^{m} \lambda_i^+ \nabla c_i(x^+)\| \leq \varepsilon_1$.\\
@@ -725,9 +724,9 @@ Given $\bar{x} \in \R^n$, suppose that we compute $x^+$ such that
 		\|c(x^+)\|^2 &\leq \frac{2}{\sigma} \left( f(\bar{x}) - f(x^+) \right) + \|c(\bar{x})\|^2
 	\end{aligned}
 \end{equation}
-If $f(x) \geq f_{low} \quad \forall x \in \R^n$, we get $\|c(x^+)\|^2 \leq \frac{2}{\sigma} (f(\bar{x}) - f_{low}) + \|c(\bar{x})\|^2$.\\
+\textcolor{blue}{If $f(x) \geq f_{low} \quad \forall x \in \R^n$}, we get $\|c(x^+)\|^2 \leq \frac{2}{\sigma} (f(\bar{x}) - f_{low}) + \|c(\bar{x})\|^2$.\\
 If $\|c(\bar{x})\| \leq \frac{\varepsilon_2}{\sqrt{2}}$ and $\sigma \geq \frac{4}{\varepsilon_2^2} (f(\bar{x})-f_{low})$, then $\|c(x^+)\|^2 \leq \varepsilon_2^2$ and so $\|c(x^+)\| \leq \varepsilon_2$.\\
-In summary, if we have $\bar{x} \in \R^n$ such that $\|c(\bar{x})\| \leq \frac{\varepsilon_2}{\sqrt{2}}$, and using a method for unconstrained optimization (e.g. GM), we compute $x^+$ with
+In summary, \textcolor{blue}{if we have $\bar{x} \in \R^n$ such that $\|c(\bar{x})\| \leq \frac{\varepsilon_2}{\sqrt{2}}$}, and using a method for unconstrained optimization (e.g. GM), we compute $x^+$ with
 \begin{equation}
 	Q_\sigma(x^+) \leq Q_\sigma(\bar{x}) \quad \text{and} \quad \|\nabla Q_\sigma(x^+)\| \leq \varepsilon_1
 \end{equation}
@@ -745,26 +744,31 @@ for $\sigma \geq \frac{4}{\varepsilon_2^2} (f(\bar{x}-f_{low}))$, then $x^+$ is 
 % 	\end{aligned}
 % \end{equation}
 % so $\nabla Q_\sigma$ is $L_{Q_\sigma}$-Lipschitz with $L_{Q_\sigma} = L_f + \sigma \|A^TA\|$ so GM takes $\O (L_{Q_\sigma} \varepsilon_1^{-2})$ iterations to find $x^+$ with $\|\nabla Q_\sigma(x^+)\| \leq \varepsilon_1$, and $Q_\sigma (x^+) \leq Q_\sigma(\bar{x})$, if initialized with $\bar{x}$. Since $L_{Q_\sigma}=\O(\sigma)$ and $\sigma = \O(\varepsilon_2^{-2})$, we get a complexity bound of $\O(\varepsilon_1^{-2}\varepsilon_2^{-2})$.\\
-\textbf{Method:}
-\begin{itemize}
-	\item \textbf{Step 0:} Given $\varepsilon_1, \varepsilon_2 \in (0,1)$ let $x_0 \in \R^n$, be a point such that $\|c(x_0)\|_2 \leq \frac{\varepsilon_2}{\sqrt{2}}$, choose $\sigma_0 > 0$ and set $k=0$.
-	\item \textbf{Step 1:} Compute $x_{k+1} \in \R^n$ as an approximate solution to 
-	\begin{equation}\label{eq:step1}
-		\begin{aligned}
-			&\min_{x \in \R^n} Q_{\sigma_k}(x)\\
-			\text{such that} \quad &Q_{\sigma_k}(x_{k+1}) \leq Q_{\sigma_k}(x_0)\\
-			\text{and} \quad &\|\nabla Q_{\sigma_k}(x_{k+1})\| \leq \varepsilon_2 
-		\end{aligned}
-	\end{equation}
-	\item If $\|c(x_{k+1})\| \leq \varepsilon_1$, stop.\\
-	Else, set $\sigma_{k+1} = 2 \sigma_k$, $k = k+1$ and go to step 1.
-\end{itemize}
+\begin{algorithm}
+	\caption{Quadratic Penalty Method}
+	\begin{algorithmic}[1]
+		\State \textbf{Input:} $\varepsilon_1, \varepsilon_2 \in (0,1)$, $x_0 \in \R^n$ such that $\|c(x_0)\|_2 \leq \frac{\varepsilon_2}{\sqrt{2}}$, $\sigma_0 > 0$
+		\State $k=0$
+		\While{$\|c(x_{k+1})\| > \varepsilon_1$}
+			\State Compute $x_{k+1} \in \R^n$ as an approximate solution to 
+			\begin{equation}\label{eq:step1}
+				\begin{aligned}
+					&\min_{x \in \R^n} Q_{\sigma_k}(x)\\
+					\text{such that} \quad &Q_{\sigma_k}(x_{k+1}) \leq Q_{\sigma_k}(x_0)\\
+					\text{and} \quad &\|\nabla Q_{\sigma_k}(x_{k+1})\| \leq \varepsilon_2 
+				\end{aligned}
+			\end{equation}
+			\State $\sigma_{k+1} \gets 2\sigma_k$
+			\State $k \gets k + 1$
+		\EndWhile
+	\end{algorithmic}
+\end{algorithm}
 \begin{itemize}
 	\item [$\to$] Note: We can compute $x_{k+1}$ satisfying \eqref{eq:step1} by using any monotone optimization method starting from:
 	\begin{equation}
 		x_k^* = \arg \min \{Q_{\sigma_k}(x_0), Q_{\sigma_k}(x_k)\}
 	\end{equation}
-	\item For a constrained problem of the form $\displaystyle \min_{x \in \R^n} f(x) \quad \text{s.t. } c_i \leq 0 \quad i=0, \dots, m$ . We can add slack variables to obtain an equivalent equality constrained problem:
+	\item For a constrained problem of the form $\displaystyle \min_{x \in \R^n} f(x) \quad \text{s.t. } c_i \leq 0 \quad i=0, \dots, m$, we can add slack variables to obtain an equivalent equality constrained problem:
 	\begin{equation}
 		\begin{aligned}
 			&\min_{x \in \R^n, s \in \R^m} f(x)\\
@@ -772,12 +776,12 @@ for $\sigma \geq \frac{4}{\varepsilon_2^2} (f(\bar{x}-f_{low}))$, then $x^+$ is 
 		\end{aligned}
 	\end{equation}
 \end{itemize}
-\chapter{AGM}
+\chapter{Accelerated Gradient Method}
+\section{Derivation of the algorithm}
 \begin{equation}
 	\min_{x \in \R^n} f(x) 
 \end{equation}
-where $f: \R^n \to \R$ is convex, $\nabla f$ is $L$-Lipschitz and has a minimizer $x^*$.\\
-AGM idea combine present and past information to obtain a point $y_k$ (prediction) and then perform a gradient step using this point as reference poitn.\\
+where \textcolor{blue}{$f: \R^n \to \R$ is convex, $\nabla f$ is $L$-Lipschitz and has a minimizer $x^*$}. The Accelerated Gradient Method combines present and past information to obtain a point $y_k$ (prediction) and then perform a gradient step using this point as reference point.\\
 \begin{equation}
 	\begin{cases}
 		y_k = (1-\gamma_k)x_k + \gamma_k v_k, \quad \gamma_k \in (0,1)\\
@@ -803,12 +807,12 @@ Assuming the 3 last guiding inequalities \eqref{eq:guiding_inequalities} hold, w
 		&\leq \frac{\|x_k-x^*\|^2}{2 C(k-1)^2} = \O(k^{-2}) = \O(\varepsilon^{-1/2}) \quad \forall k \geq 2
 	\end{aligned}
 \end{equation}
-If we take $A_0=0$ and $\Psi_0(x) = \frac{1}{2} \|x-x_0\|^2$. Then the second inequality from \eqref{eq:guiding_inequalities} is true for $k=0$. Let us assume the inequality is true for some $k \geq 0$. Looking at the case $k=1$, it appears that we can define:
+If we take $A_0=0$ and $\Psi_0(x) = \frac{1}{2} \|x-x_0\|^2$, then the second inequality from \eqref{eq:guiding_inequalities} is true for $k=0$. Let us assume the inequality is true for some $k \geq 0$. Looking at the case $k=1$, it appears that we can define:
 \begin{equation}
 	\Psi_{k+1} (x) = \Psi_k(x) + b_k \left(f(y_k)+\langle \nabla f(y_k),x-y_k\rangle \right)
 \end{equation}
-with $b_k > 0$ (to be determined)
-Suppose that the inequality holds for $k \geq 0$. Then by the convexity of $f$ and doing an induction assumption:
+with $b_k > 0$ (to be determined). \\
+Suppose that the inequality holds for $k \geq 0$. Then, by the convexity of $f$ and doing an induction assumption:
 \begin{equation}
 	\begin{aligned}
 		\Psi_{k+1}(x) &\leq \Psi_k(x) + b_k f(x)\\
@@ -841,7 +845,7 @@ Thus, $\Psi_k(x)$ is a $\mu$-strongly convex function with $\mu=1$. Therefore:
 	\end{aligned}
 \end{equation}
 And so:
-\begin{equation}
+\begin{equation}\label{eq:star}
 	\begin{aligned}
 		\min_x \Psi_{k+1}(x) &= \min_x \Psi_k + b_k \left( f(y_k)+ \langle \nabla , x-y_k \rangle \right)\\
 		&\geq \min_x A_kf(x_k) + \frac{1}{2} \|v_k-x_0\|^2 + b_k \left( f(y_k)+ \langle \nabla , x-y_k \rangle \right)\\
@@ -850,6 +854,319 @@ And so:
 		&\geq (A_{k+1}) f(y_k) + \langle \nabla f(y_k), A_kx_k+b_kx-A_{k+1}y_k \rangle + \frac{1}{2} \|v_k -x_0\|^2
 	\end{aligned}
 \end{equation}
+To make things consistent, let us impose 
+\begin{equation}
+	A_k x_k - A_{k+1}y_k + b_kx = b_k(x-v_k) \Longleftrightarrow y_k = \frac{A_k}{A_{k+1}}x_k + \frac{b_k}{A_{k+1}}v_k
+\end{equation}
+And so we can continue equation \eqref{eq:star}:
+\begin{equation}
+	\begin{aligned}
+		\min_{x\in \R^n} \Psi_{k+1}(x) &A_{k+1}\min_{x\in \R^n}\geq f(y_k) + \langle \nabla f(y_k), \gamma_k(x-v_k) \rangle + \frac{1}{2A_{k+1}\gamma_k^2} \|\gamma_k(v_k -x)\|^2\\
+	\end{aligned}
+\end{equation}
+To verify the Lipschitz condition, we impose 
+\begin{equation}
+	\frac{1}{2A_{k+1}\gamma_k^2} =\frac{L}{2}  \Longleftrightarrow b_k^2 - \frac{1}{L} b_k - \frac{A_k}{L} = 0 \Longrightarrow b_k = \frac{1+\sqrt{1+4A_kL}}{2L}
+\end{equation}
+From all that have been computed previously, we can find a bound in terms of iterations needed. If $x^* = \arg\min f(x)$, we have 
+\begin{equation}
+	\begin{aligned}
+		A_k f(x_k) &\le \min_{x \in \R^n} \Psi_k(x) &\leq \Psi_k(x^*)\le A_k f(x^*) + \frac{1}{2}\|x^*-x_k\|^2\\
+		\Rightarrow A_k(f(x_k)-f(x^*)) &\leq \frac{1}{2}\|x^*-x_k\|^2\\
+		\Rightarrow f(x_k)-f(x^*) &\leq \frac{1}{2A_k}\|x^*-x_k\|^2\\	
+	\end{aligned}
+\end{equation}
+From the relatiion $A_{k+1} = A_k + b_k$ and the definition of $b_k$, we can show that $A_k\ge C(k-1)^2$ with $C>0$ and $k\ge2$. Thus, we get 
+\begin{equation}
+	f(x_k) - f(x^*) \le \frac{\|x_0-x^*\|^2}{2C(k-1)^2} = \mathcal{O}(1/k^2) \qquad \forall k\ge1
+\end{equation}
+A recap is given in algorithm \ref{alg:AGM}.\\
+\begin{algorithm}
+	\caption{Accelerated Gradient Method}
+	\label{alg:AGM}
+	\begin{algorithmic}[1]
+		\State \textbf{Input:} Given $x_0 \in \R^n$, define $\Psi_0(x)=\frac{1}{2}\|x-x_0\|^2$, $A_0=0$, $b_0=0$, $k=0$;
+		\State Compute 
+		\begin{equation}
+			b_k = \frac{1+\sqrt{1+4A_kL}}{2L}>0;
+		\end{equation}
+		\State Set $\gamma_k = \frac{b_k}{A_{k+1}}\in (0,1]$ and compute $y_k = (1-\gamma_k)x_k + \gamma_k v_k$;
+		\State Set 
+		\begin{equation}
+			x_{k+1} = \arg\min_{x \in \R^n} f(y_k) + \langle \nabla f(y_k),x-y_k\rangle + \frac{L}{2}\|x-y_k\|^2
+		\end{equation}
+		and $A_{k+1} = A_k + b_k$;
+		\State Define 
+		\begin{equation}
+			\Psi_{k+1}(x) = \Psi_k(x) + b_k \left(f(y_k)+\langle \nabla f(y_k),x-y_k\rangle \right) \qquad \forall x \in \R^n
+		\end{equation}
+		and set 
+		\begin{equation}
+			v_{k+1} = \arg\min_{x \in \R^n} \Psi_{k+1}(x)
+		\end{equation}
+		\State $k \gets k+1$ and go back to Step 1;
+	\end{algorithmic}
+\end{algorithm}
+\section{Accelerated Proximal Gradient Method}
+In this section, we consider the minimisation of a function over a nonempty, closed and convex set $\Omega$. We decompose \textcolor{blue}{the objective function $F$ into a smooth and a possibly non smooth part}:
+\begin{equation}
+	\min_{x \in \Omega\subseteq \R^n} F(x)\equiv f(x) + \varphi(x)
+\end{equation}
+The accelerated proximal gradient method consists in using the proximal operator of the non smooth part $\varphi$ to define $x_{k+1}$:
+\begin{algorithm}
+	\caption{Accelerated Proximal Gradient Method}
+	\label{alg:APGM}
+	\begin{algorithmic}[1]
+		\State \textbf{Input:} Given $x_0 \in domF$, define $\Psi_0(x)=\frac{1}{2}\|x-x_0\|^2$, $A_0=0$, $b_0=0$, $k=0$;
+		\State Compute 
+		\begin{equation}
+			b_k = \frac{1+\sqrt{1+4A_kL}}{2L}>0;
+		\end{equation}
+		\State Set $\gamma_k = \frac{b_k}{A_{k+1}}\in (0,1]$ and compute $y_k = (1-\gamma_k)x_k + \gamma_k v_k$;
+		\State Set 
+		\begin{equation}
+			x_{k+1} = Prox_{\frac{1}{L}\varphi}(y_k - \frac{1}{L}\nabla f(y_k))
+		\end{equation}
+		and $A_{k+1} = A_k + b_k$;
+		\State Define 
+		\begin{equation}
+			\Psi_{k+1}(x) = \Psi_k(x) + b_k \left(f(y_k)+\langle \nabla f(y_k),x-y_k\rangle \right) \qquad \forall x \in \R^n
+		\end{equation}
+		and set 
+		\begin{equation}
+			v_{k+1} = \arg\min_{x \in \R^n} \Psi_{k+1}(x)
+		\end{equation}
+		\State $k \gets k+1$ and go back to Step 1;
+	\end{algorithmic}
+\end{algorithm}
+\begin{thm}
+	If $\{x_k\}_{k\ge0}$ is generated by the accelerated proximal gradient method, then 
+	\begin{equation}
+		F(x_k) - F(x^*) \le \frac{8L\|x_0-x^*\|^2}{(k-1)^2} \qquad \forall k\ge2 
+	\end{equation}
+\end{thm}
+\chapter{Path following Interior Point Method}
+\section{Self concordant functions}
+\subsection{Definition}
+\begin{definition}
+	Given a convex function $f\in \mathcal{C}^3 (dom f)$, with $domf\subseteq \R^n$ open and convex, $f(\cdot)$ is said to be self-concordant with constant $M_f$ when 
+	\begin{equation}
+		\left| D^3 f(x)[u,u,u] \right| \le 2M_f \|u\|_x^3 \qquad \forall x\in domf \qquad \forall u\in \R^n
+	\end{equation}
+	where $\|u\|_x \coloneqq \sqrt{\langle \nabla^2 f(x)u,u\rangle}$.
+\end{definition}
+From this definition, we can derive two lemmas:
+\begin{itemize}
+	\item Let $f_1,f_2$ be self-concordant functions with constants $M_1$ and $M_2$ respectively. Then, given constants $\alpha,\beta>0$, the function $f=\alpha f_1 + \beta f_2$ is self-concordant with constant $M_f = \max\left\{\frac{M_1}{\sqrt{\alpha}}, \frac{M_2}{\sqrt{\beta}}\right\}$.
+	\item Let $f(\cdot)$ be a self-concordant function with constant $M_f\ge 0$. Given $x,y\in domf$, we have 
+	\begin{equation}
+		\|y-x\|_y \ge \frac{\|y-x\|_x}{1+M_f \|y-x\|_x}
+	\end{equation}
+\end{itemize}
+\subsection{With \texorpdfstring{$\mu$} --strongly convex}
+As a reminder, a function $f$ is said to be $\mu$-strongly convex if
+\begin{equation}
+	\begin{aligned}
+		f(y)&\ge f(x) + \langle \nabla f(x),y-x\rangle + \frac{\mu}{2}\|y-x\|^2 \qquad \forall x,y\in domf\\
+		&\Rightarrow \langle \nabla f(x)-\nabla f(y),x-y\rangle \ge \mu \|x-y\|^2
+	\end{aligned}
+\end{equation}
+Taking $y=x^*=\arg\min f(x)$, we find 
+\begin{equation}
+	\|\nabla f(x)\| \ge \mu \|x-x^*\| \qquad \forall x\in domf
+\end{equation}
+after using the Cauchy-Schwarz inequality. This implies that the norm of the gradient tends to 0 as $x$ approaches the minimizer $x^*$.\\
+We can show that, for a self concordant function $f$ with constant $M_f$, given $x,y\in domf$, we have 
+\begin{equation}\label{eq:sc}
+	\langle \nabla f(y)-\nabla f(x),y-x\rangle \ge \frac{\|y-x\|_x^2}{1+M_f\|y-x\|_x}
+\end{equation}
+\begin{thm}
+	Let $f(\cdot)$ be a self-concordant function with constant $M_f$. Consider $x_f^* = \arg\min_{x\in domf}f(x)$. Given $x\in domf$, with $\nabla^2 f(x)$ is nonsingular, we have 
+	\begin{equation}\label{eq:sc2}
+		\|x-x^*\|_x \le \frac{\|\nabla f(x)\|_x^*}{1-M_f\|\nabla f(x)\|_x^*}
+	\end{equation}
+	whenever $M_f\|\nabla f(x)\|_x^* < 1$, with $\|\nabla f(x)\|_x^* = \sqrt{\langle h, \nabla^{-2}f(x)h\rangle}$.
+\end{thm}
+\begin{itemize}
+	\item [$\to$] Note: $|\langle h,u\rangle| \le \|h\|_x^* \|u\|_x$ if $\nabla^2 f(x)$ is nonsingular.
+\end{itemize}
+\subsection{Self-concordant barrier}
+\begin{definition}
+	Let $F(\cdot)$ be a self-concordant function with constant $M_f=1$. We say that $F(\cdot)$ is a $\nu$-self-concordant barrier for the set $\overline{dom F}$ when 
+	\begin{equation}
+		\langle \nabla F(x),u\rangle^2 \le \nu \langle \nabla^2F(x)u,u\rangle \qquad x\in domF\qquad \forall u\in \R^n
+	\end{equation}
+\end{definition}
+The typical example is $F(x)=-\log(x)$. 
+\begin{itemize}
+	\item [$\to$] Note: If $F(\cdot)$ is a $\nu$-self-concordant barrier for the set $\overline{dom F}$, then $\langle \nabla F(x),y-x\rangle < \nu$ $\forall x,y \in dom F$.
+	\item [$\to$] If, in addition, $\nabla^2F(x)$ is nonsingular, then $\|\nabla F(x)\|_x^*\le \sqrt{\nu}$.
+\end{itemize}
+\section{Path-following Interior-point Method}
+Consider the optimization problem 
+\begin{equation}\label{eq:problem}
+	\min_{x\in \R^n} f_0(x)\equiv \langle c,x\rangle \quad x\in \Omega
+\end{equation}
+where $\Omega = \overline{domF}$ for some $\nu$-self-concordant barrier $F$ and it is bounded. From thsese assumptions, it follows from the Weierstraß theorem that it has a solution $x^*$. \\
+
+The barrier strategy consists in solving the problem iteratively by solving unconstrained optimization problems of the form
+\begin{equation}
+	\color{red}\boxed{\color{black}\min_{x\in domF}tf_0(x) + F(x)\qquad t>0}\color{black}
+\end{equation}
+Let us denote $f(t;x)\equiv t\langle c,x\rangle +F(x)$, and $x^*(t) = \arg\min_{x\in domF}f(t;x)$, which we call the central path function. Then, 
+\begin{equation}\label{eq:central_path}
+	\nabla_x f(t;x^*(t)) = tc + \nabla F(x^*(t)) = 0 \Longrightarrow c = -\frac{1}{t}\nabla F(x^*(t))
+\end{equation}
+Consequently, 
+\begin{equation}
+	f_0(x^*(t)) - f_0(x) = \langle c,x^*(t)-x\rangle = \frac{1}{t} \langle \nabla F(x^*(t)),x^*-x^*(t)\rangle  < \frac{\nu}{t}
+\end{equation}
+The last inequality following equation \eqref{eq:sc}. This means that 
+\begin{equation}
+	\lim_{t\to \infty} f_0(x^*(t)) = f_0(x^*)
+\end{equation}
+And in particular, for $\epsilon>0$, if $t\ge \nu \epsilon^{-1}$, then
+\begin{equation}
+	f_0(x^*(t)) - f_0(x^*) < \epsilon
+\end{equation}
+But, since $x^*(t)$ is not computable, one way to get an implementable method is to compute $\bar x(t)$ such that 
+\begin{equation}\label{eq:beta}
+	\|\nabla_x f(t;\bar x(t))\|_x^* \le \beta\qquad \beta \in (0,1)
+\end{equation}
+This implies 
+\begin{equation}
+	\begin{aligned}
+		f_0(\bar x(t)) - f_0(x^*) &= f_0(\bar x(t)) - f_0(x^*(t)) -(f_0(x^*) - f_0(x^*(t)))\\
+		& < \frac{\nu}{t} + f_0(\bar x(t)) - f_0(x^*(t))\\
+		& = \frac{\nu}{t} + \frac{1}{t} \langle tc, \bar x(t)-x^*(t)\rangle\\
+		& = \frac{\nu}{t} + \frac{1}{t} \langle \nabla_x f(t;\bar x(t))-\nabla F(\bar x(t)), \bar x(t)-x^*(t)\rangle\\
+	\end{aligned}
+\end{equation}
+To get to the next line, we use the Cauchy-Schwarz and triangular inequalities:
+\begin{equation}
+	\le \frac{\nu}{t} + \frac{1}{t} \left[ \|\nabla_x f(t;\bar x(t))\|_x^* + \|\nabla F(\bar x(t))\|_x^* \right] \|\bar x(t)-x^*(t)\|_x
+\end{equation}
+From equations \eqref{eq:beta} and \eqref{eq:sc2}, and a property of self-concordant barriers, this means that 
+\begin{equation}
+	f_0(\bar x(t)) - f_0(x^*) < \frac{\nu}{t} + \frac{1}{t}(\beta +\sqrt{\nu}) \underbrace{\frac{\|\nabla_xf(t;\bar x(t))\|_x^*}{1-\|\nabla_xf(t;\bar x(t))\|_x^*}}_{\eqqcolon \omega(\|\nabla_xf(t;\bar x(t))\|_x^*)}
+\end{equation}
+where $\omega(x) = \frac{x}{1-x}$ is a monotone increasing function, meaning that 
+\begin{equation}
+	\omega(\beta) > \omega(\|\nabla_xf(t;\bar x(t))\|_x^*)
+\end{equation}
+and thus 
+\begin{equation}\label{eq:bounding}
+	f_0(\bar x(t)) - f_0(x^*) < \frac{1}{t}\left(\nu + (\beta +\sqrt{\nu}) \frac{\beta}{1-\beta}\right)
+\end{equation}
+\section{Intermediate Newton method}
+Let us consider the problem \eqref{eq:problem}, and let $\hat f(\cdot)$ be a self-concordant function with constant $M_{\hat f} = 1$. Consider $x\in dom\hat f$ with \textcolor{blue}{$\nabla^2\hat f(x)$ nonsingular}.Assume that \textcolor{blue}{$\|\nabla \hat f(x)\|_x^* \le \tau$ with $\tau+\tau^2 +\tau^3\le 1$}. The iterate of the intermediate Newton method is given by 
+\begin{equation}
+	x^+ = x - \frac{1}{1+\xi} \nabla^{-2}\hat f(x)\nabla \hat f(x) \qquad \xi = \frac{(\|\nabla \hat f(x)\|_x^*)^2}{1+\|\nabla \hat f(x)\|_x^*}
+\end{equation}
+Then, $x^+\in dom\hat f$ and 
+\begin{equation}\label{eq:bernadette}
+	\|\nabla \hat f(x^+)\|_{x^+}^* \le \tau^2\left(1+\tau+\frac{\tau}{1+\tau+\tau^2}\right)
+\end{equation}
+Consider now the function $f(t;x) \equiv t\langle c,x\rangle + F(x)$, a self-concordant function with constant $M_f=1$. The gradient and hessian are 
+\begin{equation}
+	\nabla_x f(t;x) = tc + \nabla F(x) \qquad \nabla^2_x f(t;x) = \nabla^2F(x)
+\end{equation}
+Let us define the iterate $t^+ = t + \frac{\gamma}{\|c\|_x^*}$ with $\gamma>0$. The iterate of the intermediate Newton method becomes
+\begin{equation}
+	x^+ = x - \frac{1}{1-\xi}\nabla^{-2}_xf(t^+;x)\nabla_xf(t^+; x) = x-\frac{1}{1+\xi}\nabla^{-2}F(x)(t^+ c + \nabla F(x))
+\end{equation}
+As previously, suppose that \textcolor{blue}{$\|\nabla_x f(t;x)\|_x^* \le \beta$}. Then, 
+\begin{equation}
+	\begin{aligned}
+		\|\nabla_xf(t^+;x)\|_x^* & = \|t^+c + \nabla F(x)\|_x^* = \|t^+c-tc+tc + \nabla F(x)\|_x^*\\
+		& \le (t^+-t)\|c\|_x^* + \|\nabla_xf(t;x)\|_x^* = \gamma +\beta\\
+	\end{aligned}
+\end{equation}
+This inequality is derived using the hypothesis and the definition of $t^+$. This means that, \textcolor{blue}{choosing $\gamma \le \tau - \beta$ for $\tau+\tau^2+\tau^3\le 1$}, we get 
+\begin{equation}
+	\| \nabla_x f(t^+;x)\|_x^* \le \tau
+\end{equation}
+By equation \eqref{eq:bernadette}, we have
+\begin{equation}
+	\|\nabla_x f(t^+; x^+)\|_{x^+}^* \le \tau^2\left(1+\tau+\frac{\tau}{1+\tau+\tau^2}\right) = \frac{\tau^2(1+\tau)}{1-\tau^3}
+\end{equation}
+And so taking $\beta = \tau^2 \left(1+\tau+\frac{\tau}{1+\tau+\tau^2}\right)$ seems reasonable. 
+\begin{itemize}
+	\item [$\to$] Note: notice that $\tau>\beta$ for every $\tau\in (0,1/2]$ and verifies $\tau+\tau^2+\tau^3\le 1$.
+\end{itemize}
+From all those inequalities and properties, we can derive an algorithm. 
+\section{Path-following Interior point Algorithm}
+\subsection{Algorithm}
+\begin{algorithm}[H]
+	\caption{Path-following Interior Point Algorithm}
+	\label{alg:PFIP}
+	\begin{algorithmic}[1]
+		\State \textbf{Input:} Given $\tau\in (0,1/2]$, define $\beta = \tau^2\left(1+\tau+\frac{\tau}{1+\tau+\tau^2}\right)$. Choose $0<\gamma\le \tau-\beta$. Find $x_0\in domF$ such that $\|\nabla F(x_0)\|_{x_0}^* \le \beta$ and set $t_0=0$ and $k\coloneqq0$;
+		\State \textbf{Step 1: }Compute 
+		\begin{equation}
+			\begin{aligned}
+				t_{k+1} &= t_k + \frac{\gamma}{\|c\|_x^*}\\
+				x_{k+1} &= x_k - \frac{1}{1+\xi_k}\nabla^{-2}F(x_k)(t_{k+1}c+\nabla F(x_k))\\
+				\xi_k &= \frac{(\|\nabla f(t_k;x_k)\|_{x_k}^*)^2}{1+\|\nabla f(t_k;x_k)\|_{x_k}^*}
+			\end{aligned}
+		\end{equation}
+		\State \textbf{Step 2:} $k\gets k+1$ and go back to Step 1.
+	\end{algorithmic}
+\end{algorithm}
+\subsection{Complexity bound}
+Notice that, by construction, $\|\nabla_xf(t_k;x_k)\|_{x_k}^*\le \beta$, $\forall k\ge 0$, and so 
+\begin{equation}
+	t_k \|c\|_{x_k}^* = \|\nabla_x f(t_k;x_k)-\nabla F(x_k)\|_{x_k}^* \le \beta +\sqrt{\nu}
+\end{equation}
+This can be used to bound $t_{k+1}$: 
+\begin{equation}
+	t_{k+1}-t_k = \frac{\gamma}{\|c\|_{x_k}^*}\ge \frac{\gamma t_k}{\beta+\sqrt{\nu}} \Longleftrightarrow \left(1+\frac{\gamma}{\beta+\sqrt{\nu}}\right)t_k \qquad \forall k\ge 0
+\end{equation}
+Thus,
+\begin{equation}\label{eq:t_k}
+	t_k \ge \left(1+\frac{\gamma}{\beta+\sqrt{\nu}}\right)^{k-1}t_1 = \left(1+\frac{\gamma}{\beta+\sqrt{\nu}}\right)^{k-1} \frac{\gamma}{\|c\|_{x_0}^*}
+\end{equation}
+Combining this to \eqref{eq:bounding}, it follows that 
+\begin{equation}
+	\begin{aligned}
+		f_0(x_k)-f_0^* &\le \frac{1}{t_k}\left(\nu+\frac{(\beta+\sqrt{\nu})\beta}{1-\beta}\right)\\
+		& \le \frac{\|c\|_{x_0}^* \left(\nu +\frac{(\beta+\sqrt{\nu})\beta}{1-\beta}\right)}{\gamma \left(1+\frac{\gamma}{\beta+\sqrt{\nu}}\right)^{k-1}}
+	\end{aligned}
+\end{equation}
+Thus, to obtain a point $x_k$ with $f_0(x_k)-f_0^* \le \epsilon$, it is sufficient to have 
+\begin{equation}
+	\begin{aligned}
+		\frac{\|c\|_{x_0}^*\left(\nu + \frac{(\beta+\sqrt{\nu})\beta}{1-\beta}\right)}{\gamma\left(1+\frac{\gamma}{\beta+\sqrt{\nu}}\right)^{k-1}}&\le \epsilon \\
+		(k-1) \ln\left(1+\frac{\gamma}{\beta+\sqrt{\nu}}\right) &\ge \ln \left(\frac{\|c\|_{x_0}^* \left(\nu +\frac{(\beta+\sqrt{\nu})\beta}{1-\beta}\right)}{\gamma}\epsilon^{-1}\right)\\
+		&\Longrightarrow \color{red}\boxed{\color{black}k \ge \mathcal{O}(\epsilon^{-1})}\color{black}
+	\end{aligned}
+\end{equation}
+Notice that $\ln(1+x)\ge cx$ for $x>0$ and $c$ a constant \textcolor{red}{TO BE CHECKED}. We can apply it to $x=\frac{\gamma}{\beta+\sqrt{\nu}}$ to find a bound on the number of iterations: we will have $f_0(x_k)-f_0^* \le \epsilon$ whenever
+\begin{equation}
+	(k-1)c\left(\frac{\gamma}{\beta+\sqrt{\nu}}\right)\ge \ln \left(\|c\|_{x_0}^* \left(\nu + \frac{(\beta+\sqrt{\nu})\beta}{1-\beta}\right)\gamma^{-1} \epsilon^{-1}\right)
+\end{equation}
+Therefore, to find a $\epsilon$-approximate solution of problem \eqref{eq:problem}, tha algorithm \ref{alg:PFIP} takes no more than $\mathcal{O}(\sqrt{\nu}\ln(\epsilon^{-1}))$ iterations.
+\subsection{Example}
+Consider the following problem:
+\begin{equation}
+	\begin{aligned}
+		\min_{x\in \R^n} q_0(x)&\equiv c_0 + \langle b_0,x\rangle + \frac{1}{2}\langle A_0x,x\rangle \\
+		\text{s.t.}\quad  q_i(x)&\equiv c_i + \langle b_i,x\rangle + \frac{1}{2}\langle A_ix,x\rangle \le \beta_i \qquad i=1,\dots,m
+	\end{aligned}
+\end{equation}
+where $A_i=A_i^T \succeq 0$ for $i=0,\dots,m$. To be able to used the algorithm derived previously, we need to change the objective function:
+\begin{equation}\label{eq:new_prob}
+	\min_{(x,\beta)\in \R^n\times \R} \beta_0 \equiv f_0(x,\beta_0) \quad \text{ s.t. }\quad q_i(x) \le \beta_i \qquad i=0,\dots,m
+\end{equation}
+The feasible set of this problem is the closure of the domain of the following self-concordant barrier, with constant $\nu=m+1$:
+\begin{equation}
+	F(x,\beta_0) = -\sum_{i=0}^m \ln(\beta_i-q_i(x))
+\end{equation}
+From the complexity of algorithm \ref{alg:PFIP}, it takes at most $\mathcal{O}\left(\sqrt{m+1}\ln (\epsilon^{-1})\right)$ iterations to find $x_k$ such that 
+\begin{equation}
+	f_0(x_k,\beta_{0,k}) - f_0^* \le \epsilon
+\end{equation}
+and the operation complexity multiplies it by $\mathcal{O}(m^3)$ because it solves a linear system at each iteration. 
 \chapter{Tips and Tricks}\label{chap:tricks}
 \begin{enumerate}
 	\item Approximation of the max:
