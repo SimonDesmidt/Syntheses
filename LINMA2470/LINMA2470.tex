@@ -83,11 +83,16 @@
 \end{itemize}
 \section{Expectation and variance}
 \begin{itemize}
-  \item For a discrete random variable, $\E[X]= \sum_{n=-\infty}^\infty nP[X=n]$;
+  \item For a discrete random variable, $\E[X]= \sum_{n=-\infty}^\infty nP[X=n]=\sum_{n=-\infty}^\infty P(X>n)$;
   \item For a continuous random variable, $\E[X]=\int_{-\infty}^\infty xf_X(x)dx$;
   \item $\E[X] = \int_0^\infty (1-F_X(x))dx$.
   \item $Var[X] = \sigma_X^2 = \E[(X-\E[X])^2] = \E[X^2] - \E[X]^2$;
 \end{itemize}
+The moment generation function is 
+\begin{equation}
+	M_X(t) = \mathbb{E}[e^{tX}] = \sum_{i=0}^\infty \frac{t^im_i}{i!}
+\end{equation}
+where $m_i=\mathbb{E}[X^i]$ is the $i$-th moment.
 \section{Law of large numbers}
 Let $X_1,\dots,X_n$ be a series of independent and uniformly distributed (IID) random variables with expectation $\bar X$ and finite variance $\sigma_X^2$. Let $S_n = X_1+\dots +X_n$. Then, 
 \begin{itemize}

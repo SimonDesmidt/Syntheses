@@ -9,6 +9,8 @@
 \usepackage{libertine}
 \usepackage{graphicx}
 \usepackage{wrapfig}
+\usepackage{tikz}
+\usetikzlibrary{shapes.multipart}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{float}
@@ -232,12 +234,12 @@ A lattice is a graphical representation of a Markov process $\{\xi_t\}_{t\in \Z}
 	\centering 
 	\includegraphics[width = .3\textwidth]{img/lattice.png}
 \end{figure}
-\subsection{Serial Independence}
+\subsection{Serial Independence}\label{sec:serial_ind}
 A process satisfies serial independence if, for every stage $t$, $\xi_t$ has a probability distribution that does not depend on the history of the process. Thus, the probability measure is 
 \begin{equation}
 	\P\left[\xi_t(\omega)=i\left|\xi_{[t-1]}(\omega)\right.\right] = p_t(i) \qquad \forall \ \xi_{[t-1]}\in\Xi_{[t-1]}, i\in\Xi_t
 \end{equation}
-\section{Multi Stage Stochastic Linear Program}
+\section{Multi Stage Stochastic Linear Program}\label{sec:st}
 \subsection{Notation}
 \begin{itemize}
 	\item Probability space: $(\Omega, 2^\Omega, \P)$ with filtration $\{\A\}_{t\in \{1, \dots, H\}}$
@@ -248,7 +250,12 @@ A process satisfies serial independence if, for every stage $t$, $\xi_t$ has a p
 	\item $x_t(\omega)$: set of state and action variables in period $t$
 	\item We implicitly enforce non-anticipativity by requiring that $x_t$ and $\xi_t$ are adapted to filtration $\{\mathcal{A}\}_{t\in \{1, \dots, H\}}$ 
 	\item $\forall A \in \mathcal{A}_k \setminus \mathcal{A}_{k-1}, \: x_t(\omega_1)=x_t(\omega_2) \: \forall\omega_1,\omega_2 \in A$
+	\item [$\to$] Note: The filtration $\mathcal{A}_t$ represents what is distinguishable at the time of observation; it reveals the incertainty at each time $t$. 
 \end{itemize}
+\begin{equation}
+	\mathcal{A}_t = \mathcal{A}_{t-1}\cup \left\{\cup_{E_i\in \Omega}\left\{E_i, \Omega\setminus \{E_i\}\right\}\right\} \qquad E_i = \{S_1,\dots,S_{i-1},s_i,S_{i+1},\dots, S_H\}
+\end{equation}
+where $s_i$ is a realisation of the state set $S_i$.
 \subsection{General formulation of the MSLP}
 The extended formulation of the MSLP is: 
 \begin{equation}
@@ -269,7 +276,7 @@ We can now consider two specific instantiations of the MSLP: the scenario tree (
 	\item $\omega_{[t]} \in S_1 \times \dots \times S_t$ (interpretation: index in $\Xi_{[t]} = \Xi_1 \times \dots \times \Xi_t$, which is the history of realizations, up to period $t$)
 \end{itemize}
 \subsection{Scenario Tree formulation}
-\begin{equation}
+\begin{equation}\label{eq:scenario_tree}
 	 \begin{aligned}
 		&\min c_1^Tx_1 + \E\left[c_2(\omega_{[2]})^T x_2(\omega_{[2]})+ \dots + c_H(\omega_{[H]})^Tx_H(\omega_{[H]})\right]\\
 		&s.t. \quad W_1x_1 = h_1\\
@@ -693,8 +700,9 @@ The goal of these cuts are to provide bounds on the solution of problem \eqref{e
 	\end{itemize}
 \end{itemize}
 \section{Final Algorithm}
-\begin{algorithm}
+\begin{algorithm}[H]
 	\caption{The L-Shaped Algorithm}
+	\label{algo:lshaped}
 	\begin{algorithmic}[1]
 		\State \textbf{Step 0:} Set $k=0$, $V_0 = R_0 = \emptyset$;
 		\State \textbf{Step 1:} Solve $(M)$;
@@ -713,7 +721,7 @@ The goal of these cuts are to provide bounds on the solution of problem \eqref{e
 		\EndIf 
 	\end{algorithmic}
 \end{algorithm}
-\section{Example}
+\section{Example}\label{sec:lshaped_example}
 Let us do an example to better understand this algorithm. The initial problem is 
 \begin{equation}
 	\begin{aligned}
@@ -788,5 +796,615 @@ At this iteration, we have $x_5=2$. As this value is optimal, no more iteration 
 	\label{fig:l-shaped}
 \end{figure}
 \chapter{The Multicut L-Shaped Method}
+The idea of the multicut L-Shaped method is to do cuts as in the L-Shaped method, but on the $Q_\omega(x)$ instead of on the function $V(x)$ directly, and describe $V(x)$ from that. \\
+As for the L-Shaped method, let us start from the extensive form of the 2-Stage stochastic linear program:
+\begin{equation}
+	\begin{aligned}
+		\min& c^T x + \E_\omega[\min q(\omega)^Ty(\omega)]\\
+		& Ax=b\\
+		& T(\omega) x + W(\omega)y(\omega) = h(\omega)\\
+		& x\ge0, y\ge 0
+	\end{aligned}
+\end{equation}
+We know that 
+\begin{equation}
+	V(x) = \left\{\sum_\omega p_\omega \min q_\omega^T y_\omega | W_\omega y_\omega = h_\omega - T_\omega x ,y_\omega \ge 0\right\}
+\end{equation}
+\begin{equation}\label{eq:ssp}
+	Q_\omega(x) = \left\{ \min q_\omega^T y|W_\omega y=h_\omega - T_\omega x, y\ge 0\right\}
+\end{equation}
+are piecewise linear functions of $x$, and the main problem corresponding to each function is the following:\\
+\begin{minipage}{.5\textwidth}
+	\begin{equation}
+		\begin{aligned}
+			z_k &= \min c^T x + \theta \\
+			&Ax=b\\
+			&\sigma^T(h-Tx)\le 0\quad \sigma\in R_k\subseteq R\\
+			&\pi^T(h-Tx)\le \theta \quad \pi\in E_k\subseteq E\\
+			& w\ge 0
+		\end{aligned}
+	\end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+	\begin{equation}
+		\begin{aligned}
+			&\min c^Tx+\sum_\omega p_\omega \theta_\omega \\
+			&Ax = b\\
+			& \sigma^T(h_\omega-T_\omega x)\le 0\quad \sigma \in R_{\omega,k}\subseteq R_\omega\\
+			& \pi^T(h_\omega-T_\omega x)\le \theta_\omega \quad \pi\in E_{\omega, k}\subseteq E_\omega\\
+			& x\ge 0
+		\end{aligned}
+	\end{equation}
+\end{minipage}
+\section{Optimality cuts}
+Let us consider a trial first-stage decision $x^v$, and $\pi_\omega$ the simplex multipliers of the second-stage problem \eqref{eq:ssp} (\textcolor{red}{what does that mean?}).\\
+Then, $\sum_\omega p_\omega \pi_\omega^T(h_\omega - T_\omega x)$ supports $V(x)$ at $x^v$, and $\pi_\omega^T(h_\omega - T_\omega x)$ supports $Q_\omega(x)$ at $x^v$.\\
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/lshaped.png}
+		\caption{Optimality cut for L-Shaped Method}
+	\end{subfigure}
+	\hfill 
+	\begin{subfigure}[b]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/multicut.png}
+		\caption{Optimality cut for Multicut L-Shaped Method}
+	\end{subfigure}
+\end{figure}
+\begin{itemize}
+	\item [$\to$] Note: The cuts of the multicut method are tigher than the L-Shaped method.
+\end{itemize}
+\section{Algorithm}
+Here is the algorithm for the Multicut L-Shaped method, where the differences with the basic method are highlighted in green.
+\begin{algorithm}[H]
+	\caption{The Multicut L-Shaped Algorithm}
+	\label{algo:multicut}
+	\begin{algorithmic}[1]
+		\State \textbf{Step 0:} Set $k=0$, \textcolor{green}{$E_{\omega,0} = R_{\omega,0}=$}$ \emptyset$;
+		\State \textbf{Step 1:} Solve $(M)$;
+		\If{$(M)$ is feasible} \State Store $x_k$;
+		\Else \State exit: infeasible;
+		\EndIf
+		\State \textbf{Step 2:} For $\omega=1,\dots,N$, solve $(S_\omega)$ with $x_k$ as input
+		\If {$(S_\omega)$ is infeasible}
+		\State \textcolor{green}{$R_{\omega,k+1}\coloneqq R_{\omega, k} \cup \{\sigma_{\omega,k+1}\}$}, where $\sigma_{\omega, k+1}$ is an extreme ray of $(S_\omega)$;
+		\State $k\coloneqq k+1$;
+		\State Go back to \textbf{Step 1}.
+		\Else \State Store $\pi_{\omega,k+1}$;
+		\EndIf 
+		\State \textbf{Step 3:} For $\omega=1,\dots,N$, let \textcolor{green}{$E_{\omega,k+1} = E_{\omega,k} \cup \{\pi_{\omega,k+1}\}$};
+		\If {\textcolor{green}{$E_{\omega,k} = E_{\omega,k+1}$ for all $\omega$},} 
+		\State Terminate with $(x_k,y_{k+1})$ as the optimal solution;
+		\Else \State $k\coloneqq k+1$ and return to \textbf{Step 1}.
+		\EndIf 
+	\end{algorithmic}
+\end{algorithm}
+The algorithm is essentially the same as \ref{algo:lshaped}, with the difference that we solve a distinct problem for all $\omega$ instead of a global one. 
+\section{Example}
+Let us use the same problem as in last section (\ref{sec:lshaped_example}). 
+\begin{equation}
+	\begin{aligned}
+		&z = \min\E_\xi(y_1 + y_2)\\
+		& \text{s.t. }0\le x\le 10\\
+		& y_1-y_2 = \xi-x\\
+		& y_1,y_2\ge 0\\
+	\end{aligned}
+\end{equation}
+where we define 
+\begin{equation}
+	\xi = \begin{cases}
+		1 & p_1 = 1/3\\
+		2 & p_2 = 1/3\\
+		4 & p_3 = 1/3\\
+	\end{cases}
+\end{equation}
+The main problem is 
+\begin{equation}
+	\begin{aligned}
+		(M): & \ \min \sum_\omega \frac{1}{3}\theta_\omega\\
+		& \theta_\omega \ge -10^6\\
+		& 0\le x\le 10\\
+	\end{aligned}
+\end{equation}
+And the subproblem and its dual are \\
+\begin{minipage}{.5\textwidth}
+	\begin{equation}
+		\begin{aligned}
+			(S_\omega)\ : \ &\min y_1 + y_2 = |\xi_\omega-x|\\
+			& y_1 - y_2 = \xi_\omega - x\\
+			& y_1,y_2 \ge 0\\
+		\end{aligned}
+	\end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+	\begin{equation}\label{eq:dual}
+		\begin{aligned}
+			(D_\omega) \ : \ & \max_{\pi_\omega} \pi_\omega(\xi_\omega-x)\\
+			&-1\le \pi_\omega \le 1
+		\end{aligned}
+	\end{equation}
+\end{minipage}
+\begin{itemize}
+	\item [$\to$] Note: the bound $\theta_\omega \ge -10^6$ is needed for the first iteration but is not really a restriction. 
+\end{itemize}
+\subsection{Iteration 1}
+At the first iteration, we solve problem (M) for $x$. The solution is \textcolor{red}{$x_1=0$}, and this value is used to solve problem \eqref{eq:dual}. The solution for $\pi$ is 1 for each $\xi_\omega$ and so we add the cuts 
+\color{red}
+\begin{equation}
+	\theta_\omega \ge \xi_\omega -x \Longrightarrow \begin{cases}
+		\theta_1 \ge 1-x\\
+		\theta_2 \ge 2-x\\
+		\theta_3 \ge 4-x\\
+	\end{cases}\color{black}
+\end{equation}\color{black}
+We add this to the main problem (M) for the next iteration.
+\subsection{Iteration 2}
+We now have a problem with 5 constraints. The new problem is 
+\begin{equation}
+	\begin{aligned}
+		& \min \sum_\omega \frac{1}{3}\theta_\omega \\
+		& \theta_\omega \ge -10^{6}\\
+		& 0\le x\le 10\\
+		& \color{red}\theta_\omega \ge \xi_\omega -x \quad \forall \omega=1,2,3\color{black}
+	\end{aligned}
+\end{equation}
+We solve for $x$ and find \textcolor{green}{$x_2=10$}. We can solve problem $(D_\omega)$ with this value as input, and the solution is $\pi_\omega = -1$ for each value of $\omega$. Once again, we add those constraints to the main problem:
+\begin{equation}
+	\color{green}
+	\theta_\omega \ge x-\xi_\omega \Longrightarrow \begin{cases}
+		\theta_1 \ge x-1\\
+		\theta_2 \ge x-2\\
+		\theta_3 \ge x-3
+	\end{cases}\color{black}
+\end{equation}
+\subsection{Iteration 3}
+We can now formulate the problem for this next iteration:
+\begin{equation}
+	\begin{aligned}
+		&\min \sum_\omega \frac{1}{3}\theta_\omega \\
+		\theta_\omega &\ge -10^6\\
+		0&\le x\le 10\\
+		\color{red} \theta_\omega &\color{red}\ge \xi_\omega-x\\
+		\color{green}\theta_\omega &\color{green} \ge x-\xi_\omega \color{black}
+	\end{aligned}
+\end{equation}
+Solving for $x$, \textcolor{blue}{$x_3=2$}. Solving now $(D_\omega)$, the constraints to be added are the following:
+\begin{equation}
+	\color{blue}
+	\begin{cases}
+		\pi_1 =-1  \Rightarrow \theta_1 \ge x-1 \\
+		\pi_2 = [-1,1] \Rightarrow \theta_2 \ge x-2\\
+		\pi_3 = 1 \Rightarrow \theta_3 \ge 4-x\\
+	\end{cases}\color{black}
+\end{equation}
+Note that the constraint for $\theta_2$ is arbitrary as $\pi_2$ can take any value. However, as we already have the constraints $\theta_2 \ge x-2$ and $\theta_2\ge 2-x$, any value of $\pi_2\in [-1,1]$ is a linear combination of the two. As we have only added constraints that already existed, we already know that $x_4$ will have the same value as $x_3$, and so we have converged to the optimal solution. The other method to check convergence is to have a lower bound and upper bound with the same value. 
+\section{Pros and Cons}
+The Multicut L-Shaped method has a more detailed description of the value function $V(x)$ thanks to the separation in several terms $Q_\omega(x)$, but the main problem is bigger as we add $N$ constraints at each iteration instead of $1$. Typically, fewer iterations are required in the Multicut, but each iteration takes more time. 
+\chapter{Nested Decomposition}
+\section{Backward Solution of Multistage Stochastic Linear Programs}
+Let us remember the terminology of scenario trees in \ref{sec:st}. We have already mentionned that we can use dynamic programming to solve the problem in scenario tree formulation. The method consists in computing recursively the values of $Q_\omega$ and $V_\omega$:\\
+\begin{equation}
+	\begin{aligned}
+		Q_t(x_{t-1},\xi_t) &= \min_{x_t} c_t(\omega_{[t]})^T x_t + V_{t+1} (x_t, \omega_{[t]})\\
+		& T_{t-1}(\omega_{[t]})x_{t-1} + W_t(\omega_{[t]})x_t = h_t(\omega_{[t]})\\
+		& x_t\ge 0\\
+		V_t(x_{t-1}, \omega_{[t-1]}) &= \E_{\xi_t} [Q_t(x_{t-1}, \xi_t)|\omega_{[t-1]}]
+	\end{aligned}
+\end{equation}
+We formulate the problems starting from $t=H$ and go back to $t=1$, where we can solve with no previous step. From this, we go back increasing $t$ to solve each step. The initial step $t=1$ is 
+\begin{equation}
+	\begin{aligned}
+		\min \ & c_1^Tx_1 \\
+		&W_1x_1=h_1\\
+		&x_1\ge 0
+	\end{aligned}
+\end{equation}
+As usual, $V_{t+1, \omega_{[t]}}$ and $Q_{t+1}(x_t, \xi_{t+1})$ are piecewise linear and convex, and their domain are polyhedral. 
+\section{Nested L-Shaped Decomposition Subproblem}
+We have already seen how to solve a two-stage stochastic program (L-shaped or multicut). For more than 2 stages, we need to decompose the problem. 
+\begin{itemize}
+	\item [$\to$] Note: we will use indices. The first index denotes time and the second denotes the scenario.
+\end{itemize}
+\subsection{NLDS}
+The idea is to decompose into smaller and deterministic linear programs as shown on \ref{fig:nested}.
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.7\textwidth]{img/nested.png}
+	\caption{Idea of Nested Decomposition}
+	\label{fig:nested}
+\end{figure}
+The building blocks are the Nested L-Shaped Decomposition Subproblems (NLDS$(t,k)$), the problems at stage $t$ and scenario $k$. Solving each blocks gives information to the previous and also the next blocks: the algorithm is recursive in both direction. 
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.7\textwidth]{img/NLDS.png}
+	\caption{Building block - NLDS($t,k$)}
+\end{figure}
+where $A(t,k)$ is the ancestor of outcome $k$ in period $t$, and $D(t,k)$ are the descendants of outcome $k$ at period $t$. \\
+For each stage $t=1,\dots,H-1$ and each scenario $k=1,\dots,|\Xi_{[t]}|$, the problem is 
+\begin{equation}
+	\begin{aligned}
+		NLDS(t,k): \ &\min_{x,\theta} (c_{t,k})^Tx+\theta \\
+		(\pi) \quad & W_{t,k}x = h_{t,k}-T_{t-1,k}x_{t-1, A(t,k)} \\
+		(\rho_j) \quad & E_{t,k,j}x + \theta \ge e_{t,k,j} \qquad j=1, \dots r_{t,k} \qquad \text{Optimality cut}\\
+		(\sigma_j) \quad & D_{t,k,j} x\ge d_{t,k,j}\qquad j=1,\dots, s_{t,k} \qquad \quad \text{Feasibility cut}\\
+		&x\ge 0
+	\end{aligned}
+\end{equation}
+where $\Xi_{[t]}$ is the support of $\xi_{[t]}$, $A(t,k)$ is the ancestor of the realization $k$ at stage $t$, and $x_{t-1, A(t,k)}$ is the current solution from $A(t,k)$. 
+\subsection{Boundary conditions}
+To be able to finish the recursivity at $t=1$ and $t=H$, we need boundary conditions. 
+\begin{itemize}
+	\item For $t=1$, $h_{t,k}-T_{t-1, k}x_{t-1, A(t,k)}$ is replaced by a value $b$;
+	\item For $t=H$, $\theta$ and the feasibility and optimality constraints are removed.
+\end{itemize}
+\subsection{Dual of NLDS}
+The dual problem of NLDS$(t,k)$ is 
+\begin{equation}\label{eq:dual-nlds}
+	\begin{aligned}
+		\max_{\pi,\rho,\sigma}&\ \textcolor{blue}{\pi^T(h_{t,k} - T_{t-1,k}x_{t-1, A(t,k)}) + \sum_{j=1}^{s_{t,k}} \sigma_j^T d_{t,k,j}}+ \sum_{j=1}^{r_{t,k}} \rho_j^T e_{t,k}\\
+		& \textcolor{violet}{\pi^T W_{t,k} + \sum_{j=1}^{s_{t,k}} \sigma_j^T D_{t,k,j}} + \sum_{j=1}^{r_{t,k}} \rho_j^T E_{t,k,j} \le c_{t,k}^T\\
+		& \sum_{j=1}^{r_{t,k}} \mathbb{1}^T \rho_j = 1\\
+		&\rho, \sigma \ge 0
+	\end{aligned}
+\end{equation}
+\section{Cuts}
+\subsection{Feasibility cuts}
+If NLDS$(t,k)$ is infeasible, the solver returns a set $(\pi, \sigma_1, \dots, \sigma_{s_{t,k}})$ with $\sigma_j \ge 0$ such that 
+\begin{itemize}
+	\item the blue term in \eqref{eq:dual-nlds} is strictly positive;
+	\item the violet term in \eqref{eq:dual-nlds} is nonpositive.
+\end{itemize}
+This gives the following feasibility cut for NLDS$(t-1, a(k))$
+\begin{equation}
+	D_{t-1, A(t,k)} x\le d_{t-1, A(t,k)} \qquad \text{where} \qquad \begin{cases}
+		D_{t-1, A(t,k)} = \pi^T T_{t-1,k}\\
+		d_{t-1, A(t,k)} = \pi^Th_{t,k} +\sum_{j=1}^{s_{t,k}} \sigma_j^T d_{t,k,j}
+	\end{cases}
+\end{equation}
+\subsection{Optimality cuts}
+After solving NLDS$(t,k)$ for all $k\in D_{t-1,j}$, we can compute the cut with the following parameters:
+\begin{equation}
+	\begin{aligned}
+		E_{t-1,j} &= \sum_k p_t(k|j) \cdot \pi_{t,k}^T T_{t-1,k}\\
+		e_{t-1,j} &= \sum_k \left[p_t(k|j)\cdot \left(\pi_{t,k}^Th_{t,k} + \sum_{i=1}^{r_{t,k}} \rho_{t,k,i}e_{t,k,i} + \sum_{i=1}^{s_{t,k}} \sigma_{t,k,i}^Td_{t,k,i}\right)\right]
+	\end{aligned}
+\end{equation}
+From which we find an optimality cut for NLDS$(t-1,j)$:
+\begin{equation}
+	E_{t-1,j}x+\theta \ge e_{t-1,j}
+\end{equation}
+\textcolor{red}{To what does the set $D_{t-1,j}$ correspond?} 
+\begin{itemize}
+	\item [$\to$] Note: If all sets $\Xi_{[t]}$ are finite and all $x$ have finite upper bounds, then the nested L-shaped method converges to an optimal solution in a finite number of iterations.
+\end{itemize}
+\subsection{Direction of movement}
+Whenever we solve one NLDS$(t,k)$, some data is generated:
+\begin{itemize}
+	\item If the problem is feasible:
+	\begin{itemize}
+		\item The trial decision $x_{t,k}$ that can be sent forward;
+		\item An optimality cut that can be sent backwards;
+	\end{itemize}
+	\item If infeasible, a feasibility cut that can be sent backwards.
+\end{itemize}
+There exist several ways to move in the algorithm. Here are three of them:
+\begin{itemize}
+	\item Fast-forward-fast-back: move in the current direction as far as possible;
+	\item Fast-forward: move forward whenever it is possible;
+	\item Fast-back: move backwards whenever it is possible.
+\end{itemize}
+\section{Example}\label{sec:example_nlds}
+The problem we want to solve here is the following:
+\begin{equation}
+	\begin{aligned}
+		\min &10x_1 + \E[15x_2+20x_3]\\
+		& x_1+x_2\ge \xi_2\\
+		& x_2+x_3\ge \xi_3\\
+		& x_i \ge 0
+	\end{aligned}
+\end{equation}
+where 
+\begin{equation}
+	\xi_2 = \begin{cases}
+		40\ \text{w. p. } 1/2\\
+		60\ \text{w. p. }1/2\\
+	\end{cases}
+	\qquad \xi_3 = \begin{cases}
+		20\ \text{w. p. }1/2\\
+		30\ \text{w. p. }1/2
+	\end{cases}
+\end{equation}
+The sets defining the problems are the following\\
+\begin{minipage}{.33\textwidth}
+	\begin{equation}
+		\begin{aligned}
+			\Omega_1 &= \{I\}\\
+			\Omega_2 &= \{40,60\}\\
+			\Omega_3 &= \{20,30\}\\
+			\Omega &= \times_{i=1}^3 \Omega_i
+		\end{aligned}
+	\end{equation}
+\end{minipage}
+\begin{minipage}{.33\textwidth}
+	\begin{equation}
+		\begin{aligned}
+			S_1 &= \{1\}\\
+			S_2 &= \{1,2\}\\
+			S_3 &= \{1,2\}\\
+		\end{aligned}
+	\end{equation}
+\end{minipage}
+\begin{minipage}{.33\textwidth}
+	\begin{equation}
+		\begin{aligned}
+			S_{[1]} &= \{1\}\\
+			S_{[2]} &= \{(1,1), (1,2)\}\\
+			S_{[3]} &= \{(1,1,1),(1,1,2), \dots\}\\
+			S_{[t]} &= \times_{i=1}^t S_t
+		\end{aligned}
+	\end{equation}
+\end{minipage}
+Here is the tree we use to find the solution.
+\begin{figure}[H]
+    \centering 
+    \resizebox{\textwidth}{!}{
+    \begin{tikzpicture}[
+        level 1/.style={sibling distance=8cm},
+        level 2/.style={sibling distance=4cm},
+        level distance=3cm,
+        every node/.style={draw, rectangle split, rectangle split parts=2, align=center},
+        edge from parent/.style={draw, ->}
+        ]
+        
+        \node {\nodepart{one} NLDS$(1,1)$
+        \nodepart{two} $\min 10x_1+\theta$\\ s.t. $x_1\ge0$\\$\theta\ge 0$}
+        % First level
+        child {node {\nodepart{one} NLDS$(2,1)$
+        \nodepart{two} $\min 15x_2 + \theta$\\ s.t. $x_2 \ge40-x_1$\\ $x_2\ge 
+        0$} 
+        % Second level
+        child {node {\nodepart{one} NLDS(3,1) \nodepart{two} $\min 20x_3$\\ s.t. $x_3 \ge 20-x_2$\\$ x_3\ge 0$}
+        child {node {\nodepart{one} Dual \nodepart{two} $\max_\pi (20-x_2)\pi$\\ s.t. $0\le \pi\le 20$}}}
+        child {node {\nodepart{one} NLDS(3,2) \nodepart{two} $\min 20x_3$\\ s.t. $x_3\ge 30-x_2$\\$ x_3\ge 0$}
+        child {node {\nodepart{one} Dual \nodepart{two} $\max_\pi (30-x_2)\pi$\\ s.t. $0\le \pi\le 20$}}}
+        }
+        child {node {\nodepart{one} NLDS(2,2)
+        \nodepart{two} $\min 15x_2+\theta$\\ s.t. $x_2 \ge 60-x_1$\\$ x_2\ge0$}
+        child {node {\nodepart{one} NLDS(3,3) \nodepart{two} $\min 20x_3$\\ s.t. $x_3\ge 20-x_2 $\\$ x_3 \ge 0$}
+        child {node {\nodepart{one} Dual \nodepart{two} $\max_\pi (20-x_2)\pi$\\ s.t. $0\le \pi\le 20$}}}
+        child {node {\nodepart{one} NLDS(3,4) \nodepart{two} $\min 20x_3$\\ s.t. $x_3 \ge 30-x_2$\\$ x_3\ge0$}
+        child {node {\nodepart{one} Dual \nodepart{two} $\max_\pi (30-x_2)\pi$\\ s.t. $0\le \pi\le 20$}}}
+        };
+    \end{tikzpicture}}
+\end{figure}
+\subsection{First pass}
+We decide to use the FFFB method. 
+\begin{enumerate}
+	\item Solving NLDS(1,1), we get $x_1=0$, which we put in each subproblem NLDS$(2,\cdot)$. The probability to go in each scenario is 1/2. 
+\end{enumerate}
+\textcolor{red}{Continue the explanation when the example is clear. Take notes of someone else.}
+\chapter{Stochastic Dual Dynamic Programming}
+\section{Motivation}
+The nested decomposition requires a huge number of iterations: $\sum_{t=1}^{H-1}\prod_{j=1}^t|S_j|$ for the forward pass and $\sum_{t=2}^H \prod_{j=1}^t |S_j|$ for the backward pass. It is not feasible on practice as it will almost always overload the memory. The stochastic dual dynamic programming (SDDP) solves this issue by,
+\begin{itemize}
+	\item in the forward pass, simulating instead of enumerating, i.e. it takes some instead of all sample paths. This gives a probabilistic upper bound. 
+	\item in the backward pass, sharing the cuts among the nodes of the same time period.
+\end{itemize}
+And this method can be done on a lattice, while the sharing cannot be done on the tree due to the structure (see \ref{fig:sharing}).
+\begin{figure}[H]
+	\centering 
+	\begin{subfigure}[b]{.49\textwidth}
+		\includegraphics[width=\textwidth]{img/tree_no_sharing.png}
+		\caption{Scenario tree without cut sharing.}
+	\end{subfigure}
+	\hfill 
+	\begin{subfigure}[b]{.5\textwidth}
+		\includegraphics[width=\textwidth]{img/lattice_sharing.png}
+		\caption{Cut sharing in a lattice.}
+	\end{subfigure}
+	\caption{The dashed boxes represent the storage of a different value function.}
+	\label{fig:sharing}
+\end{figure}
+\begin{itemize}
+	\item [$\to$] Note: in case of serial independence (cf. \ref{sec:serial_ind}), the values $\pi_i$ can simply be returned to the parent node of the same scenario as the problem is identical from $t$ onwards, independently of the node $k$ in stage $t$.
+\end{itemize}
+\section{SDDP}
+The basic idea is to follow those 2 steps:
+\begin{enumerate}
+	\item Sampling: generate $K$ samples of random process $\{\xi_{1,i},\dots, \xi_{H,i}\}$ for $i=1,\dots, K$;
+	\item Optimization: Solve NLDS in order to generate the trial decision variables $\hat x_{t,i}$:
+	\begin{equation}
+		\begin{aligned}
+			\min\ & c_{t,k}^Tx+\theta\\
+			& T_{t-1,k}\hat x_{t-1,i} + W_{t,k}x = h_{t,k}\\
+			& E_{t,k}x+\theta \cdot \mathbb{1} \ge e_{t,k}\\
+			&x\ge 0
+		\end{aligned}
+	\end{equation}
+\end{enumerate}
+At each forward pass, we solve $H-1$ NLDS problems, and so for $K$ samples of $\xi_[H]$, we solve $1+K\cdot (H-2)$ linear programs. \\
+For the backward pass, for a given trial sequence $x_{[H]}$, we solve $\sum_{t=2}^H|\Xi_t|$ linear programs, and so for $K$ trial sequences, we solve $K\sum_{t=2}^H|\Xi_t|$ linear programs. 
+\subsection{Algorithm}
+\begin{algorithm}[H]
+	\caption{SDDP}
+	\label{algo:sddp}
+	\begin{algorithmic}[1]
+		\State \underline{Forward pass:}
+		\State Solve NLDS(1) and let $x_1$ be the optimal solution. Initialize $\hat x_{1,i}=x_1$ for all $i=1,\dots,K$.
+		\For{$t=2,\dots,H; i=1,\dots,K$}
+		\State Sample an outcome $\xi_{t,i}$ from the set $\Xi_t$;
+		\State Solve NLDS$(t,i)$ with trial decision $\hat x_{t-1, i}$;
+		\State Store the optimal solution as $\hat x_{t,i}$.
+		\EndFor
+		\State \underline{Backward pass:}
+		\For{$t=H, \dots,2$}
+		\For{$i=1,\dots, K$}
+		\For {$k=1,\dots, |\Xi_t|$}
+		\State Solve NLDS$(t,k)$ using the trial decision $\hat x_{t-1,i}$
+		\EndFor 
+		\For {$j=1,\dots, |\Xi_{t-1}|$}
+		\State Compute 
+		\begin{equation}
+			\begin{aligned}
+				E_{t-1,j,i} &= \sum_{k=1}^{|\Xi_t|} p_t(k|j) \cdot \pi_{t,k,i}^T T_{t-1,k}\\
+				e_{t-1,i,j} &= \sum_{k=1}^{|\Xi_t|} p_t(k|j)\cdot \left(\pi_{t,k,i}^Th_{t,k} + \rho_{t,k,i}e_{t,k}\right)
+			\end{aligned}
+		\end{equation}
+		\EndFor
+		\State Add this optimality cut to every NLDS$(t-1,j)$ for $j=1,\dots,|\Xi_{t-1}|$:
+		\begin{equation}
+			E_{t-1,j,i}x+\theta \ge e_{t-1,j,i}
+		\end{equation}
+		\EndFor
+		\EndFor
+		\State \textcolor{red}{There's an index problem somewhere i think.}
+	\end{algorithmic}
+\end{algorithm}
+\begin{itemize}
+	\item [$\to$] Note: the variables $(\pi_{t,k,i}, \rho_{t,k,i})$ are the dual multipliers generated by the trial $i$.
+\end{itemize}
+We can increase the number $K$ of forward samples to get a faster learning of the value function, but this requires to solve more LPs at each forward-backward pass, and the number of NLDS grows faster too. 
+\subsection{Stop condition}
+A good way to determine when to terminate SDDP is through the condition [lower bound] $\approx$ [upper bound]. 
+\begin{itemize}
+	\item The lower bound is found through the objective function value of NLDS(1) since that problem finds an underestimate of $V_2(x)$ on a superset of the domain of $V_2(x)$;
+	\item The upper bound is probabilistic and found with the algorithm. 
+\end{itemize}
+\subsubsection{Upper bound}
+Suppose that we draw a sample $i$ of $\xi_{[H]}$ and perform a forward pass. This gives a vector $\hat x_{t,i}$, $t=1,\dots,H$, and we can compute the cost $z_i = \sum_{t=1}^{H} c_{t,i}\hat x_{t,i}$. Repeating this $K$ times, we get a distribution of i.i.d. costs $z_i$.\\
+By the Central Limit Theorem, $\bar z = \frac{1}{K}\sum_{i=1}^Kz_i$ converges to a Gaussian with standard deviation estimated by 
+\begin{equation}
+	\sigma = \sqrt{\frac{1}{K^2} \sum_{k=1}^K (\bar z-z_i)^2}
+\end{equation}
+Note that each sequence $\hat x_{[H]}$ is feasible, but not necessarily optimal, and so $\bar z$ is an estimate of an upper bound. \\
+
+We usually consider that we can terminate if $\underline{z}\in (\bar z-2\sigma, \bar z+2\sigma)$, which is the 95.4\% confidence interval of $\bar z$. 
+\subsubsection{Choosing \texorpdfstring{$K$}{}}
+To ensure an optimality gap of 1\% with a 95.4\% confidence, we need to choose $K$ such that $2\sigma \approx 0.01\bar z$. As the mean and variance do not asymptotically depend on $K$, we can set
+\begin{equation}
+	s=\sqrt{\frac{1}{K}\sum_{i=1}^K(s_i-\bar z)^2} \Rightarrow \sigma = \frac{1}{\sqrt{K}}s
+\end{equation}
+to approximate $K$:
+\begin{equation}
+	K \approx \left(\frac{2s}{0.01\bar z}\right)^2
+\end{equation}
+Here is the full SDDP algorithm, using the passes from algorithm \ref{algo:sddp}.
+\begin{algorithm}[H]
+	\caption{Full SDDP Algorithm}
+	\label{algo:full_sddp}
+	\begin{algorithmic}[1]
+		\State \textbf{Initialization: } $\bar z= \infty, \sigma=0$;
+		\State \textbf{Step 1: }Forward pass, where we store $z^{LB}$ and $\bar z$;
+		\If{$z^{LB}\in(\bar z-2\sigma, \bar z + 2\sigma)$}
+		\State Terminate;
+		\EndIf 
+		\State \textbf{Step 2: } Backward pass;
+		\State \textbf{Step 3: } Go back to forward pass.
+	\end{algorithmic}
+\end{algorithm}
+\begin{itemize}
+	\item [$\to$] Note: we approximate $\sigma$ with $s$. This means that we must let the algorithm run for several iterations before checking for termination, as the first approximations are bad.
+\end{itemize}
+\section{Example}
+Let us use the same example as in chapter \ref{sec:example_nlds} and take $K=1$ for simplicity.
+\begin{equation}
+	\begin{aligned}
+		\min &10x_1 + \E[15x_2+20x_3]\\
+		& x_1+x_2\ge \xi_2\\
+		& x_2+x_3\ge \xi_3\\
+		& x_i \ge 0
+	\end{aligned}
+\end{equation}
+where 
+\begin{equation}
+	\xi_2 = \begin{cases}
+		40\ \text{w. p. } 1/2\\
+		60\ \text{w. p. }1/2\\
+	\end{cases}
+	\qquad \xi_3 = \begin{cases}
+		20\ \text{w. p. }1/2\\
+		30\ \text{w. p. }1/2
+	\end{cases}
+\end{equation}
+The lattice is displayed in figure \ref{fig:lattice_sddp}. 
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=8cm},
+            level 2/.style={sibling distance=4cm},
+            level distance=3cm,
+            every node/.style={draw, rectangle split, rectangle split parts=2, align=center},
+            edge from parent/.style={draw, ->}
+        ]
+
+        \node (root) {\nodepart{one} NLDS$(1,1)$
+        \nodepart{two} $\min 10x_1+\theta$\\ s.t. $x_1\ge0$\\$\theta\ge 0$\\\textcolor{blue}{$\theta \ge \frac{15}{2}(100-2x_1)$}}
+        % First level
+        child {node (n21) {\nodepart{one} NLDS$(2,1)$
+        \nodepart{two} $\min 15x_2 + \theta$\\ s.t. $x_2 \ge40-x_1$\\ $x_2\ge 0$\\\textcolor{magenta}{$\theta\ge 20(25-x_2)$}}
+        % Second level
+        child {node (n31) {\nodepart{one} NLDS(3,1) \nodepart{two} $\min 20x_3$\\ s.t. $x_3 \ge 20-x_2$\\$ x_3\ge 0$}
+        child {node {\nodepart{one} Dual \nodepart{two} $\max_\pi (20-x_2)\pi$\\ s.t. $0\le \pi\le 20$}}}}
+        child {node (n22) {\nodepart{one} NLDS(2,2)
+        \nodepart{two} $\min 15x_2+\theta$\\ s.t. $x_2 \ge 60-x_1$\\$ x_2\ge0$\\\textcolor{magenta}{$\theta\ge 20(25-x_2)$}}
+        child {node (n32) {\nodepart{one} NLDS(3,2) \nodepart{two} $\min 20x_3$\\ s.t. $x_3\ge 30-x_2 $\\$ x_3 \ge 0$}
+        child {node {\nodepart{one} Dual \nodepart{two} $\max_\pi (30-x_2)\pi$\\ s.t. $0\le \pi\le 20$}}}};
+
+        % Additional edges
+        \draw[->] (n21) -- (n32);
+        \draw[->] (n22) -- (n31);
+
+        \end{tikzpicture}
+    }
+    \caption{Lattice for our application of SDDP.}
+    \label{fig:lattice_sddp}
+\end{figure}
+\subsection{Iteration 1 - blue}
+The initial composition of the lattice does not contain what is in color in the graph.\\
+To choose which problem to solve, we roll a dice that says (2,2). This gives the cut $\theta\ge 0$. Now, we compute and solve the dual of (2,2):
+\begin{equation}
+	\begin{aligned}
+		\max& \pi(60-x_1)\\
+		&0\le \pi \le 15
+	\end{aligned}
+\end{equation}
+This gives the following cut 
+\begin{equation}
+	\begin{aligned}
+		\theta \ge \frac{\pi}{2}[(\xi_{2,1}-x_1)+(\xi_{2,2}-x_1)] \Longrightarrow \theta \ge \frac{15}{2}(100-2x_1)
+	\end{aligned}
+\end{equation}
+Now that we have a cut, we add it to the problem (1,1). We have the solution $x_1=0$ by solving it, which we can add in stage 2. \\
+Solving (2,2) for $x_2$, we find $x_2=60$ and add it in stage 3. Solving any of the two dual problems, we only find $\pi =0$, which gives the cut $\theta\ge0$. This is not useful and is therefore not added to the problem. We can start the next iteration.
+\subsection{Iteration 2 - magenta}
+Again using a dice, we start from (2,1). Solving the problem gives us $x_2=0$. This is to be added to both problems $(3,\cdot)$. Solving this stage gives $\pi=20$, and so the cut we find is 
+\begin{equation}
+	\theta \ge \frac{\pi}{2} [(\xi_{3,1}-x_2)+(\xi_{3,2}-x_2)]\Rightarrow \theta \ge 20(25-x_2)
+\end{equation}
+\textcolor{red}{Rest is not clear, to be continued...}
+\chapter{Lagrange Relaxation}
+Lagrangian relaxation is usually used to make problems easier when they have complicated constraints. For example, we have an initial problem:
+\begin{equation}
+	\begin{aligned}
+		p^* &= \max f_0(x)\\
+		& f(x)\le 0 \qquad [u]\\
+		& h(x) = 0 \qquad [v]
+	\end{aligned}
+\end{equation}
+The dual function is 
+\begin{equation}
+	g(u,v) = \sup_{x\in \mathcal{D}} [f_0(x)-u^Tf(x)-v^Th(x)]
+\end{equation}
+If $u\ge0$, for all $\hat x\in \mathcal{D}$, then weak duality holds and $g(u,v)\ge f_0(\hat x)$, and if the problem is convex, then strong duality holds and 
+\begin{equation}
+	\min_{u\ge0,v} g(u,v)=f_0(x^*)
+\end{equation}
+\begin{itemize}
+	\item [$\to$] Note: we do not have the constraint $v\ge0$ as the constraint on $h(x)$ is an equality.
+\end{itemize}
+The idea of dual decomposition is that the dual function $g(u,v)$ is convex regardless of the primal problem, and the computation of $g(u,v)$ and $\pi\in \partial g(u,v)$ is easy. 
 
 \end{document}
