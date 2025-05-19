@@ -73,7 +73,7 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-\chapter{Definition and notation}
+\chapter{Definitions and notations}
 \begin{itemize}
 	\item Given $\Omega$, a sigma-algebra $\A$ is a set of subsets of $\Omega$, with the elements called events, such that:
 	\begin{itemize}
@@ -135,7 +135,7 @@
 	\item The dual of a stochastic program is:
 	\begin{equation}
 		\begin{aligned}
-			& g(\nu) = g1(\nu) + \E_\omega(g2(\nu, \omega))\\
+			& g(\nu) = g_1(\nu) + \E_\omega(g_2(\nu, \omega))\\
 			where \qquad &  \\
 			& g_1(\nu) = \inf f_1(x) + \left( \displaystyle \sum_{\omega \in \Omega} \nu(\omega) \right)^T x\\
 			& s.t. \quad h_{1i} (x) \leq 0, i = 1, \dots, m_1\\
@@ -153,7 +153,7 @@
 	\begin{itemize}
 		\item Primal constraint: $f_i(x) \leq 0, i = 1, \dots, m$, $h_j(x) = 0, j = 1, \dots, p$
 		\item Dual constraint: $\lambda \geq 0$
-		\item Complemetarity slackness: $\lambda_i f_i(x) = 0, i = 1, \dots, m$
+		\item Complementarity slackness: $\lambda_i f_i(x) = 0, i = 1, \dots, m$
 		\item Gradient of the Lagrangian: $\nabla_x L(x, \lambda, \nu) = 0$
 	\end{itemize}
 	\item An extreme point of a polyhedron $P$ is a point $x\in P$ such that it cannot be expressed as a linear combination of two distinct points in $P$, i.e. an extreme point is a vertex of the polyhedron.
@@ -332,6 +332,9 @@ The \textbf{expected value of perfect information} is like the value we give to 
 \begin{equation}
 	EVPI = SP - WS
 \end{equation}
+\begin{itemize}
+	\item [$\to$] Note: for a maximum, the difference is reversed, and the inequalities that are coming are too.
+\end{itemize}
 \section{The value of the stochastic solution}
 Here too there are 2 tactics:
 \begin{itemize}
@@ -403,8 +406,8 @@ When $\xi^r \notin \Xi$ then $SPEV = WS$: When $p^r = 0, z^P(x,\xi^r,\xi^k)$ coi
 We then know $WS \leq SPEV \leq SP$.
 \subsection{Upper bound on SP: EVRS and EPEV}
 \begin{itemize}
-	\item The \textbf{expected value of the reference scenario} is $EVRS =  \E_\xi(\bar{x}^r,\xi)$, where $\bar{x}^r$ is the optimal solution to $z(x,\xi^r)$.
-	\item The \textbf{expectation of pairs of expected value} is defined as \[EPEV = \min_{k=1,\dots,K\cup\{r\}}\E_\xi(\bar{x}^r,\xi)\] where $(\bar{x}^k,\bar{y}^k, y(\xi^K))$ is the optimal solution to the pairs subproblem of $\xi^r$ and $\xi^k$.
+	\item The \textbf{expected value of the reference scenario} is $EVRS =  \E_\xi(z(\bar{x}^r,\xi))$, where $\bar{x}^r$ is the optimal solution to $z(x,\xi^r)$.
+	\item The \textbf{expectation of pairs of expected value} is defined as \[EPEV = \min_{k=1,\dots,K\cup\{r\}}\E_\xi(z(\bar{x}^r,\xi))\] where $(\bar{x}^k,\bar{y}^k, y(\xi^K))$ is the optimal solution to the pairs subproblem of $\xi^r$ and $\xi^k$.
 \end{itemize}
 As $SP,EPEV,EVRS$ are the optimal values of $\min_x \E_\xi z(x,\xi)$ over smaller feasible sets:
 \begin{equation}
@@ -452,8 +455,7 @@ where $X\subseteq \R^n$ is convex and compact, $F:\R^n\to \R$ is convex and $c\i
 Let us define 
 \begin{itemize}
 	\item $L_k:\R^n\to \R$ a lower bound function of $F(x)$ at iteration $k$;
-	\item A lower bound $L_k$ of $z^\star$ at iteration $k$;
-	\item An upper bound $U_k$ of $z^\star$ at iteration $k$.
+	\item $U_k:\R^n\to \R$ an upper bound $U_k$ of $z^\star$ at iteration $k$.
 \end{itemize}
 \begin{algorithm}
     \caption{Kelley's Cutting plane algorithm}\label{algo:Kelley}
@@ -574,7 +576,7 @@ In addition to the two problems defined above, we have the dual of (S):
 \begin{equation}
 	\begin{aligned}
 		(D) \ : \ & \max_{\pi,\lambda} \lambda^Tx + \pi^Th
-		& \pi^TW\le g^T\\
+		& \pi^TW\le q^T\\
 		& \pi^T T + \lambda = 0
 	\end{aligned}
 \end{equation}
