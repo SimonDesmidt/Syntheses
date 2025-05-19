@@ -72,7 +72,7 @@
 \chapter{Reminders}
 \section{General properties of probability}
 \begin{itemize}
-  \item $P[A\cup B]=P[A]+P[B]-P[1\cap B]$;
+  \item $P[A\cup B]=P[A]+P[B]-P[A\cap B]$;
   \item $P[A|B] = \frac{P[A\cap B]}{P[B]} = \frac{P[AB]}{P[B]}$;
   \item $A$ and $B$ are independent iff $P[AB]=P[A]P[B]\Longrightarrow P[A|B]=P[A]$;
   \item $P[X\le x]=F_X(x)$ is the distribution function, i.e. a monotone increasing function of $x$ going from 0 to 1 when $x$ goes from $-\infty$ to $+\infty$.
@@ -105,7 +105,7 @@ Let $X_1,\dots,X_n$ be a series of independent and uniformly distributed (IID) r
   \item Strong version:
 \end{itemize}
 \begin{equation}
-  \lim_{n\to \infty} P\left[\sup_{m\ge n}\left(\frac{S_m}{m}-\bar X\right)>\varepsilon\right] = 0\Longleftrightarrow \lim_{n\to \infty}\frac{S_n}{n}=X\qquad \text{with probability 1}
+  \lim_{n\to \infty} P\left[\sup_{m\ge n}\left(\frac{S_m}{m}-\bar X\right)>\varepsilon\right] = 0\Longleftrightarrow \lim_{n\to \infty}\frac{S_n}{n}=\bar X\qquad \text{with probability 1}
 \end{equation}
 \section{Central limit theorem}
 \begin{equation}
@@ -118,6 +118,11 @@ Let $X_1,\dots,X_n$ be a series of independent and uniformly distributed (IID) r
   \item $\E[X]=1/\lambda$.
   \item [$\rightarrow$] Note: the exponential distribution is memoryless.
 \end{itemize}
+\section{Erlang distribution}
+The Erlang distribution $Er(k,\lambda)$ is a sum of $k$ independent exponential random variables with parameter $\lambda$ each.
+\begin{itemize}
+	\item $\E[X] = k/\lambda$;
+\end{itemize}
 \chapter{Poisson Processes}\label{chap:poisson}
 A Poisson process $N(t)$ counts the number of arrivals with exponentially distributed inter-arrival times. 
 \begin{equation}
@@ -127,7 +132,7 @@ $\forall n,t$, we have the relation $\{S_n\le t\}=\{N(t)\ge n\}$, where $S_n$ is
 \begin{itemize}
   \item [$\rightarrow$] Note: a Poisson process is memoryless: $P[Z_1>x]=e^{-\lambda x}$, with $Z_1$ be the duration of the time interval from $t$ until the first arrival after $t$.
 \end{itemize}
-For a Poisson process of rate $\lambda$, and any given $t>0$, the length of the interval from $t$ until the first arrival after $t$ is an exponentially distributed random variable. This random variable is idenpendent of both $N(t)$ and of the $N(t)$ arrival epochs before time $t$. It is also independent of $N(\tau)$, $\forall \tau \le t$.\\
+For a Poisson process of rate $\lambda$, and any given $t>0$, the length of the interval from $t$ until the first arrival after $t$ is an exponentially distributed random variable. This random variable is independent of both $N(t)$ and of the $N(t)$ arrival epochs before time $t$. It is also independent of $N(\tau)$, $\forall \tau \le t$.\\
 
 Let us consider the process after $Z_1$, $Z_m$, the time until the $m$-th arrival after time $t$. It is independent of $N(t)$ and of the entier previous history of the process.\\
 Let us denote $\tilde N(t,t') = N(t')-N(t)$. 
@@ -137,7 +142,7 @@ Let us denote $\tilde N(t,t') = N(t')-N(t)$.
 \end{itemize}
 From the memoryless property, here is another definition of a Poisson process: \\
 \begin{itemize}
-  \item A Poisson process is a counting process that has the stationay and independent increment properties and such that 
+  \item A Poisson process is a counting process that has the stationary and independent increment properties and such that 
 \end{itemize}
 \begin{equation}
   \begin{aligned}
@@ -166,7 +171,7 @@ From equation \eqref{eq:poisson_distrib}, the Poisson process verifies the follo
 \end{itemize}
 where we use a first-order approximation of the exponential term, with $o(\delta)$ its residual. As $o(\delta)$ is negligible, we can approximate the Poisson process as a Bernoulli process. 
 \subsection{Combining Poisson processes}
-Let $N_1(t)$ and $N_2(t)$ be tow independent Poisson processes. Let the process $N(t)=N_1(t)+N_2(t)$. We can show using the three properties above that $N(t)$ is a Poisson process with rate $\lambda_1+\lambda_2$.
+Let $N_1(t)$ and $N_2(t)$ be two independent Poisson processes. Let the process $N(t)=N_1(t)+N_2(t)$. We can show using the three properties above that $N(t)$ is a Poisson process with rate $\lambda_1+\lambda_2$.
 \subsection{Subdividing a Poisson process}
 Let $N(t)$ be a Poisson process with rate $\lambda$. We split the arrivals in 2 subprocesses $N_1(t)$ and $N_2(t)$. Each arrival of $N(t)$ is sent to $N_1(t)$ with probability $p$ and to $N_2(t)$ with probability $(1-p)$, each split being independent from all others. \\
 Then, the resulting processes $N_1(t)$ and $N_2(t)$ are two independent Poisson processes with respective rate $p\lambda$ and $(1-p)\lambda$.
@@ -181,7 +186,7 @@ From the previous results, we can compute that
 \end{equation}
 and the expectation is 
 \begin{equation}
-  E[S_1|N(t)=n] = \frac{t}{n+1}
+  \E[S_1|N(t)=n] = \frac{t}{n+1}
 \end{equation}
 And from this, we derive that 
 \begin{equation}
@@ -189,20 +194,20 @@ And from this, we derive that
 \end{equation}
 with expectation 
 \begin{equation}
-  E[X_i] = \frac{t}{n+1}
+  \E[X_i] = \frac{t}{n+1}
 \end{equation}
 And thus the density function is 
 \begin{equation}
   f_{S_i}(x|N(t)=n) = \frac{x^{i-1}(t-x)^{n-i}n!}{t^n (n-i)!(i-1)!}
 \end{equation}
 \section{Non-homogenous Poisson processes}
-A non-homogenous Poisson rocess $N(t)$ is a counting process with increments that are independent but not stationary, with
+A non-homogenous Poisson process $N(t)$ is a counting process with increments that are independent but not stationary, with
 \begin{itemize}
   \item $P[\tilde N(t,t+\delta)=0]=1-\lambda (t)\delta + o(\delta)$;
   \item $P[\tilde N(t,t+\delta)=1]=\lambda (t)\delta + o(\delta)$;
   \item $P[\tilde N(t,t+\delta)\ge2]=o(\delta)$;
 \end{itemize}
-where $\tilde N(t,t+\delta)=N(t+\delta)-N(t)$. The time-varying arrival rate $\lambda(t)$ is assumed to be continuous and stricly positive.
+where $\tilde N(t,t+\delta)=N(t+\delta)-N(t)$. The time-varying arrival rate $\lambda(t)$ is assumed to be continuous and strictly positive.
 \section{Bernoulli process approximation}
 We can approximate the non-homogenous Poisson process with a Bernoulli process where the time is partitioned into increments of lengths inversely proportional to $\lambda (t)$ (i.e. using a nonlinear time scale).
 \begin{itemize}
@@ -244,7 +249,7 @@ This implies that
 \section{Central limit theorem}
 If the interarrival intervals of the renewal process $N(t)$ have a finite standard deviation, then from the CLT for IID random variables, we have 
 \begin{equation}
-  \lim_{t\to \infty} P\left[\frac{S_n-n\bar X}{\sqrt{n}\sigma}\le \alpha\right] = \Phi(\alpha)
+  \lim_{n\to \infty} P\left[\frac{S_n-n\bar X}{\sqrt{n}\sigma}\le \alpha\right] = \Phi(\alpha)
 \end{equation}
 \textcolor{red}{What is $\Phi(\alpha)$?}\\
 and 
@@ -287,7 +292,7 @@ The sum of many renewal processes tends to a Poisson process: for a non-arithmet
   \end{aligned}
 \end{equation}
 The increments are asymptotically stationary, but not independent. 
-|section{Renewal reward process}
+\section{Renewal reward process}
 Along to the renewal process $N(t)$, we can add a reward function $R(t)$. It models the rate at which the process is accumulating a reward or cost. It can however only depend on the current renewal but not the previous ones. \\
 Let $Y(y)$ be the residual life at time $t$ for the current renewal:
 \begin{equation}
