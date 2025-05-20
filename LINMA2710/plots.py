@@ -190,9 +190,29 @@ def Dufort_frankel():
     plt.savefig("img/DF.pdf")
     plt.show()
 
-# finite_differences()
-# refinement()
-# FTCS()
-# BTCS()
-# CN()
-Dufort_frankel()
+def amdahl():
+    Fs = 0.4
+    p = np.arange(1,200)
+    Sp = 1/(Fs+(1-Fs)/p)
+    Ep = Sp/p
+    plt.figure()
+    plt.plot(p, 1/Sp, label=r"$T_p=F_sT_1 + (1-F_s)T_1/p$", color="orange")
+    plt.plot(p,Sp, label=r"$S_p=T_1/T_p$", color="violet")
+    plt.plot(p,Ep,label=r"$E_p=S_p/p$", color="green")
+    plt.plot(p, np.ones_like(p)/Fs, label=r"$1/F_s$", color="red", linestyle="--")
+    plt.legend()
+    plt.xlabel(r"Number of processes $p$")
+    plt.ylabel("Speedup and efficiency")
+    plt.title(fr"Multiprocessing using $T_1=1$ and $F_s={Fs}$")
+    plt.grid()
+    plt.savefig("img/amdahl.pdf")
+    plt.show()
+
+if __name__ == "__main__":
+    # finite_differences()
+    # refinement()
+    # FTCS()
+    # BTCS()
+    # CN()
+    # Dufort_frankel()
+    amdahl()
