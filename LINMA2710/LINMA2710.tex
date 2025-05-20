@@ -106,10 +106,10 @@ To store the data that it will use, the CPU uses memory. Memory is hierarchical 
     \caption{Memory hierarchy}
     \label{fig:memory_hierarchy}
 \end{figure}
-First we need to define a cycle \label{cycle_def}. It's an unit of time that is defined like this: $cycle = \frac{1}{\text{CPU freq}}$. For example, for the CPU \textit{AMD Ryzen 5 5600X}, the maximum frequency is $4.6 GHz$, so the cycle is $cycle = \frac{1}{4.6 GHz} \approx 0.217 ns$. The \textbf{bandwidth} is the number of bytes that can be transferred in one cycle. And the \textbf{latency} is the number of cycles required to access a level of memory. There's also the \textbf{latency} \label{def_latency} but for a number of bytes, its formula is $\alpha + \beta n$ where $\alpha$ is the level latency, $\beta$ is the inverse of the bandwidth and $n$ is the number of bytes.\\
+First we need to define a cycle\label{cycle_def}. It's an unit of time that is defined like this: $cycle = \frac{1}{\text{CPU freq}}$. For example, for the CPU \textit{AMD Ryzen 5 5600X}, the maximum frequency is $4.6 GHz$, so the cycle is $cycle = \frac{1}{4.6 GHz} \approx 0.217 ns$. The \textbf{bandwidth} is the number of bytes that can be transferred in one cycle. And the \textbf{latency} is the number of cycles required to access a level of memory. There's also the \textbf{latency} \label{def_latency} but for a number of bytes, its formula is $\alpha + \beta n$ where $\alpha$ is the level latency, $\beta$ is the inverse of the bandwidth and $n$ is the number of bytes.\\
 \begin{tabularx}{\textwidth}{|c|X|X|X|X|X|}
 	\hline
-	Level & Level \newline Latency $[cycle]$  & Bandwidth $[bytes/cycle]$ & Size & What \newline is stored & example \\
+	Level & Level \newline Latency $[cycle]$  & Bandwidth $[bytes/cycle]$ & Size & What \newline is stored & Example \\
 	\hline
 	Register & $3$ & No limit & $\pm 192B$ & "Immediate" data for the CPU & Results of addition, memory address\\
 	\hline
@@ -142,7 +142,7 @@ Let's consider a program that does $o$ arithmetic operations and $m$ memory oper
 	\begin{equation} 
 		a = \frac{o}{m}
 	\end{equation}
-	It helps to find if the program is limited by a compute-bound or memory-bound.
+	It helps find if the program is limited by a compute-bound or memory-bound.
 	\item \textbf{Arithmetic time}: 
 	\begin{equation} 
 		t_{arith} = \frac{o}{\text{CPU freq}}
@@ -170,7 +170,7 @@ To resume:
 The arithmetic intensity can be represented with the \textbf{roofline model} which we'll talk now.
 \newpage
 \subsection{The roofline model}
-The two following graph link the performances of a program with the arithmetic intensity. The "performances" means the number of operations per second and the "arithmetic intensity" is the number of operations per byte of memory transferred. The right graph is the case where we consider a perfect usage of the PC, and the left graph is the case where we consider a bad usage of the PC.  
+The two following graphs link the performances of a program with the arithmetic intensity. The "performances" means the number of operations per second and the "arithmetic intensity" is the number of operations per byte of memory transferred. The left graph is the case where we consider a perfect usage of the PC, and the right graph is the case where we consider a bad usage of the PC.  
 \begin{figure}[H]
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
@@ -190,7 +190,7 @@ As we can clearly see, we have two limitations:
 	\item Bandwidth limit (slopped line)
 	\item Computing limit (flat line)
 \end{itemize}
-These two limits lines are upper bound for performances and are limited from above by the hardware (we can't do better than what our CPU can do), but they can be lower if the program is not optimized. For example the slopped line can be lower if we don't use the cache correctly. The flat line can be lower if we don't use the CPU correctly (e.g. using SIMD).\\
+These two limits lines are upper bound for performances and are limited from above by the hardware (we can't do better than what our CPU can do), but they can be lower if the program is not optimized. For example the slopped line can be lower if we don't use the cache correctly. The flat line can be lower if we don't use the CPU correctly (e.g. not using SIMD).\\
 \newpage
 \subsection{Cache hierarchy for a multi-core CPU}
 In the case where we have a multi-core CPU, the organization of the memory isn't always the same, it depends of the CPU architecture. For example, we can have a hierarchy like this:
@@ -386,6 +386,32 @@ Using \textit{spanning tree algorithm}, we can \textbf{reduce scatter} in $\log_
 	\end{tabular}
 \end{center}
 We explained above that we can do a combination of \textbf{reduce} and \textbf{broadcast}, but we can \textbf{all reduce} more efficiently doing \textbf{reduce scatter} then \textbf{all gather}, and we can do it in $\log_2(p)\alpha + \beta n$.
+\section{Point-to-point communication}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{img/com2.png}
+	\caption{Point-to-point blocking communication}
+	\label{fig:Com_block}
+\end{figure}
+This figure shows the problem of point-to-point blocking communication in MPI. As we can see, the left process is waiting for the right process to send the data, and thus is idling and wasting time. It does that because the sender cannot continue until the message is completely transferred. And in the case of a too big message that can't be stored in the buffer then the sender must wait for the receiver.\\
+There is two ways to solve this problem:
+\begin{itemize}
+	\item \textbf{Rendezvous protocol}: It works like an handshake process, so we have:
+	\begin{itemize}
+		\item The sender sends a header to notify the receiver that he will send data.
+		\item The receiver replies with a "ready-to-send" signal.
+		\item The sender sends the actual data.
+	\end{itemize}
+	\item \textbf{Eager protocol}: The message is quickly buffered in the sender's buffer to allow \code{MPI\_Send()} to finish "eagerly" and when the receiver is ready, it can receive the message. The sender doesn't wait for the receiver to be ready. It's useful when the message is small and thus fit in the buffer.\\
+\end{itemize}
+The eager protocol can be represented like this:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{img/eager.jpeg}
+	\caption{Eager protocol}
+	\label{fig:eager}
+\end{figure}
+\chapter{Scientific computing on GPU}
 \chapter{Useful tools}
 \section{OpenMP}\label{OpenMP}
 \textcolor{red}{TODO: Improve}\\
@@ -398,6 +424,12 @@ We explained above that we can do a combination of \textbf{reduce} and \textbf{b
 	\item Compatible with \textit{SIMD}
 	\item Portability: it is compatible with \textit{Windows}, \textit{Linux}, \textit{MacOS}. With multiple CPU architectures like \textit{Intel}, \textit{AMD}, \textit{ARM}, etc.
 \end{itemize}
+\section{Slurm}
+\subsection{What is Slurm?}
+\textbf{Slurm} stands for \textit{Simple Linux Utility for Resource Management}. It is an open-source job scheduler used in high-performance computing environments, such as university clusters or research supercomputers.
+\subsection{How to use Slurm?}
+\subsection{Slurm Topology}
+
 \chapter{PAA - PDEs}
 \section{Introduction}
 Throughout this chapter, we will use the simple example of the diffusion equation. It is expressed as 
