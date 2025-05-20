@@ -111,13 +111,13 @@ First we need to define a cycle\label{cycle_def}. It's an unit of time that is d
 	\hline
 	Level & Level \newline Latency $[cycle]$  & Bandwidth $[bytes/cycle]$ & Size & What \newline is stored & Example \\
 	\hline
-	Register & $3$ & No limit & $\pm 192B$ & "Immediate" data for the CPU & Results of addition, memory address\\
+	Register & $3$ & No limit & $\approx 192B$ & "Immediate" data for the CPU & Results of addition, memory address\\
 	\hline
-	Cache L1 & $15$ & $32-64$ & $\pm 64KB$ & Instructions and \newline "Immediate" data & Local \newline variable\\
+	Cache L1 & $15$ & $32-64$ & $\approx 64KB$ & Instructions and \newline "Immediate" data & Local \newline variable\\
 	\hline
-	Cache L2 & $57$ & $16-32$ & $\pm 512KB$ & Data used recently & Data struct, code part\\
+	Cache L2 & $57$ & $16-32$ & $\approx 512KB$ & Data used recently & Data struct, code part\\
 	\hline
-	Cache L3 & $230-360$ & $4-10$ & $\pm 64MB$ & Data shared between core& Global \newline variable\\
+	Cache L3 & $230-360$ & $4-10$ & $\approx 64MB$ & Data shared between core& Global \newline variable\\
 	\hline
 	RAM & $300-500$ & $9-50GB/s$ & $\geq 4GB$ & Running programs & Running software, open \newline document\\
 	\hline
@@ -431,11 +431,11 @@ A \textbf{GPU} (Graphics Processing Unit) is simply a CPU but specialized for pa
 		\hline
 		Purpose & brain of the PC & graphic rendering \\
 		\hline
-		Number of Cores & a few $2-32$ & thousands \\
+		Number of cores/threads & a few $2-32$ & thousands \\
 		\hline
 		Processing & serial work & parallel work \\
 		\hline
-		Memory (global) & RAM ($8-64+ GB$) & VRAM ($4-24+ GB$) \\
+		Memory (global) & RAM ($8-64< \: GB$) & VRAM ($4-24< \: GB$) \\
 		\hline
 		Memory (local) & cache L1, L2, L3 (cf \ref{fig:memory_hierarchy}) & $32-128 KB$ per block \\
 		\hline
@@ -448,7 +448,7 @@ A \textbf{GPU} (Graphics Processing Unit) is simply a CPU but specialized for pa
 So to summarize, the CPU is a group of a few powerful worker that do different work each while the GPU have an army of workers that do the same simple task in parallel to contribute to a greater goal.\\
 GPU are used commonly for graphics rendering, but it's not the only thing that they can do, we can use them for any kind of parallel computing. For example: machine learning, deep learning, simulations, etc. To do that we can run code using different "translations platforms" like \textbf{CUDA} (NVIDIA only), \textbf{ROCm} (AMD only) or open source alternative like \textbf{OpenCL}.\\
 \subsection{Hierarchy}
-The hierarchy is pretty simple, we have the host that send the jobs to the rest of the CPU and GPU. Some computing devices, all of the cores of the CPU are managed as one, and each GPU is an independant computing device. After that we have the computing units. Typically, for a CPU each core is a computing unit, and for a GPU each core is a block of processors that can run multiples threads at the same time. And at the lowest level is the processing elements, it is ab ALU (Arithmetic Logic Unit), to simplify it's a single thread that does basic operations.\\
+The hierarchy is pretty simple, we have the host that send the jobs to the rest of the CPU and GPU. After that, we have the computing devices. All of the cores of the CPU are managed as one, and each GPU is an independant computing device. After that, we have the computing units. Typically, for a CPU each core is a computing unit, and for a GPU each computing unit is composed a block of processors that can run multiples threads at the same time. And at the lowest level is the processing elements, it is an ALU (Arithmetic Logic Unit), to simplify it's a single thread that does basic operations.\\
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{img/hierarchy.png}
@@ -475,6 +475,29 @@ The memory hierarchy follows the same principle as the hierarchy. The host has i
 	\caption{Memory hierarchy}
 	\label{fig:mem_GPU}
 \end{figure}
+\chapter{Power consumption of computing}
+\section{Power consumption of the components}
+First we need to define the Thermal Design Power (TDP), it is the maximum amount of heat (in Watts) that a component is designed to dissipate. It is a useful measure to estimate the power consumption but also to design the cooling system.\\
+\subsection{CPU}
+The power of a CPU is approximately proportional to its utilisation until below $10\%$, so we can compute it like this:
+\begin{equation}
+	Power = TDP \times \max(0.1, \text{load})
+\end{equation}
+For example, for the CPU \textit{AMD Ryzen 5 5600X}, the TDP is $65W$, so we have this power curve:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{img/CPU_power.pdf}
+	\caption{Power consumption of the CPU}
+	\label{fig:CPU_power}
+\end{figure}
+\subsection{RAM}
+A slot of RAM consumes about $2-5W$ while being used, when in sleep mode it drops at $1 W$.
+\subsection{GPU}
+The power consumption of a GPU is more complex to compute but can be estimated by using the same formula as the CPU:
+\begin{equation}
+	Power = TDP \times \max(0.1, \text{load})
+\end{equation}
+\section{Reducing power consumption}
 \chapter{Useful tools}
 \section{OpenMP}\label{OpenMP}
 \textcolor{red}{TODO: Improve}\\
@@ -522,7 +545,7 @@ with conditions
 \begin{equation}
 	\begin{cases}
 		u(t,0)=u(t,1) = 0 \quad \forall t\\
-		u(0,x) = u^0(x)
+		u(0,x) = u_0(x)
 	\end{cases}
 \end{equation}
 There is usually no analytical solution to the equation, and this is why we can use numerical method to find the solution. 
@@ -592,11 +615,11 @@ Crank Nicholson uses both the backward and forward time specifications. The form
 \subsection{Truncation error}
 By definition, the truncation error term is given by
 \begin{equation}
-	T = \frac{\delta_t u_j^{n+\frac{1}{2}}}{\Delta t} - \frac{\theta \delta_x^2u_j^{n+1} + (1-\theta)\delta_x^2u_j^n}{\Delta x^2}
+	T^n_j = \frac{\delta_t u_j^{n+\frac{1}{2}}}{\Delta t} - \frac{\theta \delta_x^2u_j^{n+1} + (1-\theta)\delta_x^2u_j^n}{\Delta x^2}
 \end{equation}
 where we define $\delta_tu_j^{n+\frac{1}{2}}=u_j^{n+1}-u_j^n$ and $\delta_x^2u_j^n = u_{j+1}^n - 2 u_j^n + u_{j-1}^n$. Using a Taylor development series for each of the $u_j^n$, with reference point $(t_{n+\frac{1}{2}}, x_j)$, we can show that 
 \begin{equation}
-	T = \left(\left(\frac{1}{2}-\theta\right)\Delta t-\frac{1}{2}\Delta x^2\right) u_{xxxx} -\frac{1}{12}\Delta t^2u_{ttt} + \dots = \mathcal{O}(\Delta t, \Delta x^2)
+	T^n_j = \left(\left(\frac{1}{2}-\theta\right)\Delta t-\frac{1}{2}\Delta x^2\right) u_{xxxx} -\frac{1}{12}\Delta t^2u_{ttt} + \dots = \mathcal{O}(\Delta t, \Delta x^2)
 \end{equation}
 And for Crank-Nicholson, this becomes $\mathcal{O}(\Delta t^2, \Delta x^2)$. 
 \subsection{Fourier stability analysis}

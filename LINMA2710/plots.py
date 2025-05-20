@@ -207,6 +207,19 @@ def amdahl():
     plt.grid()
     plt.savefig("img/amdahl.pdf")
     plt.show()
+    
+def CPU_power(TDP = 65):
+    load = np.linspace(0, 1, 100)
+    power = TDP * np.maximum(0.1 * np.ones_like(load) ,load)
+    plt.plot(load, power, label="CPU Power Consumption", color="blue")
+    plt.xlabel("Load")
+    plt.ylabel("Power (W)")
+    plt.title("CPU Power Consumption vs Load")
+    plt.grid()
+    plt.legend()
+    plt.savefig("img/CPU_power.pdf")
+    plt.show()
+    
 
 if __name__ == "__main__":
     # finite_differences()
@@ -215,4 +228,5 @@ if __name__ == "__main__":
     # BTCS()
     # CN()
     # Dufort_frankel()
-    amdahl()
+    # amdahl()
+    CPU_power()
