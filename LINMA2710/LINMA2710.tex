@@ -447,6 +447,7 @@ A \textbf{GPU} (Graphics Processing Unit) is simply a CPU but specialized for pa
 \end{center}
 So to summarize, the CPU is a group of a few powerful worker that do different work each while the GPU have an army of workers that do the same simple task in parallel to contribute to a greater goal.\\
 GPU are used commonly for graphics rendering, but it's not the only thing that they can do, we can use them for any kind of parallel computing. For example: machine learning, deep learning, simulations, etc. To do that we can run code using different "translation platforms" like \textbf{CUDA} (NVIDIA only), \textbf{ROCm} (AMD only) or open source alternative like \textbf{OpenCL}.\\
+\newpage
 \subsection{Hierarchy}
 The hierarchy is pretty simple, we have the host that send the jobs to the rest of the CPU and GPU. After that, we have the computing devices. All of the cores of the CPU are managed as one, and each GPU is an independant computing device. After that, we have the computing units. Typically, for a CPU each core is a computing unit, and for a GPU each computing unit is composed a block of processors that can run multiples threads at the same time. And at the lowest level is the processing elements, it is an ALU (Arithmetic Logic Unit), to simplify it's a single thread that does basic operations.\\
 \begin{figure}[H]
@@ -467,6 +468,7 @@ And we can get informations from all of those levels by the following functions:
 		\hline
 	\end{tabular}
 \end{center}
+\newpage
 \subsection{Memory hierarchy}
 The memory hierarchy follows the same principle as the hierarchy. The host has its own memory (RAM). The global memory is the memory of the GPU, it is shared between all the threads of the GPU but is "slow" (VRAM). The local memory is shared between all the threads of a computing unit, and is faster than the global memory. And finaly the private memory is the memory of a thread, it is the fastest memory. The size of the memory is decreasing as its locality increases.\\
 \begin{figure}[H]
@@ -498,6 +500,34 @@ The power consumption of a GPU is more complex to compute but can be estimated b
 	Power = TDP \times \max(0.1, \text{load})
 \end{equation}
 \section{Reducing power consumption}
+\subsection{Understanding the factors}
+The power consumption of a component is the sum of two sources:
+\begin{itemize}
+	\item Static power: Minimum power consumed to keep the component on plus tiny leaks. High voltage induce more leaks.
+	\item Dynamic power: Power consumed due to the activity, it's given by the formula:
+	\begin{equation}
+		P = C V^2 A f
+	\end{equation}
+	where $C$ is the capacitance, $V$ is the voltage, $A$ is the activity factor (number of switches of transistors per clock cycle) and $f$ is the frequency.\\
+\end{itemize}
+High frequency induce high voltage. Which leads us to the concept of Dynamic voltage and frequency scaling (DVFS). This technique allows to reduce the power consumption of !!a component by reducing the voltage and frequency when we doesn't need it. Thus we dynamically change voltage to adapt to the component load required. \\
+\begin{itemize}
+	\item [$\rightarrow$] NB: the performance of a program is affected only if it's compute-bounded not if it's bandwidth-bounded.
+\end{itemize}
+\subsection{Gating}
+Gating is a way to save power when a CPU (or GPU) core is idle . The idea is to reduce or cut off power to unused parts of the chip in steps, depending on how long it’s been idle.
+\begin{enumerate}
+	\item \textbf{Clock gating}: Make some parts of the chip stop receiving clock signals (idle mode for them). 
+	\item \textbf{Voltage Reduction (deeper idle)}: Reduce the voltage for the idle parts of the chip or the whole chip. 
+	\item \textbf{Power Gating (deepest idle)}: The chip turns off parts of the circuit (cuts off the power supply entirely).
+\end{enumerate}
+\subsection{Reducing the power consumption of a program}
+DVFS and gating are done automatically so how can we reduce the power consumption of a program? 
+\begin{itemize}
+	\item Limits the number of threads, especially if the program is bandwidth-bounded.
+	\item Use shared memory instead of global memory to reduce the number of accesses to the global memory. It helps to improve the time of computing and the power efficiency.
+	\item \textcolor{red}{TODO: Talk about warps and interleaving count}
+\end{itemize}
 \chapter{Useful tools}
 \section{OpenMP}\label{OpenMP}
 \textcolor{red}{TODO: Improve}\\
@@ -545,7 +575,7 @@ with conditions
 \begin{equation}
 	\begin{cases}
 		u(t,0)=u(t,1) = 0 \quad \forall t\\
-		u(0,x) = u_0(x)
+		u(0,x) = u^0(x)
 	\end{cases}
 \end{equation}
 There is usually no analytical solution to the equation, and this is why we can use numerical method to find the solution. 
