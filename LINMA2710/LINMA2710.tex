@@ -167,7 +167,7 @@ To resume:
 	\item If $a$ is low then the performance is memory-bounded $\Rightarrow$ \textbf{Need cache optimization}.
 	\item If $a$ is high then the performance is compute-bounded $\Rightarrow$ \textbf{Need more CPU cores or vectorization}.
 \end{itemize}
-The arithmetic intensity can be represented with the \textbf{roofline model} which we'll talk now.
+The arithmetic intensity can be represented with the \textbf{roofline model} which we'll talk about now.
 \newpage
 \subsection{The roofline model}
 The two following graphs link the performances of a program with the arithmetic intensity. The "performances" means the number of operations per second and the "arithmetic intensity" is the number of operations per byte of memory transferred. The left graph is the case where we consider a perfect usage of the PC, and the right graph is the case where we consider a bad usage of the PC.  
@@ -190,7 +190,7 @@ As we can clearly see, we have two limitations:
 	\item Bandwidth limit (slopped line)
 	\item Computing limit (flat line)
 \end{itemize}
-These two limits lines are upper bound for performances and are limited from above by the hardware (we can't do better than what our CPU can do), but they can be lower if the program is not optimized. For example the slopped line can be lower if we don't use the cache correctly. The flat line can be lower if we don't use the CPU correctly (e.g. not using SIMD).\\
+These two limit lines are upper bounds for performances and are limited from above by the hardware (we can't do better than what our CPU can do), but they can be lower if the program is not optimized. For example the slopped line can be lower if we don't use the cache correctly. The flat line can be lower if we don't use the CPU correctly (e.g. not using SIMD).\\
 \newpage
 \subsection{Cache hierarchy for a multi-core CPU}
 In the case where we have a multi-core CPU, the organization of the memory isn't always the same, it depends of the CPU architecture. For example, we can have a hierarchy like this:
@@ -204,12 +204,12 @@ Here the L1 cache is private to each core, the L2 cache is shared between two co
 \section{Parallelism}
 In this course, we use \textit{OpenMP} to parallelize our code instead of \textit{lpthread}. The advantages of \textit{OpenMP} are detailed in the chapter \textbf{useful tools} at the section \ref{OpenMP}.\\ 
 Parallelism is a very useful tool to optimize the performances of a program. It allows to use multiple cores of the CPU to do multiple tasks at the same time. But sometimes it may arise some problems of performances or computational error.
-\subsection{computational error}
+\subsection{Computational error}
 When using multi-threading, we may modify and use some variables at the same time which could cause computational error. So to avoid that we can either protect the variable (with some adapted tools) but this option is not very efficient because it takes some time to \textit{lock} and \textit{unlock} and to wait for the variable to be available. Or we can make each thread use its own version of the variable, this introduces the next problems.
 \subsection{Race condition}
 The race condition is a problem that occurs when two or more threads try to modify the same variable at the same time, here there are no computational error possible. For example if all the threads want to modify a variable a the same time, they will need to wait for the variable to be available, and it is a waste of time. The solution for that, as we said before is to make each thread use its own version of the variable. Let's say they need to compute the sum of an array. The solution is to make each thread compute the sum of a part of the array and then by "reduction" sum all the sums. We will see this in more detail in the next chapter.
 \subsection{False sharing}
-As we say before, in the section about cache lines \ref{caches_lines}, the CPU loads the entire cache line into the cache when it need to use some data that is on the cache line. So here is the problem, let's say that all of the partial sum of the array are stored in the same cache line, when a thread modify its partial sum, the entire cache line is loaded into the cache of the CPU, and so the other threads will have to wait for the cache line to be available. The solution is to make each thread use its own cache line. We can solve this by adding some padding (shift the data) to the data structure.
+As we say before, in the section \ref{caches_lines} about cache lines, the CPU loads the entire cache line into the cache when it need to use some data that is on the cache line. So here is the problem, let's say that all of the partial sum of the array are stored in the same cache line, when a thread modify its partial sum, the entire cache line is loaded into the cache of the CPU, and so the other threads will have to wait for the cache line to be available. The solution is to make each thread use its own cache line. We can solve this by adding some padding (shift the data) to the data structure.
 \section{Amdahl's law}
 First let's define the \textbf{speedup} of a program, it represents the improvement of running time while using $p$ threads. It is defined by:
 \begin{equation}
@@ -253,7 +253,7 @@ And the efficiency is:
 \begin{equation}
 	E_p = \frac{S_p}{p} = \frac{1}{1 + \frac{p}{n}\log_2(p)}
 \end{equation}
-We clearly see that if we use more than $n$ processes the efficiency will decrease. Because if $p \geq n$ then we have $T_p = \log_2(n)$ and $\lim_{s \to \infty} S_p = \frac{1}{\log_2(n)}$ and $F_s = \log_2(n)$
+We clearly see that if we use more than $n$ processes the efficiency will decrease. Because if $p \geq n$ then we have $T_p = \log_2(n)$ and $\lim_{p \to \infty} S_p = \frac{1}{\log_2(n)}$ and $F_s = \log_2(n)$
 \chapter{Single Instruction Multiple Data (SIMD)}
 \textcolor{red}{Maybe to improve}\\
 SIMD (Single Instruction Multiple Data) is a parallel computing architecture used to process multiple data points simultaneously with a single instruction.\\
@@ -276,7 +276,7 @@ Here we use \texttt{int} which is $32$ bytes so if we use SIMD with AVX2 registe
     __m512_add_epi16(c+i, a+i, b+i);
 	}
 \end{lstlisting}
-We can write the code with the intrinsics (\code{\_\_m512\_add\_epi16}) but it's not necessarily. The compiler will do it for you.\\
+We can write the code with the intrinsics (\code{\_\_m512\_add\_epi16}) but it's not necessary. The compiler will do it for you.\\
 To use SIMD, you need to give to your compiler some flags, for example:
 \begin{itemize}
 	\item \code{-O2} or \code{-O3} for optimization
@@ -299,7 +299,7 @@ Here are some key steps with MPI:
 \end{itemize}
 \newpage
 \section{Collectives}
-Lets consider a system that can support $4$ processes for the explcit examples (tables). And for the bounds consider as usual $p$ proccess and the variables defined for the latency \ref{def_latency} ($\alpha,\beta,n$) and an arithmetic intensity parameter ($\gamma$). Here is some illustration of how collectives work:
+Let's consider a system that can support $4$ processes for the explicit examples (tables). And for the bounds consider as usual $p$ process and the variables defined for the latency \ref{def_latency} ($\alpha,\beta,n$) and an arithmetic intensity parameter ($\gamma$). Here is some illustration of how collectives work:
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{img/collectives.jpeg}
@@ -446,7 +446,7 @@ A \textbf{GPU} (Graphics Processing Unit) is simply a CPU but specialized for pa
 	\end{tabular}
 \end{center}
 So to summarize, the CPU is a group of a few powerful worker that do different work each while the GPU have an army of workers that do the same simple task in parallel to contribute to a greater goal.\\
-GPU are used commonly for graphics rendering, but it's not the only thing that they can do, we can use them for any kind of parallel computing. For example: machine learning, deep learning, simulations, etc. To do that we can run code using different "translations platforms" like \textbf{CUDA} (NVIDIA only), \textbf{ROCm} (AMD only) or open source alternative like \textbf{OpenCL}.\\
+GPU are used commonly for graphics rendering, but it's not the only thing that they can do, we can use them for any kind of parallel computing. For example: machine learning, deep learning, simulations, etc. To do that we can run code using different "translation platforms" like \textbf{CUDA} (NVIDIA only), \textbf{ROCm} (AMD only) or open source alternative like \textbf{OpenCL}.\\
 \subsection{Hierarchy}
 The hierarchy is pretty simple, we have the host that send the jobs to the rest of the CPU and GPU. After that, we have the computing devices. All of the cores of the CPU are managed as one, and each GPU is an independant computing device. After that, we have the computing units. Typically, for a CPU each core is a computing unit, and for a GPU each computing unit is composed a block of processors that can run multiples threads at the same time. And at the lowest level is the processing elements, it is an ALU (Arithmetic Logic Unit), to simplify it's a single thread that does basic operations.\\
 \begin{figure}[H]
@@ -550,7 +550,7 @@ with conditions
 \end{equation}
 There is usually no analytical solution to the equation, and this is why we can use numerical method to find the solution. 
 \subsection{The $\theta$-method}
-In finite differences, we discretize the domain in a mesh, like displayed on \ref{fig:finite_diff}
+In finite differences, we discretize the domain in a mesh, like displayed on figure \ref{fig:finite_diff}.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width = .7\textwidth]{img/finite_diff.pdf}
