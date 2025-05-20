@@ -238,6 +238,12 @@ And
 \begin{equation}
 	E_p = \frac{S_p}{p} = \frac{1}{pF_s + 1 - F_s} = \frac{1}{F_s(p - 1) + 1}
 \end{equation}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{img/amdahl.pdf}
+	\caption{Amdahl's law}
+	\label{fig:amdahl}
+\end{figure}
 \subsection{Application of Amdahl's law to parallel sum}
 Let's consider the sum of an array, we want to parallelize it. The time without parallelization is $n$ and with parallelization is $\frac{n}{p} + \log_2(p)$, the log term is the time needed to sum all the partial sums. So the speedup is:
 \begin{equation}
@@ -267,7 +273,7 @@ Here we use \texttt{int} which is $32$ bytes so if we use SIMD with AVX2 registe
 	int b[] = {...};
 	int c[size];
 	for(int i = 0; i < size; i+=16){
-    __m512_add_epi16(c + i, a + i, b+i);
+    __m512_add_epi16(c+i, a+i, b+i);
 	}
 \end{lstlisting}
 We can write the code with the intrinsics (\code{\_\_m512\_add\_epi16}) but it's not necessarily. The compiler will do it for you.\\
@@ -278,6 +284,7 @@ To use SIMD, you need to give to your compiler some flags, for example:
 	\item \code{-mavx2} for AVX2
 	\item \code{-mavx512} for AVX512
 \end{itemize}
+\textcolor{red}{TODO: explain AVX}\\
 \chapter{Distributed Computing with MPI}
 \section{Single Program Multiple Data (SPMD)}
 Single Program Multiple Data means that we make multiple processes execute the same program but operate on different data. It's a kind of parallel computing that we call distributed computing.
@@ -299,6 +306,8 @@ Lets consider a system that can support $4$ processes for the explcit examples (
 	\caption{Collectives}
 	\label{fig:collectives}
 \end{figure}
+
+\textcolor{red}{TODO: give the function for each and the args}
 \subsection{Broadcast}
 \textbf{Broadcast} makes a process gives a variable to the other processes.\\
 \begin{center}
@@ -412,6 +421,60 @@ The eager protocol can be represented like this:
 	\label{fig:eager}
 \end{figure}
 \chapter{Scientific computing on GPU}
+\section{What is a GPU?}
+\subsection{GPU vs CPU}
+A \textbf{GPU} (Graphics Processing Unit) is simply a CPU but specialized for parallel computing and is commonly used for matrix computations. In order to understand why let's do a little comparison between CPU and GPU:
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		& CPU & GPU \\
+		\hline
+		Purpose & brain of the PC & graphic rendering \\
+		\hline
+		Number of Cores & a few $2-32$ & thousands \\
+		\hline
+		Processing & serial work & parallel work \\
+		\hline
+		Memory (global) & RAM ($8-64+ GB$) & VRAM ($4-24+ GB$) \\
+		\hline
+		Memory (local) & cache L1, L2, L3 (cf \ref{fig:memory_hierarchy}) & $32-128 KB$ per block \\
+		\hline
+		Frequency & high ($3-5 GHz$) & low ($1-2 GHz$) \\
+		\hline
+		Flexibility & versatile & specialized \\
+		\hline
+	\end{tabular}
+\end{center}
+So to summarize, the CPU is a group of a few powerful worker that do different work each while the GPU have an army of workers that do the same simple task in parallel to contribute to a greater goal.\\
+GPU are used commonly for graphics rendering, but it's not the only thing that they can do, we can use them for any kind of parallel computing. For example: machine learning, deep learning, simulations, etc. To do that we can run code using different "translations platforms" like \textbf{CUDA} (NVIDIA only), \textbf{ROCm} (AMD only) or open source alternative like \textbf{OpenCL}.\\
+\subsection{Hierarchy}
+The hierarchy is pretty simple, we have the host that send the jobs to the rest of the CPU and GPU. Some computing devices, all of the cores of the CPU are managed as one, and each GPU is an independant computing device. After that we have the computing units. Typically, for a CPU each core is a computing unit, and for a GPU each core is a block of processors that can run multiples threads at the same time. And at the lowest level is the processing elements, it is ab ALU (Arithmetic Logic Unit), to simplify it's a single thread that does basic operations.\\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{img/hierarchy.png}
+	\caption{Hierarchy}
+	\label{fig:Hierarchy}
+\end{figure}
+And we can get informations from all of those levels by the following functions:
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		compute device & compute unit & processing element \\
+		\hline
+		get\_global\_id & get\_group\_id & get\_local\_id \\
+		\hline
+		get\_global\_size & get\_num\_groups & get\_local\_size \\
+		\hline
+	\end{tabular}
+\end{center}
+\subsection{Memory hierarchy}
+The memory hierarchy follows the same principle as the hierarchy. The host has its own memory (RAM). The global memory is the memory of the GPU, it is shared between all the threads of the GPU but is "slow" (VRAM). The local memory is shared between all the threads of a computing unit, and is faster than the global memory. And finaly the private memory is the memory of a thread, it is the fastest memory. The size of the memory is decreasing as its locality increases.\\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{img/mem_GPU.png}
+	\caption{Memory hierarchy}
+	\label{fig:mem_GPU}
+\end{figure}
 \chapter{Useful tools}
 \section{OpenMP}\label{OpenMP}
 \textcolor{red}{TODO: Improve}\\
@@ -429,7 +492,7 @@ The eager protocol can be represented like this:
 \textbf{Slurm} stands for \textit{Simple Linux Utility for Resource Management}. It is an open-source job scheduler used in high-performance computing environments, such as university clusters or research supercomputers.
 \subsection{How to use Slurm?}
 \subsection{Slurm Topology}
-
+\section{OpenCL}
 \chapter{PAA - PDEs}
 \section{Introduction}
 Throughout this chapter, we will use the simple example of the diffusion equation. It is expressed as 
