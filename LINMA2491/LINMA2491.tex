@@ -407,7 +407,7 @@ We then know $WS \leq SPEV \leq SP$.
 \subsection{Upper bound on SP: EVRS and EPEV}
 \begin{itemize}
 	\item The \textbf{expected value of the reference scenario} is $EVRS =  \E_\xi(z(\bar{x}^r,\xi))$, where $\bar{x}^r$ is the optimal solution to $z(x,\xi^r)$.
-	\item The \textbf{expectation of pairs of expected value} is defined as \[EPEV = \min_{k=1,\dots,K\cup\{r\}}\E_\xi(z(\bar{x}^r,\xi))\] where $(\bar{x}^k,\bar{y}^k, y(\xi^K))$ is the optimal solution to the pairs subproblem of $\xi^r$ and $\xi^k$.
+	\item The \textbf{expectation of pairs of expected value} is defined as \[EPEV = \min_{k=1,\dots,K\cup\{r\}}\E_\xi(z(\bar{x}^k,\xi))\] where $(\bar{x}^k,\bar{y}^k, y(\xi^K))$ is the optimal solution to the pairs subproblem of $\xi^r$ and $\xi^k$.
 \end{itemize}
 As $SP,EPEV,EVRS$ are the optimal values of $\min_x \E_\xi z(x,\xi)$ over smaller feasible sets:
 \begin{equation}
@@ -452,13 +452,15 @@ This algorithm is designed to solve convex but non-differentiable optimization p
 	\end{aligned}
 \end{equation}
 where $X\subseteq \R^n$ is convex and compact, $F:\R^n\to \R$ is convex and $c\in \R^n$ is a parameter vector. \\
-Let us define 
+Let us define the following for algorithm \ref{algo:Kelley}
 \begin{itemize}
 	\item $L_k:\R^n\to \R$ a lower bound function of $F(x)$ at iteration $k$;
-	\item $U_k:\R^n\to \R$ an upper bound $U_k$ of $z^\star$ at iteration $k$.
+	\item $L_k$ a lower bound of $z^\star$ at iteration $k$;
+	\item $U_k$ an upper bound $U_k$ of $z^\star$ at iteration $k$.
 \end{itemize}
 \begin{algorithm}
-    \caption{Kelley's Cutting plane algorithm}\label{algo:Kelley}
+    \caption{Kelley's Cutting plane algorithm}
+	\label{algo:Kelley}
     \begin{algorithmic}[1]
     \State \textbf{Step 0:} Set $k=0$ and assume $x_1\in X$ is given. Set $L_0(x)=-\infty$ for all $x\in X$, $U_0 = c^Tx_1 + F(x_1)$, and $L_0 = -\infty$.
 	\State \textbf{Step 1:} Set $k=k+1$. Find $a_k\in \R$ and $b_k\in \R^n$ such that \[F(x_k)=a_k+b_k^Tx_k\] \[F(x)\ge a_k + b_k^Tx\qquad x\in X\]
@@ -510,7 +512,7 @@ Let us call $E$ the set of extreme points of $\pi^TW\le q^T$ and $R$ the set of 
 	\centering
 	\includegraphics[width=.35\textwidth]{img/extreme.png}
 \end{figure}
-We can see that $V(x)$ is a piecewise linear convex function of $x$ and, defining $x_0$ as the dual optimal multiplier of \eqref{eq:benders} given $x_0$, then $\pi_0^T(h-Tx_0)$ is a supporting hyperplane of $V(x)$ at $x_0$, because it belongs to the subdifferential of $V(x)$ at $h-Tx_0$.
+We can see that $V(x)$ is a piecewise linear convex function of $x$ and, defining $\pi_0$ as the dual optimal multiplier of \eqref{eq:benders} given $x_0$, then $\pi_0^T(h-Tx_0)$ is a supporting hyperplane of $V(x)$ at $x_0$, because it belongs to the subdifferential of $V(x)$ at $h-Tx_0$.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.5\textwidth]{img/supporting_hyperplane.png}
