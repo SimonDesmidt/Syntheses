@@ -1194,7 +1194,7 @@ We decide to use the FFFB method.
 	\item Solve the subproblem of stage 1;
 	\item For each stage $(t,k)$, solve the subproblem with the solution of $(t-1, a(k))$ as inputs;
 	\item Solve the dual of the last stage to find the cut;
-	\item The cut is $\theta \ge e_{t-1,j}-E_{t-1,j}x$ for each subproblem $j$, where \footnote{I don't knwo what the term in parentheses means in $e_{t-1,j}$ means but it is 0 in the first pass.}
+	\item The cut is $\theta \ge e_{t-1,j}-E_{t-1,j}x$ for each subproblem $j$, where \footnote{I don't knwo what the term in parentheses means in $e_{t-1,j}$ means but it is just $h_{t,k}$ in the first pass.}
 	\begin{equation}
 		\begin{aligned}
 			E_{t-1,j} &= \sum_k p_t(k|j)\pi_{t,k}^T T_{t-1,k}\\
