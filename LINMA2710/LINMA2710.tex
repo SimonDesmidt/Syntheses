@@ -267,16 +267,19 @@ Let's do a little example, consider the following code:
 		c[i] = a[i] + b[i];
 	}
 \end{lstlisting}
-Here we use \texttt{int} which is $32$ bytes so if we use SIMD with AVX2 registers, we can store $(512/32 =) 16$ integers in a register. And so SIMD with that type of registers will automatically translate the previous code to:
+Here we use \texttt{int} which is $32$ bits so if we use SIMD with AVX2 registers, we can store $(256/32 =) 8$ integers in a register. And so SIMD with that type of registers will automatically translate the previous code to:
 \begin{lstlisting}[style=CppStyle]
 	int a[] = {...};
 	int b[] = {...};
 	int c[size];
-	for(int i = 0; i < size; i+=16){
-    __m512_add_epi16(c+i, a+i, b+i);
-	}
+    for (int i = 0 ; i < size; i += 8) {
+        __m256i va = _mm256_load_si256((__m256i*)&a[i]);  
+        __m256i vb = _mm256_load_si256((__m256i*)&b[i]);  
+        __m256i vc = _mm256_add_epi32(va, vb);             
+        _mm256_store_si256((__m256i*)&c[i], vc);          
+    }
 \end{lstlisting}
-We can write the code with the intrinsics (\code{\_\_m512\_add\_epi16}) but it's not necessary. The compiler will do it for you.\\
+We can write the code with the intrinsics (all the function with \_ before) but it's not necessary. The compiler will do it for you.\\
 To use SIMD, you need to give to your compiler some flags, for example:
 \begin{itemize}
 	\item \code{-O2} or \code{-O3} for optimization
