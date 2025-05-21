@@ -1189,6 +1189,22 @@ We decide to use the FFFB method.
 	\item Solving NLDS(1,1), we get $x_1=0$, which we put in each subproblem NLDS$(2,\cdot)$. The probability to go in each scenario is 1/2. 
 \end{enumerate}
 \textcolor{red}{Continue the explanation when the example is clear. Take notes of someone else.}
+\subsection{Algorithm on paper}
+\begin{enumerate}
+	\item Solve the subproblem of stage 1;
+	\item For each stage $(t,k)$, solve the subproblem with the solution of $(t-1, a(k))$ as inputs;
+	\item Solve the dual of the last stage to find the cut;
+	\item The cut is $\theta \ge e_{t-1,j}-E_{t-1,j}x$ for each subproblem $j$, where \footnote{I don't knwo what the term in parentheses means in $e_{t-1,j}$ means but it is 0 in the first pass.}
+	\begin{equation}
+		\begin{aligned}
+			E_{t-1,j} &= \sum_k p_t(k|j)\pi_{t,k}^T T_{t-1,k}\\
+			e_{t-1,j} &= \sum_k \left[p_t(k|j)\pi_{t,k}^T \left(h_{t,k}+\sum_i \rho_i^T e_{t,k} + \sum_i \sigma_i^T p_{t,k,i}\right)\right]
+		\end{aligned}
+	\end{equation}
+	\item Put the cut found in $(t,k)$ in the previous level $(t-1,a(k))$ and solve the dual of $(t-1,a(k))$ with all of its new constraints to find a cut for its own ancestor problem;
+	\item Repeat until $t=1$;
+	\item Go back to step 1.
+\end{enumerate}
 \chapter{Stochastic Dual Dynamic Programming}
 \section{Motivation}
 The nested decomposition requires a huge number of iterations: $\sum_{t=1}^{H-1}\prod_{j=1}^t|S_j|$ for the forward pass and $\sum_{t=2}^H \prod_{j=1}^t |S_j|$ for the backward pass. It is not feasible on practice as it will almost always overload the memory. The stochastic dual dynamic programming (SDDP) solves this issue by,
