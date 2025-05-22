@@ -229,7 +229,7 @@ Thus
 \begin{equation}
 	\begin{aligned}
 		f(x_{k+1}) &\leq f(x_k) &&+ \langle \nabla f(x_k), x_{k+1}-x_k\rangle + \frac{L}{2}\lVert x_{k+1}-x_k\rVert^2\\
-		&= f(x_k) &&+ \langle g_{h_k}(x_k), x_{k+1}-x_k\rangle + \frac{\sigma}{2} \|x_{k+1}-x_k\|\\
+		&= f(x_k) &&+ \langle g_{h_k}(x_k), x_{k+1}-x_k\rangle + \frac{\sigma}{2} \|x_{k+1}-x_k\|^2\\
 		& &&+ \langle \nabla f(x_k) - g_{h_k}(x_k), x_{k+1}-x_k\rangle + \frac{(L-\sigma)}{2}\lVert x_{k+1}-x_k\rVert^2\\
 		&\leq f(x_k) &&- \frac{1}{\sigma} \|g_{h_k}(x_k)\|^2 + \frac{1}{2\sigma} \|g_{h_k}(x_k)\|^2 \\
 		& &&+ \| \nabla f(x_k) - g_{h_k}(x_k)\| \frac{1}{\sigma} \|g_{h_k}(x_k)\| + \frac{(L-\sigma)}{2\sigma^2} \|g_{h_k}\|^2\\
@@ -265,11 +265,11 @@ Using trick \eqref{eq:sq2} in chapter \ref{chap:tricks},
 \end{equation}
 Let $T(\varepsilon) = \inf \{k\in \mathbb{N}: \|\nabla f(x_k)\| \leq \varepsilon \}$, \textcolor{blue}{with $f(x)$ bounded from below by $f_{low}$}. Summing up \eqref{eq:brigitte} for $k=0,\dots, T(\varepsilon)-1$:
 \begin{equation}
-	\frac{T(\varepsilon)}{8 \sigma} \varepsilon^2 \leq f(x_0) - f_{low} + \frac{5 \sigma n}{4} \sum_{k=0}^{T(\varepsilon)-1} h_k^2
+	\frac{T(\varepsilon)}{8 \sigma} \varepsilon^2 \leq f(x_0) - f_{low} + \frac{5 \sigma n}{16} \sum_{k=0}^{T(\varepsilon)-1} h_k^2
 \end{equation}
 \textcolor{blue}{If $\{h_k^2\}_{k\ge0}$ is summable}
 \begin{equation}
-	\Longrightarrow T(\varepsilon) \leq 8 \sigma \left( f(x_0) - f_{low} + \frac{5 \sigma n}{4} \sum_{k=0}^{T(\varepsilon)-1} h_k^2\right) \varepsilon^2 = \O(\varepsilon^2)
+	\Longrightarrow T(\varepsilon) \leq 8 \sigma \left( f(x_0) - f_{low} + \frac{5 \sigma n}{16} \sum_{k=0}^{T(\varepsilon)-1} h_k^2\right) \varepsilon^2 = \O(\varepsilon^2)
 \end{equation}
 In terms of call to the oracle, we have a complexity bound of $\O(n\varepsilon^2)$.
 
@@ -1188,6 +1188,14 @@ and the operation complexity multiplies it by $\mathcal{O}(m^3)$ because it solv
 	\item Triangular inequality by the minimizer: 
 	\begin{equation}\label{eq:triangular_inequality_by_min}
 		\|x_{k+1}-x_k\| \leq \|x_{k+1}-x^*\|+\|x_k-x^*\|
+	\end{equation}
+	\item Mean Value Theorem $\forall x,y \in \Omega, \exists z \in \Omega$ s.t.:
+	\begin{equation}
+		f(y)-f(x) = \langle \nabla f(z),y-x\rangle \qquad z \in [x,y]
+	\end{equation}
+	\item By definition if a function is $C^p_M$, then 
+	\begin{equation}
+		|f(y) - T_p(y;x)| \leq \frac{M}{(p+1)!}\|y-x\|^{p+1}
 	\end{equation}
 \end{enumerate}
 \end{document}
