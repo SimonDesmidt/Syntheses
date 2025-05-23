@@ -253,7 +253,7 @@ And the efficiency is:
 \begin{equation}
 	E_p = \frac{S_p}{p} = \frac{1}{1 + \frac{p}{n}\log_2(p)}
 \end{equation}
-We clearly see that if we use more than $n$ processes the efficiency will decrease. Because if $p \geq n$ then we have $T_p = \log_2(n)$ and $\lim_{p \to \infty} S_p = \frac{1}{\log_2(n)}$ and $F_s = \log_2(n)$
+We clearly see that if we use more than $n$ processes the efficiency will decrease. Because if $p \geq n$ then we have $T_p = \log_2(n)$ and $\lim_{p \to \infty} S_p = \frac{1}{\log_2(n)}$ and $F_s = \log_2(n)$.
 \chapter{Single Instruction Multiple Data (SIMD)}
 \textcolor{red}{Maybe to improve}\\
 SIMD (Single Instruction Multiple Data) is a parallel computing architecture used to process multiple data points simultaneously with a single instruction.\\
@@ -513,12 +513,12 @@ The power consumption of a component is the sum of two sources:
 	\end{equation}
 	where $C$ is the capacitance, $V$ is the voltage, $A$ is the activity factor (number of switches of transistors per clock cycle) and $f$ is the frequency.\\
 \end{itemize}
-High frequency induce high voltage. Which leads us to the concept of Dynamic voltage and frequency scaling (DVFS). This technique allows to reduce the power consumption of !!a component by reducing the voltage and frequency when we doesn't need it. Thus we dynamically change voltage to adapt to the component load required. \\
+High frequency induce high voltage. Which leads us to the concept of Dynamic voltage and frequency scaling (DVFS). This technique allows to reduce the power consumption of a component by reducing the voltage and frequency when we doesn't need it. Thus we dynamically change voltage to adapt to the component load required. \\
 \begin{itemize}
 	\item [$\rightarrow$] NB: the performance of a program is affected only if it's compute-bounded not if it's bandwidth-bounded.
 \end{itemize}
 \subsection{Gating}
-Gating is a way to save power when a CPU (or GPU) core is idle . The idea is to reduce or cut off power to unused parts of the chip in steps, depending on how long it’s been idle.
+Gating is a way to save power when a CPU (or GPU) core is idling. The idea is to reduce or cut off power to unused parts of the chip in steps, depending on how long it’s been in idle.
 \begin{enumerate}
 	\item \textbf{Clock gating}: Make some parts of the chip stop receiving clock signals (idle mode for them). 
 	\item \textbf{Voltage Reduction (deeper idle)}: Reduce the voltage for the idle parts of the chip or the whole chip. 
