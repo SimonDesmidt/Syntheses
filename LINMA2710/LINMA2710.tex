@@ -461,13 +461,13 @@ The hierarchy is pretty simple, we have the host that send the jobs to the rest 
 \end{figure}
 And we can get informations from all of those levels by the following functions:
 \begin{center}
-	\begin{tabular}{|c|c|c|}
+	\begin{tabular}{|c|c|c|c|}
 		\hline
-		compute device & compute unit & processing element \\
+		& \textbf{Compute device} & \textbf{Compute unit} & \textbf{Processing element} \\
 		\hline
-		get\_global\_id & get\_group\_id & get\_local\_id \\
+		Get id & \texttt{get\_global\_id} & \texttt{get\_group\_id} & \texttt{get\_local\_id} \\
 		\hline
-		get\_global\_size & get\_num\_groups & get\_local\_size \\
+		Get quantity & \texttt{get\_global\_size} & \texttt{get\_num\_groups} & \texttt{get\_local\_size} \\
 		\hline
 	\end{tabular}
 \end{center}
@@ -561,7 +561,7 @@ To that, we add an initial condition and boundary conditions:
 	\item General boundary condition: $ n\cdot \nabla u=0$ on $\Omega$;
 	\begin{itemize}
 		\item Dirichlet boundary condition: $u(t,0)$ given for all $t\ge0$;
-		\item Neumann boundary condition: $\partial_x(t,0)$ given for all $t\ge0$;
+		\item Neumann boundary condition: $\partial_xu(t,0)$ given for all $t\ge0$;
 	\end{itemize}
 \end{itemize}
 This equation can represent the diffusion of heat, particles, pollutants, etc. It is derived from two basic laws of physics:
@@ -698,7 +698,7 @@ We can show that the eigenvalues of $C(\beta)$ and their corresponding eigenvect
 \end{equation}
 Hence the eigenvalues of the matrix $A$ are 
 \begin{equation}
-	v_ell = \frac{1-4\mu(1-\theta) \sin^2\frac{\pi \ell}{2J}}{1+4\mu\theta \sin^2 \frac{\pi \ell}{2J}} \qquad \ell = 1,\dots,J-1
+	v_\ell = \frac{1-4\mu(1-\theta) \sin^2\frac{\pi \ell}{2J}}{1+4\mu\theta \sin^2 \frac{\pi \ell}{2J}} \qquad \ell = 1,\dots,J-1
 \end{equation}
 Their module must be smaller than 1 for the system to be Lyapunov stable (for all $\ell= 1,\dots,J-1$). This is equivalent to the condition 
 \begin{equation}
@@ -787,7 +787,7 @@ Consider the finite differences scheme:
 \end{equation}
 which can also be written 
 \begin{equation}
-	U_j^{n+1} = (1-\nu)U_j^n + \nu_{j-1}^n\qquad \nu \coloneqq \frac{a\Delta t}{\Delta x}
+	U_j^{n+1} = (1-\nu)U_j^n + \nu U_{j-1}^n\qquad \nu \coloneqq \frac{a\Delta t}{\Delta x}
 \end{equation}
 The CFL condition states that $\nu$ must be smaller than 1. If the scheme is convergent, then the condition holds. The meaning of the CFL condition is that the domain of dependence of the PDE, i.e. all the points that depend on $U_j^n$, is a subset of the domain of dependence of the numerical scheme. 
 \end{document}
