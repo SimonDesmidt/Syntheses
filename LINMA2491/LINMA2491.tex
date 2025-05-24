@@ -1406,6 +1406,7 @@ Again using a dice, we start from (2,1). Solving the problem gives us $x_2=0$. T
 \end{equation}
 \textcolor{red}{Rest is not clear, to be continued...}
 \chapter{Lagrange Relaxation}
+\section{Introduction}
 Lagrangian relaxation is usually used to make problems easier when they have complicated constraints. For example, we have an initial problem:
 \begin{equation}
 	\begin{aligned}
@@ -1415,7 +1416,7 @@ Lagrangian relaxation is usually used to make problems easier when they have com
 	\end{aligned}
 \end{equation}
 The dual function is 
-\begin{equation}
+\begin{equation}\label{eq:dual_function}
 	g(u,v) = \sup_{x\in \mathcal{D}} [f_0(x)-u^Tf(x)-v^Th(x)]
 \end{equation}
 If $u\ge0$, for all $\hat x\in \mathcal{D}$, then weak duality holds and $g(u,v)\ge f_0(\hat x)$, and if the problem is convex, then strong duality holds and 
@@ -1425,6 +1426,191 @@ If $u\ge0$, for all $\hat x\in \mathcal{D}$, then weak duality holds and $g(u,v)
 \begin{itemize}
 	\item [$\to$] Note: we do not have the constraint $v\ge0$ as the constraint on $h(x)$ is an equality.
 \end{itemize}
-The idea of dual decomposition is that the dual function $g(u,v)$ is convex regardless of the primal problem, and the computation of $g(u,v)$ and $\pi\in \partial g(u,v)$ is easy. 
-
+\subsection{Properties}
+The idea of dual decomposition is that the dual function $g(u,v)$ is convex regardless of the primal problem, and the computation of $g(u,v)$ and $\pi\in \partial g(u,v)$ is easy. Additionnally, we can show that if $u\ge0$, then, $g(u,v)\ge p^*$. This means that minimizing $g(u,v)$ gives the tightest possible bound to $p^*$.\\
+\begin{itemize}
+	\item $g(u,v)$ is convex lower-semicontinuous, meaning that if $(u,v)$ is such that \eqref{eq:dual_function} has optimal solution $x_{u,v}$, then $\begin{bmatrix}
+		-f(x_{u,v})\\ -h(x_{u,v})\\
+	\end{bmatrix}$ is a subgradient of $g$.
+\end{itemize}
+\section{Subgradient method}
+The subgradient method is as seen in previous courses. It minimizes a non-differentiable convex function $g$ with iterations such that 
+\begin{equation}
+	u_{k+1} = u_k - \alpha_k u_k
+\end{equation}
+where we can also take the projection in the case of a constraint problem with convex domain. 
+\begin{itemize}
+	\item $u_k$ is the $k$-th iterate;
+	\item $\pi_k$ is any subgradient of $g$ at $u_k$;
+	\item $\alpha_k>0$ is the $k$-th step size;
+	\item [$\to$] Note: to converge, we need a step such that 
+	\begin{equation}
+		\sum_{k=1}^\infty \alpha_k^2 < \infty \qquad \sum_{k=1}^\infty a_k = \infty 
+	\end{equation}
+	\begin{equation}
+		\lim_{k\to \infty} \alpha_k = 0
+	\end{equation}
+\end{itemize}
+\section{Cutting Plane method}
+Define $\hat g(u)\le g(u)$ such that 
+\begin{equation}
+	\hat g(u) = \min \theta \qquad \text{s.t. } \qquad \theta\ge g(u_k) + \pi_k^T (u-u_k) \qquad k=1,\dots,K
+\end{equation}
+Given information $(g(u_k),\pi_k)$, for $k=1,\dots,K$, the algorithm is 
+\begin{enumerate}
+	\item Solve $\min \hat g(u)$, and denote $u_{K+1}$ as the optimal solution;
+	\item Add $u_{K+1}$ and $\pi_{K+1}\in \partial g(u_{K+1})$ to bundle;
+	\item Return step 1.
+\end{enumerate}
+Applying this algorithm, we observe that 
+\begin{itemize}
+	\item $\theta_k$ is increasing;
+	\item $g(u_k)$ is not necessarily increasing;
+	\item We need a confidence region to initialize $u$;
+	\item This method is generally unstable because $\Delta u_k=u_k-u_{k-1}$ can be very big.
+\end{itemize}
+\section{Bundle Methods}
+As the function $\hat g$ may be highly inaccurate ($\hat g\le g$), minimizing $\hat g$ may result in $u_{k+1}$ being very far from $\hat u$, the stability center. The idea is to add a stabilizing term $\|u-\hat u\|^2$ to the objective function to counter that problem. 
+\begin{equation}
+	\begin{aligned}
+		&\min_{(u,\theta)\in \R^{m+1}} \theta + \frac{1}{2t}\|u-\hat u\|^2 \\
+		& \theta \ge g(u_k) + \pi_k^T (u-u_k)\qquad k=1,\dots,K 
+	\end{aligned}
+\end{equation}
+To do the update, we consider the following condition:
+\begin{equation}
+	g(u_{K+1}) \le g(u_K) -\kappa \delta 
+\end{equation}
+where $\kappa$ is a fixed tolerance. If the condition is met, then the descent step sets $\hat u \coloneqq u_{K+1}$, and if not, then we do not change $\hat u$ and update the budnle with $(g(u_{K+1}),\pi_{K+1})$.\\
+\section{Level Method}
+Let us consider a level $L_k$. Then, the level set of $\hat g$ is $\{u\in \R^m:\hat g(u)\le L_k\}$. The idea of the level method is to project the iterate $u_k$ on the level set. The advantage of level sets is that it is more stable than the minimizer, and projections are computationnally cheap. \\
+Defining 
+\begin{equation}
+	\begin{aligned}
+		g_k^{best} &= \min_{i=1,\dots,K}g(u_i)\\
+		\theta_k^{best} &= \max_{i=1,\dots,k}\theta_i^*\\
+	\end{aligned}
+\end{equation}
+we consider the following level set of $\hat g$, with parameter $\lambda$:
+\begin{equation}
+	L_k = \lambda g_k^{best} + (1-\lambda)\theta_k^{best}
+\end{equation}
+If $\lambda=0$, the algorithm makes no progress, and if $\lambda=1$, the algorithm reduces to a cutting plane method. \\
+\begin{algorithm}[H]
+	\caption{Level method}
+	\label{algo:level_method}
+	\begin{algorithmic}[1]
+		\State $k\coloneqq 0$;
+		\While{$g_{k+1}^{best} - \theta_{k+1}^{best} > \epsilon$}
+		\State Compute $u_{k+1}$ by solving 
+		\begin{equation}
+			\min \|u-u_k\|^2 \qquad \text{s.t. } \qquad g(u_i)+\pi_i^T (u-u_i)\ge L_k \qquad i=1,\dots,k
+		\end{equation}
+		\State Add $(g(u_{k+1}), \pi_{k+1})$ to bundle, where $\pi_{k+1}\in \partial g(u_{k+1})$;
+		\State Update $\theta_{k+1}^{best}, g_{k+1}^{best}$;
+		\State $k \gets k+1$;
+		\EndWhile 
+	\end{algorithmic}
+\end{algorithm}
+If we denote $L$ the Lipschitz constant of $g$, $R$ the diameter of its domain, and $c$ a constant that only depends on $\lambda$, then the number of iterations is bounded by 
+\begin{equation}
+	M(\epsilon) \le c\left(\frac{LD}{\epsilon}\right)
+\end{equation}
+\section{Alternating Direction Method of Multipliers}
+The problem form we want to solve here is 
+\begin{equation}
+	\min f(x)+\phi(z)\qquad \text{s.t. }\qquad  Ax+Bz=c
+\end{equation}
+for two sets of variables $(x,z)$ with separable objective. The augmented Lagrangian is 
+\begin{equation}
+	L_\rho(x,z,\nu) = f(x) + \phi(z) + \nu^T(Ax+Bz-c)+\frac{\rho}{2}\|Ax+Bz-c\|^2
+\end{equation}
+The iterates are 
+\begin{itemize}
+	\item $x_{k+1} = \arg\min_x L_\rho(x,z_k,\nu_k)$;
+	\item $z_{k+1} = \arg\min_z L_\rho({x_{k+1},z,\nu_k})$;
+	\item $\nu_{k+1} = \nu_k + \rho(Ax_{k+1}+Bz_{k+1}-c)$.
+\end{itemize}
+Remember that the optimality conditions for a differentiable function are 
+\begin{itemize}
+	\item Primal feasibility: $Ax+bz-c=0$;
+	\item Dual feasibility: $\nabla f(x) + A^T\nu = 0\qquad \nabla g(z)+B^T\nu = 0$; 
+\end{itemize}
+The second dual condition is verifies in ADMM because $z_{k+1}$ minimizes $L_\rho(x_{k+1},z,\nu_k)$.\\
+ADMM converges if $f,g$ are convex, closed, and proper, and $L_0$ has a saddle point.\\
+\chapter{Dantzig-Wolfe Decomposition}
+As seen on figure \ref{fig:dw}, the L-Shaped method ignores the constraints of the future stages. The idea of Dantzig-Wolfe is to ignore variables rather than constraints by using the dual problem. 
+\begin{figure}[H]
+	\centering 
+	\begin{subfigure}[b]{.4\textwidth}
+		\includegraphics[width=\textwidth]{img/dw_primal.png}
+		\caption{L-Shaped method (primal form)}
+	\end{subfigure}
+	\begin{subfigure}[b]{.5\textwidth}
+		\includegraphics[width=\textwidth]{img/dw_dual.png}
+		\caption{Dantzig-Wolfe method (dual form)}
+	\end{subfigure}
+	\caption{Comparison of the constraints}
+	\label{fig:dw}
+\end{figure}
+\section{Problem formulation}
+ith two sets of variables $x_1$ and $x_2$, our problem is 
+\begin{equation}
+	\begin{aligned}
+		z^* &= \min_1^Tx_1 + c_2^Tx_2\\
+		\text{s.t. } &Ax_1 + Bx_2 = b\\
+		&B_1x_1 = d_1\\
+		&B_2x_2 = d_2\\
+		&x_1,x_2\ge 0
+	\end{aligned}
+\end{equation}
+We consider $A_1x_1+A_2x_2=b$ to be the complicating constraint due to coupling. 
+\subsection{Minkowski's Representation theorem}
+A convex polyhedron can be characterized by equalities or by its extreme points and rays:
+\begin{equation}
+	\mathcal{P} = \{x\ge 0:Bx=d\} 
+\end{equation}
+\begin{equation}
+	\mathcal{P} = \{x|\ x = \sum_{j\in J}x_j\lambda_j + \sum_{r\in R}w_r\mu_r, \ \sum_{j\in J} \lambda_j = 1, \ \mu_r,\lambda_j\ge 0\}
+\end{equation}
+where $x_j$ are the extreme points and $w_r$ are the extreme rays.\\
+\subsection{Changing the problem with Minkowski}
+Minkowski's theorem helps us rewrite the whole problem: using 
+\begin{equation}
+	x_1 = \sum_{j\in J_1}\lambda_1^j x_1^j + \sum_{r\in R_1}\mu_1^r w_1^r 
+\end{equation}
+and the same for $x_2$, we get 
+\begin{equation}
+	\begin{aligned}
+		z &= \min \sum_{j\in J_1} \lambda_1^j c_1^Tx_1^j + \sum_{r\in R_1} \mu_1^r c_1^Tw_1^r + \sum_{j\in J_2} \lambda_2^j c_2^Tx_2^j + \sum_{r\in R_2} \mu_2^r c_2^Tw_2^r\\
+		& \sum_{j\in J_1} \lambda_1^j A_1x_1^j + \sum_{r\in R_1} \mu_1^r A_1w_1^r + \sum_{j\in J_2} \lambda_2^j A_2x_2^j + \sum_{r\in R_2} \mu_2^r A_2w_2^r = b \qquad [\pi]\\
+		& \sum_{j\in J_1}\lambda_1^j = 1 \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \quad \ [t_1]\\
+		& \sum_{j\in J_2}\lambda_2^j = 1 \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \quad \ [t_2]\\
+		& \lambda_1^j, \lambda_2^j, \mu_1^r, \mu_2^r \ge 0
+	\end{aligned}
+\end{equation}
+This gives more variables ($|J_1|+|J_2|+|R_1|+|R_2|>n_1+n_2$), but much less constraints ($m+2>m+m_1+m_2$), where $m$ is the dimension of $b$, and $m_i$ is the dimension of $d_i$. The variables here are the weights of the extreme points and rays.\\
+In matrix form, the constraints are 
+\begin{equation}
+	\sum_{j\in J_1} \lambda_1^j \begin{bmatrix}
+		A_1 x_1^j\\ 1 \\ 0 \\
+	\end{bmatrix} + \sum_{j\in J_2}\lambda_2^j \begin{bmatrix}
+		A_2 x_2^j\\ 0 \\ 1 \\
+	\end{bmatrix} + \sum_{r\in R_1} \mu_1^r \begin{bmatrix}
+		A_1 w_1^r\\ 0 \\ 0 \\
+	\end{bmatrix} + \sum_{r\in R_2} \mu_2^r \begin{bmatrix}
+		A_2 w_2^r\\ 0 \\ 0 \\
+	\end{bmatrix} = \begin{bmatrix}
+		b\\ 1 \\ 1 \\
+	\end{bmatrix}
+\end{equation}
+The Dantzig-Wolfe decomposition consists in solving with subsets of variables and add some little by little. 
+\subsection{Reduced cost}
+The certificate of optimality tells us that, given a basic feasible solution, all variables have non-negative reduced costs. Given a basis $B$\footnote{Set of variables that are non zero.}, recall that it is optimal when 
+\begin{itemize}
+	\item Feasibility: $x_B^* =B^{-1}b\ge 0$;
+	\item Optimality: $c^T - \pi^TA \ge 0$;
+\end{itemize} 
+From this, the reduced cost for a basic linear program in standard form is $c^T - c^T_BB^{-1}A$.\\
+Slide 15
 \end{document}

@@ -251,8 +251,7 @@ If the interarrival intervals of the renewal process $N(t)$ have a finite standa
 \begin{equation}
   \lim_{n\to \infty} P\left[\frac{S_n-n\bar X}{\sqrt{n}\sigma}\le \alpha\right] = \Phi(\alpha)
 \end{equation}
-\textcolor{red}{What is $\Phi(\alpha)$?}\\
-and 
+where $\Phi(\alpha)$ is the integral the normal distribution.\\
 \begin{equation}
   \lim_{t\to \infty} P\left[\frac{N(t)-t/\bar X}{\sigma \bar X^{-3/2}\sqrt{t}}<\alpha \right] = \Phi(\alpha)
 \end{equation}
@@ -319,7 +318,7 @@ Let $X(t)$ be the duration of the renewal containing time $t$: $R(t)=X(t)=S_{N(t
 	\centering
 	\includegraphics[width=0.5\textwidth]{img/duration.png}
 \end{figure}
-|subsection{General renewal reward functions}
+\subsection{General renewal reward functions}
 Let $R(t)$ be a reward function for a renewal process with expected inter-renewal times $\bar X<\infty$, then with probability 1, 
 \begin{equation}
 	\lim_{t\to \infty} \frac{1}{t}\int_0^t R(\tau)d\tau = \frac{\E[R_n]}{\E[X]}
