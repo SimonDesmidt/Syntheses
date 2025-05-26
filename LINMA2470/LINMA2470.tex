@@ -236,7 +236,7 @@ Commonly used letters are
   \item G: general distribution.
 \end{itemize}
 \chapter{Renewal Processes}
-A renewal process is a counting process with IID interarrival intervals. We note $X_i$ the interval between arrivals, $\bar X=\E[X]$ is supposed to be finite with probability $P[X_i]>0=1$\footnote{A probability of 1 means that the opposite can happen, but is so rare that the probability is 0.}, $\sigma$ can be finite, and we denote $S_n=\sum_{i=1} X_i$ the time of the $n$-th arrival.\\
+A renewal process is a counting process with IID interarrival intervals. We note $X_i$ the interval between arrivals, $\bar X=\E[X]$ is supposed to be finite with probability $P[X_i>0]=1$\footnote{A probability of 1 means that the opposite can happen, but is so rare that the probability is 0.}, $\sigma$ can be finite, and we denote $S_n=\sum_{i=1} X_i$ the time of the $n$-th arrival.\\
 \section{Strong law of large numbers}
 Let $\{N(t);t\ge 0\}$ be a renewal process, then 
 \begin{equation}
@@ -411,7 +411,7 @@ The rv $X_n$ is called the state of the Markov chain, and the set of possible sa
 	\end{equation}
 \end{minipage}
 \begin{itemize}
-	\item We say that a state $j$ is accessible from $i$ ($i\to j$) if there exists a xalk in the graph from $i$ to $j$: $i\to j$ iff $P_{ij}^n = P[X_n=j|X_0=i]>0$ for some $n$.
+	\item We say that a state $j$ is accessible from $i$ ($i\to j$) if there exists a path in the graph from $i$ to $j$: $i\to j$ iff $P_{ij}^n = P[X_n=j|X_0=i]>0$ for some $n$.
 	\item Two distinct states $i,j$ communicate ($i\leftrightarrow j$) if $i$ is accessible from $j$ and vice versa. 
 	\item A class $C$ of states is a non-empty set of states such that for each $i\in C$, each state $j\neq i$ satisfies $j\in C$ if $i\leftrightarrow j$ and $j\not \in C$ if $i\not \leftrightarrow j$.
 	\item A state $i$ is recurrent if it is accessible from all states that are accessible from $i$. A transient state is a state that is not recurrent.
@@ -419,7 +419,7 @@ The rv $X_n$ is called the state of the Markov chain, and the set of possible sa
 	\item A finite-state Markov chain has at least one recurrent class.
 	\item The period of a state $i$, denoted $d(i)$, is the greatest common divisor of all $n$ such that $P_{ii}^n>0$. A state is aperiodic if $d(i)=1$.
 	\item [$\to$] Note: All states of a class have the same periodicity.
-	\item If a class has a period $d>1$, then there existsa  partition $\{C_i\}_{i=1}^d$ of the states of the class such that all the transitions from a state of $C_n$ go to a state of class $C_{n+1}$ and all transitions from $C_d$ go to a state of $C_1$, i.e. we make a cycle of subclasses. 
+	\item If a class has a period $d>1$, then there exists a  partition $\{C_i\}_{i=1}^d$ of the states of the class such that all the transitions from a state of $C_n$ go to a state of class $C_{n+1}$ and all transitions from $C_d$ go to a state of $C_1$, i.e. we make a cycle of subclasses. 
 	\item A class is called ergodic if it is aperiodic and recurrent.
 	\item A matrix is stochastic iff it is square, non negative ad each row sums to 1, i.e. $P\mathbb{1}_n=\mathbb{1}_n$. 
 \end{itemize}
