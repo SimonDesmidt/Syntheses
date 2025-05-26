@@ -513,7 +513,7 @@ We have $\nabla^2 f(x^*) \succeq \mu I_n$ and given $y \in \R^n$, we have:
 	\end{aligned}
 \end{equation}
 Thus, if $-M \|y-x^*\| \geq - \frac{\mu}{2}$ then $\nabla^2f(y) \succeq \frac{\mu}{2} I_n$.\\
-Since $x_k \to x^*$, there exists $k_0 \in \N$ such that $\|x_{k+1}*x^*\| \leq \frac{\mu}{2M}$ $\forall k \geq k_0$. Thus for any $\tau \in [0,1]$:
+Since $x_k \to x^*$, there exists $k_0 \in \N$ such that $\|x_{k+1}-x^*\| \leq \frac{\mu}{2M}$ $\forall k \geq k_0$. Thus for any $\tau \in [0,1]$:
 \begin{equation}
 	\|x^*+\tau(x_{k+1}-x^*)-x^*\| \leq \frac{\mu}{2M}, \quad \forall k \geq k_0
 \end{equation}
@@ -639,7 +639,7 @@ This leads us to the following update for $B_k$:
 \end{equation}
 This is called the \textbf{SR1 update} (symmetric rank 1 update).\\
 \subsection{BFGS Update}
-Lets take back $B_{k+1} y_k = s_k$ and defining $H_{k+1} = B_{k+1}^{-1} \approx \nabla^2 f(x_{k+1})$, we get $H_{k+1} s_k = y_k$.\\
+Let's take back $B_{k+1} y_k = s_k$ and defining $H_{k+1} = B_{k+1}^{-1} \approx \nabla^2 f(x_{k+1})$, we get $H_{k+1} s_k = y_k$.\\
 The idea is to find a rank 2 update that consists in finding $a,b \in \R$ and $v,u \in \R^n$ such that:
 \begin{equation}\label{eq:rank2_update_idea}
 	\left(H_k + a uu^T + b vv^T\right)s_k = y_k
@@ -663,7 +663,7 @@ Combining the two equations, we get:
 	H_{k+1} = H_k - \frac{H_ks_ks_k^TH_k}{s_k^TH_ks_k} + \frac{y_ky_k^T}{y_k^Ts_k}
 \end{equation}
 Using linear algebra, we can compute:\\
-\begin{center}
+\begin{equation}\label{eq:BFGS_update}
 	\color{red}
 	\boxed{
 	\color{black}
@@ -672,7 +672,7 @@ Using linear algebra, we can compute:\\
 		&= \left(I-\rho_ks_ky_k^T\right) B_k \left(I-\rho_ky_ks_k^T\right) + \rho_k s_k s_k^T \text{ with } \rho_k = \frac{1}{y_k^Ts_k}
 	\end{aligned}}
 	\color{black}
-\end{center}
+\end{equation}
 \textbf{Remarks:}
 \begin{itemize}
 	\item If $B_k \succ 0$ and $s_k^Ty_k > 0$ then $B_{k+1} \succ 0$.
@@ -731,7 +731,7 @@ In summary, \textcolor{blue}{if we have $\bar{x} \in \R^n$ such that $\|c(\bar{x
 \begin{equation}
 	Q_\sigma(x^+) \leq Q_\sigma(\bar{x}) \quad \text{and} \quad \|\nabla Q_\sigma(x^+)\| \leq \varepsilon_1
 \end{equation}
-for $\sigma \geq \frac{4}{\varepsilon_2^2} (f(\bar{x}-f_{low}))$, then $x^+$ is a $(\varepsilon_1,\varepsilon_2)$-KKT point for the unconstrained problem \eqref{eq:constrained_problem}.\\
+for $\sigma \geq \frac{4}{\varepsilon_2^2} (f(\bar{x})-f_{low})$, then $x^+$ is a $(\varepsilon_1,\varepsilon_2)$-KKT point for the unconstrained problem \eqref{eq:constrained_problem}.\\
 \newline
 % \textbf{Example:}
 % \begin{equation}
@@ -877,12 +877,12 @@ From all that have been computed previously, we can find a bound in terms of ite
 		\Rightarrow f(x_k)-f(x^*) &\leq \frac{1}{2A_k}\|x^*-x_k\|^2\\	
 	\end{aligned}
 \end{equation}
-From the relatiion $A_{k+1} = A_k + b_k$ and the definition of $b_k$, we can show that $A_k\ge C(k-1)^2$ with $C>0$ and $k\ge2$. Thus, we get 
+From the relation $A_{k+1} = A_k + b_k$ and the definition of $b_k$, we can show that $A_k\ge C(k-1)^2$ with $C>0$ and $k\ge2$. Thus, we get 
 \begin{equation}
 	f(x_k) - f(x^*) \le \frac{\|x_0-x^*\|^2}{2C(k-1)^2} = \mathcal{O}(1/k^2) \qquad \forall k\ge1
 \end{equation}
 A recap is given in algorithm \ref{alg:AGM}.\\
-\begin{algorithm}
+\begin{algorithm}[H]
 	\caption{Accelerated Gradient Method}
 	\label{alg:AGM}
 	\begin{algorithmic}[1]
@@ -1008,7 +1008,7 @@ Consider the optimization problem
 \begin{equation}\label{eq:problem}
 	\min_{x\in \R^n} f_0(x)\equiv \langle c,x\rangle \quad x\in \Omega
 \end{equation}
-where $\Omega = \overline{domF}$ for some $\nu$-self-concordant barrier $F$ and it is bounded. From thsese assumptions, it follows from the Weierstraß theorem that it has a solution $x^*$. \\
+where $\Omega = \overline{domF}$ for some $\nu$-self-concordant barrier $F$ and it is bounded. From these assumptions, it follows from the Weierstraß theorem that it has a solution $x^*$. \\
 
 The barrier strategy consists in solving the problem iteratively by solving unconstrained optimization problems of the form
 \begin{equation}
@@ -1060,7 +1060,7 @@ and thus
 	f_0(\bar x(t)) - f_0(x^*) < \frac{1}{t}\left(\nu + (\beta +\sqrt{\nu}) \frac{\beta}{1-\beta}\right)
 \end{equation}
 \section{Intermediate Newton method}
-Let us consider the problem \eqref{eq:problem}, and let $\hat f(\cdot)$ be a self-concordant function with constant $M_{\hat f} = 1$. Consider $x\in dom\hat f$ with \textcolor{blue}{$\nabla^2\hat f(x)$ nonsingular}.Assume that \textcolor{blue}{$\|\nabla \hat f(x)\|_x^* \le \tau$ with $\tau+\tau^2 +\tau^3\le 1$}. The iterate of the intermediate Newton method is given by 
+Let us consider the problem \eqref{eq:problem}, and let $\hat f(\cdot)$ be a self-concordant function with constant $M_{\hat f} = 1$. Consider $x\in dom\hat f$ with \textcolor{blue}{$\nabla^2\hat f(x)$ nonsingular}. Assume that \textcolor{blue}{$\|\nabla \hat f(x)\|_x^* \le \tau$ with $\tau+\tau^2 +\tau^3\le 1$}. The iterate of the intermediate Newton method is given by 
 \begin{equation}
 	x^+ = x - \frac{1}{1+\xi} \nabla^{-2}\hat f(x)\nabla \hat f(x) \qquad \xi = \frac{(\|\nabla \hat f(x)\|_x^*)^2}{1+\|\nabla \hat f(x)\|_x^*}
 \end{equation}
@@ -1146,7 +1146,7 @@ Notice that $\ln(1+x)\ge cx$ for $x>0$ and $c$ a constant \textcolor{red}{TO BE 
 \begin{equation}
 	(k-1)c\left(\frac{\gamma}{\beta+\sqrt{\nu}}\right)\ge \ln \left(\|c\|_{x_0}^* \left(\nu + \frac{(\beta+\sqrt{\nu})\beta}{1-\beta}\right)\gamma^{-1} \epsilon^{-1}\right)
 \end{equation}
-Therefore, to find a $\epsilon$-approximate solution of problem \eqref{eq:problem}, tha algorithm \ref{alg:PFIP} takes no more than $\mathcal{O}(\sqrt{\nu}\ln(\epsilon^{-1}))$ iterations.
+Therefore, to find a $\epsilon$-approximate solution of problem \eqref{eq:problem}, the algorithm \ref{alg:PFIP} takes no more than $\mathcal{O}(\sqrt{\nu}\ln(\epsilon^{-1}))$ iterations.
 \subsection{Example}
 Consider the following problem:
 \begin{equation}
@@ -1198,5 +1198,205 @@ and the operation complexity multiplies it by $\mathcal{O}(m^3)$ because it solv
 	\begin{equation}
 		|f(y) - T_p(y;x)| \leq \frac{M}{(p+1)!}\|y-x\|^{p+1}
 	\end{equation}
+	\item Fundamental theorem of calculus:	
+	\begin{equation}
+		\nabla f(y) - \nabla f(x) = \int_0^1 \nabla^2 f(x + \tau(y-x))(y-x)d\tau
+	\end{equation}
+	\item Cauchy-Schwarz inequality;
+	\item Triangular inequality;
+	\item Dimis-Mori condition for Quasi Newton SR1:
+	\begin{equation}
+		\lim_{k\to \infty} \frac{\|\left(B_k^{-1}-\nabla^2f(x_k)\right)(x_{k+1}-x_k)\|}{\|x_{k+1}-x_k\|} = 0
+	\end{equation}
+	\item KKT conditions:
+	\begin{equation}
+	\begin{cases}
+		\nabla f(x^*) - \displaystyle \sum_{i=1}^m \lambda_i^* \nabla c_i(x^*) = 0  \quad \quad &\textcolor{blue}{\text{(stationarity)}}\\
+		c(x^*) = 0 &\textcolor{blue}{\text{(feasibility)}}
+	\end{cases}
+\end{equation}
 \end{enumerate}
+\chapter{Final results and important theorems}
+\section{TODO}
+\begin{itemize}
+	\item Generalisation the property of a L-Lipschitz function to $f\in \C_L^p(\R^n)$. For $p=1$, we had 
+	\begin{equation}
+		f(y)\le f(x_k) + \langle \nabla f(x_k),y-x_k\rangle + \frac{L}{2}\lVert y-x_k\rVert^2 \qquad \forall y\in \R^n 
+	\end{equation}
+	For a general value of $p$, it becomes 
+	\begin{equation}
+		f(y) \le T_p(y;x_k) + \frac{L}{(p+1)!}\lVert y-x_k\rVert^{p+1} \qquad \forall y\in \R^n 
+	\end{equation}
+	\item Gradient method of order $p$: To solve $\min_{x\in \R^n} f(x)$, we can use the iteration 
+	\begin{equation}
+		x_{k+1} = \arg\min_{y\in \R^n} T_p(y;x_k)+\frac{M}{(p+1)!}\lVert y-x_k\rVert^{p+1}
+	\end{equation}
+	where the constant $M$ is an approximation of the Lipschitz constant $L$. 
+	\item Bound on the number of iterations of the $p$-th order gradient method:
+	\begin{equation}
+		T(\varepsilon) \le 1 + \frac{f(x_0)-f_{low}}{C(L)} \varepsilon^{-\frac{p+1}{p}} \equiv \O\left(\varepsilon^{-\frac{p+1}{p}}\right) \qquad C(L) = \frac{L}{(p+1)!}\left(\frac{p!}{L+M}\right)^{\frac{p+1}{p}}
+	\end{equation} 
+\end{itemize}
+\section{Gradient descent without gradient}
+We want to minimize a function $f$ without computing its gradient.
+\begin{equation}
+	x_{k+1} = x_k - \frac{1}{\sigma} g_{h_k}(x_k) \quad \quad \quad h_k > 0, \: \sigma > 0
+\end{equation}
+where $g_{h_k}(x_k) \in \R^n$ is given by:
+\begin{equation}
+	[g_{h_k}(x_k)]_j = \frac{f(x_k+he_j)-f(x_k)}{h_k} \quad \quad \quad \forall j\in [1,\dots,m]
+\end{equation}
+\textcolor{blue}{Suppose that $f\in \C^1_L(\R^n)$}. Then,
+\begin{equation}
+	\|\nabla f(x_k) - g_{h_k}(x_k)\| \leq \frac{L \sqrt{n}}{2} h_k
+\end{equation}
+And the convergence rate is 
+\begin{equation}
+	\Longrightarrow T(\varepsilon) \leq 8 \sigma \left( f(x_0) - f_{low} + \frac{5 \sigma n}{16} \sum_{k=0}^{T(\varepsilon)-1} h_k^2\right) \varepsilon^2 = \O(\varepsilon^2)
+\end{equation}
+\section{Local rates of convergence}
+\subsection{Linear rate of GM}
+As a reminder, the gradient method follows the iterate 
+\begin{equation}
+	x_{k+1} = x_k - \frac{1}{L}\nabla f(x_k)
+\end{equation}
+We define in some proves the quantity $G_k$ as 
+\begin{equation}
+	G_k = \int_0^1 \nabla^2 f(x^*+\tau(x_k-x^*))d\tau
+\end{equation}
+The local convergence rate, i.e. for iterates such that $\|x_k -x^*\| \leq \frac{\mu}{M}$, of the gradient method is linear:
+\begin{equation}
+	\begin{aligned}
+		\|x_k - x^*\| &\leq \left(1-\frac{\mu}{2L}\right)^k \|x_0-x^*\| \quad \forall k \geq 0\\
+		T(\varepsilon)&\leq 1+ \frac{\log \left(\|x_0 - x^*\|\varepsilon^{-1}\right)}{|\log \left(1-\frac{\mu}{2L}\right)|} \equiv \mathcal{O}(\log(\varepsilon^{-1}))
+	\end{aligned}
+\end{equation}
+\subsection{Local quadratic convergence of Newton's method}
+As a reminder, the Newton's method follows the iterate
+\begin{equation}
+	x_{k+1} = x_k - \nabla^{-2}f(x_k)\nabla f(x_k)	
+\end{equation}
+The local convergence rate, i.e. for iterates such that $\|x_k -x^*\| \leq \frac{\mu}{\textcolor{red}{2}M}$, of the Newton's method is quadratic:
+\begin{equation}
+	\begin{aligned}
+		\|x_{k+1}-x^*\| &\leq \frac{M}{\mu}\|x_k-x^*\|^2\\
+		T(\varepsilon) &\leq \log_2(\log_2(\frac{\mu}{M} \varepsilon^{-1}))
+	\end{aligned}
+\end{equation}
+\subsection{Quasi Newton methods}
+\subsubsection{SR1 Update}
+As a reminder, the SR1 update is given by
+\begin{equation}
+	x_{k+1} = x_k - B_k\nabla f(x_k) \qquad B_k = B_{k-1} + \frac{\left(s_{k-1}-B_{k-1} y_{k-1}\right)\left(s_{k-1}-B_{k-1} y_{k-1}\right)^T}{\left(s_{k-1} - B_{k-1} y_{k-1}\right)^T y_{k-1}}
+\end{equation}
+where $B_k$ is found using Dimis-Mori and the secant condition:
+\begin{equation}
+	\begin{aligned}
+		\lim_{k\to \infty} \frac{\|\left(B_k^{-1}-\nabla^2f(x_k)\right)(x_{k+1}-x_k)\|}{\|x_{k+1}-x_k\|} = 0\\
+		B_k y_{k-1} = s_{k-1}\\
+	\end{aligned}
+\end{equation}
+\subsubsection{BFGS Update}
+BFGS uses an approximation of the hessian instead of its inverse:
+\begin{equation}
+	H_k = B_k^{-1} = \nabla^2 f(x_k)
+\end{equation}
+The secant condition becomes 
+\begin{equation}
+	H_{k+1}s_k = y_k
+\end{equation}
+The idea is to use a rank 2 update:
+\begin{equation}
+	H_{k+1} = H_k + auu^T + bvv^T \qquad a,b\in \R \qquad u,v\in \R^n 
+\end{equation}
+The update is equation \eqref{eq:BFGS_update}.
+\section{Constrained nonlinear programming problems}
+Consider the constrained problem 
+\begin{equation}
+	\min_{x \in \R^n} f(x) \quad \text{subject to} \quad c_i(x) = 0, \quad i \in \{1,\dots,m\}	
+\end{equation}
+where $f,c_i : \R^n \to \R$ are $\C^1$ and there exists at least a $\hat{x}$ such that $c_i(\hat{x}) = 0$.\\
+To do that, we use a quadratic penalty term:
+\begin{equation}
+	\min_{x \in \R^n} Q_{\sigma} (x) \equiv f(x) + \frac{\sigma}{2} \|c(x)\|_2^2
+\end{equation}
+The initial problem is constrained. We suppress those constraints by adding their norm in the objective function, with a parameter $\sigma$. We define $\varepsilon_1$ as the tolerance on the norm of the constraints, and $\varepsilon_2$ as the tolerance on the objective function. The concept of the algorithm is to solve the unconstrained problem, and increase $\sigma$ until the constraints are satisfied with tolerance $\varepsilon_1$. 
+\section{Accelerated Gradient Method}
+\subsection{Derivation of the algorithm}
+This algorithm minimizes a convex function $f$ with $L$-Lipschitz gradient. The method combines past and present information for the step of the gradient method. 
+\begin{equation}
+	\begin{cases}
+		y_k = (1-\gamma_k)x_k + \gamma_k v_k, \quad \gamma_k \in (0,1)\\
+		x_{k+1} = x_k - \frac{1}{L} \nabla f(y_k)
+	\end{cases}
+\end{equation}
+where $v_k$ and $\gamma_k$ are defined in the algorithm \ref{alg:AGM}. The method is based on the following inequalities, which allow to have the convergence rate that we want:
+\begin{equation}
+	\begin{aligned}
+		&v_k = \arg \min_{x \in \R^n} \Psi_k (x)\\
+		&\Psi_k (x) \leq A_k f(x) + \frac{1}{2} \|x-x_0\|^2\\
+		&A_k f(x_k) \leq \min_{x \in \R^n} \Psi_k (x) \equiv \Psi_k^*, \quad A_k \geq 0\\
+		&A_k \geq c(k-1)^2 \quad \forall k \geq 2
+	\end{aligned}
+\end{equation}
+This convergence rate is 
+\begin{equation}
+		\left(f(x_k)-f(x^*)\right) \leq \frac{\|x_k-x^*\|^2}{2 C(k-1)^2} = \O(k^{-2}) = \O(\varepsilon^{-1/2}) \quad \forall k \geq 2
+\end{equation}
+\subsection{Accelerated Proximal Gradient Method}
+In this algorithm, the function to minimise is defined over a nonempty, closed and convex set $\Omega$. The function has a smooth part $f(\cdot)$ and a possibly nonsmooth part $\phi(\cdot)$. 
+\begin{equation}
+	\min_{x \in \Omega\subseteq \R^n} F(x)\equiv f(x) + \varphi(x)
+\end{equation}
+The APGM consists in changing the iterate $x_{k+1}$ to 
+\begin{equation}
+	x_{k+1} = Prox_{\frac{1}{L}\phi}\left(y_k - \frac{1}{L}\nabla f(y_k)\right)
+\end{equation}
+The convergence rate is 
+\begin{equation}
+	F(x_k)-F(x^*) \le \frac{8L\|x_0-x^*\|^2}{(k-1)^2} \qquad \forall k\ge 2
+\end{equation}
+\section{Path following Interior Point Method}
+\subsection{Self-concordant functions}
+We have 2 lemmas:
+\begin{itemize}
+	\item Let $f_1,f_2$ be self-concordant functions with constants $M_1$ and $M_2$ respectively. Then, given constants $\alpha,\beta>0$, the function $f=\alpha f_1 + \beta f_2$ is self-concordant with constant $M_f = \max\left\{\frac{M_1}{\sqrt{\alpha}}, \frac{M_2}{\sqrt{\beta}}\right\}$.
+	\item Let $f(\cdot)$ be a self-concordant function with constant $M_f\ge 0$. Given $x,y\in domf$, we have 
+	\begin{equation}
+		\|y-x\|_y \ge \frac{\|y-x\|_x}{1+M_f \|y-x\|_x}
+	\end{equation}
+\end{itemize}
+For a self concordant function $f$ with constant $M_f$, given $x,y\in domf$, we have 
+\begin{equation}
+	\langle \nabla f(y)-\nabla f(x),y-x\rangle \ge \frac{\|y-x\|_x^2}{1+M_f\|y-x\|_x}
+\end{equation}
+\begin{thm}
+	Let $f(\cdot)$ be a self-concordant function with constant $M_f$. Consider $x_f^* = \arg\min_{x\in domf}f(x)$. Given $x\in domf$, with $\nabla^2 f(x)$ is nonsingular, we have 
+	\begin{equation}
+		\|x-x^*\|_x \le \frac{\|\nabla f(x)\|_x^*}{1-M_f\|\nabla f(x)\|_x^*}
+	\end{equation}
+	whenever $M_f\|\nabla f(x)\|_x^* < 1$, with $\|\nabla f(x)\|_x^* = \sqrt{\langle h, \nabla^{-2}f(x)h\rangle}$.
+\end{thm}
+\subsection{Path-following Interior Point Method}
+We consider the optimization problem 
+\begin{equation}
+	\min_{x\in \R^n} f_0(x)\equiv \langle c,x\rangle \quad x\in \Omega
+\end{equation}
+where $\Omega = \overline{domF}$ for some self-concordant barrier $F$. The method consists in solving 
+\begin{equation}
+	\min_{x\in domF}tf_0(x) + F(x)\qquad t>0
+\end{equation}
+With this method, 
+\begin{equation}
+	f_0(\bar x(t)) - f_0(x^*) < \frac{1}{t}\left(\nu + (\beta +\sqrt{\nu}) \frac{\beta}{1-\beta}\right)
+\end{equation}
+\subsection{Intermediate Newton method}
+The iterate of the intermediate Newton method for a self-concordant function $\hat f$ with $M_{\hat f} = 1$ is 
+\begin{equation}
+	x^+ = x - \frac{1}{1+\xi} \nabla^{-2}\hat f(x)\nabla \hat f(x) \qquad \xi = \frac{(\|\nabla \hat f(x)\|_x^*)^2}{1+\|\nabla \hat f(x)\|_x^*}
+\end{equation}
+This is used in algorithm \ref{alg:PFIP} to solve the problem. The complexity bound is 
+\begin{equation}
+	k\ge \mathcal{O}(\sqrt{\nu}\ln(\epsilon^{-1}))
+\end{equation}
 \end{document}
