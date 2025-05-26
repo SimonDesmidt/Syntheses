@@ -199,7 +199,7 @@ On the other hand, using the triangular inequality,
 \end{equation}
 Combining equations \eqref{eq:bound} and \eqref{eq:bound_on_x}, 
 \begin{equation}\label{eq:next_bound}
-	f(x_k)-f(x_{k+1}) \ge \underbrace{\frac{L}{(p+1)!}\left(\frac{p!}{L+M}\right)^{\frac{p+1}{p}}}_{\eqcolon C(L)} \lVert \nabla f(x_{k+1})\rVert^{\frac{p+1}{p}}
+	f(x_k)-f(x_{k+1}) \ge \underbrace{\frac{L}{(p+1)!}\left(\frac{p!}{L+M}\right)^{\frac{p+1}{p}}}_{\eqqcolon C(L)} \lVert \nabla f(x_{k+1})\rVert^{\frac{p+1}{p}}
 \end{equation}
 Let $T(\varepsilon) = \inf \{k\in \mathbb{N}:\: \lVert \nabla f(x_k)\rVert\le \varepsilon\}$. \textcolor{blue}{Assume that $T(\varepsilon)\ge 2$ and $f(x)\ge f_{low}$ $\forall x\in \R^n$.} Summing up \eqref{eq:next_bound} for $k=0,\dots, T(\varepsilon)-2$,
 \begin{equation}
@@ -415,7 +415,7 @@ Since $f\in \C^{2,2}_M(\R^n)$, we have
 Therefore, by \eqref{eq:bound_x_k+1}, we conclude that:
 \begin{equation}
 	\begin{aligned}
-		\|x_{k+1}-x^*\| &\leq \frac{M}{2}\|\nabla^{-2}f(x_k)\|\|x_k-x^*\|\\
+		\|x_{k+1}-x^*\| &\leq \frac{M}{2}\|\nabla^{-2}f(x_k)\|\|x_k-x^*\|^2\\
 		&\leq \frac{M}{\mu}\|x_k-x^*\|^2
 	\end{aligned}
 \end{equation}
@@ -464,11 +464,11 @@ With \textcolor{blue}{$B_k \in \R^{n\times n}$, symmetric and non-singular}.\\
 We want the condition on $B_k$ to have a Super Linear convergence \eqref{eq:super_linear_convergence_rate} of the Quasi-Newton method. So let us \textcolor{blue}{assume that $f \in \C_M^{2,2}(\R^n)$}.\\
 Then,
 \begin{equation}\label{eq:bound_hessian_difference}
-	\|\nabla^2f(x_{k+1}-\nabla^2f(x_k))\| \leq M \|x_{k+1}-x_k\|
+	\|\nabla^2f(x_{k+1})-\nabla^2f(x_k)\| \leq M \|x_{k+1}-x_k\|
 \end{equation}
 \textcolor{red}{GOOD LABEL ?}
 \begin{equation}\label{eq:M_smoothness}
-	\|\nabla f(x_{k+1}-\nabla f(x_k)-\nabla^2 f(x_k)(x_{k+1}-x_k))\| \leq \frac{M}{2} \|x_{k+1}-x_k\|^2
+	\|\nabla f(x_{k+1})-\nabla f(x_k)-\nabla^2 f(x_k)(x_{k+1}-x_k)\| \leq \frac{M}{2} \|x_{k+1}-x_k\|^2
 \end{equation}
 Therefore
 \begin{equation}
