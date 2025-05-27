@@ -1170,6 +1170,10 @@ From the complexity of algorithm \ref{alg:PFIP}, it takes at most $\mathcal{O}\l
 and the operation complexity multiplies it by $\mathcal{O}(m^3)$ because it solves a linear system at each iteration. 
 \chapter{Tips and Tricks}\label{chap:tricks}
 \begin{enumerate}
+	\item $\mu$-strongly convex function:
+	\begin{equation}
+		f(y) \ge f(x) + \langle \nabla f(x),y-x\rangle + \frac{\mu}{2}\|y-x\|^2 \qquad \forall x,y\in \R^n
+	\end{equation}
 	\item Approximation of the max:
 	\begin{equation}\label{eq:approx_max}
 		\begin{aligned}
@@ -1214,7 +1218,11 @@ and the operation complexity multiplies it by $\mathcal{O}(m^3)$ because it solv
 		\nabla f(x^*) - \displaystyle \sum_{i=1}^m \lambda_i^* \nabla c_i(x^*) = 0  \quad \quad &\textcolor{blue}{\text{(stationarity)}}\\
 		c(x^*) = 0 &\textcolor{blue}{\text{(feasibility)}}
 	\end{cases}
-\end{equation}
+	\end{equation}
+	\item For a function $f\in \C^{2,2}_M$, 
+	\begin{equation}
+		\left|f(y)-f(x)-\nabla f(x)^T (y-x)-\frac{1}{2}(y-x)^T \nabla^2f(x)(y-x)\right| \le \frac{M}{6}\|y-x\|^3
+	\end{equation}
 \end{enumerate}
 \chapter{Final results and important theorems}
 \section{TODO}
