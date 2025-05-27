@@ -203,7 +203,7 @@ where $x\in dom f_0$ and $f_0,f_i$ are convex functions.
 	\item We can have the following mathematical formulation:
 	\begin{equation}\label{eq:TSSLP_formulation}
 		\begin{aligned}
-			\min c^T x &+ \E[\min q(\omega)^T y(\omega)]\\
+			\min c^T x &+ \E[q(\omega)^T y(\omega)]\\
 			Ax &= b\\
 			T(\omega) x &+ W(\omega)y(\omega) = h(\omega)\\
 			x \geq 0&, y(\omega) \geq 0
@@ -1198,7 +1198,7 @@ We decide to use the FFFB method.
 	\begin{equation}
 		\begin{aligned}
 			E_{t-1,j} &= \sum_k p_t(k|j)\pi_{t,k}^T T_{t-1,k}\\
-			e_{t-1,j} &= \sum_k \left[p_t(k|j)\pi_{t,k}^T \left(h_{t,k}+\sum_i \rho_i^T e_{t,k} + \sum_i \sigma_i^T p_{t,k,i}\right)\right]
+			e_{t-1,j} &= \sum_k \left[p_t(k|j)\left(\pi_{t,k}^T h_{t,k}+\sum_i \rho_i^T e_{t,k} + \sum_i \sigma_i^T p_{t,k,i}\right)\right]
 		\end{aligned}
 	\end{equation}
 	\item Put the cut found in $(t,k)$ in the previous level $(t-1,a(k))$ and solve the dual of $(t-1,a(k))$ with all of its new constraints to find a cut for its own ancestor problem;
@@ -1612,5 +1612,251 @@ The certificate of optimality tells us that, given a basic feasible solution, al
 	\item Optimality: $c^T - \pi^TA \ge 0$;
 \end{itemize} 
 From this, the reduced cost for a basic linear program in standard form is $c^T - c^T_BB^{-1}A$.\\
-Slide 15
+From this, the reduced costs of our variables are
+\begin{equation}	
+	\begin{aligned}
+		(c_1^T-\pi^TA_1)x_1^j - t_1 \qquad \text{ for } \lambda_1^j\\
+		(c_1^T-\pi^TA_1)x_1^j \qquad \text{ for } \mu_1^j\\
+	\end{aligned}
+\end{equation}
+and same for $x_2^j$ and $\mu_2^j$. As there is an enormous number of variables, we can solve the following problem instead of looking at all reduced costs:
+\begin{equation}
+	\begin{aligned}	
+		z_1 &= \min(c_1^T-\pi^TA_1)x_1 \qquad \text{s.t. } B_1x_1=d_1\qquad \text{ and }x_1\ge 0\\
+		z_2 &= \min(c_2^T-\pi^TA_2)x_2 \qquad \text{s.t. } B_2x_2=d_2\qquad \text{ and }x_2\ge 0\\
+	\end{aligned}	
+\end{equation}
+For each subproblem, given their solution, we have 3 possibilities:
+\begin{enumerate}
+	\item The optimal cost is $-\infty$:
+	\begin{itemize}
+		\item Simplex output: extreme ray $w_1^r$ with $(c_1^T-\pi^TA_1)w_1^r<0$;
+		\item Conclusion: the reduced cost of $\mu_1^r$ is negative;
+		\item Action: We include $\mu_1^r$ in the main problem with the column
+		\begin{equation}
+			\begin{bmatrix}
+				A_1w_1^r\\ 0 \\ 0\\
+			\end{bmatrix}
+		\end{equation}
+	\end{itemize}
+	\item The optimal cost is finite and less than $t_1$:
+	\begin{itemize}
+		\item Simplex output: extreme point $x_1^j$ with $(c_1^T-\pi^TA_1)x_1^j < t_1$;
+		\item Conclusion: the reduced cost of $\lambda_1^j$ is negative;
+		\item Action: include $\lambda_1^j$ in the main problem with the column 
+		\begin{equation}
+			\begin{bmatrix}
+				A_1x_1^j \\ 0 \\0 \\
+			\end{bmatrix}
+		\end{equation}
+	\end{itemize}
+	\item The optimal cost is finite and bigger than $t_1$:
+	\begin{itemize}
+		\item Conclusion: $(c_1^T-\pi^TA_1)x_1^j\ge t_1$ for all extreme points $x_1^j$ and $(c_1^T-\pi^TA_1)w_1^r\ge 0$ for all extreme rays $w_1^r$;
+		\item Action: terminate, we have an optimal basis;
+	\end{itemize}
+\end{enumerate}
+\begin{algorithm}[H]
+	\caption{Dantzig-Wolfe Decomposition Algorithm}
+	\label{algo:dw}
+	\begin{algorithmic}[1]
+		\State \textbf{Step 1:} Solve the restricted main problem with the initial basic feasible solution, and store $(\pi,t_1,t_2)$;
+		\State \textbf{Step 2:} Solve the subproblems 1 and 2;
+		\If{$(c_1^T-\pi^TA_1)x\ge t_1$ and $(c_2^T-\pi^TA_2)x\ge t_2$}
+		Terminate with the optimal solution:
+		\begin{equation}
+			\begin{aligned}
+				x_1 &= \sum_{j\in \tilde J_1}\lambda_1^jx_1^j + \sum_{r\in \tilde R_1}\mu_1^r w_1^r\\
+				x_2 &= \sum_{j\in \tilde J_2}\lambda_2^jx_2^j + \sum_{r\in \tilde R_2}\mu_2^r w_2^r
+			\end{aligned}
+		\end{equation}
+		\EndIf
+		\If{Subproblem $i$ is unbounded} add $\mu_i^r$ to the main problem;
+		\EndIf
+		\If{Subproblem $i$ has a bounded optimal cost less than $t_i$} add $\lambda_i^j$ to the main problem;\EndIf 
+		\State \textbf{Step 3:} Generate the column associated with the entering variable and go back to \textbf{Step 1}.
+	\end{algorithmic}
+\end{algorithm}
+\section{Generalisation}
+The method can be generalised to $K$ subproblems:
+\begin{equation}
+	\begin{aligned}
+		&\min c_1^T x_1 + c_2^Tx_2 + \dots + c_K^Tx_K\\
+		&\text{s.t.  }A_1x_1 + A_2x_2 + \dots + A_Kx_K = b\\
+		& B_i x_i = d_i \qquad i = 1,\dots,K\\
+		& x_1,\dots,x_K\ge 0
+	\end{aligned}
+\end{equation}
+\subsection{Bounds}
+We denote the following:
+\begin{itemize}
+	\item $z_i$ the optimal objective function value of subproblem $i$;
+	\item $z^*$ the optimal objective function value of the main problem;
+	\item $z$ the optimal objective function value of the restricted main problem;
+	\item $t_i$ the dual optimal multiplier of the constraint $\lambda_i^j$ in the restricted main problem;
+\end{itemize}
+At each iteration, we have the following bounds:
+\begin{equation}
+	z+\sum_{i=1}^K (z_i-t_i)\le z^* \le z 
+\end{equation}
+\section{Dantzig-Wolfe in 2-Stage Stochastic Programming}
+For the Dantzig-Wolfe decomposition in stochastic programming, we use the dual problem:
+\begin{equation}
+	\begin{aligned}
+		&\max \rho^Tb + \sum_{k=1}^K\pi_k^Th_k\\
+		&\text{s.t. } \rho^T A + \sum_{k=1}^K \pi_kT_k = c^T\\
+		& \pi_k^T W\le p_k q_k^T\\
+	\end{aligned}
+\end{equation}
+where the primal is equation \ref{eq:EF}. 
+Let us consider the feasible region of 
+\begin{equation}
+	\begin{bmatrix}
+		\pi_1^T & \dots & \pi_K^T\\
+	\end{bmatrix}
+	\begin{bmatrix}
+		W& \dots & 0\\
+		0 & \dots 0\\
+		0 & \dots & W\\
+	\end{bmatrix}
+	\le \begin{bmatrix}
+		q_1^T & \dots & q_K^T\\
+	\end{bmatrix}
+\end{equation}
+We denote $\pi^j$ as the extreme points of the region and $w_r$ as the extreme rays. We define the following quantities:
+\begin{equation}
+	\begin{aligned}
+		E_j = (\pi^j)^T\begin{bmatrix}
+			p_1 T_1\\ \vdots\\ p_K T_K\\
+		\end{bmatrix} \qquad e_j = (\pi^j)^T \begin{bmatrix}
+			p_1h_1\\ \vdots\\ p_Kh_K\\
+		\end{bmatrix}\\
+		D_r = (w^r)^T \begin{bmatrix}
+			p_1 T_1\\ \vdots\\ p_K T_K\\
+		\end{bmatrix}
+		\qquad d_r = (w^r)^T \begin{bmatrix}
+			p_1h_1\\ \vdots\\ p_Kh_K\\
+		\end{bmatrix}
+	\end{aligned}
+\end{equation}
+\subsection{Full Main Problem}
+\begin{equation}\label{eq:main_dw}
+	\begin{aligned}
+		z^* &= \max \rho^Tb + \sum_{j\in J}\lambda^j e_j + \sum_{r\in R}\mu^r d_r\\
+		& \text{s.t. }\rho^T A + \sum_{j\in J} \lambda^j E_j + \sum_{r\in R}\mu^r D_r \le c^T\\
+		& \sum_{j\in J}\lambda^j = 1\\
+		& \lambda^j, \mu^r \ge 0\\
+	\end{aligned}
+\end{equation}
+Whose dual is the L-Shaped full main problem. 
+\subsection{Second-Stage Subproblems}
+The second-stage subproblems are
+\begin{equation}\label{eq:sub_dw}
+	\begin{aligned}
+		z_k &= \max \pi_k^T(h_k-T_kx)\\
+		& \text{s.t. } \pi_k^T W\le q_k\\
+	\end{aligned}
+\end{equation}
+\subsection{A more specific algorithm}
+\begin{algorithm}[H]
+	\caption{Dantzig-Wolfe for second-stage stochastic programs}
+	\label{algo:dw_sssp}
+	\begin{algorithmic}[1]
+		\State \textbf{Step 0:} $|\tilde J|=|\tilde R|=\nu=0$;
+		\State \textbf{Step 1:} $\nu \gets \nu + 1$ and solve problem \eqref{eq:main_dw};
+		\State \textbf{Step 2:} \For{$k=1,\dots,K$} solve subproblem \eqref{eq:sub_dw};
+		\If{an extreme ray $w^r$ is found} set $d_{|\tilde R|+1} = (w^\nu)h_k$ and $D_{|\tilde R|+1} = (w^\nu)T_k$; 
+				$|\tilde R| \gets |\tilde R| + 1$ and return to \textbf{Step 1};
+		\EndIf 
+		\EndFor
+		\If {all subproblems are solvable} let 
+		\begin{equation}
+			E_{|\tilde J|+1} = \sum_{k=1}^K p_k(\pi_k^\nu)^T T_k \qquad e_{|\tilde J|+1} = \sum_{k=1}^K p_k (\pi_k^\nu)^T h_k 
+		\end{equation}
+		\If {$e_{|\tilde J|+1} - E_{|\tilde J|+1}x^\nu - \theta \le 0$} 
+		\State Stop with $(\rho^\nu, \lambda^\nu, \mu^\nu)$ and $(x^\nu, \theta^\nu)$ optimal;
+		\Else 
+		\State Set $|\tilde J| \gets |\tilde J| + 1$ and go back to \textbf{Step 1}.
+		\EndIf 
+		\EndIf 
+	\end{algorithmic}
+\end{algorithm}
+\subsection{And more specific bounds}
+\begin{equation}
+	z \le z^* \le c^Tx + \sum_{k=1}^K p_k z_k
+\end{equation}
+\section{Dantzig-Wolfe in Integer Programming}
+\subsection{Formulation}
+\begin{equation}
+	\begin{aligned}
+		(IP): &\ \min\{c^Tx \ : x\in X\}\\
+		&X = Y\cap Z\\
+		&Y = \{Dx\ge d\}\\
+		&Z = \{Bx\ge b\} \cap \mathbb{Z}^n
+	\end{aligned}
+\end{equation}
+The idea in this case is to apply Dantzig-Wolfe to $(IP)$ using Minkowski Representation Theorem to represent the convex hull of $Z$. 
+\subsection{Reformulation}
+If we assume that $Z$ is bounded, we can reformulate the problem as follows:
+\begin{equation}\label{eq:mlp}
+	\begin{aligned}
+		(DWc): &\ z^{DWc} = \min_{\lambda \ge 0} \sum_{j\in J}(c^Tx^j)\lambda^j\\
+		& \sum_{j\in J}(Dx^j)\lambda^j \ge d\\
+		& \sum_{j\in J}\lambda^j = 1\\
+		& x = \sum_{j\in J}x^j\lambda^j \in \mathbb{Z}^n
+	\end{aligned}
+\end{equation}
+where $x^j$ is the set of extreme points of the convex hull of $Z$. The linear relaxation of $(DWc)$ is called the Main Linear Program (MLP), and its restricted version (RMLP) restricts the number of extreme points to a subset $\tilde J \subseteq J$. 
+\subsection{Algorithm}
+\begin{algorithm}[H]
+	\caption{Column Generation Algorithm for (MLP)}
+	\label{algo:col}
+	\begin{algorithmic}[1]
+		\State \textbf{Step 0:} Bounds $UB = +\infty$, $LB= -\infty$ and $t=0$;
+		\While{$UB\neq LB$}
+		\State Solve (RMLP) for $x^j$, $j\in \tilde J^t$, record the primal solution $\lambda^t$ and the dual solution $(\pi^t, \sigma^t)$;
+		\State Solve the pricing problem 
+		\begin{equation}
+			\begin{aligned}
+				(SP^t): & z^t = \min (c^T - (\pi^t)^T D)x\\
+				& x\in Z
+			\end{aligned}
+		\end{equation}
+		\State Let $x^t$ be an optimal solution.
+		\If {$z^t-\sigma^t =0$} set $UB=z^{RMLP}$ and stop with optimal solution to (MLP);
+		\Else \State Add $x^t$ to $\tilde J^t$ in (RMLP);
+		\EndIf
+		\State Compute the lower bound $LB=\max\{LB,(\pi^t)^T d+z^t\}$;
+		\State $t\gets t+1$;
+		\EndWhile 
+	\end{algorithmic}
+\end{algorithm}
+\section{Relationship to Lagrangian Relaxation}
+The MLP from equation \eqref{eq:mlp} can be derived using a Lagrangian relaxation. Let us relax the constraint $Dx\ge d$ while keeping the remaining constraints $Z=\{x\in \Z_+^n:Bx\ge b\}$, we get
+\begin{itemize}
+	\item The dual function:
+	\begin{equation}
+		g(\pi) = \min_x c^T x + \pi^T(Dx-d) \qquad \text{s.t. } xBx\ge b, x\in \Z_+^n
+	\end{equation}
+	\item The dual bound:
+	\begin{equation}
+		z_{LD} = \max_{\pi\ge 0} g(\pi) = \max_{\pi\ge 0} \min_{x\in Z} c^T x + \pi^T(Dx-d)
+	\end{equation}
+\end{itemize}
+Equivalently, the dual bound can be written as
+\begin{equation}
+	\begin{aligned}
+		z_{LD} &= \max_{\pi\ge 0}\min_{j\in J}\{c^T x^j + \pi^T(Dx^j-d)\}\\
+		&= \max_{\pi\ge 0, \sigma} \pi^Td+\sigma \qquad \text{s.t. } \sigma \le c^T x_j - \pi^T Dx^j\qquad j\in J
+	\end{aligned}
+\end{equation}
+And the dual problem of this bound is 
+\begin{equation}
+	\begin{aligned}
+		z_{LD} &= \min_{\lambda^j\ge 0, j\in J} \sum_{j\in J}(c^Tx^j)\lambda^j\\
+		&\text{s.t. } \sum_{j\in J}(Dx^j)\lambda^j \ge d\\
+		& \sum_{j\in J}\lambda^j = 1\\ 
+	\end{aligned}
+\end{equation}
+which is exactly the MLP from equation \eqref{eq:mlp}. Therefore, solving both is equivalent and gives the same bound. 
 \end{document}
