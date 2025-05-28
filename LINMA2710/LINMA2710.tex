@@ -310,7 +310,6 @@ Let's consider a system that can support $4$ processes for the explicit examples
 	\label{fig:collectives}
 \end{figure}
 
-\textcolor{red}{TODO: give the function for each and the args}
 \subsection{Broadcast}
 \textbf{Broadcast} makes a process gives a variable to the other processes.\\
 \begin{center}
@@ -323,7 +322,16 @@ Let's consider a system that can support $4$ processes for the explicit examples
 		\hline
 	\end{tabular}
 \end{center}
-Using \textit{spanning tree algorithm}, we can \textbf{broadcast} in $\log_2(p)(\alpha + \beta n)$.
+Using \textit{spanning tree algorithm}, we can \textbf{broadcast} in $\log_2(p)(\alpha + \beta n)$. The function to use \textbf{broadcast} is:
+\begin{lstlisting}[style=CppStyle]
+int MPI_Bcast(
+    void *buffer,     	   // Data buffer (send/receive)
+    int count,             // Number of elements in buffer
+    MPI_Datatype datatype, // Type of each element (e.g. MPI_INT)
+    int root,              // Rank of root process broadcasting data
+    MPI_Comm comm          // Communicator (usually MPI_COMM_WORLD)
+)
+\end{lstlisting}
 \subsection{Gather}
 \textbf{Gather} makes a process gather the variables of the other processes.\\
 \begin{center}
@@ -339,7 +347,75 @@ Using \textit{spanning tree algorithm}, we can \textbf{broadcast} in $\log_2(p)(
 		\hline
 	\end{tabular}
 \end{center}
-Using \textit{spanning tree algorithm}, we \textbf{gather} in $\log_2(p)\alpha + \beta n$.
+Using \textit{spanning tree algorithm}, we \textbf{gather} in $\log_2(p)\alpha + \beta n$. The function to use \textbf{gather} when we have same buffer size is:
+\begin{lstlisting}[style=CppStyle]
+int MPI_Gather(
+    const void *sendbuf,   // Data to send from each process
+    int sendcount,         // Number of elements to send
+    MPI_Datatype sendtype, // Type of sent elements
+    void *recvbuf,         // Buffer to collect all data
+    int recvcount,         // Number of elements received from each process
+    MPI_Datatype recvtype, // Type of received elements
+    int root,              // Rank of collecting process
+    MPI_Comm comm          // Communicator (usually MPI_COMM_WORLD)
+)
+\end{lstlisting}
+And when we have different buffer size, we use:
+\begin{lstlisting}[style=CppStyle]
+int MPI_Gatherv(
+    const void *sendbuf,
+    int sendcount,
+    MPI_Datatype sendtype,
+    void *recvbuf,
+    const int *recvcounts, // Array: how much to receive from each process
+    const int *displs,     // Array: where to place each chunk in recvbuf
+    MPI_Datatype recvtype,
+    int root,
+    MPI_Comm comm
+)
+\end{lstlisting}
+\subsection{Scatter}
+\textbf{Scatter} makes a process send a part of its informations to the others processes.\\
+\begin{center}
+	\begin{tabular}{ccccc|c|ccccc}
+		Before &&&&& $\Longrightarrow$ &After&&&&\\
+		\hline
+		procid & 0 & 1 & 2 & 3 & & procid & 0 & 1 & 2 & 3\\
+		\hline
+		& $x_0$ &&&&& & $x_0$ &&&\\
+		& $x_1$ &&&&& &  & $x_1$ &&\\
+		& $x_2$ &&&&& &  && $x_2$ &\\
+		& $x_3$ &&&&& &  &&& $x_3$ \\
+		\hline
+	\end{tabular}
+\end{center}
+Using \textit{spanning tree algorithm}, we \textbf{scatter} in $\log_2(p)\alpha + \beta n$. The function to use \textbf{scatter} when we have same buffer size is:
+\begin{lstlisting}[style=CppStyle]
+int MPI_Scatter(
+    const void *sendbuf,   // Data to distribute (used only at root)
+    int sendcount,         // Number of items sent to each process
+    MPI_Datatype sendtype, // Type of sent elements
+    void *recvbuf,         // Where each process receives its data
+    int recvcount,         // Number of items received
+    MPI_Datatype recvtype, // Type of received elements
+    int root,              // Rank of sending process
+    MPI_Comm comm          // Communicator (usually MPI_COMM_WORLD)
+)
+\end{lstlisting}
+And when we have different buffer size, we use:
+\begin{lstlisting}[style=CppStyle]
+int MPI_Scatterv(
+    const void *sendbuf,
+    const int *sendcounts, // Array: number of items to send to each process
+    const int *displs,     // Array: offsets in sendbuf for each process
+    MPI_Datatype sendtype,
+    void *recvbuf,
+    int recvcount,
+    MPI_Datatype recvtype,
+    int root,
+    MPI_Comm comm
+)
+\end{lstlisting}
 \subsection{Reduce}
 \textbf{Reduce} sums up all the values of the variables on the differents processes and store the sum on one process.\\
 \begin{center}
@@ -352,7 +428,18 @@ Using \textit{spanning tree algorithm}, we \textbf{gather} in $\log_2(p)\alpha +
 		\hline
 	\end{tabular}
 \end{center}
-Using \textit{spanning tree algorithm}, we can \textbf{reduce} in $\log_2(p)(\alpha + \beta n) + \log_2(p) \gamma n$. To simplify we have: $\log_2(p)(\alpha + (\beta + \gamma) n)$.
+Using \textit{spanning tree algorithm}, we can \textbf{reduce} in $\log_2(p)(\alpha + \beta n) + \log_2(p) \gamma n$. To simplify we have: $\log_2(p)(\alpha + (\beta + \gamma) n)$. The function to use \textbf{reduce} is:
+\begin{lstlisting}[style=CppStyle]
+int MPI_Reduce(
+    const void *sendbuf,   // Data to send from each process
+    void *recvbuf,         // Where data is collected at root 
+    int count,             // Number of elements in each process
+    MPI_Datatype datatype, // Type of elements
+    MPI_Op op,             // Reduction operation (e.g. MPI_SUM)
+    int root,              // Rank of collecting process
+    MPI_Comm comm          // Communicator (usually MPI_COMM_WORLD)
+)
+\end{lstlisting}
 \subsection{All gather}
 \textbf{All gather} is a sort of combination of \textbf{gather} and \textbf{broadcast}. It gathers all the variables of the processes and broadcast them to all the processes but more efficiently.\\
 \begin{center}
@@ -368,7 +455,31 @@ Using \textit{spanning tree algorithm}, we can \textbf{reduce} in $\log_2(p)(\al
 		\hline
 	\end{tabular}
 \end{center}
-Using \textit{spanning tree algorithm}, we can \textbf{all gather} in $\log_2(p)\alpha + \beta n$.
+Using \textit{spanning tree algorithm}, we can \textbf{all gather} in $\log_2(p)\alpha + \beta n$. The function to use \textbf{all gather} when we have same buffer size is:
+\begin{lstlisting}[style=CppStyle]
+int MPI_Allgather(
+    const void *sendbuf,    // Data to send from each process
+    int sendcount,          // Number of elements to send from each process
+    MPI_Datatype sendtype,  // Type of sent elements
+    void *recvbuf,          // Buffer to collect all data
+    int recvcount,          // Number of elements received by each process
+    MPI_Datatype recvtype,  // Type of received elements
+    MPI_Comm comm           // Communicator (usually MPI_COMM_WORLD)
+)
+\end{lstlisting}
+And when we have different buffer size, we use:
+\begin{lstlisting}[style=CppStyle]
+int MPI_Allgatherv(
+    const void *sendbuf,
+    int sendcount,
+    MPI_Datatype sendtype,
+    void *recvbuf,
+    const int *recvcounts, // Array: number of items to receive from each process
+    const int *displs,     // Array: offsets in recvbuf for each process
+    MPI_Datatype recvtype,
+    MPI_Comm comm
+)
+\end{lstlisting}
 \subsection{Reduce scatter}
 \textbf{Reduce scatter} is a sort of combination of \textbf{reduce} and \textbf{scatter}. It reduces the variables of the processes and scatter them to all the processes, but more efficiently.\\
 \begin{center}
@@ -384,7 +495,17 @@ Using \textit{spanning tree algorithm}, we can \textbf{all gather} in $\log_2(p)
 		\hline
 	\end{tabular}
 \end{center}
-Using \textit{spanning tree algorithm}, we can \textbf{reduce scatter} in $\log_2(p)\alpha + (\beta + \gamma) n$
+Using \textit{spanning tree algorithm}, we can \textbf{reduce scatter} in $\log_2(p)\alpha + (\beta + \gamma) n$. The function to use \textbf{reduce scatter} is:
+\begin{lstlisting}[style=CppStyle]
+int MPI_Reduce_scatter(
+    const void *sendbuf,   // Data to send from each process
+    void *recvbuf,         // Where data is collected for each process 
+    const int *recvcounts, // Array: result segment size for each process
+    MPI_Datatype datatype, // Type of elements
+    MPI_Op op,             // Reduction operation (e.g. MPI_SUM)
+    MPI_Comm comm          // Communicator (usually MPI_COMM_WORLD)
+)
+\end{lstlisting}
 \subsection{All reduce}
 \textbf{All reduce} is a sort of combination of \textbf{reduce} and \textbf{broadcast}.\\
 \begin{center}
@@ -397,7 +518,17 @@ Using \textit{spanning tree algorithm}, we can \textbf{reduce scatter} in $\log_
 		\hline
 	\end{tabular}
 \end{center}
-We explained above that we can do a combination of \textbf{reduce} and \textbf{broadcast}, but we can \textbf{all reduce} more efficiently doing \textbf{reduce scatter} then \textbf{all gather}, and we can do it in $\log_2(p)\alpha + \beta n$.
+We explained above that we can do a combination of \textbf{reduce} and \textbf{broadcast}, but we can \textbf{all reduce} more efficiently doing \textbf{reduce scatter} then \textbf{all gather}, and we can do it in $\log_2(p)\alpha + \beta n$. The function to use \textbf{all reduce} is:
+\begin{lstlisting}[style=CppStyle]
+int MPI_Allreduce(
+    const void *sendbuf,   // Data to send from each process
+    void *recvbuf,         // Where data is collected for each process 
+    int count,             // Number of elements in each process
+    MPI_Datatype datatype, // Type of elements
+    MPI_Op op,             // Reduction operation (e.g. MPI_SUM)
+    MPI_Comm comm          // Communicator (usually MPI_COMM_WORLD)
+)
+\end{lstlisting}
 \section{Point-to-point communication}
 \begin{figure}[H]
 	\centering
