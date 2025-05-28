@@ -107,23 +107,25 @@ To store the data that it will use, the CPU uses memory. Memory is hierarchical 
     \label{fig:memory_hierarchy}
 \end{figure}
 First we need to define a cycle\label{cycle_def}. It's an unit of time that is defined like this: $cycle = \frac{1}{\text{CPU freq}}$. For example, for the CPU \textit{AMD Ryzen 5 5600X}, the maximum frequency is $4.6 GHz$, so the cycle is $cycle = \frac{1}{4.6 GHz} \approx 0.217 ns$. The \textbf{bandwidth} is the number of bytes that can be transferred in one cycle. And the \textbf{latency} is the number of cycles required to access a level of memory. There's also the \textbf{latency} \label{def_latency} but for a number of bytes, its formula is $\alpha + \beta n$ where $\alpha$ is the level latency, $\beta$ is the inverse of the bandwidth and $n$ is the number of bytes.\\
-\begin{tabularx}{\textwidth}{|c|X|X|X|X|X|}
-	\hline
-	Level & Level \newline Latency $[cycle]$  & Bandwidth $[bytes/cycle]$ & Size & What \newline is stored & Example \\
-	\hline
-	Register & $3$ & No limit & $\approx 192B$ & "Immediate" data for the CPU & Results of addition, memory address\\
-	\hline
-	Cache L1 & $15$ & $32-64$ & $\approx 64KB$ & Instructions and \newline "Immediate" data & Local \newline variable\\
-	\hline
-	Cache L2 & $57$ & $16-32$ & $\approx 512KB$ & Data used recently & Data struct, code part\\
-	\hline
-	Cache L3 & $230-360$ & $4-10$ & $\approx 64MB$ & Data shared between core& Global \newline variable\\
-	\hline
-	RAM & $300-500$ & $9-50GB/s$ & $\geq 4GB$ & Running programs & Running software, open \newline document\\
-	\hline
-	Disks & $\geq 10^5$ & Usually $\leq 3GB/s$ & $\geq 128GB$ & Persistent data & Document, OS, etc\\
-	\hline
-\end{tabularx}
+\begin{center}
+	\begin{tabularx}{\textwidth}{|c|X|X|X|X|X|}
+		\hline
+		Level & Level \newline Latency $[cycle]$  & Bandwidth $[bytes/cycle]$ & Size & What \newline is stored & Example \\
+		\hline
+		Register & $3$ & No limit & $\approx 192B$ & "Immediate" data for the CPU & Results of addition, memory address\\
+		\hline
+		Cache L1 & $15$ & $32-64$ & $\approx 64KB$ & Instructions and \newline "Immediate" data & Local \newline variable\\
+		\hline
+		Cache L2 & $57$ & $16-32$ & $\approx 512KB$ & Data used recently & Data struct, code part\\
+		\hline
+		Cache L3 & $230-360$ & $4-10$ & $\approx 64MB$ & Data shared between core& Global \newline variable\\
+		\hline
+		RAM & $300-500$ & $9-50GB/s$ & $\geq 4GB$ & Running programs & Running software, open \newline document\\
+		\hline
+		Disks & $\geq 10^5$ & Usually $\leq 3GB/s$ & $\geq 128GB$ & Persistent data & Document, OS, etc\\
+		\hline
+	\end{tabularx}
+\end{center}
 \subsection{Caches lines and prefetching}\label{caches_lines}
 A \textbf{cache line} is a small fixed-size contiguous block of memory, usually $64$ or $128$ bytes. It's not necessarily stored in the cache. We use them to organize the memory, because it is easier to deal with fixed size block. When the CPU need to access a memory location, it loads the entire cache line into the cache of the CPU.
 If the wanted data is not in the cache, there will be a \textbf{cache miss}. After that the CPU will load the entire cache line into the cache.\\
@@ -255,39 +257,63 @@ And the efficiency is:
 \end{equation}
 We clearly see that if we use more than $n$ processes the efficiency will decrease. Because if $p \geq n$ then we have $T_p = \log_2(n)$ and $\lim_{p \to \infty} S_p = \frac{1}{\log_2(n)}$ and $F_s = \log_2(n)$.
 \chapter{Single Instruction Multiple Data (SIMD)}
-\textcolor{red}{Maybe to improve}\\
-SIMD (Single Instruction Multiple Data) is a parallel computing architecture used to process multiple data points simultaneously with a single instruction.\\
-The idea of SIMD is that instead of executing the same instruction separately for each data element, SIMD processes multiple elements in parallel within a single CPU cycle. To simplify SIMD takes advantages of \textbf{vectorization}, to optimize the performances of the program. It uses register to store the vector on which it does the computing.\\
+\section{What is SIMD?}
+SIMD (Single Instruction Multiple Data) is a parallel computing architecture used to process multiple data simultaneously with a single instruction.
+\section{How does it work?}
+SIMD takes advantages of \textbf{vector registers}, to perform the same operation on multiple data elements in parallel within a single CPU cycle. It take advatages of an extension of a CPU architectures that uses specific register to store the vector on which it does instruction from a specific set of instructions. It increases throughput of processed data.\\
+SIMD uses sets of instructions and registers to increases the performances, for example AVX512 is an extension of a CPU architecture that features a specific set instructions designed to work with wider registers than AVX2 . Possibles extensions are: SSE, AVX, AVX2, AVX512, NEON, etc.\\
 Let's do a little example, consider the following code:
 \begin{lstlisting}[style=CppStyle]
-	int a[] = {...};
-	int b[] = {...};
-	int c[size];
-	for(int i = 0; i < size; i++){
-		c[i] = a[i] + b[i];
-	}
+int a[] = {...};
+int b[] = {...};
+int c[size];
+for(int i = 0; i < size; i++){
+	c[i] = a[i] + b[i];
+}
 \end{lstlisting}
-Here we use \texttt{int} which is $32$ bits so if we use SIMD with AVX2 registers, we can store $(256/32 =) 8$ integers in a register. And so SIMD with that type of registers will automatically translate the previous code to:
+Here we use \texttt{int} which is $32$ bits so if we use SIMD with AVX2, we can store $(256/32) = 8$ integers in an AVX2 register. And so SIMD, with that type of set of instructions, will automatically translate the previous code to:
 \begin{lstlisting}[style=CppStyle]
-	int a[] = {...};
-	int b[] = {...};
-	int c[size];
-    for (int i = 0 ; i < size; i += 8) {
-        __m256i va = _mm256_load_si256((__m256i*)&a[i]);  
-        __m256i vb = _mm256_load_si256((__m256i*)&b[i]);  
-        __m256i vc = _mm256_add_epi32(va, vb);             
-        _mm256_store_si256((__m256i*)&c[i], vc);          
-    }
+int a[] = {...};
+int b[] = {...};
+int c[size];
+for (int i = 0 ; i < size; i += 8) {
+	__m256i va = _mm256_load_si256((__m256i*)&a[i]);  
+	__m256i vb = _mm256_load_si256((__m256i*)&b[i]);  
+	__m256i vc = _mm256_add_epi32(va, vb);             
+	_mm256_store_si256((__m256i*)&c[i], vc);          
+}
 \end{lstlisting}
-We can write the code with the intrinsics (all the function with \_ before) but it's not necessary. The compiler will do it for you.\\
-To use SIMD, you need to give to your compiler some flags, for example:
-\begin{itemize}
-	\item \code{-O2} or \code{-O3} for optimization
-	\item \code{-mavx} for AVX
-	\item \code{-mavx2} for AVX2
-	\item \code{-mavx512} for AVX512
-\end{itemize}
-\textcolor{red}{TODO: explain AVX}\\
+We can write the code with the intrinsics (all the function with \_ before), for manual control, but it's not necessary. The compiler will do it for you. Here we reduce the number of loop iteration by a factor of 8, but we increases the number of instructions.\\
+We can thus use SIMD to speed up the code. To use it, we need to ask the compiler for it with flags. Here are some examples (certains flags aren't available for some compiler):\\
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		\textbf{Purpose} & \textbf{Flags}\\
+		\hline
+		Optimization level & \texttt{-O2}, \texttt{-O3} \\
+		\hline
+		Sets of instructions of architectures & \texttt{-mavx}, \texttt{-mavx2}, \texttt{-mavx512f}, etc. \\
+		\hline
+		Maximum optimization for own CPU& \texttt{-march=native} \\
+		\hline
+	\end{tabular}
+\end{center}
+\section{Pros and cons}
+\begin{center}
+	\begin{tabularx}{\textwidth}{|X|X|}
+		\hline
+		\textbf{Pros} & \textbf{Cons} \\
+		\hline
+		Speedup of about $8$, for supported operations & Data must be aligned in memory \\
+		\hline
+		Energetic efficiency because fewer optimized instructions & Not fitted for all algorithm (especially with data dependencies)\\
+		\hline
+		Better usage of the CPU, especially memory wise & If intrinsics are used, code is less portable\\
+		\hline
+		Simple to add to an existing code & Order of operation can be changed, possible floating point inaccuracies.\\
+		\hline
+	\end{tabularx}
+\end{center}
 \chapter{Distributed Computing with MPI}
 \section{Single Program Multiple Data (SPMD)}
 Single Program Multiple Data means that we make multiple processes execute the same program but operate on different data. It's a kind of parallel computing that we call distributed computing.
@@ -332,6 +358,7 @@ int MPI_Bcast(
     MPI_Comm comm          // Communicator (usually MPI_COMM_WORLD)
 )
 \end{lstlisting}
+\newpage
 \subsection{Gather}
 \textbf{Gather} makes a process gather the variables of the other processes.\\
 \begin{center}
@@ -417,7 +444,7 @@ int MPI_Scatterv(
 )
 \end{lstlisting}
 \subsection{Reduce}
-\textbf{Reduce} sums up all the values of the variables on the differents processes and store the sum on one process.\\
+\textbf{Reduce} sums up all the values of the variables on the different processes and store the sum on one process.\\
 \begin{center}
 	\begin{tabular}{ccccc|c|ccccc}
 		Before &&&&& $\Longrightarrow$ &After&&&&\\
@@ -440,6 +467,7 @@ int MPI_Reduce(
     MPI_Comm comm          // Communicator (usually MPI_COMM_WORLD)
 )
 \end{lstlisting}
+\newpage
 \subsection{All gather}
 \textbf{All gather} is a sort of combination of \textbf{gather} and \textbf{broadcast}. It gathers all the variables of the processes and broadcast them to all the processes but more efficiently.\\
 \begin{center}
@@ -480,6 +508,7 @@ int MPI_Allgatherv(
     MPI_Comm comm
 )
 \end{lstlisting}
+\newpage
 \subsection{Reduce scatter}
 \textbf{Reduce scatter} is a sort of combination of \textbf{reduce} and \textbf{scatter}. It reduces the variables of the processes and scatter them to all the processes, but more efficiently.\\
 \begin{center}
@@ -674,6 +703,7 @@ DVFS and gating are done automatically so how can we reduce the power consumptio
 	\item Compatible with \textit{SIMD}
 	\item Portability: it is compatible with \textit{Windows}, \textit{Linux}, \textit{MacOS}. With multiple CPU architectures like \textit{Intel}, \textit{AMD}, \textit{ARM}, etc.
 \end{itemize}
+\subsection{OpenMP and PRAGMA}
 \section{Slurm}
 \subsection{What is Slurm?}
 \textbf{Slurm} stands for \textit{Simple Linux Utility for Resource Management}. It is an open-source job scheduler used in high-performance computing environments, such as university clusters or research supercomputers.
