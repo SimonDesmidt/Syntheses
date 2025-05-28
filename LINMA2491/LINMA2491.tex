@@ -1244,7 +1244,7 @@ The basic idea is to follow those 2 steps:
 		\end{aligned}
 	\end{equation}
 \end{enumerate}
-At each forward pass, we solve $H-1$ NLDS problems, and so for $K$ samples of $\xi_[H]$, we solve $1+K\cdot (H-2)$ linear programs. \\
+At each forward pass, we solve $H-1$ NLDS problems, and so for $K$ samples of $\xi_{[H]}$, we solve $1+K\cdot (H-2)$ linear programs. \\
 For the backward pass, for a given trial sequence $x_{[H]}$, we solve $\sum_{t=2}^H|\Xi_t|$ linear programs, and so for $K$ trial sequences, we solve $K\sum_{t=2}^H|\Xi_t|$ linear programs. 
 \subsection{Algorithm}
 \begin{algorithm}[H]
