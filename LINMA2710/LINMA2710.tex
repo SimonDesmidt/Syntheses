@@ -260,8 +260,8 @@ We clearly see that if we use more than $n$ processes the efficiency will decrea
 \section{What is SIMD?}
 SIMD (Single Instruction Multiple Data) is a parallel computing architecture used to process multiple data simultaneously with a single instruction.
 \section{How does it work?}
-SIMD takes advantages of \textbf{vector registers}, to perform the same operation on multiple data elements in parallel within a single CPU cycle. It uses an extension of a CPU architectures that features specific register and set of instructions. So it stores the vector the specific registrer and uses the optimized instructions on it. It increases the throughput of processed data.\\
-SIMD uses sets of instructions and registers to increases the performances, for example AVX512 is an extension of a CPU architecture that features a specific set instructions designed to work with wider registers than AVX2 . Possibles extensions are: SSE, AVX, AVX2, AVX512, NEON, etc.\\
+SIMD takes advantages of \textbf{vector registers}, to perform the same operation on multiple data elements in parallel within a single CPU cycle. It uses an extension of a CPU architecture that features specific register and set of instructions. So it stores the vector on a specific register and uses the optimized instructions on it. It increases the throughput of processed data.\\
+SIMD uses sets of instructions and registers to increases the performances, for example AVX512 is an extension of a CPU architecture that features a specific set instructions designed to work with wider registers than AVX2 . Possible extensions are: SSE, AVX, AVX2, AVX512, NEON, etc.\\
 Let's do a little example, consider the following code:
 \begin{lstlisting}[style=CppStyle]
 int a[] = {...};
