@@ -1436,7 +1436,7 @@ The idea of dual decomposition is that the dual function $g(u,v)$ is convex rega
 \section{Subgradient method}
 The subgradient method is as seen in previous courses. It minimizes a non-differentiable convex function $g$ with iterations such that 
 \begin{equation}
-	u_{k+1} = u_k - \alpha_k u_k
+	u_{k+1} = u_k - \alpha_k \pi_k
 \end{equation}
 where we can also take the projection in the case of a constraint problem with convex domain. 
 \begin{itemize}
@@ -1554,10 +1554,10 @@ As seen on figure \ref{fig:dw}, the L-Shaped method ignores the constraints of t
 	\label{fig:dw}
 \end{figure}
 \section{Problem formulation}
-ith two sets of variables $x_1$ and $x_2$, our problem is 
+With two sets of variables $x_1$ and $x_2$, our problem is 
 \begin{equation}
 	\begin{aligned}
-		z^* &= \min_1^Tx_1 + c_2^Tx_2\\
+		z^* &= \min c_1^Tx_1 + c_2^Tx_2\\
 		\text{s.t. } &Ax_1 + Bx_2 = b\\
 		&B_1x_1 = d_1\\
 		&B_2x_2 = d_2\\
