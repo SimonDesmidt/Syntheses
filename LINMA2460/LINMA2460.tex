@@ -684,6 +684,10 @@ Using linear algebra, we can compute:\\
 	\item The LBFGS is a low memory of BFGS, that does not require the storage of the matrices $B_k$. Given a vector $v \in \R^n$, it computes $B_kv$, which is all that we need to implement QN method.
 \end{itemize}
 \section{Cubically regularized Newton's method}
+The cubically regularized Newton's method is defined as follows:
+\begin{equation}\label{eq:cubically_regularized_newton}
+	x_{k+1} = \arg \min_{y \in \R^n} f(x_k) + \nabla f(x_k)^T (y-x_k) + \frac{1}{2} (y-x_k)^T \nabla^2 f(x_k) (y-x_k) + \frac{M}{6} \|y-x_k\|^3
+\end{equation}
 Based on the following equation, seen in the first lecture:
 \begin{equation}
 	f(x_k) - f(x_{k+1}) \geq \frac{L_p}{(p+1)!} \left(\frac{p!}{(M+L_p)}\right)^{\frac{p+1}{p}} \|\nabla f(x_{k+1})\|^{\frac{p+1}{p}}
