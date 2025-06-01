@@ -683,6 +683,16 @@ Using linear algebra, we can compute:\\
 	and so $d_k$ is a descent direction for $f$ at $x_k$.
 	\item The LBFGS is a low memory of BFGS, that does not require the storage of the matrices $B_k$. Given a vector $v \in \R^n$, it computes $B_kv$, which is all that we need to implement QN method.
 \end{itemize}
+\section{Cubically regularized Newton's method}
+Based on the following equation, seen in the first lecture:
+\begin{equation}
+	f(x_k) - f(x_{k+1}) \geq \frac{L_p}{(p+1)!} \left(\frac{p!}{(M+L_p)}\right)^{\frac{p+1}{p}} \|\nabla f(x_{k+1})\|^{\frac{p+1}{p}}
+\end{equation}
+We can get the following expression a cubically regularized Newton's method (assuming $M=0$):
+\begin{equation}
+	f(x_k) - f(x_{k+1}) \geq \frac{1}{\sqrt{L_p}} \frac{\sqrt{2}}{3} \|\nabla f(x_{k+1})\|^{\frac{3}{2}}
+\end{equation}
+\textcolor{red}{NOT SURE ABOUT THAT}
 \chapter{Constrained nonlinear programming problems}
 Consider the constrained problem 
 \begin{equation}\label{eq:constrained_problem}
