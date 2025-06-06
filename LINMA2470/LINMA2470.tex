@@ -683,7 +683,7 @@ The variables $x(s,a)$ represent the total discounted probabilities of being in 
 \end{algorithm}	
 \section{Reinforcement Learning}
 \subsection{Temporal Difference Learning}
-Temporal Difference Learning is used when we do not the probabilities $p(s',r|s,a=\pi(s))$. In that case, we rather use a temporal difference error, measuring the difference between the current estimate $V(s)$ and $r+\gamma V(s')$ (see blue term). 
+Temporal Difference Learning is used when we do not know the probabilities $p(s',r|s,a=\pi(s))$. In that case, we rather use a temporal difference error, measuring the difference between the current estimate $V(s)$ and $r+\gamma V(s')$ (see blue term). 
 \begin{algorithm}
 	\caption{TD(0) for estimating $v_\pi$}
 	\begin{algorithmic}[1]
@@ -704,7 +704,7 @@ Temporal Difference Learning is used when we do not the probabilities $p(s',r|s,
 	\end{algorithmic}
 \end{algorithm}
 \subsection{Q-learning}
-Q-Learning works juste like TD Learning, but using $Q(s,a)$ instead of $V(s)$. The policy is then computed from the final iterate using the usual formula.
+Q-Learning works just like TD Learning, but using $Q(s,a)$ instead of $V(s)$. The policy is then computed from the final iterate using the usual formula.
 \begin{algorithm}
 	\caption{Q-learning for estimating $\pi^*$}
 	\begin{algorithmic}[1]
