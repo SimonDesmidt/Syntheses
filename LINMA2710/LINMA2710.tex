@@ -158,11 +158,11 @@ Let's consider a program that does $o$ arithmetic operations and $m$ memory oper
 \end{itemize}
 The overall performance of a program is thus defined by the worst component of the PC, and so we get the \textbf{time per iteration}:
 \begin{equation}
-	\min \left( \frac{t_{arith}}{o},\frac{t_{mem}}{o} \right)
+	\max \left( \frac{t_{arith}}{o},\frac{t_{mem}}{o} \right)
 \end{equation}
 With some algebra, we can find the \textbf{number of operations per second}:
 \begin{equation}
-	\max \left( \text{CPU freq}, a \times \text{bandwidth} \right)
+	\min \left( \text{CPU freq}, a \times \text{bandwidth} \right)
 \end{equation}
 To resume:
 \begin{itemize}
