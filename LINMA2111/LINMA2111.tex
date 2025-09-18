@@ -68,4 +68,37 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
+\chapter{We will see}
+\section{Sorting problem}
+\subsection{Introduction}
+A sorting problem is a problem that consists of taking a sequence of $n$ objects and putting them in order. This kind of problem is made of three main elements:
+\begin{itemize}
+  \item Context: set $S$ with a partial order $<$;
+  \item Input: $n$ elements of $S$;
+  \item Output: permutation of the input elements respecting the order.
+\end{itemize}
+To prove the correctness of an algorithm, we generally use the Hoare triple, i.e. a tuple for any input array $x_0$:
+\begin{equation}
+  \begin{aligned}
+	&\{\text{Algorithm to be used};\ \text{Precondition}; \ \text{post condition}\}\\
+	&\left\{IS;\ x=x_0;\ x\text{ is sorted and is a permutation of }x_0\right\}
+\end{aligned}
+\end{equation}
+where IS is the insertion sort algorithm, and $x$ is the sorted array. From now on, we will call "sorting" a sorted permutation. \\
+In practice, to prove the correctness of an algorithm, we define the invariant and the base case, and do an induction step show that the invariant is preserved.\\
+\subsection{Complexity}
+\textcolor{red}{Add the slide on complexity.}
+We define the average case complexity as an expectation of the time taken by the algorithm on each input possible, with a dependence in the size of the input.
+\begin{equation}
+	t = \mathbb{E}_{x\sim D}[T(x)]
+\end{equation}
+where $D$ is the distribution of the input.\\
+\subsection{Divide and conquer}
+The divide and conquer method consists in three steps:
+\begin{enumerate}
+	\item Divide: create smaller subproblems;
+	\item Recurse: solve them;
+	\item Combine: merge the solutions.
+\end{enumerate}
+In sorting problems, a divide-and-conquer algorithm is the merge sort algorithm. It consists in dividing the array in two, sorting each half recursively, and merging the two sorted halves. The merge operation is done in linear time.\\
 \end{document}
