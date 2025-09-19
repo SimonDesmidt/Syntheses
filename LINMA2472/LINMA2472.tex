@@ -27,6 +27,8 @@
 \usepackage[bottom]{footmisc}
 \usepackage{pdfpages}
 \usepackage{tabularx}
+\usepackage {tikz}
+\usetikzlibrary{positioning}
 \usepackage{amsthm}
 \usepackage[skins]{tcolorbox}
 \titleformat{\chapter}[display]
@@ -89,7 +91,7 @@ We thus get:
   \cdot f'_2(s_1) \cdot f'_1(s_0)
 \end{equation}
 Based on this, we can define the forward and backward differentiation algorithms.
-\subsection{Forward differentiation}
+\section{Forward differentiation}
 Also called forward mode, this algorithm consists in propagating forward the derivative and the values at the same time. It can be represented by this graph where the blue part represents the values and the green part the derivatives:
 \begin{figure}[H]
     \centering
@@ -105,7 +107,7 @@ And it can be computed with the following recurrence relation:
   \end{cases}
 \end{equation}
 It is simple to implement and very efficient for functions with a small number of input variables. However, it becomes inefficient for functions with a large number of input variables because we need to compute the derivative for each input variable separately. So in practice for neural networks where we have a large number of input variables (weights and biases), we use the backward differentiation.
-\subsection{Backward differentiation}
+\section{Backward differentiation}
 Also called backward mode, this algorithm consists in propagating the derivative backward and the values forward at the same time. It can be represented by this graph where the blue part represents the values and the orange part the derivatives:
 \begin{figure}[H]
     \centering
@@ -121,4 +123,44 @@ The idea is to compute all the intermediate values $s_k$ in a forward pass and t
   \end{cases}
 \end{equation}
 This method is more complex to implement but it is very efficient for functions with a large number of input variables and a small number of output variables typically 1, the loss function.
+\section{Computational graph and multivariate differentiation}
+\subsection{Computational graph}  
+To represent the computation of a function, we can use a computational graph. It is a directed acyclic graph where the nodes represent the operations and the edges represent the variables. For example, consider the function with $f_1(x)=x=s_1$ and $f_2(x)=x^2=s_2$:
+\begin{equation}
+  f_3(s_1,s_2) = s_1 + s_2 = x + x^2
+\end{equation}
+The computational graph is:\\
+\begin{center}
+  \begin{tikzpicture}[
+    roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=7mm},]
+    %Nodes
+    \node[roundnode] (x1) {$x$};
+    \node[roundnode] (square) [right=of x1] {$x^2$};
+    \node[roundnode] (sum) [right=of square] {$+$};
+    
+    % %Lines
+    \draw[->] (x1.north) .. controls +(up:7mm) and +(up:7mm).. (sum.north);
+    \draw[->] (x1.east) -- (square.west);
+    \draw[->] (square.east) -- (sum.west);
+  \end{tikzpicture}
+\end{center}
+\subsection{Multivariate differentiation}
+Let's consider the function of the computational graph above:
+\begin{equation}
+  f_3(f_1(x),f_2(x)) = f_1(x) + f_2(x) = s_1 + s_2 = x + x^2 
+\end{equation}
+following the chain rule, we have:
+\begin{equation}
+  f'_3(x) = \frac{\partial f_3}{\partial s_1} \frac{\partial s_1}{\partial x} + \frac{\partial f_3}{\partial s_2} \frac{\partial s_2}{\partial x}
+\end{equation}
+For the forward differentiation, we work the same way as before, we propagate the values and the derivatives forward. But when we have a node with multiple inputs, we need to use formula derivated from the chain rule. For the function $f_3$, we will have:
+\begin{equation}
+  \begin{cases}
+    t_0 &= 1 \\
+    t_1 &= f'_1(x) \cdot t_0 = 1\\
+    t_2 &= f'_2(x) \cdot t_0 = 2x\\
+    t_3 &= \frac{\partial f_3}{\partial s_1} \cdot t_1 + \frac{\partial f_3}{\partial s_2} \cdot t_2 = 1 + 2x\\
+  \end{cases}
+\end{equation}
+For the backward differentiation, 
 \end{document}
