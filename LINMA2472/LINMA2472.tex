@@ -147,20 +147,34 @@ The computational graph is:\\
 \subsection{Multivariate differentiation}
 Let's consider the function of the computational graph above:
 \begin{equation}
-  f_3(f_1(x),f_2(x)) = f_1(x) + f_2(x) = s_1 + s_2 = x + x^2 
+  f_3(f_1(x),f_2(x)) = s_3 = f_1(x) + f_2(x) = s_1 + s_2 = x + x^2 
 \end{equation}
 following the chain rule, we have:
 \begin{equation}
   f'_3(x) = \frac{\partial f_3}{\partial s_1} \frac{\partial s_1}{\partial x} + \frac{\partial f_3}{\partial s_2} \frac{\partial s_2}{\partial x}
 \end{equation}
-For the forward differentiation, we work the same way as before, we propagate the values and the derivatives forward. But when we have a node with multiple inputs, we need to use formula derivated from the chain rule. For the function $f_3$, we will have:
+For the forward automatic differentiation, we work the same way as before, we propagate the values and the derivatives forward. But when we have a node with multiple inputs, we need to use formula derivated from the chain rule. For the function $f_3$ that we want to evaluate in $x=3$, we will have:
 \begin{equation}
-  \begin{cases}
-    t_0 &= 1 \\
-    t_1 &= f'_1(x) \cdot t_0 = 1\\
-    t_2 &= f'_2(x) \cdot t_0 = 2x\\
-    t_3 &= \frac{\partial f_3}{\partial s_1} \cdot t_1 + \frac{\partial f_3}{\partial s_2} \cdot t_2 = 1 + 2x\\
-  \end{cases}
+	\begin{cases}
+		t_0 &= 1 \\
+		t_1 &= f'_1(x) \vert_{x=3} \cdot t_0 = 1\\
+		t_2 &= f'_2(x) \vert_{x=3} \cdot t_0 = 6\\
+		t_3 &= \frac{\partial f_3}{\partial s_1} \vert_{x=3} \cdot t_1 + \frac{\partial f_3}{\partial s_2} \vert_{x=3} \cdot t_2 = 7\\
+	\end{cases}
 \end{equation}
-For the backward differentiation, 
+For the backward automatic differentiation, first we need to initialize the gradient accumulator to 0.
+\begin{equation}
+	\frac{\partial s_3}{\partial s_1} = \frac{\partial s_3}{\partial s_2} = \frac{\partial s_3}{\partial x} = 0
+\end{equation}
+Then we compute the intermediate values in a forward pass:
+\begin{equation}
+	\begin{aligned}
+		\frac{\partial s_3}{\partial s_1} &+= 1 \Rrightarrow \frac{\partial s_3}{\partial x} += 1 \cdot 1 \vert_{x=3}\\		
+		\frac{\partial s_3}{\partial s_2} &+= 1 \Rrightarrow \frac{\partial s_3}{\partial x} = 1 \cdot 2x \vert_{x=3}\\
+	\end{aligned}
+\end{equation}
+Finally we get:
+\begin{equation}
+	\frac{\partial s_3}{\partial x} = 7
+\end{equation}
 \end{document}
