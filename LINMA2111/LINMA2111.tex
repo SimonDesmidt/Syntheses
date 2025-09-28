@@ -35,6 +35,7 @@
 \newcommand{\hsp}{\hspace{20pt}}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\E}{\mathbb{E}}
 \theoremstyle{definition}
@@ -52,7 +53,7 @@
         { \huge \bfseries LINMA2111 - Discrete mathematics II \\[0.4cm] }
     
         \HRule \\[1.5cm]
-        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \textsc{\LARGE Simon Desmidt\\ Issambre L'Hermite Dumont}\\[1cm]
         \vfill
         \vspace{2cm}
         {\large Academic year 2025-2026 - Q1}
@@ -68,8 +69,8 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-\chapter{We will see}
-\section{Sorting problem}
+\chapter{Introduction}
+\section{Sorting problems}
 \subsection{Introduction}
 A sorting problem is a problem that consists of taking a sequence of $n$ objects and putting them in order. This kind of problem is made of three main elements:
 \begin{itemize}
@@ -80,14 +81,27 @@ A sorting problem is a problem that consists of taking a sequence of $n$ objects
 To prove the correctness of an algorithm, we generally use the Hoare triple, i.e. a tuple for any input array $x_0$:
 \begin{equation}
   \begin{aligned}
-	&\{\text{Algorithm to be used};\ \text{Precondition}; \ \text{post condition}\}\\
+	&\{\text{Algorithm to be used};\ \text{Precondition}; \ \text{Postcondition}\}\\
 	&\left\{IS;\ x=x_0;\ x\text{ is sorted and is a permutation of }x_0\right\}
 \end{aligned}
 \end{equation}
 where IS is the insertion sort algorithm, and $x$ is the sorted array. From now on, we will call "sorting" a sorted permutation. \\
 In practice, to prove the correctness of an algorithm, we define the invariant and the base case, and do an induction step show that the invariant is preserved.\\
-\subsection{Complexity}
-\textcolor{red}{Add the slide on complexity.}
+\subsection{Definition of complexity}
+For some functions $f,g:\mathbb{N} \to \R^+$, 
+\begin{equation}
+  	\begin{aligned}
+		&f\in \mathcal{O}(g) \Longleftrightarrow \exists c>0, \exists n_0, \forall n>n_0,\ f(n)\le cg(n)\\
+		&f\in \Omega(g)\Longleftrightarrow g\in \mathcal{O}(f)\\
+		& f\in \Theta(g)\Longleftrightarrow f\in \mathcal{O}(g)\text{ and } f\in \Theta(g)\\
+		&f\in o(g) \Longleftrightarrow \exists c>0, \exists n_0, \forall n>n_0,\ f(n)< cg(n)\\
+		&f\in \omega(g)\Longleftrightarrow g\in o(f)\\
+  	\end{aligned}
+\end{equation}
+\begin{itemize}
+	\item The time complexity is the number of operations as a function of the input size;
+	\item The space complexity is the amount of memory used (in addition to the input) as a function of the input size. 
+\end{itemize}
 We define the average case complexity as an expectation of the time taken by the algorithm on each input possible, with a dependence in the size of the input.
 \begin{equation}
 	t = \mathbb{E}_{x\sim D}[T(x)]
@@ -101,4 +115,6 @@ The divide and conquer method consists in three steps:
 	\item Combine: merge the solutions.
 \end{enumerate}
 In sorting problems, a divide-and-conquer algorithm is the merge sort algorithm. It consists in dividing the array in two, sorting each half recursively, and merging the two sorted halves. The merge operation is done in linear time.\\
+\section{Complexity of sorting algorithms}
+No sorting algorithm can be faster than $\Omega(n \log(n))$. This can be proven through the complexity of comparison-based algorithms. 
 \end{document}
