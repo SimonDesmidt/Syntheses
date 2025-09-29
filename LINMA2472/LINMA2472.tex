@@ -134,9 +134,9 @@ The computational graph is:\\
   \begin{tikzpicture}[
     roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=7mm},]
     %Nodes
-    \node[roundnode] (x1) {$x$};
-    \node[roundnode] (square) [right=of x1] {$x^2$};
-    \node[roundnode] (sum) [right=of square] {$+$};
+    \node[roundnode] (x1) {$s_1=x$};
+    \node[roundnode] (square) [right=of x1] {$f_2=x^2$};
+    \node[roundnode] (sum) [right=of square] {$f_3=f_2+s_1$};
     
     % %Lines
     \draw[->] (x1.north) .. controls +(up:7mm) and +(up:7mm).. (sum.north);
@@ -169,12 +169,46 @@ For the backward automatic differentiation, first we need to initialize the grad
 Then we compute the intermediate values in a forward pass:
 \begin{equation}
 	\begin{aligned}
-		\frac{\partial s_3}{\partial s_1} &+= 1 \Rrightarrow \frac{\partial s_3}{\partial x} += 1 \cdot 1 \vert_{x=3}\\		
-		\frac{\partial s_3}{\partial s_2} &+= 1 \Rrightarrow \frac{\partial s_3}{\partial x} = 1 \cdot 2x \vert_{x=3}\\
+		\frac{\partial s_3}{\partial s_1} &+= 1 \Rightarrow \frac{\partial s_3}{\partial x} += 1 \cdot 1 \vert_{x=3}\\		
+		\frac{\partial s_3}{\partial s_2} &+= 1 \Rightarrow \frac{\partial s_3}{\partial x} += 1 \cdot 2x \vert_{x=3}\\
 	\end{aligned}
 \end{equation}
 Finally we get:
 \begin{equation}
 	\frac{\partial s_3}{\partial x} = 7
 \end{equation}
+\section{Tangent}
+\textcolor{red}{TODO}
+\section{Jacobian computation}
+When doing the forward and backward mode, we compute the Jacobian matrix of the function. 
+Using this Jacobian we can do the forward mode like this:
+\begin{equation}
+  J_f(x) \cdot v \quad \quad \text{(JVP)}
+\end{equation}
+where $v$ is a vector of size $n$ (number of input variables)
+and the backward mode like this:
+\begin{equation}
+  v^T J_f(x) \quad \quad \text{(VJP)}
+\end{equation}
+Consider a function $f:\R^n \rightarrow \R^m$ then computing the full Jacobian requires $n$ forward passes (JVP) or $m$ backward passes (VJP). Therefore,
+\begin{itemize}
+  \item If $n \ll m$, we use the forward mode because it's faster
+  \item If $n \gg m$, we use the backward mode because it's faster
+  \item If $n \approx m$, we can use either mode
+\end{itemize}
+\section{Memory usage}
+The forward mode only needs to store the current value and the current derivative.\\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/fd_mem.png}
+    \caption{Forward differentiation memory usage}
+    \label{fig:fd_mem}
+\end{figure}
+The backward mode needs to store all the intermediate values to compute the derivatives in the backward pass.\\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/bd_mem.png}
+    \caption{Backward differentiation memory usage}
+    \label{fig:bd_mem}
+\end{figure}
 \end{document}
