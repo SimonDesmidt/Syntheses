@@ -211,5 +211,48 @@ However, the backward mode needs to store all the intermediate values to compute
 \end{figure}
 So the forward mode is more memory efficient than the backward mode. However, this factor may be less significant than the number of operations performed (JVP and VJP).
 
-\textcolor{red}{TODO link tangent with neural networks}
+
+\chapter{Neural networks}
+\textcolor{red}{TODO link tangent with neural networks}\\
+Neural networks are a class of machine learning models inspired by the structure and function of the human brain. They are composed of layers of interconnected nodes (neurons) that process and transmit information.\\
+First let's define some variables:
+\begin{itemize}
+  \item $X$: input data (matrix)
+  \item $y$: target data
+  \item $W_k$: weights matrix at layer $k$
+  \item $b_k$: bias vector at layer $k$
+  \item $\sigma$: activation function (ReLU, sigmoid, etc)
+  \item $\ell(.)$: loss function 
+  \item $H$: number of hidden layers
+  \item $S_i$: intermediate state  
+\end{itemize} 
+To propagate and update the information through the network we use forward pass and backward pass and so automatic differentiation.\\
+We can describe the forward pass of a neural network in two equivalent ways:
+\begin{equation}
+  \begin{aligned}
+    &\text{Right to left:} \qquad &&\text{Left to right:}\\
+    &S_0 = X \qquad &&S_0 = x\\
+    &S_{2k-1} = W_k S_{2k-2} + b_k \qquad &&S_{2k-1} = S_{2k-2}W_k + b_k\\
+    &S_{2k} = \sigma(S_{2k-1}) \qquad &&S_{2k} = \sigma(S_{2k-1})\\
+    &S_{2H+1} = W_{k+1}S_{2H} \qquad &&S_{2H+1} = S_{2H}W_{k+1}\\
+    &S_{2H+2} = \ell(S_{2H+1}, Y) \qquad &&S_{2H+2} = \ell(S_{2H+1}, Y)\\ 
+  \end{aligned}
+\end{equation}
+The principal differences is that the weights acts on the left or on the right of the data, it can be useful depending whether you represents inputs as rowvectors or columnvectors.\\
+It can be represented by this computational graph:\\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/nn_fd.png}
+    \caption{Neural network forward pass}
+    \label{fig:nn_fd}
+\end{figure}
+And the backward pass can be represented like this:\\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/nn_bd.png}
+    \caption{Neural network backward pass}
+    \label{fig:nn_bd}
+\end{figure}
+\chapter{Matrix multiplication tactics}
+\section{Scalar product way}
 \end{document}
