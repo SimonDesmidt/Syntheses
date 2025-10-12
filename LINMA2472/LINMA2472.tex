@@ -39,6 +39,8 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\E}{\mathbb{E}}
+\newcommand{\J}{\mathbf{J}}
+\newcommand{\He}{\mathbf{H}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
@@ -210,7 +212,80 @@ However, the backward mode needs to store all the intermediate values to compute
     \label{fig:bd_mem}
 \end{figure}
 So the forward mode is more memory efficient than the backward mode. However, this factor may be less significant than the number of operations performed (JVP and VJP).
+\section{Second order AD}
+And what happens when we take a look at the second order derivative? Remember that we can compute the Hessian $\nabla^2 f(x)$ like this:
+\begin{equation}
+  (\nabla^2 f(x))_{ij} = \frac{\partial^2 f(x)}{\partial x_i \partial x_j}
+\end{equation}
+Or like this:
+\begin{equation}
+  \nabla^2 f(x) = J_{\nabla f}(x)
+\end{equation}
+We can easily see that with this definition, we can use an AD for the gradient and for the Jacobian to compute the Hessian. And because we can separate these two computations in distinct AD, it means that we are not forced to use the same mode for both. So we can do either forward or backward for both computations without taking care of the mode used for the other computation.\\
 
+Based on the chain rule, let's rewrite $\frac{\partial^2 (f_2 \circ f_1)}{\partial x_i \partial x_j}$ into something more suitable for AD (consider $\partial f$ as the gradient of $f$):
+\begin{equation}
+  \begin{aligned}
+    \frac{\partial^2 (f_2 \circ f_1)}{\partial x_i \partial x_j} &= \frac{\partial}{\partial x_j} \left( \frac{ \partial (f_2 \circ f_1)}{\partial x_i} \right) \\
+    &= \frac{\partial}{\partial x_j} \left( \partial f_2 \frac{ \partial f_1}{\partial x_i} \right) \\
+    &= \left( \partial^2 f_2 \frac{\partial f_1}{\partial x_j} \right) \frac{\partial f_1}{\partial x_i} + \partial f_2 \frac{\partial^2 f_1}{\partial x_i \partial x_j} 
+  \end{aligned}
+\end{equation}
+Introducing the variables $\J_k = \partial f_k$ and $\He_{kj} = \frac{\partial}{\partial x_j} \J_k = \partial^2 f_k \frac{\partial f_{k-1}}{\partial x_j}$, and so we get:
+\begin{equation}
+  \frac{\partial^2 (f_2 \circ f_1)}{\partial x_i \partial x_j} = \He_{2j} \frac{\partial f_1}{\partial x_i} + \J_2 \frac{\partial^2 f_1}{\partial x_i \partial x_j}
+\end{equation}
+We can now define four different ways to compute the Hessian depending on the mode used for each computation.
+\subsection{Forward on forward}
+Define $Dual(s_1,t_1)$ with $s_1 = Dual(f_1(x), \frac{\partial f_1}{\partial x_j})$ and $t_1 = Dual(\frac{\partial f_1}{\partial x_i}, \frac{\partial^2 f_1}{\partial x_i \partial x_j})$ then we can have this algorithm:
+\begin{enumerate}
+  \item Compute $s_2 = f_2(s_1) = (f_2(f_1(x)), \J_2 \frac{\partial f_1}{\partial x_j})$
+  \item Compute $\J_{f_2}(s_1)$ which gives $Dual(\J_2, \He_{2j})$
+  \item Compute \begin{equation} \begin{aligned} t_2 &= \J_{f_2}(s_1) t_1 \\ &= Dual(\J_2, \He_{2j}) Dual(\frac{\partial f_1}{\partial x_i}, \frac{\partial^2 f_1}{\partial x_i \partial x_j}) \\ &= Dual(\J_2 \frac{\partial f_1}{\partial x_i}, \J_2 \frac{\partial^2 f_1}{\partial x_i \partial x_j} + \He_{2j} \frac{\partial f_1}{\partial x_i}) \end{aligned} \end{equation}
+  \item Repeat 
+\end{enumerate}
+All that can be resumed as these two equations with $g_k(x) = f_k \circ \dots \circ f_1$:
+\begin{equation}
+  \begin{cases}
+    s_k &= Dual(g_k(x), \frac{\partial g_k}{\partial x_j})\\
+    t_k &= Dual(\frac{\partial g_k}{\partial x_i}, \frac{\partial^2 g_k}{\partial x_i \partial x_j})
+  \end{cases}
+\end{equation}
+\subsection{Forward on reverse}
+First the forward pass works the same as forward on forward, given $s_1 = Dual(f_1(x), \frac{\partial f_1}{\partial x_j})$ 
+\begin{enumerate}
+  \item Compute $s_2 = f_2(s_1) $
+  \item Compute $\J_{f_2}(s_1)$ which gives $Dual(\J_2, \He_{2j})$
+\end{enumerate}
+Then the backward pass, given $r_2 = Dual((r_2)_1, (r_2)_2)$ compute:
+\begin{equation}
+  \begin{aligned}
+    r_2 \J_2 &= Dual((r_2)_1, (r_2)_2) Dual(\J_2, \He_{2j})\\ &= Dual((r_2)_1 \J_2, (r_2)_1 \He_{2j} + (r_2)_2 \J_2)
+  \end{aligned}
+\end{equation}
+Given the last equation, we get the recurrence relation:
+\begin{equation}
+  r_k = Dual(\frac{\partial f}{\partial s_k}, \frac{\partial^2 f}{\partial s_k \partial x_j})
+\end{equation}
+\subsection{Reverse on forward}
+First we set up the forward pass, given $s_1 = Dual(f_1(x), \frac{\partial f_1}{\partial x_i })$ (notice the difference with the previous modes ($j \to i$)). Then we compute:
+\begin{enumerate}
+  \item Compute $s_2 = f_2(s_1) = Dual(f_2(s_1), \J_2 \frac{\partial f_1}{\partial x_i})$
+  \item The reverse mode computes the local Jacobian $\frac{\partial s_2}{\partial s_1}$ \textcolor{red}{(TODO: PAS COMPRIS)}
+\end{enumerate}
+Then the backward pass, which gives us:
+\begin{equation}
+  \begin{cases}
+    (r_1)_1 = (r_2)_1 \J_2 + (r_2)_2 \He_{2i}\\
+    (r_1)_2 = (r_2)_2 \J_2
+  \end{cases}
+\end{equation}
+Which gives us the solution of recurrence equation:
+\begin{equation}
+  r_k = Dual(\frac{\partial f}{\partial s_k}, \frac{\partial^2 f}{\partial s_k \partial x_j})
+\end{equation}
+\subsection{Reverse on reverse}
+\textcolor{red}{(TODO: PAS COMPRIS)}
 
 \chapter{Neural networks}
 \textcolor{red}{TODO link tangent with neural networks}\\
@@ -253,6 +328,4 @@ And the backward pass can be represented like this:\\
     \caption{Neural network backward pass}
     \label{fig:nn_bd}
 \end{figure}
-\chapter{Matrix multiplication tactics}
-\section{Scalar product way}
 \end{document}
