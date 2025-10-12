@@ -38,6 +38,7 @@
 \newcommand{\hsp}{\hspace{20pt}}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\E}{\mathbb{E}}
@@ -45,6 +46,7 @@
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
 \newtheorem{lem}[thm]{Lemma}
+\def\mat#1{\underline{\underline{#1}}}
 
 \hbadness=100000
 \begin{document}
@@ -74,7 +76,6 @@
 \tableofcontents
 \chapter{Introduction}
 \section{Sorting problems}
-\subsection{Introduction}
 A sorting problem is a problem that consists of taking a sequence of $n$ objects and putting them in order. This kind of problem is made of three main elements:
 \begin{itemize}
   \item Context: set $S$ with a partial order $<$;
@@ -90,7 +91,7 @@ To prove the correctness of an algorithm, we generally use the Hoare triple, i.e
 \end{equation}
 where IS is the insertion sort algorithm, and $x$ is the sorted array. From now on, we will call "sorting" a sorted permutation. \\
 In practice, to prove the correctness of an algorithm, we define the invariant and the base case, and do an induction step show that the invariant is preserved.\\
-\subsection{Definition of complexity}
+\section{Definition of complexity}
 For some functions $f,g:\mathbb{N} \to \R^+$, 
 \begin{equation}
   	\begin{aligned}
@@ -110,18 +111,17 @@ We define the average case complexity as an expectation of the time taken by the
 	t = \mathbb{E}_{x\sim D}[T(x)]
 \end{equation}
 where $D$ is the distribution of the input.\\
-\subsection{Divide and conquer}
-The divide and conquer method consists in three steps:
+\section{Complexity of sorting algorithms}
+No sorting algorithm can be faster than $\Omega(n \log(n))$. This can be proven through the complexity of comparison-based algorithms. 
+\chapter{Divide-and-conquer algorithms}
+The divide-and-conquer method consists in three steps:
 \begin{enumerate}
 	\item Divide: create smaller subproblems;
 	\item Recurse: solve them;
 	\item Combine: merge the solutions.
 \end{enumerate}
 In sorting problems, a divide-and-conquer algorithm is the merge sort algorithm. It consists in dividing the array in two, sorting each half recursively, and merging the two sorted halves. The merge operation is done in linear time.\\
-\section{Complexity of sorting algorithms}
-No sorting algorithm can be faster than $\Omega(n \log(n))$. This can be proven through the complexity of comparison-based algorithms. 
-\chapter{Divide-and-conquer algorithms}
-\section{Complexity of a multiplication}
+\section{Complexity of an integer multiplication}\label{sec:int_mult}
 Given two $n$-digit numbers, we want to compute their product:
 \begin{equation}
   	\begin{cases}
@@ -152,14 +152,14 @@ To reduce the complexity, we can change the value of the parameter $a$ from 4 to
 \end{equation}
 This reduces the complexity to $\Theta(n^{1.58})$. \\
 Following a similar reasoning, we can instead divide $a$ and $b$ into 3 sums instead of 2, and get 5 multiplications. This gives a complexity of $\Theta(n^{\log_3(5)}) = \Theta(n^{1.46})$. Dividing in 4, 5, etc, we converge to a complexity of $\Theta(n)$ and this is the optimal complexity for the multiplication of two numbers of $n$ digits. The problem is that the constant in front of the $n$ starts to grow as we divide into more and more limbs, and so a bigger exponent can be enough for most arrays\footnote{We call galactical algorithm an algorithm that is asymptotically good but the constant grows so large that it is only useful for huge arrays (e.g. $\sim10^{80}$).}.
-\section{Master Theorem} 
+\subsection{Master Theorem} 
 Let $a\ge 1$ and $b>1$ be constants and $f(n)$ a positive function, and let $T(n)$ be defined by $T(0)>0$ and $T(n) = aT(\lfloor n/b\rfloor)+f(n)$. Then,
 \begin{itemize}
 	\item If $f(n) = \mathcal{O}(n^{\log_b (a)-\epsilon})$ for some $\epsilon>0$, then $T(n) = \Theta(n^{\log_b(a)})$;
 	\item If $f(n) = \Theta(n^{\log_b(a)})$, then, $T(n) = \Theta(b^{\log_b(a)}\log(n))$;
 	\item If $f(n) = \Omega(n^{\log_b(a)+\epsilon})$ for some $\epsilon>0$ and if, for some $c>1$ and $n_0$ such that $af(\lfloor n/b\rfloor)\le cf(n)$ for all $n\ge n_0$, then $T(n)=\Theta(f(n))$;
 \end{itemize}
-\subsection{Proof}
+\subsection{Proof of the master theorem}
 \Tree [.{$n=b^k$} 
         [.{$\phantom{X}$} 
             [.{$\vdots$} {$\phantom{X}$} {$\phantom{X}$} ]
@@ -192,9 +192,9 @@ Consider $a(x) = a_0+a_1x+a_2 x^2 + \dots + a_{n-1}x^{n-1}$. It can either be re
 		1 & x_{n-1} & \dots & x_{n-1}^{n-1}\\
 	\end{bmatrix}\begin{bmatrix}
 		a_0 \\ \vdots \\ a_{n-1}
-	\end{bmatrix} = Va
+	\end{bmatrix} = \mat{V}\textbf{a}
 \end{equation}
-where the matrix $V$ is called the Vandermonde matrix. 
+where the matrix $\mat{V}$ is called the Vandermonde matrix. 
 \subsection{Convolution theorem}
 \begin{center}
 	\begin{tikzpicture}[node distance=4cm, auto, font=\small]
@@ -223,17 +223,17 @@ where the matrix $V$ is called the Vandermonde matrix.
 						};
 						
 				% Arrows
-				\draw[->, red, thick] (D) -- (B) node[midway, above] {\small \textcolor{black}{Interpolate $V^{-1}$}};
-				\draw[->, red, thick] (A) -- (C) node[midway, left] {\small \textcolor{black}{Evaluate $V$}};
+				\draw[->, red, thick] (D) -- (B) node[midway, above] {\small \textcolor{black}{Interpolate $\mat{V}^{-1}$}};
+				\draw[->, red, thick] (A) -- (C) node[midway, left] {\small \textcolor{black}{Evaluate $\mat{V}$}};
 				\draw[->, red, thick] (C) -- (D) node[midway, below] {\small \textcolor{black}{pointwise mult}};
 						
 	\end{tikzpicture}
 \end{center}
 This method gives bad conditioning, but this is not a problem here as we consider integer matrices. 
-\subsection{Discrete Fourier Transform}
-If we take the points as the $n$ complex roots of 1, i.e. $x_0 = e^{2\pi i/n}$ and $x_j = e^{2\pi ij/n}$, then we get a Discrete Fourier Transform matrix. Defining $\omega_n = x_0$,
+\section{Discrete Fourier Transform}
+From the previous section, if we take the points as the $n$ complex roots of 1, i.e. $x_0 = e^{2\pi i/n}$ and $x_j = e^{2\pi ij/n}$, then we get a Discrete Fourier Transform matrix. Defining $\omega_n = x_0$,
 \begin{equation}
-	V = \begin{bmatrix}
+	\mat{V} = \begin{bmatrix}
 			1 & 1 & 1 & 1 \\
 			\vdots & \omega_n & \dots & \omega_n^{n-1}\\
 			\vdots & \ddots & \omega_n^{(i-1)(j-1)} & \vdots \\
@@ -242,9 +242,134 @@ If we take the points as the $n$ complex roots of 1, i.e. $x_0 = e^{2\pi i/n}$ a
 \end{equation}
 This gives us 
 \begin{equation}
-	V^{-1} = \frac{1}{n} \begin{bmatrix}
+	\mat{V}^{-1} = \frac{1}{n} \begin{bmatrix}
 		\omega_n^{-(i-1)(j-1)}
 	\end{bmatrix}
 \end{equation}
-and so $V = \frac{1}{n}V^*$.
+and so $\mat{V} = \frac{1}{n}\mat{V}^*$. We conclude on 
+\begin{equation}
+	DFT(\textbf{x}) = \mat{V}\textbf{x}
+\end{equation}
+\subsection{Fast Fourier Transform}
+The Fast Fourier Transform (FFT) algorithm uses the divide-and-conquer approach from above to compute the Fourier transform of a vector $x$. The exact algorithm is the following.\\
+Assume that $n=2^k$, $k\ge 1$, $\textbf{x}=(x_0,\dots, x_{n-1})$ and $(y_0,\dots,y_{n-1}) = \mat{V}_n \textbf{x}$. The explicit formula to calculate $y_i$, $i=0,\dots,n/2-1$ is 
+\begin{equation}
+	\begin{aligned}
+		y_i &= \sum_{j=0}^{n-1} x_j \omega_n^{ji} = \sum_{j=0}^{n/2-1}x_{2j}\omega_{n}^{2ji} + \sum_{j=0}^{n/2-1} x_{2j+1}\omega_n^{(2j+1)i} \\
+		&= \sum_{j=0}^{n/2-1}x_{2j}\omega_{n/2}^{ji} + \omega^i_n\sum_{j=0}^{n/2-1} x_{2j+1}\omega_{n/2}^{ji}
+	\end{aligned}
+\end{equation}
+And in matrix form:
+\begin{equation}
+	\begin{pmatrix}
+		y_0 \\ y_1 \\ \vdots \\ y_{n/2-1}
+		\end{pmatrix} = \mat{V}_{n/2} \begin{pmatrix}
+			x_0\\x_2 \\ \vdots \\ x_{n-2}
+		\end{pmatrix} + \begin{pmatrix}
+			\omega_n^0 && \\ & \ddots & \\ & & \omega_n^{n/2-1}
+	\end{pmatrix} \mat{V}_{n/2} \begin{pmatrix}
+		x_1\\x_3\\\vdots \\x_{n-1}
+	\end{pmatrix}
+\end{equation}
+And for the next half of $y$, we have a similar expression:
+\begin{equation}
+	\begin{aligned}
+		y_{i+n/2} &= \sum_{j=0}^{n/2-1} x_{2j}\omega_{n}^{2ji}\left(\omega_{n/2}^{n/2}\right)^j + \omega_n^{i+n/2}\sum_{j=0}^{n/2-1} x_{2j+1}\omega_n^{ji}\left(\omega_{n/2}^{n/2}\right)^j \\
+		&= \sum_{j=0}^{n/2-1}x_{2j}\omega_{n/2}^{ji} + (-1)\cdot \omega^i_n\sum_{j=0}^{n/2-1} x_{2j+1}\omega_{n/2}^{ji}
+	\end{aligned}
+\end{equation}
+And, once again, in matrix form:
+\begin{equation}
+	\begin{pmatrix}
+		y_{n/2} \\ y_{n/2+1} \\ \vdots \\ y_{n-1}
+		\end{pmatrix} = \mat{V}_{n/2} \begin{pmatrix}
+			x_0\\x_2 \\ \vdots \\ x_{n-2}
+		\end{pmatrix} - \begin{pmatrix}
+			\omega_n^0 && \\ & \ddots & \\ & & \omega_n^{n/2-1}
+	\end{pmatrix} \mat{V}_{n/2} \begin{pmatrix}
+		x_1\\x_3\\\vdots \\x_{n-1}
+	\end{pmatrix}
+\end{equation}
+Let us define three notations: 
+\begin{equation}
+	\begin{aligned}
+		\textbf{x}^{[0]} &= (x_0,\dots, x_{n/2-1})\\
+		\textbf{x}^{[1]} &= (x_{n/2},\dots, x_{n})\\
+		\mat{T}_n = \begin{pmatrix}
+			\omega_n^0 & & \\ & \ddots & \\ & & \omega_n^{n/2-1}
+		\end{pmatrix}
+	\end{aligned}
+\end{equation}
+Then,
+\begin{equation}
+	\mat{DFT}(\textbf{x}) = \begin{pmatrix}
+		\mat{DFT}(\textbf{x}^{[0]} + \mat{T}_n \mat{DFT}(\textbf{x}^{[1]}))\\
+		\mat{DFT}(\textbf{x}^{[0]} - \mat{T}_n \mat{DFT}(\textbf{x}^{[1]}))
+	\end{pmatrix}
+\end{equation}
+The time complexity of this algorithm is $\Theta(n\log(n))$. 
+\begin{itemize}
+	\item [$\rightarrow$] Note: there exists other algorithm to compute the FFT, such as the non power-of-two $n$ alorithm.
+\end{itemize}
+\section{Matrix multiplication}
+Given $A,B\in \Z^{n\times n }$, we want to compute $C = A\cdot B$. The basic algorithm is in $\Theta(n^3)$, but we want a better one. 
+\subsection{Straßen algorithm}
+Let us divide the matrices in blocks:
+\begin{equation}
+	A = \begin{pmatrix}
+		A_{11} & A_{12} \\ A_{21} & A_{22}
+	\end{pmatrix} \qquad \qquad B = \begin{pmatrix}
+		B_{11} & B_{12}\\ B_{21} & B_{22}
+	\end{pmatrix} \qquad \qquad C = \begin{pmatrix}
+		C_{11} & C_{12} \\ C_{21} & C_{22}
+	\end{pmatrix}
+\end{equation}
+The Straßen algorithm uses the same idea as in section \autoref{sec:int_mult}: we define 7 block matrices to reduce the number of products done.
+\begin{equation}
+	\begin{cases}
+		M_1 = (A_{11} + A_{22})(B_{11} + B_{22})\\
+		M_2 = (A_{21} + A_{22})B_{11}\\
+		M_3 = A_{11}(B_{12} - B_{22})\\
+		M_4 = A_{22}(B_{21}-B_{12})\\
+		M_5 = (A_{11} + A_{12})B_{22}\\
+		M_6 = (A_{21} - A_{11})(B_{11}+B_{12})\\
+		M_7 = (A_{12} - A_{22})(B_{21} + B_{22})
+	\end{cases}
+	\Longrightarrow C = \begin{pmatrix}
+		M_1 + M_4 - M_5 + M_7 & M_3 + M_5\\ M_2+M_4 & M_1-M_2+M_3+M_6
+	\end{pmatrix}
+\end{equation}
+Which has a complexity of $\Theta(n^{\log_2 7}) \approx \Theta(n^{2.81})$. The lower bound for the complexity is $\Omega(n^2)$, as we need to make at least one operation per element of $C$, and the current best algorithm (galactic) is in $\Theta(n^{371339})$. 
+\subsection{Matrix inversion}
+As we can assume intuitively, matrix multiplication and inversion are closely linked. Therefore, the complexity to compute both should be linked too. Let us call $M(n)$ the time complexity of multiplication of matrices of size $n$, and $I(n)$ the time complexity of inversion of a matrix of size $n$. Then,
+\begin{equation}
+	D = \begin{pmatrix}
+		I & A & 0 \\ 0 & I & B \\ 0 & 0 & I
+	\end{pmatrix}\Longrightarrow D^{-1} = \begin{pmatrix}
+		I & -A & AB \\ 0 & I & -B \\ 0 & 0 & I
+	\end{pmatrix}
+\end{equation}
+This means that the complexity of inversion is an upper bound on the complexity of multiplication: $M(n)\le I(3n)\le 3^3I(n) \ \forall n\ge n_0$.\\
+This kind of inequality is called reduction. Given problems $A$ and $B$, if $A$ can be transformed in a problem $B$ of size $f(n)$ in time $T_R(n)$, then 
+\begin{equation}\label{eq:reduction}
+	T_A(n) \le T_R(n) + T_B(f(n))
+\end{equation}
+For example, the problem of finding the median of an array can be transformed into the problem of sorting the array.\\
+\subsection{Matrix inversion upper bound}
+Let us assume that $A=A^T$ and $A\succ 0$.
+\begin{equation}
+	A = \begin{pmatrix}
+		B & C \\ C^T & D
+	\end{pmatrix} \Longrightarrow A^{-1} = \begin{pmatrix}
+		B^{-1} + B^{-1}CS^{-1}C^TB^{-1} & -B^{-1}CS^{-1}\\
+		- S^{-1}C^TB^{-1} & S^{-1}
+	\end{pmatrix}
+\end{equation}
+where $S = D-C^TB^{-1}C$ is the Schur complement of $A$. From \autoref{eq:reduction}, $f(n) = \Theta(M(n))$ in our case, and so we have the following relation between inversion and multiplication:
+\begin{equation}
+	I(n) = \mathcal{O}(M(n))
+\end{equation}
+\begin{itemize}
+	\item [$\rightarrow$] Note: the hypotheses that $A=A^T$ and $A\succ 0$ are not binding. If $A$ is invertible but does not verify those conditions, we can work with $AA^T$ that does, and we find the inverse of $A$ with $A^{-1} = A^T(AA^T)^{-1}$. 
+\end{itemize}
 \end{document}
