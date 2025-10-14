@@ -271,7 +271,12 @@ Given the last equation, we get the recurrence relation:
 First we set up the forward pass, given $s_1 = Dual(f_1(x), \frac{\partial f_1}{\partial x_i })$ (notice the difference with the previous modes ($j \to i$)). Then we compute:
 \begin{enumerate}
   \item Compute $s_2 = f_2(s_1) = Dual(f_2(s_1), \J_2 \frac{\partial f_1}{\partial x_i})$
-  \item The reverse mode computes the local Jacobian $\frac{\partial s_2}{\partial s_1}$ \textcolor{red}{(TODO: PAS COMPRIS)}
+  \item The reverse mode computes the local Jacobian \begin{equation}
+    \frac{\partial s_2}{\partial s_1} = \begin{bmatrix}
+      \J_2 & 0\\
+      \He_{2i} & \J_2
+    \end{bmatrix} % = \frac{\partial ((s_2)_1,(s_2)_2)}{\partial ((s_1)_1,(s_1)_2)}
+  \end{equation} 
 \end{enumerate}
 Then the backward pass, which gives us:
 \begin{equation}
