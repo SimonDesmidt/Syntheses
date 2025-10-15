@@ -290,7 +290,24 @@ Which gives us the solution of recurrence equation:
   r_k = Dual(\frac{\partial f}{\partial s_k}, \frac{\partial^2 f}{\partial s_k \partial x_j})
 \end{equation}
 \subsection{Reverse on reverse}
-\textcolor{red}{(TODO: PAS COMPRIS)}
+First we need to set up the forward pass, so we have $s_2 = f_2(s_1)$, again we need to compute its jacobian $\J_2 = \frac{\partial s_2}{\partial s_1}$. Then we need compute the backward pass with $r_1 = r_2 \J_2$. Then we need to compute again the backward pass, in order to get the second order derivative. Let $\Dot{r}_k$ be the second order reverse tangent for $r_k$, then we have:
+\begin{equation}
+  \begin{aligned}
+    \Dot{r}_2 &= \J_2 \Dot{r}_1  \\
+    \Dot{s}_1 &= (r_2 \partial^2 f_2(s_1))\Dot{r}_1 + \Dot{s}_2 \J_2
+  \end{aligned}
+\end{equation}
+
+So we can get the solution of the recurrence relation with $\Dot{s}_0 = e_i$:
+\begin{equation}
+  \begin{cases}
+    r_k = \J_K \dots \J_{k+1}\\
+    \Dot{r}_k = \J_k \dots \J_{1} e_i\\
+    (r_k \partial^2 f_k) \Dot{r}_{k-1} = r_k (\partial^2 f_k \Dot{r}_{k-1})\\
+    \qquad \qquad \qquad = r_k \He_{ki}\\
+    \Dot{s}_k = \sum_{k=1}^{K} r_k \He_{ki} \J_{k-1} \dots \J_1
+  \end{cases}
+\end{equation}
 
 \chapter{Neural networks}
 \textcolor{red}{TODO link tangent with neural networks}\\
