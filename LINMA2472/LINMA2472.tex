@@ -41,6 +41,7 @@
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\J}{\mathbf{J}}
 \newcommand{\He}{\mathbf{H}}
+\newcommand{\Lo}{\mathcal{L}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
@@ -94,7 +95,7 @@ We thus get:
 \end{equation}
 Based on this, we can define the forward and backward differentiation algorithms.
 \section{Forward differentiation}
-Also called forward mode, this algorithm consists in propagating forward the derivative and the values at the same time. It can be represented by this graph where the blue part represents the values and the green part the derivatives:
+Also called forward mode, this algorithm consists in propagating forward the derivative and the values at the same time. The fact of propagating the values forward is called a \textbf{forward pass}. It can be represented by this graph where the blue part represents the values and the green part the derivatives:
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img/forward_diff.png}
@@ -110,7 +111,7 @@ And it can be computed with the following recurrence relation:
 \end{equation}
 It is simple to implement and very efficient for functions with a small number of input variables. However, it becomes inefficient for functions with a large number of input variables because we need to compute the derivative for each input variable separately. So in practice for neural networks where we have a large number of input variables (weights and biases), we use the backward differentiation.
 \section{Backward differentiation}
-Also called backward mode, this algorithm consists in propagating the derivative backward and the values forward at the same time. It can be represented by this graph where the blue part represents the values and the orange part the derivatives:
+Also called backward mode, this algorithm consists in propagating the derivative backward and the values forward at the same time. The fact of propagating the derivative backward is called a \textbf{backward pass}. It can be represented by this graph where the blue part represents the values and the orange part the derivatives:
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img/backward_diff.png}
@@ -212,6 +213,8 @@ However, the backward mode needs to store all the intermediate values to compute
     \label{fig:bd_mem}
 \end{figure}
 So the forward mode is more memory efficient than the backward mode. However, this factor may be less significant than the number of operations performed (JVP and VJP).
+\section{new part idk}
+
 \section{Second order AD}
 And what happens when we take a look at the second order derivative? Remember that we can compute the Hessian $\nabla^2 f(x)$ like this:
 \begin{equation}
@@ -350,4 +353,40 @@ And the backward pass can be represented like this:\\
     \caption{Neural network backward pass}
     \label{fig:nn_bd}
 \end{figure}
+\section{Autoregressive models}
+An Autoregressive model wants to predict the next values in a sequence based on its previous values. Given a sequence of $n_{cxt}$ (context) past vectors $x_{-1}, x_{-2}, \ldots, x_{-n_{cxt}}$, the model aims to predict the next vector $x_0$ and maybe more $x_1$. Example, we want to predict $x_0$ and $x_1$ based on the past:
+\begin{equation}
+  \begin{aligned}
+    p(x_0, x_1 | x_{-1}, \ldots, x_{-n_{cxt}}) &= p(x_0 | x_{-1}, \ldots, x_{-n_{cxt}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{cxt} + 1}, x_{-n_{cxt}}) \\
+    &\approx p(x_0 | x_{-1}, \ldots, x_{-n_{cxt}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{cxt} + 1})
+  \end{aligned} 
+\end{equation}
+So the models aims to predict the probability distribution of the next vector $x_0$ with $\hat{p}(x_0 | X)$ with $X$ that concatenates all the context vectors. And then we use the cross-entropy to measure how well the predicted distribution $\hat{p}$ matches the true distribution $p$:
+\begin{equation}
+  \Lo(X) = - \sum_{x_0} p(x_0 | X) \log(\hat{p}(x_0 | X))
+\end{equation}
+\section{Tokenization}
+How can we use this autoregressive model for LLM (Large Language Models) for example ? Consider that we have $n_{cxt}$ characters of context and we want to predict the next characters, this means that we would have a one-hot encoding in $\R^{26}$, which means $n_{voc} = 26$. This means that $n_{cxt}$ should be a large number, but this is annoying because transormers have a quadratic complexity in $n_{cxt}$.\\ 
+Another idea could be to turn each word into a one-hot encoding, but the vocabulary size is often very large (+200k words), with this we could have a relative low $n_{ctx}$, but $n_{voc}$ would be to big.\\
+An intermediate solution is to use byte pair encoding algorithm which greedily merges the most frequent pairs of characters into new tokens.\\ 
+Example: consider the word "abracadabra", we see that we have two frequent pairs "ab" and "ra", so we can merge them into new tokens $X$ and $Y$ respectively:
+\begin{equation}
+  \text{abracadabra} \rightarrow \text{XYcadXY}
+\end{equation}
+then we can repeat the process until we reach the desired vocabulary size.\\ The next iteration could give:
+\begin{equation}
+  \text{XYcadXY} \rightarrow \text{ZcadZ}
+\end{equation}
+This tokenization method allows us to have good trade-off between the vocabulary size $n_{voc}$ and the context size $n_{cxt}$.\\
+\section{Embedding}
+Consider a vocabulary of size $n_{voc}$, a bigram model and a network with $d$ layers. The model would be:
+\begin{equation}
+  \hat{p}(x_0 | x_{-1}) = \text{softmax}(W_d \tanh(W_{d-1} \tanh(... \tanh(W_1 x_{-1}) ... )))
+\end{equation}
+The matrix $W_1$ has $n_{voc}$ columns and $W_d$ has $n_{voc}$ rows, so when $n_{voc}$ is large, the model becomes very big.\\
+So an idea would be to use an encoder and a decoder to reduce the sizes, it is called an embedding size $d_{emb} \ll n_{voc}$. The encoder ($C \in \R^{d_{emb} \times n_{voc}}$) maps the one-hot encoding of size $n_{voc}$ to a dense vector of size $d_{emb}$ and the decoder ($D \in \R^{n_{voc} \times d_{emb}}$) maps back the dense vector to a vector of size $n_{voc}$. So the model becomes:
+\begin{equation}
+  \hat{p}(x_0 | x_{-1}) = \text{softmax}(D W_d \tanh(... \tanh(W_1 C x_{-1})) ... )
+\end{equation}
+If we choose wisely $d_{emb}$, which means much smaller than $n_{voc}$, then it is faster to compute $W_1(C x_{-1})$ than in the previous model. Moreover we are forcing $W_1C$ to be low-rank which can help to reduce overfitting. \textcolor{red}{TODO: Continue step2 $\to$ embedding}
 \end{document}
