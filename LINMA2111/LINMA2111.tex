@@ -156,7 +156,7 @@ Following a similar reasoning, we can instead divide $a$ and $b$ into 3 sums ins
 Let $a\ge 1$ and $b>1$ be constants and $f(n)$ a positive function, and let $T(n)$ be defined by $T(0)>0$ and $T(n) = aT(\lfloor n/b\rfloor)+f(n)$. Then,
 \begin{itemize}
 	\item If $f(n) = \mathcal{O}(n^{\log_b (a)-\epsilon})$ for some $\epsilon>0$, then $T(n) = \Theta(n^{\log_b(a)})$;
-	\item If $f(n) = \Theta(n^{\log_b(a)})$, then, $T(n) = \Theta(b^{\log_b(a)}\log(n))$;
+	\item If $f(n) = \Theta(n^{\log_b(a)})$, then, $T(n) = \Theta(n^{\log_b(a)}\log(n))$;
 	\item If $f(n) = \Omega(n^{\log_b(a)+\epsilon})$ for some $\epsilon>0$ and if, for some $c>1$ and $n_0$ such that $af(\lfloor n/b\rfloor)\le cf(n)$ for all $n\ge n_0$, then $T(n)=\Theta(f(n))$;
 \end{itemize}
 \subsection{Proof of the master theorem}
