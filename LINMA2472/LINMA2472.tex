@@ -381,12 +381,29 @@ This tokenization method allows us to have good trade-off between the vocabulary
 \section{Embedding}
 Consider a vocabulary of size $n_{voc}$, a bigram model and a network with $d$ layers. The model would be:
 \begin{equation}
-  \hat{p}(x_0 | x_{-1}) = \text{softmax}(W_d \tanh(W_{d-1} \tanh(... \tanh(W_1 x_{-1}) ... )))
+  \hat{p}(x_0 | x_{-1}) = \text{softmax}(W_d \tanh(... \tanh(W_1 x_{-1}) ... ))
 \end{equation}
 The matrix $W_1$ has $n_{voc}$ columns and $W_d$ has $n_{voc}$ rows, so when $n_{voc}$ is large, the model becomes very big.\\
 So an idea would be to use an encoder and a decoder to reduce the sizes, it is called an embedding size $d_{emb} \ll n_{voc}$. The encoder ($C \in \R^{d_{emb} \times n_{voc}}$) maps the one-hot encoding of size $n_{voc}$ to a dense vector of size $d_{emb}$ and the decoder ($D \in \R^{n_{voc} \times d_{emb}}$) maps back the dense vector to a vector of size $n_{voc}$. So the model becomes:
 \begin{equation}
-  \hat{p}(x_0 | x_{-1}) = \text{softmax}(D W_d \tanh(... \tanh(W_1 C x_{-1})) ... )
+  \hat{p}(x_0 | x_{-1}) = \text{softmax}(D W_d \tanh(... \tanh(W_1 C x_{-1})... ))
 \end{equation}
-If we choose wisely $d_{emb}$, which means much smaller than $n_{voc}$, then it is faster to compute $W_1(C x_{-1})$ than in the previous model. Moreover we are forcing $W_1C$ to be low-rank which can help to reduce overfitting. \textcolor{red}{TODO: Continue step2 $\to$ embedding}
+If we choose wisely $d_{emb}$, which means much smaller than $n_{voc}$, then it is faster to compute $W_1(C x_{-1})$ than in the previous model. Moreover we are forcing $W_1C$ to be low-rank which can help to reduce overfitting but reduce the expressivness (capacity to capture a range of possible relation between input and output) of the model. It is useful to share the embedding between different input and output when $n_{ctx} > 1$, we also found that forcing $D = C^T$ appears to work well in practice.\\
+\subsection{Shared embedding}
+Let's investigate the case where we have $n_{cxt} > 1$. When $n_{cxt} > 1$, the encoder C is shared by all tokens, so we get this model:
+\begin{equation}
+  \hat{p}(x_0 | x_{-1}, \ldots, x_{-n_{cxt}}) = \text{softmax}(D W_d \tanh(... \tanh(W_1 \begin{bmatrix} C x_{-1} \\ \vdots \\ C x_{-n_{cxt}} \end{bmatrix}) ... ))
+\end{equation}
+We can note that now $W_1$ has $n_{cxt}d_{emb}$ columns. Assuming $d_{emb} \ll n_{voc}$ and $n_{cxt} \gg 1$, this is much smaller than the $n_{ctx}n_{voc}$ that we had before the embedding. The number of rows of $W_2$ is not affected by the embedding so it remains $n_{voc}$.\\
+We could represent this model like this:\\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/shared_embedding.png}
+    \caption{Neural network with shared embedding}
+    \label{fig:shared_embedding}
+\end{figure}
+\section{Recurrent neural networks (RNN)}
+\textcolor{red}{TODO}
+\section{Attention head}
+First we need to define a numerical dictionary. Consider keys $k_i \in \R^{d_k}$, values $v_i \in \R^{d_v}$. Given a query $q \in \R^{d_k}$, we want to retrieve the value $v_i$ corresponding to the key $k_i$ that is the most similar to the query $q$. To do this, we can use the dot-product.
 \end{document}
