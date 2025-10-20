@@ -405,5 +405,9 @@ We could represent this model like this:\\
 \section{Recurrent neural networks (RNN)}
 \textcolor{red}{TODO}
 \section{Attention head}
-First we need to define a numerical dictionary. Consider keys $k_i \in \R^{d_k}$, values $v_i \in \R^{d_v}$. Given a query $q \in \R^{d_k}$, we want to retrieve the value $v_i$ corresponding to the key $k_i$ that is the most similar to the query $q$. To do this, we can use the dot-product.
+First we need to define a numerical dictionary. Consider keys $k_i \in \R^{d_k}$, values $v_i \in \R^{d_v}$. Given a query $q \in \R^{d_k}$, we want to retrieve the value $v_i$ corresponding to the key $k_i$ that is the most similar to the query $q$. To do this, we can use the dot-product. With that definition, we can define the attention head:
+\begin{equation}
+  \text{Attention}(Q,K,V) = \sum_{i=1}^{n_{ctx}} \alpha_i v_i
+\end{equation}
+where $\alpha = \text{softmax}(<q,k_1>, \cdots, <q,k_{n_{ctx}}>)$ is the attention weight for key $k_i$.
 \end{document}
