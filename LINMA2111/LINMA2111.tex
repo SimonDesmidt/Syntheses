@@ -372,4 +372,18 @@ where $S = D-C^TB^{-1}C$ is the Schur complement of $A$. From \autoref{eq:reduct
 \begin{itemize}
 	\item [$\rightarrow$] Note: the hypotheses that $A=A^T$ and $A\succ 0$ are not binding. If $A$ is invertible but does not verify those conditions, we can work with $AA^T$ that does, and we find the inverse of $A$ with $A^{-1} = A^T(AA^T)^{-1}$. 
 \end{itemize}
+\chapter{Dynamic Programming}
+\section{Two approaches}
+There are two approaches for a dynamic programming algorithm: bottom-up and top-down. In the bottom-up approach, we solve the subproblems first, and then use their solutions to solve bigger problems. In the top-down approach, we start from the main problem, and recursively solve the subproblems as needed. \\
+\begin{itemize}
+	\item The main idea of bottom-up is to use memoization, i.e. storing the solutions of subproblems to avoid recomputing them. 
+	\item The main idea of top-down is recursion.
+\end{itemize}
+Dynamic programming is used to improve time complexity by trading time for space.
+\section{Generating functions}
+Let $\{a_k\}_{k=0}^\infty$ be a sequence. We associate the function $\sum_{k=0}^\infty a_kx^k$ to the sequence, on which we have addition, multiplication, differentiation, etc. \\ Example: 
+\begin{equation}
+	a_k = 1 \ \forall k\in \N \Longrightarrow f(x) = \sum_{k=0}^\infty x^k = \frac{1}{1-x} = x \sum_{k=0}^\infty x^k + 1 = xf(x) + 1
+\end{equation}
+
 \end{document}
