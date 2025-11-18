@@ -410,4 +410,11 @@ First we need to define a numerical dictionary. Consider keys $k_i \in \R^{d_k}$
   \text{Attention}(Q,K,V) = \sum_{i=1}^{n_{ctx}} \alpha_i v_i
 \end{equation}
 where $\alpha = \text{softmax}(<q,k_1>, \cdots, <q,k_{n_{ctx}}>)$ is the attention weight for key $k_i$.
+\chapter{Kernels}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{img/kernels.png}
+	\caption{Illustration of kernels}
+\end{figure}
+A kernel is a function that transforms a dataset into another, typically of higher dimension. This is used to be able to separate more easily the nonlinear features, for example. 
 \end{document}
