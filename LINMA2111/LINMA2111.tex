@@ -42,6 +42,7 @@
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
@@ -385,5 +386,84 @@ Let $\{a_k\}_{k=0}^\infty$ be a sequence. We associate the function $\sum_{k=0}^
 \begin{equation}
 	a_k = 1 \ \forall k\in \N \Longrightarrow f(x) = \sum_{k=0}^\infty x^k = \frac{1}{1-x} = x \sum_{k=0}^\infty x^k + 1 = xf(x) + 1
 \end{equation}
+\textcolor{red}{to be done}
+\chapter{Probabilistic computing}
+\section{Probabilistic analysis and randomized algorithm}
+In probabilistic computing, we need a distribution of the inputs to be able to sample. Based on prior knowledge or assumptions, we can determine the average-case complexity. The goal is for it to be lower than the deterministic algorithm, although it comes at the price of the accuracy of the solution.\\
+
+Let us use as example the hiring problem. We interview $n$ candidates, one at a time, and we need to decide wether we hire the candidate or not right after the interview. Our goal is of course to hire the best candidate. \\
+One approach would be to interview the $n/2$ first candidates and only observe their skills. Then, hire the first candidate that is more skilled than the average (or all) of the first half of candidates.
+\subsection{Indicator Random Variable}
+Given a sample space $S$ and an event $A$, we define the indicator random variable as 
+\begin{equation}
+	X_A = \begin{cases}
+		1 \text{ if $A$ occurs }\\ 0 \text{ otherwise}
+	\end{cases}
+\end{equation}
+where $Pr[X_A = 1] = Pr[A]$. This is useful because $\E[X_A] = Pr[A]$.
+\section{Random Sampling and Applications}
+\subsection{Birthday paradox}
+The birthday paradox is not stricly speaking a paradox, but is called that way because it goes against the first intuition. What is the number of people that must be in a room so that the probability that two people have the same birthday is higher than 1/2, assuming that the birthdays are uniformly distributed? Let $r={1,\dots,n}$ and $Pr[b_i=r] = 1/n$. Then, for two people,
+\begin{equation}
+	Pr[b_i = b_j] = \sum_{r=1}^n Pr[b_i=r \text{ and }b_j = r] = \sum_{r=1}^n Pr[b_i=r]Pr[b_j=r] = \sum_{r=1}^n \frac{1}{n^2} = \frac{1}{n}
+\end{equation}
+And for $k$ people, denoting $B_k$ the event that $k$ people have distinct birthdays, we have 
+\begin{equation}
+	\begin{aligned}
+		Pr[B_k] &= 1\cdot \frac{n-1}{n}\frac{n-2}{n}\dots \frac{n-k+1}{n} = 1\cdot \left(1-\frac{1}{n}\right)\cdot (1-\frac{2}{n})\dots \left(1-\frac{k-1}{n}\right)\\
+		&\le e^{-1/n}e^{-2/n}\dots e^{-(k-1)/n} = e^{-k(k-1)/2n}
+	\end{aligned}
+\end{equation}
+Then, for $Pr[B_k]\ge 1/2$, we get 
+\begin{equation}
+	k(k-1) \ge 2n \ln{2}\Longleftrightarrow k\ge 23
+\end{equation}
+We can also compute the expectation: let $X_{ij}$ be the 1 if the people $i$ and $j$ have the same birthday and 0 otherwise. Then $\E[X_{ij}] = 1/n$ and for $X = \sum_{i=1}^k\sum_{j=i+1}^k X_{ij}$, 
+\begin{equation}
+	\E[X] = \sum_{i=1}^k \sum_{j=i+1}^k X_{ij} = \frac{k(k-1)}{2n}
+\end{equation}
+This means that for at least $\sqrt{2n}+1$ people in a room, we can EXPECT at least one collision. For $n=365$, this is $k=28$ people.
+\subsection{Hash table}
+A hash table is a data structure in which inserting, searching and deleting is done in $\mathcal{O}(1)$ in average. 
+\textcolor{red}{J'ai pas compris les slides 18-19/19 du CM7.}
+\subsection{Randomized algorithm for computing integrals}
+To approximate $\pi$ , we can put $n$ random points on a square of size 1. For each point, we define the associated random variable $X_i=1$ if $x_i^2 + y_i^2\le 1$ and 0 otherwise. If we observe $k$ points in the orthant, we have 
+\begin{equation}
+	\frac{k}{n}\approx \frac{\pi}{4}
+\end{equation}
+And we can even compute the error using the variance of $X_n = \sum_{i=1}^nX_i$:
+\begin{equation}
+	\V(X_n) = \frac{1}{n}\V(X_i) = \frac{1}{n}(\E[X_i^2]-\E[X_i]^2) = \frac{1}{n}(\E[X_i]-\E[X_i]^2) = \frac{1}{n}\frac{\pi}{4}\left(1-\frac{\pi}{4}\right)
+\end{equation}
+This is can be done for any curve, not just the quarter of the circle, and we can thus approximate any integral with this method, with an absolutr error (standard deviation) of order $\mathcal{O}(1/\sqrt{n})$. This bound is valid for any dimension of the integration.
+\subsection{Randomized algorithm for decision problems}
+\subsubsection{Polynomials}
+An example of a decision problem is to determine wether a polynomial is identically 0 or not. In one dimension, it is easy: use $d+1$ points for a polynomial of degree $d$, and if all are $0$, then $P\equiv 0$. In more than one dimension, the number of roots of the polynomial is infinite and we need something more. We can use the Schwartz-Zippel lemma:\\
+
+Given a finite set $S$ of an integral domain, let $P$ be a polynomial of $n$ variables $(x_1,\dots,x_n)$ and of degree at most $d\ge0$. Let us pick a random point $(r_1,\dots,r_n)\in S$ uniformly:
+\begin{equation}
+	Pr[P(r_1,\dots,r_n)=0] \le \frac{d}{|S|}
+\end{equation} 
+We can prove it by induction:
+\begin{equation}
+	P(x_1,\dots,x_n) = \sum_{i=0}^d x_1^iP_i(x_2,\dots,x_n)
+\end{equation}
+for some polynomials $P_i$ of degree at most $d-i$ and $n-1$ variables. We can go all the way to polynomials of one single variable and use the fundamental theorem of algebra.\\
+
+From this lemma, the probability to predict correctly from a set of points if a polynomial is identically zero or not is 
+\begin{equation}
+	Pr[correct] = Pr[TRUE\ \& \ P\equiv 0] + Pr[FALSE\ \& \ P\not\equiv 0]
+\end{equation}
+with $Pr[TRUE | P\equiv 0] = 1$ and $Pr[FALSE | P\not \equiv 0] \ge 1-\left(\frac{d}{|S|}\right)^k$. Then,
+\begin{equation}
+	Pr[correct] \ge 1-(d/|S|)^k
+\end{equation}
+\subsubsection{Matrix product}
+Given $A,B,C\in \R^{n\times n}$, we want to check if $AB=C$. Doing the product is costly, so we can take random vectors $x\in \R^n$ and check the products:
+\begin{equation}
+	A(Bx) -Cx\overset{?}{=}0
+\end{equation}
+This is a $n$-variate polynomial of degree 1 and we can use the same method as in the previous section.
+\textcolor{red}{Dunno what to do with slides 13->17 of CM8.}
 
 \end{document}
