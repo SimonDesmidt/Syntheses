@@ -90,8 +90,8 @@ To prove the correctness of an algorithm, we generally use the Hoare triple, i.e
 	&\left\{IS;\ x=x_0;\ x\text{ is sorted and is a permutation of }x_0\right\}
 \end{aligned}
 \end{equation}
-where IS is the insertion sort algorithm, and $x$ is the sorted array. From now on, we will call "sorting" a sorted permutation. \\
-In practice, to prove the correctness of an algorithm, we define the invariant and the base case, and do an induction step show that the invariant is preserved.\\
+where IS is the insertion sort algorithm, and $x$ is the sorted array. \\
+In practice, to prove the correctness of an algorithm, we define the invariant and the base case, and do an induction step show that the invariant is preserved. The proof is done is my notes at page 1.\\
 \section{Definition of complexity}
 For some functions $f,g:\mathbb{N} \to \R^+$, 
 \begin{equation}
@@ -114,7 +114,88 @@ We define the average case complexity as an expectation of the time taken by the
 where $D$ is the distribution of the input.\\
 \section{Complexity of sorting algorithms}
 No sorting algorithm can be faster than $\Omega(n \log(n))$. This can be proven through the complexity of comparison-based algorithms. 
-\chapter{Divide-and-conquer algorithms}
+\section{Sorting algorithms}
+\subsection{Selection Sort}
+This algorithm is the naive approach in complexity $\mathcal{O}(n^2)$. It goes as follows:
+\begin{algorithm}[H]
+	\caption{Selection sort algorithm}\label{algo:selection-sort}
+	\begin{algorithmic}[1]
+	\For{$i$   from   1   to   $n-1$}
+		\State Select the smallest element in the subarray from index i to n;
+		\State Swap it with element at index i;
+	\EndFor
+	\end{algorithmic}
+\end{algorithm}
+The invariant of this algorithm is that the elements 1 to $i-1$ are sorted.
+\subsection{Insertion Sort}
+The idea of this algorithm is to shift the elements to the left until they are well placed. This also has a complexity $\mathcal{O}(n^2)$, although the best case is in $\mathcal{O}(n)$. 
+\begin{algorithm}[H]
+	\caption{Insertion sort algorithm}\label{algo:insertion-sort}
+	\begin{algorithmic}[1]
+		\For{$i$   from 2 to $n$}
+			\State shift element $i$ to the left by successive swaps until it is well placed;
+		\EndFor 
+	\end{algorithmic}
+\end{algorithm}
+\subsection{Quick Sort}
+The quick sort algorithm is based on divide and conquer methods (see chapter \ref{sec:d&c}): it splits and solves smaller sorting problems, and recombines the outputs at the end into a sorted instance.
+\begin{algorithm}[H]
+	\caption{Quick Sort algorithm}
+	\begin{algorithmic}[1]
+		\State pivot = T[1];
+		\State T\_low = [T[i] \: : \: T[i] < pivot and i >1];
+		\State T\_high = [T[i] \: : \: T[i] > pivot and i >1];
+		\State quicksort(T\_low);
+		\State quicksort(T\_high);
+		\State T = [T\_low; pivot; T\_high];
+	\end{algorithmic}
+\end{algorithm}
+The worst-case complexity is still $\mathcal{O}(n^2)$. However, here, the average-case complexity is lower: $\mathcal{O}(n\log (n))$. \\
+The randomized version of the algorithm consists in shuffling before applying the classical quick sort, in order to change the pivot value. As this is a random algorithm, the worst-case complexity corresponds to the expected complexity, i.e. $\mathcal{O}(n\log(n))$. 
+\subsection{Merge Sort}
+The merge sort algorithm is also based on divide-and-conquer, and its complexity is also $\mathcal{O}(n^2)$. 
+\begin{algorithm}[H]
+	\caption{Merge Sort algorithm}\label{algo:merge-sort}
+	\begin{algorithmic}[1]
+		\State T\_left = [T[i] such that i <= n/2]
+		\State T\_right = [T[i] such that i > n/2]
+		\State mergesort(T\_left)
+		\State mergesort(T\_right)
+		\State T = merge(T\_left, T\_right)
+	\end{algorithmic}
+\end{algorithm}
+The recurrence equation for the complexity is 
+\begin{equation}
+	t_n = 2t_{\lceil n/2\rceil} + \Theta(n) \Longrightarrow t(n) = \Theta(n\log(n))
+\end{equation}
+The disadvatange of quick sort that this algorithm does not have is the randomness, as it is complex to simulate. However, the constant in the complexity order is higher than for the quick sort, and the memory usage can be higher too. 
+\section{Decision tree}
+A decision tree focuses on strategies and outcomes. It captures the main operations and the leaves are the possible outcomes ($\mathcal{O}(n!)$ in sorting problems, for $n$ the size of the data). This helps us compute the complexity of a sorting algorithm: the number of steps is the depth $S$ of the tree. Then, we have 
+\begin{equation}
+	2^S \ge n! \Longrightarrow S = \mathcal{O}(log(n!))
+\end{equation}
+This is equivalent to $\mathcal{O}(n\log(n))$ : 
+\begin{equation}
+	S = \log(n!) = \sum_{i=1}^n \log(i) \le \int_1^n log(x)dx 
+\end{equation}
+and we know that $S \ge \int_1^{n+1} \log(x)dx$\footnote{Why?}. Then, 
+\begin{equation}
+	\begin{aligned}
+		\left[x\log(x)-x\right]_1^n \le S&\le \left[x\log(x)-x\right]_1^{n+1}\\
+		S &= \mathcal{O}(n\log (n))
+	\end{aligned}
+\end{equation}
+\subsection{Shannon coding theorem}
+Let $\mathcal{S}=\{1,\dots,N\}$ and $P$ a random variable over $\mathcal{S}$ such that $Pr[P=i] = p_i$. Let $f:\mathcal{S}\to \{0,1\}^*$ maps a number to its binary representation, under the constraint that no number is a prefix of another one. Then,
+\begin{equation}
+	\sum_{i=1}^N p_i |f(i)| \ge H(P) = -\sum_{i=1}^N p_i \log_2 (p_i)
+\end{equation}
+where $H(P)$ is called the entropy of the probability distribution $P$. This theorem states that the average length of the prefix of the encoding of $N$ elements must be at least $\log(N)$ characters long.  
+\subsection{Yao's minimax principle}
+Consider a probability distribution over instances of a given size of a given problem. There, there exists a deterministic algorithm solving the problem for thoses instances, whose average-case complexity for the given distribution is lower than the worst-case expected complexity of any random algorithm solving the same problem. \\
+This means that a random algorithm cannot be better than a deterministic algorithm in every case of a problem. 
+\subsection{What about the part on thermodynamics in CM2?}
+\chapter{Divide-and-conquer algorithms}\label{sec:d&c}
 The divide-and-conquer method consists in three steps:
 \begin{enumerate}
 	\item Divide: create smaller subproblems;
@@ -142,7 +223,9 @@ In that case, we find a recurrence relation for the computation time:
 \begin{equation}
 	T(n) = 4T(n/2) + \Theta(n)
 \end{equation}
-We introduce the Master theorem to solve this equation, see section below. It gives a complexity of $T(n) = \Theta(n^{\log_2(4)}) = \Theta(n^2)$.\\
+The factor $4$ comes from the fact that we need $4$ products, and the $\Theta(n)$ is the complexity of the sum of the products. \\
+
+We introduce the Master theorem to solve this equation, see section \ref{sec:master}. It gives a complexity of $T(n) = \Theta(n^{\log_2(4)}) = \Theta(n^2)$.\\
 To reduce the complexity, we can change the value of the parameter $a$ from 4 to 3 by calculating only 3 products:
 \begin{equation}
 	\begin{cases}
@@ -153,7 +236,7 @@ To reduce the complexity, we can change the value of the parameter $a$ from 4 to
 \end{equation}
 This reduces the complexity to $\Theta(n^{1.58})$. \\
 Following a similar reasoning, we can instead divide $a$ and $b$ into 3 sums instead of 2, and get 5 multiplications. This gives a complexity of $\Theta(n^{\log_3(5)}) = \Theta(n^{1.46})$. Dividing in 4, 5, etc, we converge to a complexity of $\Theta(n)$ and this is the optimal complexity for the multiplication of two numbers of $n$ digits. The problem is that the constant in front of the $n$ starts to grow as we divide into more and more limbs, and so a bigger exponent can be enough for most arrays\footnote{We call galactical algorithm an algorithm that is asymptotically good but the constant grows so large that it is only useful for huge arrays (e.g. $\sim10^{80}$).}.
-\subsection{Master Theorem} 
+\subsection{Master Theorem} \label{sec:master}
 Let $a\ge 1$ and $b>1$ be constants and $f(n)$ a positive function, and let $T(n)$ be defined by $T(0)>0$ and $T(n) = aT(\lfloor n/b\rfloor)+f(n)$. Then,
 \begin{itemize}
 	\item If $f(n) = \mathcal{O}(n^{\log_b (a)-\epsilon})$ for some $\epsilon>0$, then $T(n) = \Theta(n^{\log_b(a)})$;
@@ -381,13 +464,100 @@ There are two approaches for a dynamic programming algorithm: bottom-up and top-
 	\item The main idea of top-down is recursion.
 \end{itemize}
 Dynamic programming is used to improve time complexity by trading time for space.
+\section{Examples}
+\subsection{Rod cutting }
+The problem of rod cutting consists in wanting to cut a beam of length $n$, given commands of clients.Finding the optimal solution can be done by computing a solution on sub-beams and merging them. 
+\begin{algorithm}[H]
+\caption{Rod Cutting Algorithm}
+\begin{algorithmic}[1]
+\Function{CutRod}{$p, n$}
+    \If{$n = 0$}
+        \State \Return $0$
+    \EndIf
+    \State $q \gets -\infty$
+    \For{$i = 1$ to $n$}
+        \State $q \gets \max\{q,\, p_i + \Call{CutRod}{p, n-i}\}$
+    \EndFor
+    \State \Return $q$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+The complexity of this algorithm is given by a recurrence relation:
+\begin{equation}
+	T(n) = 1 + \sum_{j=0}^{n-1}T(j) = 1 + T(n-1) + \sum_{j=0}^{n-2}T(j) = 2T(n-1) \Longrightarrow T(n) = \mathcal{O}(e^n)
+\end{equation}
+This basic algorithm has a very bad complexity, but memoization can improve it.
+\begin{algorithm}[H]
+	\caption{Memoized rod cutting algorithm}
+	\begin{algorithmic}[1]
+		\Function{CutRod\_Memoized}{$p,n$}
+		\State $r[0:n] = -\infty $
+		\Function{CRM\_Aux}{$p,n,r$}
+		\If{$r[n]\ge 0$}
+		\State \Return r
+		\EndIf 
+		\If {$n=0$}
+		\State \Return 0
+		\EndIf 
+		\State $q=-\infty$
+		\For{i=1 to n}
+		\State $q=\max\{q, p_i + CRM\_Aux(p,n-i,r)\}$
+		\EndFor
+		\State $r[n]=q$
+		\Return r
+		\EndFunction\\
+		\qquad \Return CRM\_Aux(p,n,r)
+		\EndFunction 
+	\end{algorithmic}
+\end{algorithm}
+Finally, another algorithm exists, using a bottom-up approach in dynamic programming. It has a complexity $\Theta(n^2)$.
+\begin{algorithm}[H]
+	\caption{Bottom-up efficient rod cutting algorithm}
+	\begin{algorithmic}[1]
+		\Function{Bottom-up-CR}{$p,n$}
+		\State $r[0:n]$
+		\State $r[0] = 0$
+		\For {j=1 to n}
+		\State $q=-\infty$
+		\For{i=1 to j}
+		\State $q=\max\{q,p_i+r_{j-1}\}$
+		\EndFor 
+		\State $r[j] = q$
+		\EndFor
+
+		\Return $r[n]$
+		\EndFunction 
+	\end{algorithmic}
+\end{algorithm}
+\subsection{Matrix chain multiplication}
+This problems consists in doing the multiplication of matrices $A_1A_2\dots A_n$ with dimensions $p_0, p_1,\dots, p_n$. The total number of operations depends heavily on the order of the multiplication. The idea for the algorithm is to split the chain into smaller chains until we get to a product of two matrices. The splitting happens at the index $i$ that minimizes the total number of operations, knowing the cost of computing a subchain:
+\begin{equation}
+	Algo(p) = \min_{1\le i \le n-1} \{ Algo(p[0:i]) + Algo(p[i+1:n]) + p_0p_ip_n\}
+\end{equation}
+Let us define $m[i,j]$ the optimal cost of the product $A_i\dots A_j$. Our goal is to compute $m[1,n]$, with the initial condition $m[i,i] = 0$ for all $i$. The recurrence relation is 
+\begin{equation}
+	m[i,j] = \min_{i\le k \le j} \{m[i,k] + m[k+1,j] + p_ip_kp_j\} \qquad \forall 1\le i\le j<n	
+\end{equation}
+This gives a complexity $\Theta(n^2)$, as we need to compute the entries of a triangular matrix $n\times n$. 
 \section{Generating functions}
 Let $\{a_k\}_{k=0}^\infty$ be a sequence. We associate the function $\sum_{k=0}^\infty a_kx^k$ to the sequence, on which we have addition, multiplication, differentiation, etc. \\ Example: 
 \begin{equation}
 	a_k = 1 \ \forall k\in \N \Longrightarrow f(x) = \sum_{k=0}^\infty x^k = \frac{1}{1-x} = x \sum_{k=0}^\infty x^k + 1 = xf(x) + 1
 \end{equation}
-\textcolor{red}{to be done}
-\chapter{Probabilistic computing}
+Another example is the Fibonacci sequence:
+\begin{equation}
+	f_{n+2} = f_{n+1} + f_n \qquad f_0 = 0\qquad f_1 = 1
+\end{equation}
+From the recurrence equation, we can get the generative function:
+\begin{equation}
+	\begin{aligned}
+		f(x) &= f_0 x^0 + f_1 x^1 + \sum_{k\ge 2} f_k x^k = f_0 + f_1 x + \sum_{k\ge 0} f_{k+2}x^{k+2}\\
+		&= f_0 + f_1 x + \sum_{k\ge0 } f_{k+1} x^k + \sum_{k\ge 0}f_k x^k\\
+		&= f_0 + f_1 x + x(f(x)-f_0) + x^2 f(x)\\
+		&= \frac{f_0 + (f_1-f_0)x}{1-x-x^2}
+	\end{aligned}
+\end{equation}
+\chapter{Randomized Algorithms}
 \section{Probabilistic analysis and randomized algorithm}
 In probabilistic computing, we need a distribution of the inputs to be able to sample. Based on prior knowledge or assumptions, we can determine the average-case complexity. The goal is for it to be lower than the deterministic algorithm, although it comes at the price of the accuracy of the solution.\\
 
@@ -465,5 +635,35 @@ Given $A,B,C\in \R^{n\times n}$, we want to check if $AB=C$. Doing the product i
 \end{equation}
 This is a $n$-variate polynomial of degree 1 and we can use the same method as in the previous section.
 \textcolor{red}{Dunno what to do with slides 13->17 of CM8.}
+\section{Las Vegas and Monte Carlo}
+An algorithm is said to be Las Vegas when the output is correct, but the time taken to get to this solution is random. On the other hand, an algorithm is said to be Monte Carlo when the output is correct with some probability, or we only get a bound on the real value. 
+\section{Hash tables}
+\textcolor{red}{TODO}
+\section{Randomness generation}
+Let us take functions $f,g:X\to Y$ and an element $s\in X$. We define the sequence
+\begin{equation}
+	\begin{cases}
+		x_ 0 = s\\
+		x_{i+1} = f(x_i)\\
+		y_i = g(x_i)
+	\end{cases}
+\end{equation}
+The output of this pseudo-random generator is the sequence (usual bits) $y= (y_0,\dots,y_n)$. One famous example of pseudo-random generator is Blum-Blum-Shub (BBS): \\
+select random $\kappa$-bit prime integers $p,q$ such that $p=q=3 \mod 4$, and let $N=pq$. The PRG is 
+\begin{equation}
+	\begin{cases}
+		x_0 = s \in \Z_N^*\\
+		f_N(x) = x^2 \mod N \\
+		g(x) = x \mod 2
+	\end{cases}
+\end{equation}
+\section{Derandomization}
+Derandomization transforms a randomized algorithm into a deterministic algorithm, or at least into an algorithm using less randomness, without increasing time and memory costs too much. 
+\subsection{Techniques}
+\begin{itemize}
+	\item Use a PRG: cheap, the randomness goes in the time complexity, and some randomness still exists;
+	\item Try all possible values: trades $n$ random bits for $2^n$ time, can remove all randomness, but can have a polynomial time slowdown.
+\end{itemize}
+\chapter{Computability}
 
 \end{document}
