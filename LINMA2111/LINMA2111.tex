@@ -43,6 +43,7 @@
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\V}{\mathbb{V}}
+\newcommand{\Q}{\mathbb{Q}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
@@ -665,5 +666,261 @@ Derandomization transforms a randomized algorithm into a deterministic algorithm
 	\item Try all possible values: trades $n$ random bits for $2^n$ time, can remove all randomness, but can have a polynomial time slowdown.
 \end{itemize}
 \chapter{Computability}
+\section{Turing machine}
+A Turing machine is made of the following elements:
+\begin{itemize}
+	\item An infinite tape serving as unlimited memory;
+	\item A head that reads and write the symbols and moves around the tape;
+	\item A specific blanc symbol \textvisiblespace or $\epsilon$;
+	\item The number of states must be finite.
+\end{itemize}
+Initially, the tape contains only the input string and is blank elsewhere. Storing information can be done by writing on the tape with the head, and reading information can be done by moving the head over the information. The possible outputs are only \textit{accept} and \textit{reject}, obtained when entering the corresponding state $q_{accept}$ or $q_{reject}$. 
+\subsection{Formal definition}
+\begin{definition}
+	A Turing machine is a tuple $(Q, \Sigma, \Gamma, \delta, q_0,q_{accept},q_{reject})$ where $Q, \Sigma, \Gamma$ are finite sets and 
+	\begin{itemize}
+		\item $Q$ is the set of states;
+		\item $\Sigma$ is the input alphabet (not containing the blank symbol);
+		\item $\Gamma$ is the tape alphabet, where \textvisiblespace$\in \Gamma$ and $\Sigma \subseteq \Gamma$;
+		\item $\delta:Q\times \Gamma \to Q\times \Gamma \times \{L,R\}$ is the transition function\footnote{We can add a "stay put" move $S$: $\{L,R,S\}$.};
+		\item $q_0\in Q$ is the initial state;
+		\item $q_{accept}\in Q$ is the accept state and $q_{reject}\in Q$ is the reject state and is different from the accept state. 
+	\end{itemize}
+	For $a,b\in \Gamma$, and $q,r\in Q$, $\delta(q,a)=(r,b,L)$ means that if the machine is in state $q$ and the head is over a tape square containing a symbol $a$, it replaces $a$ with $b$, the state becomes $r$, and the head moves one step to the left. 
+\end{definition}
+\begin{itemize}
+	\item [$\to$] Note: the input of length $n$ is on the $n$ leftmost squares of the tape, and the machine never tries to move its head to the left when it is on the first square.
+\end{itemize}
+\begin{definition}
+	We call the configuration of the Turing Machine the tuple (current state, current tape content, current head location). We write $uqv$ the configuration where the current state is $q$ and the tape content is the string $uv$, and the head location is the first symbol of $v$. \\
+\end{definition}
+A Turing machine $M$ accepts input $w$ if a sequence of configurations $C_1,C_2,\dots,C_k$ exists where 
+\begin{itemize}
+	\item $C_1$ is the start configuration of $M$ on input $w$, i.e. $C_1 = q_0w$;
+	\item each $C_i$ yields $C_{i+1}$;
+	\item $C_k$ is an accepting configuration.
+\end{itemize}
+The collection of string inputs that the machine accepts is called its language, and is denoted $\mathcal{L}(M)$. We say that the language is Turing-recognizable. \\
+\begin{definition}
+	A decider is a Turing machine that finds a finishing state on all inputs. A decider that recognizes some language is said to decide it, and the language is Turing-decidable is some Turing machine decides it.
+\end{definition}
+A decision problem is decidable iff it is computable, i.e. iff there exists an algorithm that can decide this problem. \\
+We say that two machines are equivalent if they recognize the same languages. 
+\subsection{Example}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = .7\textwidth]{img/turing_example.png}
+	\caption{Example of a Turing machine }
+	\label{fig:turing}
+\end{figure}
+The language $A=\{0^{2^n}|n\ge 0\}$ is decidable. Let $M_2 = (Q, \Sigma, \Gamma, \delta, q_1, q_{accept}, q_{reject})$ such that 
+\begin{itemize}
+	\item $Q = \{q_1,\dots,q_5,q_{accept}, q_{reject}\}$ with $q_1$ the initial state;
+	\item $\Sigma=\{0\}$ and $\Gamma = \{0,x,$\textvisiblespace$\}$;
+	\item $\delta$ is the \autoref{fig:turing}.
+\end{itemize}
+Here is the breakdown of the steps:
+\begin{itemize}
+	\item $q_1$: reads the first symbol and if it is $0$, replaces it with \textvisiblespace and moves right to state $q_2$. If it is something else ($x$ or \textvisiblespace), then the input is invalid and reject.
+	\item $q_2$: moves to the right whatever the bit is. If the bit is $0$, then replaces it with $x$ and moves to $q_3$. If it is \textvisiblespace, then there is no more unmarked $0$ and goes to accept.
+	\item $q_3$: If the bit is $0$, then moves to the right and to state $q_4$ and does nothing. If the bit is \textvisiblespace, then goes back to the left and moves to state $q_5$. If the bit is $x$, goes to the right and no change of state. 
+	\item $q_4$: If the bit is 0, then marks it $x$ and goes to the right, back to state $q_3$. If it is $x$, goes to the right with no change of state. If it is \textvisiblespace, goes to the right in a reject configuration.
+	\item $q_5$: if the bit is $0$ or $x$, goes back to the left and no change of state. If the bit is \textvisiblespace, goes to the right and back to state $q_2$. 
+\end{itemize}
+\section{Multitape Turing Machines}
+\begin{definition}
+	A multitape Turing machine is a TM with several tapes, each with its own head. For $k$ tapes, the transition function then becomes 
+\end{definition}
+\begin{equation}
+	\delta : Q\times \Gamma^k\to Q\times \Gamma^k\times \{L,R,S\}^k
+\end{equation}
+Each multitape Turing Machine has an equivalent single-tape Turing machine. 
+\section{Enumerator}
+\begin{definition}
+	An enumerator is a Turing machine that always starts with a blank input on its tape, and that has an attached printer to print strings. Every time it wants to print a string to the list, it sends it to the printer. An enumerator does not have to halt, and may print an infinite list of strings. The language it enumerates is the collection of all strings that is printed out, and it can generate the strings in any order, possibly with repetitions. \\
+\end{definition}
+\begin{thm}
+	A language is Turing recognizable iff some enumerator enumerates it. 
+\end{thm}
+\section{Non deterministic Turing Machine}
+A Turing machine is said to be non deterministic when its transition function is a probability distribution:
+\begin{equation}
+	\delta :Q\times \Gamma \to \mathcal{P}(Q\times \Gamma \times \{L,R\})
+\end{equation}
+\begin{thm}
+	As a non deterministic TM can be represented as a tree, every non deterministic TM has an equivalent deterministic TM that goes through every possible state of the tree. 
+\end{thm}
+\subsection{10th Hilbert's problem}
+"Devise a process according to which it can be determined by a finite number of operation that a given multivariate polynomial has an integer root."\\
 
+For an univariate polynomial, we must check if there exists $a\in \Z$ such that $P(a)=0$. We know also that the roots are in the interval $\left[-n\frac{c_{\max}}{c_1}, n\frac{c_{\max}}{c_1}\right]$. Therefore, there is a finite number of integer values to check, and we can evaluate the polynom $P(x)$ at each of those values. However, for a multivariate polynomial, it is impossible. \\
+The rigorous formulation of the 10th Hilbert problem is to find a decider for $D = \cup_n D_n$ with 
+\begin{equation}
+	D_n = \{P\in \Z[x_1,\dots,x_n] \: |\: \exists a\in \Z^n \: : \: P(a) = 0\}
+\end{equation}
+\section{Universal Turing Machine}
+\begin{definition}
+	
+	A universal Turing machine is a TM that solves the following problem:
+	\begin{itemize}
+		\item Input: a description of the TM (T) and a description of a finite word on an initial tape ($w$);
+		\item Output: $T(w)$, i.e. the finite content of the tape when $T$ stops; and undefined if $T$ never stops.
+	\end{itemize}
+\end{definition}
+\chapter{Decidability}
+\section{Countable sets}
+\begin{itemize}
+	\item Two sets have the same number of elements iff they are in bijective relation;
+	\item A set $S$ is countable if it either is finite or has the same size as $\N$, e.g. $\Z, \Q, \N^d,\dots$; 
+\end{itemize}
+\section{Undecidable language}
+\begin{thm}
+	$A_{TM} = \{\langle M,w\rangle|M\text{ is a TM and }M\text{ accepts } w\}$ (called halting problem) is undecidable.  
+\end{thm}
+This notation is the way to write a universal Turing machine with inputs $\langle M, w\rangle$, $M$ being a Turing machine and $w$ a string. Here is the proof of the theorem, by contradiction:\\
+Let $H$ be a decider for $A_{TM}$. Then
+\begin{equation}
+	H(\langle H,w\rangle) = \begin{cases}
+		\text{accept} & \text{ if } M \text{ accepts }w\\
+		\text{reject} & \text{ if } M \text{ does not accept }w
+	\end{cases}
+\end{equation}
+Build a Turing machine $D$ that, on input $\langle M\rangle$, runs $H$ on $\langle M, \langle M\rangle \rangle$ and halts with $\overline{H(\langle M,w\rangle)}$, i.e. $D$ returns the opposite of $H$:
+\begin{equation}
+	D(\langle M\rangle) = \begin{cases}
+		\text{accept} & \text{ if } M \text{ does not accept } \langle M\rangle\\
+		\text{reject} & \text{ if } M \text{ accepts } \langle M\rangle
+	\end{cases}
+\end{equation}
+But then, $D(\langle D\rangle)$ is a contradiction with itself. \textcolor{red}{Define notation $\langle M\rangle$!}
+\section{Unrecognizable language}
+\begin{thm}
+	A language is decidable iff it is Turing-recognizable and co-Turing-recognizable.
+\end{thm}
+Proof: \\
+\begin{itemize}
+	\item $\Rightarrow$ is trivial;
+	\item $\Leftarrow$
+\end{itemize}
+Let $M_1$ be a recognizer for $A$, and $M_1$ a recognizer for $\overline A$. We build $M$ that runs $M_1$ and $M_2$ in parallel, one step at a time, on input $w$. If $M_1$ accepts, ACCEPT, and if $M_2$ accepts, REJECT. 
+
+Therefore, $\overline{A_{TM}} = \{\langle M, w\rangle|M\text{ is a TM and }M \text{	does not accept }w\}$ is not Turing-recognizable. 
+\chapter{Complexity Theory}
+\section{Definitions}
+\begin{definition}
+	Let $M$ be a deterministic TM that halts on all inputs. The running time, or time complexity, of $M$ is the function $f:\N\to \N$ where $f(n)$ is the maximum number of steps that $M$ uses on any input of length $n$.
+\end{definition}
+\begin{definition}
+	Let $t:\N\to \R^+$ be the time complexit class TIME$(t(n))$, i.e. the collection of languages that are decidable by an $\mathcal{O}(t(n))$ time TM. 
+\end{definition}
+\subsection{Example}
+Let $\{0^k1^k|k\ge 0\}$ be a string composed of $k$ 0 followed by $k$ 1. The goal is to check if the number of 0 is the same as the number of 1. \\
+One method would be to start at the first element. If it is 0, cross it and go right until we find a 1. Then, go left until we find the first 0, and go again. Once we have no more 0 or 1, we check that it is also the case for the other character. If not, return FALSE. The complexity is $\mathcal{O}(k^2)$.\\
+Another method is to cross every other 0 and do the same with the 1. With what is left, do it again (so one every four characters), and so on. At the end, compare if there is one character left in one of the strings. The complexity of this is $O(k\log(k))$. 
+\begin{itemize}
+	\item [$\to$] Note: in the case where a counter variable is available, the overall complexity is not better, as the complexity to increment it is $\mathcal{O}(\log(k))$. 
+\end{itemize}
+\section{Complexity of multitape}
+\begin{thm}	\label{thm:multitape}
+	Let $t(n)\ge n$, as we can reasonably assume that we need to go through the whole input to find the solution. Every $t(n)$ time multitape TM has an equivalent $\mathcal{O}(t^2(n))$ time single-tape TM. 
+\end{thm}
+\section{Complexity of non deterministic TM}
+Let $N$ be a nondeterministic TM that is a decider. The running time of $N$ is the function $f:\mathcal{N}\to \mathcal{N}$ where $f(n)$ is the maximum number of steps that $N$ uses on any branch of its computation on any input of length $n$.
+\begin{thm}
+	Let $t(n)\ge n$. Every $t(n)$ time nondeterministic single-tape TM has an equivalent $2^{\mathcal{O}(t(n))}$ time deterministic single-tape TM. 
+\end{thm}
+This is because the number of nodes is in $\mathcal{O}(b^{f(n)})$, and the number of operations for one node is $\mathcal{O}(n+f(n))$. $b$ is the number of possibilities at each node. This gives a total complexity of
+\begin{equation}
+	\mathcal{O}\left((n+f(n))b^{f(n)}\right) = \mathcal{O}\left(2^{\log_2(b)(\log_b(f(n)) + f(n))}\right) = 2^{\mathcal{O}(f(n))}
+\end{equation}
+The result is the same for a multitape or single-tape TM, as (from \autoref{thm:multitape}):
+\begin{equation}
+	2^{\mathcal{O}(f(n))} \rightarrow \left(2^{\mathcal{O}(f(n))}\right)^2 = 2^{\mathcal{O}(f(n))}
+\end{equation}
+\section{The class P}
+\begin{definition}
+	\textbf{P} is the class of languages that are decidable in polynomial time on a deterministic single-tape TM. 
+	\begin{equation}
+		\textbf{P} = \cup_k TIME(n^k)
+	\end{equation}
+\end{definition}
+\begin{definition}
+	\textbf{coP} is the class of languages such that their complement is in \textbf{P}.
+	\begin{equation}
+		\textbf{coP} = \{L|\overline{L}\in \textbf{P}\}
+	\end{equation}
+\end{definition}
+If $L\subset \textbf{P}(\Gamma^*)$, then $\overline{L} = \textbf{P}(\Gamma^*) \setminus L$, where $L$ is a language, and $\textbf{P}(\Gamma^*)$ is the class $\textbf{P}$ of argument $\Gamma^*$, $\Gamma$ is the alphabet and the star means the set of words of this alphabet. \\
+\begin{itemize}
+	\item [$\to$] Note: any problem in \textbf{coP} is in \textbf{P}, as it is only the inverse problem.
+\end{itemize}
+\begin{equation*}
+	\Longrightarrow \textbf{P} = \textbf{coP}
+\end{equation*}
+\section{The class NP}
+\begin{definition}
+	A verifier for a language $L$ is an algorithm $V$ where 
+	\begin{equation}
+		L = \{w|V\text{ accepts }\langle w,c\rangle\text{ for some string }c\}
+	\end{equation}
+\end{definition}
+\begin{definition}
+	The class \textbf{NP} is the class of languages that have a polynomial time verifier. 
+\end{definition}
+\begin{thm}
+	A language is in \textbf{NP} iff it is decided by some nondeterministic polynomial time TM. 
+\end{thm}
+We write $NTIME(t(n))$ the set of languages that are decided by a $\mathcal{O}(t(n))$ time nondeterministic TM, and so 
+\begin{equation}
+	\textbf{NP} = \cup_k NTIME(n^k)
+\end{equation}
+\begin{thm}
+	\begin{equation}
+		\textbf{P}\subset \textbf{NP}
+	\end{equation}
+\end{thm}
+This is obvious: any problem whose solution can be found in polynomial time has a verifier in polynomial time. 
+\subsection{Example -- SAT}
+The SAT problem consists in finding boolean variables $\{x_n\}_{n\ge 0}$ such that a combination of boolean operators applied to them returns 1. For example,
+\begin{equation}
+	\exists? \{x_1,x_2,x_3\}\text{ such that } \left((x_1 \wedge x_2) \vee  \overline{(x_2 \vee x_3)}\right) \wedge x_3 = 1
+\end{equation}
+It is very hard to find a solution, but easy to check. 
+\subsubsection{Conjunctive normal form}
+We define the conjunctive normal form as 
+\begin{equation}
+	\phi = \bigwedge_i c_i \qquad c_i = \bigvee_j l_j \qquad l_j = \begin{cases}
+		x_k \\ \overline{x_k}
+	\end{cases}
+\end{equation}
+We call $c_i$ the clauses and $l_j$ the literals. \\
+The 3SAT problem add the constraint that there are at most 3 $l_j$ per clause. \\
+
+The SAT problem is NP-complete (see section \ref{sec:NP-complete}).
+\section{The EXPTIME class}
+EXPTIME is the class of languages that are decidable in exponential time on a deterministic single-tape TM. 
+\begin{equation}
+	\textbf{EXPTIME} = \cup_k TIME(2^{n^k})
+\end{equation}
+\begin{thm}
+	$\textbf{P} \subset \textbf{NP} \subset \textbf{EXPTIME}$
+\end{thm}
+\section{Polynomial time reduction}\label{sec:NP-complete}
+\begin{definition}	
+	A function $f:\Sigma^*\to \Sigma^*$ is a polynomial time computable function if some polynomial time TM exists that halts with $f(w)$ on its tape when started on any input $w$. 
+\end{definition}
+\begin{definition}
+	A language $A$ is polynomial time reducible to a language $B$, written $A\le_P B$, if there exists a polynomial time computable function $f$ such that, for every $w$, $w\in A\Leftrightarrow f(w)\in B$. We call $f$ the reduction of $A$ to $B$.
+\end{definition}
+\begin{equation}
+	A\le_P B \text{ and }B\in \textbf{P} \Longrightarrow A \in \textbf{P}
+\end{equation}
+\begin{definition}
+	A language $B$ is NP-complete if $B\in \textbf{NP}$ and every $A\in \textbf{NP}$ is reducible to $B$ in polynomial time. \\
+	If $B$ is NP-complete and $B\in \textbf{P}$, then $\textbf{P}=\textbf{NP}$. 
+\end{definition}
+\begin{equation}
+	\forall B \text{ NP-complete and }C\in \textbf{NP}, \: B \le_P C \Longrightarrow C\text{ is NP-complete}
+\end{equation}
+Je sais pas trop quoi faire des slides 21 à 26 du dernier cours. 
 \end{document}
