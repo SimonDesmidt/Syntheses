@@ -416,5 +416,123 @@ where $\alpha = \text{softmax}(<q,k_1>, \cdots, <q,k_{n_{ctx}}>)$ is the attenti
 	\includegraphics[width=0.5\textwidth]{img/kernels.png}
 	\caption{Illustration of kernels}
 \end{figure}
-A kernel is a function that transforms a dataset into another, typically of higher dimension. This is used to be able to separate more easily the nonlinear features, for example. 
+A kernel is a function that transforms a dataset into another, typically of higher dimension. This helps separate the nonlinear feature, to use the usual linear tools. For example, the canonical kernel is 
+\begin{equation}
+  r(x,y) = (x^Ty)^2
+\end{equation} 
+where the kernel function then is 
+\begin{equation}\label{eq:example}
+  \phi(x) = \begin{pmatrix}
+    x_1^2 \\ x_2^2 \\ \sqrt{2}x_1x_2
+  \end{pmatrix}
+\end{equation}
+\section{Reminders on scalar product}
+\begin{itemize}
+  \item [$\to$] Reminder: a Euclidean space is a finite-dimensional vector space endowed with a scalar product. 
+\end{itemize}
+A scalar product $\langle \cdot, \cdot \rangle_V$ verifies 
+\begin{itemize}
+  \item Symmetry: $\forall x,y\in V, \: \langle x,y\rangle_V = \langle y,x \rangle_V$;
+  \item Definite positive: if $x\in V$ and $x\neq 0$, then $\langle x,x\rangle >0$, and if $x=0$, then $\langle x,x\rangle=0$;
+  \item Bilinearity: $\forall x,y,z\in V, \: \forall \alpha,\beta \in \mathbb{F}, \langle(\alpha x+\beta y),z\rangle_V = \alpha \langle x,z\rangle_V + \beta \langle y,z\rangle_V$.
+\end{itemize}
+\subsection{Equivalence}
+Consider a positive definite symmetric matrix $M\succ 0\in \R^{n\times n}$ with the scalar product $\langle x,y\rangle_M = x^TMy$. Any such matrix can be factored as $M=L^TL$, where $L$ is invertible. We can do a change of coordinates to re-express under the cartesian scalar product:
+\begin{equation}
+  \begin{cases}
+    w = Lx \\
+    z = Ly
+  \end{cases} \Longrightarrow \langle x,y\rangle_M = \langle w,z\rangle_{\R^n}
+\end{equation}
+Then, all $n$-dimensional Euclidean spaces are equivalent up to a change of coordinates. 
+\subsection{Hilbert space}
+For functions integrable on an interval $[a,b]$, we define the scalar product as 
+\begin{equation}
+  \langle f,g\rangle=\int_a^b f(t)g(t)dt 
+\end{equation}
+\section{Kernel methods for finite sets}
+\subsection{Example -- word embedding}
+Text embedding has as objective to represent a text with a vector. The general idea is one-hot encoding, i.e. for a data set $X$ of $N$ words, we create one-hot vectors of dimension $N$, using the feature map (or embedding) $\phi:X\to H$. A sentence is simply the sum of those vectors, weighted by the number of occurences. From this, we can create the kernel matrix $K$, where each element $K_{ij}$ is the comparison between the basis vectors $e_i, e_j$. We suppose that the $\phi$ function has a unitary norm.
+\begin{equation}
+  K_{ij} = \langle \phi(x_i),\phi(x_j)\rangle_K \in [-1,1]
+\end{equation}
+A value of $1$ means that the words $x_i$ and $x_j$ are identical, but if the value is $-1$, their meaning are opposite. In the case of a $0$, there is no connection between the words. Now, we can calculate the Cholesky decomposition $K=L^TL$ for a new basis, and use the usual scalar product. 
+\begin{itemize}
+  \item [$\to$] Note: if the matrix $K$ is not invertible, we just hit a degenerate case where the $\phi(x_i)$ are not linearly independent. This is not a problem. 
+\end{itemize}
+\subsection{Kernel trick}
+The kernel trick is to never explicitly define the function $\phi$: we can work with the matrix $K$ only, as any vector can be expressed as a linear combination of $\phi(x_i)$ and the main ingredient of linear methods is generally the scalar product, here defined only using $K$. 
+\begin{equation}
+  \langle \phi(y),\phi(z)\rangle = \langle \sum_{i=1}^N \alpha_i \phi(x_i), \sum_{i=1}^N \beta_i \phi(x_i)\rangle_K = \sum_{i=1}^N \sum_{j=1}^N \alpha_i \beta_j \langle \phi(x_i),\phi(x_j)\rangle_K = \alpha^T K \beta 
+\end{equation}
+\subsection{Reconstruction}
+Given the matrix $K$, we can reconstruction the embedding ($\phi$ and $\langle \cdot,\cdot\rangle_K)$ up to a rotation. For $X$ the set of words and $N$ the dimension of the space, we have $\phi:X\to \R^N$ and we define the scalar product:
+\begin{equation}
+  \langle x,y\rangle_M = \langle x,y\rangle_{K^-1}
+\end{equation}
+Then, remembering $\phi(x_i) = K e_i$,
+\begin{equation}
+  \langle \phi(x_i), \phi(x_j)\rangle_M = (Ke_i)^T K^{-1}(Ke_j) = e_i^T K^TK^{-1}Ke_j = e_i^T K e_j
+\end{equation}
+Let us prove the "up to a rotation" part. Define 
+\begin{equation}
+  \begin{cases}
+    \phi':X\to \R^N \\ \phi'(x) = Q\phi(x) \\ \langle x,y\rangle_{M'} = \langle x,y\rangle_{QK^{-1}Q^T}
+  \end{cases}
+\end{equation}
+where $Q$ is a rotation matrix, i.e. $Q^TQ = I$. Then,
+\begin{equation}
+  \begin{aligned}
+    \langle \phi'(x),\phi'(y)\rangle_{M'}&= (Q\phi(x))^T Q K^{-1} Q^T (Q\phi(y))\\
+    &= \phi(x)^T K^{-1}\phi(y) = \langle \phi(x),\phi(y)\rangle_{K^{-1}}
+  \end{aligned}
+\end{equation}
+The result is true for any rotation matrix $Q$. 
+\begin{itemize}
+  \item [$\to$] Note: the complexity of computing $K$ is $\mathcal{O}(N^2)$, while the Cholesky decomposition to find the new basis has a complexity of $\mathcal{O}(N^3)$. This decomposition is to be avoided if not really necessary. 
+\end{itemize}
+\subsection{Advantages}
+Let us consider proteins. The alphabet is of size $20$ (number of existing amino-acids), and a protein is made of 4 of these. This means that our space is initially $H = \R^{20^4} = \R^{160.000}$. Consider $N=100$ proteins to classify. \\
+The embedding consists in storing $N$ vectors of size $h=160.000$, meaning 1.6M scalars. However, we only need the $K$ matrix of size $N^2=10.000$, and the entries are easy to compute. This means that, using the kernel trick, i.e. working with $K$ directly, we are much more efficient when $N<<h$. 
+\section{Kernels methods for continuous sets}
+\subsection{Reproducibility Kernel Hilbert Space}
+Consider richer sets than finite $X$, e.g. infinite or uncountable sets, with distances defined but not scalar product. Then, let $H$ be a vector space of conitnuous functions $X\to \R$. $H$ is a RKHS if it is a Hilbert space and 
+\begin{equation}
+  \forall x\in X, \: \exists v\in H \text{ such that } \forall f\in H\:: \: \langle v,f\rangle_H = f(x)
+\end{equation}
+Mathematically, the kernel function is the equivalent of the kernel matrix, but for infinite spaces:
+\begin{equation}
+  \phi:X\to \R^N \text{ such that } k(x,y) = \langle \phi(x),\phi(y)\rangle_K = \alpha_x^T K \alpha_y
+\end{equation}
+For a RKHS $H$, we verify 
+\begin{equation}
+  \begin{cases}
+    \forall x\in X\: : \: k(x,\cdot)\in H\\
+    \forall x\in X\: ,\forall f\in H, \: f(x) = \langle f,k(x,\cdot)\rangle_K
+  \end{cases}
+\end{equation}
+The reproducing kernel property is 
+\begin{equation}
+  k(x,y) = \langle k(x, \cdot), k(y,\cdot)\rangle_H
+\end{equation}
+\subsection{Properties}
+\begin{thm}
+  A continuous map $k:X\times X \to \R$ is the kernel of some RKHS $H\subset \mathcal{C}(X,\R)$
+  \begin{itemize}
+    \item iff $k(x,y) = \langle \phi(x),\phi(y)\rangle_H$ for some feature map $\phi:X\to H$;
+    \item iff, for all finite subsets $X_0\subset X$, the kernel matrix is symmetric positive definite.
+  \end{itemize}
+\end{thm}
+\section{Polynomial kernels}
+Polynomial kernels are a particular type of continuous kernels, where the feature map is a function 
+\begin{equation}
+  \phi:R^n \to \R^\ell 
+\end{equation}
+Let us take our initial example \ref{eq:example}, and generalize it to 
+\begin{equation}
+  k(x,y) = (x^Ty)^d  \qquad X = \R^n 
+\end{equation}
+Then, the dimension of the out space $H = \R^\ell$ is $\ell = \begin{pmatrix}
+  n+d-1 \\d
+\end{pmatrix}$. 
 \end{document}
