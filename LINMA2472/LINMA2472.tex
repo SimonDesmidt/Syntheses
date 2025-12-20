@@ -38,6 +38,7 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
+\newcommand{\Oo}{\mathcal{O}}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\J}{\mathbf{J}}
 \newcommand{\He}{\mathbf{H}}
@@ -313,7 +314,7 @@ So we can get the solution of the recurrence relation with $\Dot{s}_0 = e_i$:
 \end{equation}
 
 \chapter{Neural networks}
-\textcolor{red}{TODO link tangent with neural networks}\\
+% \textcolor{red}{TODO link tangent with neural networks}\\
 Neural networks are a class of machine learning models inspired by the structure and function of the human brain. They are composed of layers of interconnected nodes (neurons) that process and transmit information.\\
 First let's define some variables:
 \begin{itemize}
@@ -366,7 +367,7 @@ So the models aims to predict the probability distribution of the next vector $x
   \Lo(X) = - \sum_{x_0} p(x_0 | X) \log(\hat{p}(x_0 | X))
 \end{equation}
 \section{Tokenization}
-How can we use this autoregressive model for LLM (Large Language Models) for example ? Consider that we have $n_{cxt}$ characters of context and we want to predict the next characters, this means that we would have a one-hot encoding in $\R^{26}$, which means $n_{voc} = 26$. This means that $n_{cxt}$ should be a large number, but this is annoying because transormers have a quadratic complexity in $n_{cxt}$.\\ 
+How can we use this autoregressive model for LLM (Large Language Models) for example ? Consider that we have $n_{cxt}$ characters of context and we want to predict the next characters, this means that we would have a one-hot encoding in $\R^{26}$, which means $n_{voc} = 26$. This means that $n_{cxt}$ should be a very large number, but this is annoying because transormers have a quadratic complexity in $n_{cxt}$.\\ 
 Another idea could be to turn each word into a one-hot encoding, but the vocabulary size is often very large (+200k words), with this we could have a relative low $n_{ctx}$, but $n_{voc}$ would be to big.\\
 An intermediate solution is to use byte pair encoding algorithm which greedily merges the most frequent pairs of characters into new tokens.\\ 
 Example: consider the word "abracadabra", we see that we have two frequent pairs "ab" and "ra", so we can merge them into new tokens $X$ and $Y$ respectively:
@@ -377,7 +378,7 @@ then we can repeat the process until we reach the desired vocabulary size.\\ The
 \begin{equation}
   \text{XYcadXY} \rightarrow \text{ZcadZ}
 \end{equation}
-This tokenization method allows us to have good trade-off between the vocabulary size $n_{voc}$ and the context size $n_{cxt}$.\\
+This tokenization method allows us to have good trade-off between the vocabulary size $n_{voc}$ and the context size $n_{cxt}$. But if the model isn't trained enough we could have an issue which is that the model doesn't output fully constructed words, for example it could output half of a word because that what makes more sense even though the word is half complete.\\
 \section{Embedding}
 Consider a vocabulary of size $n_{voc}$, a bigram model and a network with $d$ layers. The model would be:
 \begin{equation}
@@ -403,13 +404,126 @@ We could represent this model like this:\\
     \label{fig:shared_embedding}
 \end{figure}
 \section{Recurrent neural networks (RNN)}
-\textcolor{red}{TODO}
+A RNN is a type of neural network that is designed to process sequential data by taking advantages of the memory of previous inputs. The idea is to have a hidden state $h_t$ that depends on the current input $x_t$ and the previous hidden state $h_{t-1}$. With this idea, the network reuses the same weights at every time step and thus gives meaning to the sequence. The equations of a simple RNN are:
+\begin{equation}
+  \begin{cases}
+    h_{t+1} = \tanh(W h_{t} + U x_{t-1} + b) \\
+    \hat{y}_t = \text{softmax}(V h_t + c)
+  \end{cases}
+\end{equation}
+Where $W, U, V$ are weight matrices and $b, c$ are bias vectors.\\
+This model presents some limitations, for example it is difficult to learn long-term dependencies because of the vanishing/exploding gradient problem. The fact that it processes a sequence step by step makes it difficult to parallelize the computations. The fact that it need to store the hidden state at each time step can be also memory-intensive for long sequences.\\
 \section{Attention head}
 First we need to define a numerical dictionary. Consider keys $k_i \in \R^{d_k}$, values $v_i \in \R^{d_v}$. Given a query $q \in \R^{d_k}$, we want to retrieve the value $v_i$ corresponding to the key $k_i$ that is the most similar to the query $q$. To do this, we can use the dot-product. With that definition, we can define the attention head:
 \begin{equation}
   \text{Attention}(Q,K,V) = \sum_{i=1}^{n_{ctx}} \alpha_i v_i
 \end{equation}
-where $\alpha = \text{softmax}(<q,k_1>, \cdots, <q,k_{n_{ctx}}>)$ is the attention weight for key $k_i$.
+where $\alpha = \text{softmax}(<q,k_1>, \cdots, <q,k_{n_{ctx}}>)$ is the attention weight for key $k_i$. But in practice, we have vectors of queries, keys and values, each contained in matrices $Q, K, V$. So we can rewrite the attention head as:
+\begin{equation}
+  \text{Attention}(Q,K,V) = V\text{softmax}\left(\frac{K^TQ}{\sqrt{d_k}}\right)
+\end{equation}
+Where the division by $\sqrt{d_k}$ is used to prevent the dot-product from growing too large.\\
+For a transformers, we could explain $Q, K, V$ like this, for each token we have a vector $q, k, v$ that represent:
+\begin{itemize}
+  \item $q$: What am I looking for?
+  \item $k$: What do I contain?
+  \item $v$: What information do I pass if I’m selected?
+\end{itemize}
+\subsection{Masked attention}
+To ensure that the model only attends to previous tokens and not future tokens, we can use a masked attention mechanism. This is done by applying a mask to the attention weights before the softmax operation. The mask is typically a lower triangular matrix that sets the weights corresponding to future tokens to negative infinity, effectively preventing them from contributing to the attention output.\\
+So with masked attention, the equation becomes:
+\begin{equation}
+  \begin{cases}
+    M = \begin{bmatrix} 0 & 0 &  \cdots & 0 \\ -\infty & 0 &  \ddots & 0 \\ \vdots & \ddots & \ddots & \vdots \\ -\infty & -\infty &  \cdots & 0 \\ \end{bmatrix}\\
+    \text{Attention}(Q,K,V) = V\text{softmax}\left(M+\frac{K^TQ}{\sqrt{d_k}}\right)
+  \end{cases}
+\end{equation}
+\subsection{Multi-head attention}
+Instead of having a single attention head, we can have multiple attention heads that can understand different aspects of the input data. Each head has its own set of weights and computes its own attention output, all in parallel. After computing all the heads, their outputs are concatenated and linearly transformed to be in the right dimension with $W^O$, this is thus gathering all of the meanings of the attention different heads to a single representation. So the multi-head attention can be defined as:
+\begin{equation}
+  \begin{cases}
+    \text{head}_j = \text{Attention}(W_j^QQ, W_j^KK, W_j^VV) \\
+    \text{MultiHead}(Q,K,V) = W^O \begin{bmatrix} \text{head}_1 \\ \text{head}_2 \\ \vdots \\ \text{head}_h \end{bmatrix}
+  \end{cases}
+\end{equation}
+\section{Decoder-only transformer}
+A decoder-only transformer is a type of transformer architecture that is used for autoregressive model. It consists of reading the tokens and predicting the next token in the sequence. In this type of transformer, the matrices $Q, K, V$ are the same, and we define them as the input tokens $CX$, $C$ being the embedding matrix. So the decoder-only transformer can be computed with $\text{MultiHead}(CX,CX,CX)$. Let's seek the different mechanisms used in a decoder-only transformer.\\
+\subsection{Positional encoding}
+The positional encoding is essential in a transformer model because it provides information about the order of the tokens in the input sequence. Since transformers do not have a built-in notion of sequence order like RNNs, positional encodings are added to the input embeddings to give the model a sense of position.\\
+We cannot use one-hot encoding for the position because the dimension would be $n_{ctx}$ and not $d_{emb}$ as expected. The classic approach is to use sines and cosines with an angle that depends on the position of the token and the embedding dimension. The positional encoding for a token at position $pos$ and with the embedding dimension index $i$ and embedding dimension $d_{emb}$ could be defined as:
+\begin{equation}
+  \begin{cases}
+    angle = \frac{pos}{10000^{2i/d_{emb}}} \\
+    PE[pos, 2i] = \sin\left(angle\right) \\
+    PE[pos, 2i+1] = \cos\left(angle\right)
+  \end{cases}
+\end{equation}
+And then we add this positional encoding to the input embeddings before doing the attention mechanism:
+\begin{equation}
+  \text{MultiHead}(CX + PE, CX + PE, CX + PE)
+\end{equation}
+\subsection{Residual connection}
+The principle of residual connection is to add the input of a layer to its output before applying the layer normalization (next subsection). This helps to mitigate the vanishing gradient problem and help the network to learn because its learning is more controlled, because we remind it of the original input.\\
+\subsection{Layer normalization}
+The norm of the gradient increases exponentially with the number of layers, so to prevent this we can use layer normalization. This helps stabilize the training process and improve convergence, by rescaling the data before the activation function, which means that we control the mean and the variance of the data. There is two way of doing this normalization, the batch normalization and the layer normalization. The batch normalization is difficult and not very efficient to use in transformers, so we use layer normalization. It is done like this:
+\begin{equation}
+  \text{LayerNorm}(y_i) = \gamma \frac{y_i - \mu_i}{\sigma_i} + \beta 
+\end{equation}
+With $\gamma$ and $\beta$ two learnable parameters, $\mu_i$ the mean of the elements of $y_i$ and $\sigma_i$ the standard deviation of the elements of $y_i$. Then we can add this in the transformer architecture like this:
+\begin{equation}
+  \text{LayerNorm}(\text{MultiHead}(CX + PE, CX + PE, CX + PE) + (CX + PE))
+\end{equation}
+\subsection{Feed-forward network (FFN)}
+The feed-forward network consists in doing this operation:
+\begin{equation}
+  \text{FFN}(x) = W_2 \text{ReLU}(W_1 x + b_1) + b_2
+\end{equation}
+With $W_1 \in \R^{d_{ff} \times d_{emb}}$ and $W_2 \in \R^{d_{emb} \times d_{ff}}$, $d_{ff}$ being the dimension of the feed-forward network, generally $d_{ff} = 4d_{emb}$. This feed-forward network is applied to each token independently and identically. The feed-forward network is used to introduce non-linearity and increase the model's capacity to learn complex patterns in the data. It is used the memorize more complex information in the weights, which helps the model to better understand the complex relationships between tokens in the sequence.
+\subsection{Transformers variation}
+\textcolor{red}{To investigate ?}
+\section{Performances of transformers}
+Before analysing the complexity of a transformer, let us reminds the main dimension of the variables:
+\begin{itemize}
+  \item $n_{ctx}$: context size (number of tokens in the input sequence)
+  \item $n_{voc}$: vocabulary size (number of unique tokens)
+  \item $d_{emb}$: embedding size (dimension of embeddings)
+  \item $d_k, d_v$: key and value dimension (per head)
+  \item $d_{ff}$: feed-forward network dimension
+  \item $N$: number of layers
+\end{itemize}
+We can thus analyse the time complexity of a transformer step by step (ignoring the mebeding step):
+\begin{enumerate}
+  \item Linear projections for $Q, K, V$ (with $W_j^Q, W_j^K, W_j^V$): $\Oo\left(d_k d_{emb} n_{ctx}\right)$
+  \item Attention score computation ($K^TQ$): $\Oo\left((d_k+d_v)n_{ctx}^2\right)$
+  \item Output projection ($W^O$): $\Oo\left(d_v d_{emb} n_{ctx}\right)$
+  \item FFN: $\Oo\left(d_{emb} d_{ff} n_{ctx}\right)$
+\end{enumerate}
+This brings the total cost for a single layer to:
+\begin{equation}
+  \Oo\left( (d_k + d_v) n_{ctx}^2 + (d_k + d_v + d_{ff}) d_{emb} n_{ctx} \right)
+\end{equation}
+To get the total cost for $N$ layers, we just need to multiply by $N$.\\
+\begin{equation}
+  \Oo\left( N (d_k + d_v) n_{ctx}^2 + N (d_k + d_v + d_{ff}) d_{emb} n_{ctx} \right)
+\end{equation}
+Knowing that generally $d_k \approx d_v \approx d_{emb} \approx d_{ff}$, we can simplify the complexity to:
+\begin{equation}
+  \Oo\left( N d_{emb} n_{ctx}^2 + N d_{emb}^2 n_{ctx} \right) = \Oo\left( N d_{emb} n_{ctx} (n_{ctx} + d_{emb}) \right)
+\end{equation}
+Here we can see the two dominant terms of the complexity:
+\begin{itemize}
+  \item $N d_{emb} n_{ctx}^2$: comes from the attention score computation, it is the most critical term when $n_{ctx}$ is large.
+  \item $N d_{emb}^2 n_{ctx}$: comes from the FFN and the projection, it is the most critical term when $d_{emb}$ and thus for wide models.
+\end{itemize}
+We can also observe that the dimension of the vocabulary $n_{voc}$ does not appear in the complexity. It is because it is only involved in the embedding complexity.
+\section{Encoder-decoder transformers}
+
+
+
+
+
+
+
 \chapter{Kernels}
 \begin{figure}[H]
 	\centering
