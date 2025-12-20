@@ -214,8 +214,6 @@ However, the backward mode needs to store all the intermediate values to compute
     \label{fig:bd_mem}
 \end{figure}
 So the forward mode is more memory efficient than the backward mode. However, this factor may be less significant than the number of operations performed (JVP and VJP).
-\section{new part idk}
-
 \section{Second order AD}
 And what happens when we take a look at the second order derivative? Remember that we can compute the Hessian $\nabla^2 f(x)$ like this:
 \begin{equation}
@@ -312,6 +310,73 @@ So we can get the solution of the recurrence relation with $\Dot{s}_0 = e_i$:
     \Dot{s}_k = \sum_{k=1}^{K} r_k \He_{ki} \J_{k-1} \dots \J_1
   \end{cases}
 \end{equation}
+\section{Implicit differentiation}
+\section{Sparse AD}
+Often in practice, the Jacobian matrix is sparse, meaning that many of its entries are zero. In such cases, we can use sparse automatic differentiation techniques to exploit this sparsity and reduce the computational cost of computing the Hessian. For this section, we will suppose that we know the sparsity pattern of the Jacobian matrix.
+Consider for example the following Jacobian matrix:
+\begin{equation}
+  J = \begin{bmatrix}
+    0 & * & 0 & * & 0\\
+    0 & 0 & 0 & * & *\\
+    0 & * & * & 0 & 0\\
+    * & 0 & * & 0 & 0
+  \end{bmatrix}
+\end{equation}
+If we computed the Hessian using the standard AD techniques, we would need to compute 5 JVP or 4 VJP. But what if we could group some columns or rows together to reduce the number of passes needed ? Yes we can combine the columns or rows that do not share any non-zero entry. For example, with the Jacobian matrix above, we can compute the Hessian with only 2 JVP or 2 VJP. the intuition behind this comes from the fact that when we compute a JVP or a VJP, the zero entries do not contribute to the result, so we can group together the columns or rows that do not share any non-zero entry. For example, let us compute the two firsts JVPs:
+\begin{equation}
+    J\begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 0 \\ * \end{bmatrix} \qquad \& \qquad
+    J\begin{bmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} *\\ 0 \\ * \\ 0 \end{bmatrix}
+\end{equation}
+Combining these two JVPs, we get:
+\begin{equation}
+    J\begin{bmatrix} 1 \\ 1 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} * \\ 0 \\ * \\ * \end{bmatrix}
+\end{equation}
+And because we know the sparsity pattern we can then put the results back in the right place, this is called the decompression. So to compute the Hessian, we combine the following columns and so use those vectors for the JVPs:
+\begin{equation}
+  \begin{bmatrix}
+    0 & \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0\\
+    0 & 0 & 0 & \textcolor{blue}{*} & \textcolor{red}{*}\\
+    0 & \textcolor{red}{*} & \textcolor{blue}{*} & 0 & 0\\
+    \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0 & 0
+  \end{bmatrix} \qquad \Rightarrow \qquad \textcolor{red}{v_1}=\begin{bmatrix} 1 \\ 1 \\
+    0 \\ 0 \\ 1 \end{bmatrix} \& \quad \textcolor{blue}{v_2}=\begin{bmatrix} 0 \\ 0 \\ 1 \\ 1 \\ 0 \end{bmatrix}
+\end{equation}
+Or for the VJP:
+\begin{equation}
+  \begin{bmatrix}
+    0 & \textcolor{red}{*} & 0 & \textcolor{red}{*} & 0\\
+    0 & 0 & 0 & \textcolor{blue}{*} & \textcolor{blue}{*}\\
+    0 & \textcolor{blue}{*} & \textcolor{blue}{*} & 0 & 0\\
+    \textcolor{red}{*} & 0 & \textcolor{red}{*} & 0 & 0
+  \end{bmatrix} \qquad \Rightarrow \qquad \textcolor{red}{v_1}=\begin{bmatrix} 1 & 0 & 0 & 1 \end{bmatrix} \& \quad \textcolor{blue}{v_2}=\begin{bmatrix} 0 & 1 & 1 & 0 \end{bmatrix}
+\end{equation}
+\subsection{Sparsity detection}
+The problem of grouping the columns or rows of a sparse matrix can be seen as a graph coloring problem. There is multiple way to model this problem as a graph coloring problem. For example, we can create a graph where each column is a node and there is an edge between two nodes if they share a non-zero entry. Then we can use a graph coloring algorithm to color the graph such that no two adjacent nodes have the same color. Each color then represents a group of columns that can be combined together for the JVPs. The same can be done for the rows for the VJPs. Here is a visual example: 
+\begin{equation}
+  J = \begin{bmatrix}
+    0 & \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0\\
+    0 & 0 & 0 & \textcolor{blue}{*} & \textcolor{red}{*}\\
+    0 & \textcolor{red}{*} & \textcolor{blue}{*} & 0 & 0\\
+    \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0 & 0
+  \end{bmatrix}
+\end{equation}
+\begin{center}
+  \begin {tikzpicture}[-latex ,auto ,node distance = 2.5 cm and 2.5 cm ,on grid ,
+    semithick ,
+    state1/.style ={ circle ,top color =white , bottom color = red ,
+    draw,red , text=black , minimum width =1 cm}, state2/.style ={ circle ,top color =white , bottom color = blue ,
+    draw,blue , text=black , minimum width =1 cm}]
+    \node[state1] (E) {$5$};
+    \node[state2] (D) [above right=of E] {$4$};
+    \node[state2] (C) [above left=of E] {$3$};
+    \node[state1] (B) [above =of D] {$2$};
+    \node[state1] (A) [above =of C] {$1$};
+    \path (A) edge (C);
+    \path (C) edge (B);
+    \path (B) edge (D);
+    \path (D) edge (E);
+  \end{tikzpicture}
+\end{center}
 
 \chapter{Neural networks}
 % \textcolor{red}{TODO link tangent with neural networks}\\
@@ -516,14 +581,9 @@ Here we can see the two dominant terms of the complexity:
   \item $N d_{emb}^2 n_{ctx}$: comes from the FFN and the projection, it is the most critical term when $d_{emb}$ and thus for wide models.
 \end{itemize}
 We can also observe that the dimension of the vocabulary $n_{voc}$ does not appear in the complexity. It is because it is only involved in the embedding complexity.
-\section{Encoder-decoder transformers}
-
-
-
-
-
-
-
+% \section{Encoder-decoder transformers}
+% \textcolor{red}{Idk what to say}
+\chapter{Diffusion Models}
 \chapter{Kernels}
 \begin{figure}[H]
 	\centering
