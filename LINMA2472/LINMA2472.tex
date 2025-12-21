@@ -51,25 +51,25 @@
 \hbadness=100000
 \begin{document}
 \begin{titlepage}
-    \begin{sffamily}
-    \begin{center}
-        \includegraphics[scale=0.3]{img/page_de_garde.jpg} \\[1cm]
-        \HRule \\[0.4cm]
-        { \huge \bfseries LINMA2472 - Algorithm in data science \\[0.4cm] }
-    
-        \HRule \\[1.5cm]
-        \textsc{\LARGE Simon Desmidt}\\[1cm]
-        \vfill
-        \vspace{2cm}
-        {\large Academic year 2025-2026 - Q1}
-        \vspace{0.4cm}
-         
-        \includegraphics[width=0.15\textwidth]{img/epl.png}
-        
-        UCLouvain\\
-    
-    \end{center}
-    \end{sffamily}
+	\begin{sffamily}
+	\begin{center}
+		\includegraphics[scale=0.3]{img/page_de_garde.jpg} \\[1cm]
+		\HRule \\[0.4cm]
+		{ \huge \bfseries LINMA2472 - Algorithm in data science \\[0.4cm] }
+	
+		\HRule \\[1.5cm]
+		\textsc{\LARGE Simon Desmidt}\\[1cm]
+		\vfill
+		\vspace{2cm}
+		{\large Academic year 2025-2026 - Q1}
+		\vspace{0.4cm}
+		 
+		\includegraphics[width=0.15\textwidth]{img/epl.png}
+		
+		UCLouvain\\
+	
+	\end{center}
+	\end{sffamily}
 \end{titlepage}
 
 \setcounter{tocdepth}{1}
@@ -85,8 +85,8 @@ There is two ways to apply the chain rule to compute the gradient of a function:
 Let's define:
 \begin{equation}
   \begin{cases}
-    s_0 &= x \\
-    s_k &= f_k(s_{k-1})
+	s_0 &= x \\
+	s_k &= f_k(s_{k-1})
   \end{cases}
 \end{equation}
 We thus get:
@@ -98,32 +98,32 @@ Based on this, we can define the forward and backward differentiation algorithms
 \section{Forward differentiation}
 Also called forward mode, this algorithm consists in propagating forward the derivative and the values at the same time. The fact of propagating the values forward is called a \textbf{forward pass}. It can be represented by this graph where the blue part represents the values and the green part the derivatives:
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{img/forward_diff.png}
-    \caption{Forward differentiation}
-    \label{fig:forward_diff}
+	\centering
+	\includegraphics[width=\textwidth]{img/forward_diff.png}
+	\caption{Forward differentiation}
+	\label{fig:forward_diff}
 \end{figure}
 And it can be computed with the following recurrence relation:
 \begin{equation}
   \begin{cases}
-    t_0 &= 1 \\
-    t_k &= f'_k(s_{k-1}) \cdot t_{k-1}\\
+	t_0 &= 1 \\
+	t_k &= f'_k(s_{k-1}) \cdot t_{k-1}\\
   \end{cases}
 \end{equation}
 It is simple to implement and very efficient for functions with a small number of input variables. However, it becomes inefficient for functions with a large number of input variables because we need to compute the derivative for each input variable separately. So in practice for neural networks where we have a large number of input variables (weights and biases), we use the backward differentiation.
 \section{Backward differentiation}
 Also called backward mode, this algorithm consists in propagating the derivative backward and the values forward at the same time. The fact of propagating the derivative backward is called a \textbf{backward pass}. It can be represented by this graph where the blue part represents the values and the orange part the derivatives:
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{img/backward_diff.png}
-    \caption{Backward differentiation}
-    \label{fig:backward_diff}
+	\centering
+	\includegraphics[width=\textwidth]{img/backward_diff.png}
+	\caption{Backward differentiation}
+	\label{fig:backward_diff}
 \end{figure}
 The idea is to compute all the intermediate values $s_k$ in a forward pass and then compute the derivatives $r_k$ based on the output in a backward pass. It can be computed with the following recurrence relation:
 \begin{equation}
   \begin{cases}
-    r_m &= 1 \\
-    r_k &= r_{k+1} \cdot f'_{k+1}(s_{k})\\
+	r_m &= 1 \\
+	r_k &= r_{k+1} \cdot f'_{k+1}(s_{k})\\
   \end{cases}
 \end{equation}
 This method is more complex to implement but it is very efficient for functions with a large number of input variables and a small number of output variables typically 1, the loss function.
@@ -136,16 +136,16 @@ To represent the computation of a function, we can use a computational graph. It
 The computational graph is:\\
 \begin{center}
   \begin{tikzpicture}[
-    roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=7mm},]
-    %Nodes
-    \node[roundnode] (x1) {$s_1=x$};
-    \node[roundnode] (square) [right=of x1] {$f_2=x^2$};
-    \node[roundnode] (sum) [right=of square] {$f_3=f_2+s_1$};
-    
-    % %Lines
-    \draw[->] (x1.north) .. controls +(up:7mm) and +(up:7mm).. (sum.north);
-    \draw[->] (x1.east) -- (square.west);
-    \draw[->] (square.east) -- (sum.west);
+	roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=7mm},]
+	%Nodes
+	\node[roundnode] (x1) {$s_1=x$};
+	\node[roundnode] (square) [right=of x1] {$f_2=x^2$};
+	\node[roundnode] (sum) [right=of square] {$f_3=f_2+s_1$};
+	
+	% %Lines
+	\draw[->] (x1.north) .. controls +(up:7mm) and +(up:7mm).. (sum.north);
+	\draw[->] (x1.east) -- (square.west);
+	\draw[->] (square.east) -- (sum.west);
   \end{tikzpicture}
 \end{center}
 \subsection{Multivariate differentiation}
@@ -201,17 +201,17 @@ Consider a function $f:\R^n \rightarrow \R^m$ then computing the full Jacobian r
 \section{Memory usage}
 The forward mode only needs to store the current value and the current derivative, so the memory usage is relatively constant.\\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{img/fd_mem.png}
-    \caption{Forward mode memory usage}
-    \label{fig:fd_mem}
+	\centering
+	\includegraphics[width=\textwidth]{img/fd_mem.png}
+	\caption{Forward mode memory usage}
+	\label{fig:fd_mem}
 \end{figure}
 However, the backward mode needs to store all the intermediate values to compute the derivatives in the backward pass so the memory usage will first increase then reduce when we will start to use the derivatives previously computed.\\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{img/bd_mem.png}
-    \caption{Backward mode memory usage}
-    \label{fig:bd_mem}
+	\centering
+	\includegraphics[width=\textwidth]{img/bd_mem.png}
+	\caption{Backward mode memory usage}
+	\label{fig:bd_mem}
 \end{figure}
 So the forward mode is more memory efficient than the backward mode. However, this factor may be less significant than the number of operations performed (JVP and VJP).
 \section{Second order AD}
@@ -228,9 +228,9 @@ We can easily see that with this definition, we can use an AD for the gradient a
 Based on the chain rule, let's rewrite $\frac{\partial^2 (f_2 \circ f_1)}{\partial x_i \partial x_j}$ into something more suitable for AD (consider $\partial f$ as the gradient of $f$):
 \begin{equation}
   \begin{aligned}
-    \frac{\partial^2 (f_2 \circ f_1)}{\partial x_i \partial x_j} &= \frac{\partial}{\partial x_j} \left( \frac{ \partial (f_2 \circ f_1)}{\partial x_i} \right) \\
-    &= \frac{\partial}{\partial x_j} \left( \partial f_2 \frac{ \partial f_1}{\partial x_i} \right) \\
-    &= \left( \partial^2 f_2 \frac{\partial f_1}{\partial x_j} \right) \frac{\partial f_1}{\partial x_i} + \partial f_2 \frac{\partial^2 f_1}{\partial x_i \partial x_j} 
+	\frac{\partial^2 (f_2 \circ f_1)}{\partial x_i \partial x_j} &= \frac{\partial}{\partial x_j} \left( \frac{ \partial (f_2 \circ f_1)}{\partial x_i} \right) \\
+	&= \frac{\partial}{\partial x_j} \left( \partial f_2 \frac{ \partial f_1}{\partial x_i} \right) \\
+	&= \left( \partial^2 f_2 \frac{\partial f_1}{\partial x_j} \right) \frac{\partial f_1}{\partial x_i} + \partial f_2 \frac{\partial^2 f_1}{\partial x_i \partial x_j} 
   \end{aligned}
 \end{equation}
 Introducing the variables $\J_k = \partial f_k$ and $\He_{kj} = \frac{\partial}{\partial x_j} \J_k = \partial^2 f_k \frac{\partial f_{k-1}}{\partial x_j}$, and so we get:
@@ -249,8 +249,8 @@ Define $Dual(s_1,t_1)$ with $s_1 = Dual(f_1(x), \frac{\partial f_1}{\partial x_j
 All that can be resumed as these two equations with $g_k(x) = f_k \circ \dots \circ f_1$:
 \begin{equation}
   \begin{cases}
-    s_k &= Dual(g_k(x), \frac{\partial g_k}{\partial x_j})\\
-    t_k &= Dual(\frac{\partial g_k}{\partial x_i}, \frac{\partial^2 g_k}{\partial x_i \partial x_j})
+	s_k &= Dual(g_k(x), \frac{\partial g_k}{\partial x_j})\\
+	t_k &= Dual(\frac{\partial g_k}{\partial x_i}, \frac{\partial^2 g_k}{\partial x_i \partial x_j})
   \end{cases}
 \end{equation}
 \subsection{Forward on reverse}
@@ -262,7 +262,7 @@ First the forward pass works the same as forward on forward, given $s_1 = Dual(f
 Then the backward pass, given $r_2 = Dual((r_2)_1, (r_2)_2)$ compute:
 \begin{equation}
   \begin{aligned}
-    r_2 \J_2 &= Dual((r_2)_1, (r_2)_2) Dual(\J_2, \He_{2j})\\ &= Dual((r_2)_1 \J_2, (r_2)_1 \He_{2j} + (r_2)_2 \J_2)
+	r_2 \J_2 &= Dual((r_2)_1, (r_2)_2) Dual(\J_2, \He_{2j})\\ &= Dual((r_2)_1 \J_2, (r_2)_1 \He_{2j} + (r_2)_2 \J_2)
   \end{aligned}
 \end{equation}
 Given the last equation, we get the recurrence relation:
@@ -274,17 +274,17 @@ First we set up the forward pass, given $s_1 = Dual(f_1(x), \frac{\partial f_1}{
 \begin{enumerate}
   \item Compute $s_2 = f_2(s_1) = Dual(f_2(s_1), \J_2 \frac{\partial f_1}{\partial x_i})$
   \item The reverse mode computes the local Jacobian \begin{equation}
-    \frac{\partial s_2}{\partial s_1} = \begin{bmatrix}
-      \J_2 & 0\\
-      \He_{2i} & \J_2
-    \end{bmatrix} % = \frac{\partial ((s_2)_1,(s_2)_2)}{\partial ((s_1)_1,(s_1)_2)}
+	\frac{\partial s_2}{\partial s_1} = \begin{bmatrix}
+	  \J_2 & 0\\
+	  \He_{2i} & \J_2
+	\end{bmatrix} % = \frac{\partial ((s_2)_1,(s_2)_2)}{\partial ((s_1)_1,(s_1)_2)}
   \end{equation} 
 \end{enumerate}
 Then the backward pass, which gives us:
 \begin{equation}
   \begin{cases}
-    (r_1)_1 = (r_2)_1 \J_2 + (r_2)_2 \He_{2i}\\
-    (r_1)_2 = (r_2)_2 \J_2
+	(r_1)_1 = (r_2)_1 \J_2 + (r_2)_2 \He_{2i}\\
+	(r_1)_2 = (r_2)_2 \J_2
   \end{cases}
 \end{equation}
 Which gives us the solution of recurrence equation:
@@ -295,132 +295,251 @@ Which gives us the solution of recurrence equation:
 First we need to set up the forward pass, so we have $s_2 = f_2(s_1)$, again we need to compute its jacobian $\J_2 = \frac{\partial s_2}{\partial s_1}$. Then we need compute the backward pass with $r_1 = r_2 \J_2$. Then we need to compute again the backward pass, in order to get the second order derivative. Let $\Dot{r}_k$ be the second order reverse tangent for $r_k$, then we have:
 \begin{equation}
   \begin{aligned}
-    \Dot{r}_2 &= \J_2 \Dot{r}_1  \\
-    \Dot{s}_1 &= (r_2 \partial^2 f_2(s_1))\Dot{r}_1 + \Dot{s}_2 \J_2
+	\Dot{r}_2 &= \J_2 \Dot{r}_1  \\
+	\Dot{s}_1 &= (r_2 \partial^2 f_2(s_1))\Dot{r}_1 + \Dot{s}_2 \J_2
   \end{aligned}
 \end{equation}
 
 So we can get the solution of the recurrence relation with $\Dot{s}_0 = e_i$:
 \begin{equation}
   \begin{cases}
-    r_k = \J_K \dots \J_{k+1}\\
-    \Dot{r}_k = \J_k \dots \J_{1} e_i\\
-    (r_k \partial^2 f_k) \Dot{r}_{k-1} = r_k (\partial^2 f_k \Dot{r}_{k-1})\\
-    \qquad \qquad \qquad = r_k \He_{ki}\\
-    \Dot{s}_k = \sum_{k=1}^{K} r_k \He_{ki} \J_{k-1} \dots \J_1
+	r_k = \J_K \dots \J_{k+1}\\
+	\Dot{r}_k = \J_k \dots \J_{1} e_i\\
+	(r_k \partial^2 f_k) \Dot{r}_{k-1} = r_k (\partial^2 f_k \Dot{r}_{k-1})\\
+	\qquad \qquad \qquad = r_k \He_{ki}\\
+	\Dot{s}_k = \sum_{k=1}^{K} r_k \He_{ki} \J_{k-1} \dots \J_1
   \end{cases}
 \end{equation}
 \section{Implicit differentiation}
+Up to now, we have only considered functions that are explicitly defined, meaning that we know each step explicitly between the input and the output. But what about implicit function, when the output isn't given by an explicit formula. For example, iterative algorithms (Newton's method, Grandient Descent), or functions defined in other language and called from our main program ? As before we want to compute the derivative of these functions, but we do not know them. To solve some of those problems, we could use naive AD but it would be very inefficient because we would need to unroll the whole computation graph of the implicit function. Instead, we can use implicit differentiation, because we know that the derivatives depends on the solution and not on how you got there.\\
+First let us consider a simple example, and show how we can get it's implicit equivalent. Consider the square root function $x=\sqrt{a}$, we want to rewrite it as a fixed point equation.
+\begin{equation}
+  \begin{aligned}
+	x &= \sqrt{a} \\ 
+	x^2 &= a \\
+	2x^2 &= x^2 + a \\
+	g(x,a) = x &= \frac{1}{2} \left( x + \frac{a}{x} \right)
+  \end{aligned}
+\end{equation}
+With this fixed point equation, we can iterate (with $x_{k+1} = g(x_k,a)$) starting from an initial guess $x_0$ to get the solution $x^*$ at convergence, which would be $x = \sqrt{a}$. The implicit equation is then $F(x,a) = x - g(x,a)$ and it's solution satisfies $F(x^*,a) = 0$.\\
+First we need to states the inverse function theorem:
+\begin{thm}[Inverse function theorem]
+  If:
+  \begin{itemize}
+	\item $f:\mathcal{W} \to \mathcal{W}$ is $C^2$
+	\item $\partial f (w_0)$ is invertible.
+  \end{itemize}
+  Then $f$ is bijective from a neighborhood of $w_0$ to a neighborhood of $f(w_0)$ and from this neighborhood $w$, $f^{-1}$ is $C^2$ and:
+  \begin{equation}
+	\partial f^{-1} \left(f\left(w\right)\right) = \left(\partial f \left(f^{-1}\left(w\right)\right)\right)^{-1}
+  \end{equation}
+  With the previous formula, that comes directly from the chain rule.
+\end{thm}
+And the implicit function theorem:
+\begin{thm}[Implicit function theorem (IFT, univariate case)]
+  If:
+  \begin{itemize}
+	\item $F:\R^2 \to \R$
+	\item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\frac{\partial F}{\partial w}(w_0, \lambda_0) \neq 0$
+	\item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$ 
+  \end{itemize}
+  Then there exists a neighborhood $\mathcal{V} \subseteq \mathcal{U}$ there exists $w^*(\lambda)$ such that:
+  \begin{equation}
+	\begin{aligned}
+		w^*(\lambda_0) &= w_0 \\
+		F(w^*(\lambda), \lambda) &= 0, \quad \forall (w^*(\lambda),\lambda) \in \mathcal{V} \\
+		\partial w^*(\lambda) &= - \frac{\frac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)}{\frac{\partial F}{\partial w} (w^*(\lambda), \lambda)}
+	\end{aligned}
+  \end{equation}
+\end{thm}
+\begin{thm}[Implicit function theorem (IFT, multivariate case)]
+  If:
+  \begin{itemize}
+	\item $F:\mathcal{W} \times \Lambda \to \mathcal{W}$
+	\item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\frac{\partial F}{\partial w}(w_0, \lambda_0) \neq 0$
+	\item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$ 
+  \end{itemize}
+  Then there exists a neighborhood $\mathcal{V} \subseteq \mathcal{U}$ there exists $w^*(\lambda)$ such that:
+  \begin{equation}
+	\begin{aligned}
+		w^*(\lambda_0) &= w_0 \\
+		F(w^*(\lambda), \lambda) &= 0, \quad \forall (w^*(\lambda),\lambda) \in \mathcal{V} \\
+		\partial w^*(\lambda) &= - \frac{\frac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)}{\frac{\partial F}{\partial w} (w^*(\lambda), \lambda)}
+	\end{aligned}
+  \end{equation}
+\end{thm}
+\subsection{Implicit JVP and VJP}
+To propagate the derivative through the graph when we have an implicit function, we need to do it differently than before. Consider the implicit function defined by $F(w^*, \lambda) = 0$, we want to compute the JVP and VJP through this function.\\
+Reminder, we want to compute the forward tangent $t_k$, knowing the previous tangent $t_{k-1}$ and the function at this step. Assuming the IFT holds, we have this equality:
+\begin{equation}
+	t_k = - \left( \frac{\partial F}{\partial w} (w^*, \lambda) \right)^{-1} \cdot \frac{\partial F}{\partial \lambda} (w^*, \lambda) \cdot t_{k-1}
+\end{equation}
+Knowing that $t_k = \partial w^*(\lambda)/\partial s_0$ and $t_{k-1} = \partial \lambda / \partial s_0$. We thus have a linear system to solve for each JVP for an implicit function. Setting $A = -\frac{\partial F}{\partial w} (w^*(\lambda), \lambda)$ and $B =  \frac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)$, we need to solve:
+\begin{equation}
+	t_k = A^{-1} B t_{k-1}
+\end{equation}
+Once the forward pass is done, $A$ is fixed and so we can do an LU decomposition of $A$ to solve the linear system efficiently for each JVP.\\
+\begin{equation}
+	\begin{aligned}
+		LU t_k = B t_{k-1}&\\
+		\Downarrow \qquad&\\
+		\begin{cases}
+			L y &= B t_{k-1} \\
+			U t_k &= y
+		\end{cases}
+	\end{aligned}
+\end{equation}
+And for the VJP, we want to compute the reverse tangent $r_{k-1}$ knowing the next reverse tangent $r_k$ and the function at this step. Assuming the IFT holds, we have this equality:
+\begin{equation}
+  r_{k-1} = - \left( \frac{\partial F}{\partial \lambda} (w^*, \lambda) \right)^T \cdot \left( \frac{\partial F}{\partial w} (w^*, \lambda) \right)^{-T} \cdot r_k
+\end{equation}
+Knowing that $r_{k-1} = \partial s_0 / \partial \lambda$ and $r_k = \partial s_0 / \partial w^*(\lambda)$, and with $A = \frac{\partial F}{\partial w} (w^*(\lambda), \lambda)$ and $B = \frac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)$. We thus have a linear system to solve for each VJP for an implicit function. And we can do it like this:
+\begin{equation}
+  \begin{cases}
+	A^T y = r_k \\
+	r_{k-1} = - B^T y
+  \end{cases}
+\end{equation}
+\subsection{AD with optimization problem}
+Consider the optimization problem defined by:
+\begin{equation}
+  \min c^Tx \quad \text{s.t.} \quad Ax = b, \quad x \geq 0
+\end{equation}
+and its dual:
+\begin{equation}
+  \max b^Ty \quad \text{s.t.} \quad A^Ty \leq c
+\end{equation}
+The KKT conditions gives us the optimality conditions for this problem:
+\begin{equation}
+  \begin{cases}
+	Ax = b \\
+	(A^Ty - c) \perp x \geq 0 
+  \end{cases}
+\end{equation}
+We can rewrite these conditions as an implicit function $F((x,y),(A,b,c))$:
+\begin{equation}
+  F((x,y),(A,b,c)) = \begin{bmatrix}
+	Ax - b \\
+	Diag(x)(A^Ty - c)
+  \end{bmatrix}
+\end{equation}
+If the IFT holds for this function, then we can compute $\frac{\partial F}{\partial w} (w^*, \lambda)$, which gives us:
+\begin{equation}
+  \frac{\partial F}{\partial (x,y)} = \begin{bmatrix}
+	A & 0 \\
+	Diag(A^Ty - c) & Diag(x)A^T
+  \end{bmatrix}
+\end{equation}
 \section{Sparse AD}
 Often in practice, the Jacobian matrix is sparse, meaning that many of its entries are zero. In such cases, we can use sparse automatic differentiation techniques to exploit this sparsity and reduce the computational cost of computing the Hessian. For this section, we will suppose that we know the sparsity pattern of the Jacobian matrix.
 Consider for example the following Jacobian matrix:
 \begin{equation}
   J = \begin{bmatrix}
-    0 & * & 0 & * & 0\\
-    0 & 0 & 0 & * & *\\
-    0 & * & * & 0 & 0\\
-    * & 0 & * & 0 & 0
+	0 & * & 0 & * & 0\\
+	0 & 0 & 0 & * & *\\
+	0 & * & * & 0 & 0\\
+	* & 0 & * & 0 & 0
   \end{bmatrix}
 \end{equation}
 If we computed the Hessian using the standard AD techniques, we would need to compute 5 JVP or 4 VJP. But what if we could group some columns or rows together to reduce the number of passes needed ? Yes we can combine the columns or rows that do not share any non-zero entry. For example, with the Jacobian matrix above, we can compute the Hessian with only 2 JVP or 2 VJP. the intuition behind this comes from the fact that when we compute a JVP or a VJP, the zero entries do not contribute to the result, so we can group together the columns or rows that do not share any non-zero entry. For example, let us compute the two firsts JVPs:
 \begin{equation}
-    J\begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 0 \\ * \end{bmatrix} \qquad \& \qquad
-    J\begin{bmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} *\\ 0 \\ * \\ 0 \end{bmatrix}
+	J\begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 0 \\ * \end{bmatrix} \qquad \& \qquad
+	J\begin{bmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} *\\ 0 \\ * \\ 0 \end{bmatrix}
 \end{equation}
 Combining these two JVPs, we get:
 \begin{equation}
-    J\begin{bmatrix} 1 \\ 1 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} * \\ 0 \\ * \\ * \end{bmatrix}
+	J\begin{bmatrix} 1 \\ 1 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} * \\ 0 \\ * \\ * \end{bmatrix}
 \end{equation}
 And because we know the sparsity pattern we can then put the results back in the right place, this is called the decompression. So to compute the Hessian, we combine the following columns and so use those vectors for the JVPs:
 \begin{equation}
   \begin{bmatrix}
-    0 & \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0\\
-    0 & 0 & 0 & \textcolor{blue}{*} & \textcolor{red}{*}\\
-    0 & \textcolor{red}{*} & \textcolor{blue}{*} & 0 & 0\\
-    \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0 & 0
+	0 & \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0\\
+	0 & 0 & 0 & \textcolor{blue}{*} & \textcolor{red}{*}\\
+	0 & \textcolor{red}{*} & \textcolor{blue}{*} & 0 & 0\\
+	\textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0 & 0
   \end{bmatrix} \qquad \Rightarrow \qquad \textcolor{red}{v_1}=\begin{bmatrix} 1 \\ 1 \\
-    0 \\ 0 \\ 1 \end{bmatrix} \& \quad \textcolor{blue}{v_2}=\begin{bmatrix} 0 \\ 0 \\ 1 \\ 1 \\ 0 \end{bmatrix}
+	0 \\ 0 \\ 1 \end{bmatrix} \& \quad \textcolor{blue}{v_2}=\begin{bmatrix} 0 \\ 0 \\ 1 \\ 1 \\ 0 \end{bmatrix}
 \end{equation}
 Or for the VJP:
 \begin{equation}
   \begin{bmatrix}
-    0 & \textcolor{red}{*} & 0 & \textcolor{red}{*} & 0\\
-    0 & 0 & 0 & \textcolor{blue}{*} & \textcolor{blue}{*}\\
-    0 & \textcolor{blue}{*} & \textcolor{blue}{*} & 0 & 0\\
-    \textcolor{red}{*} & 0 & \textcolor{red}{*} & 0 & 0
+	0 & \textcolor{red}{*} & 0 & \textcolor{red}{*} & 0\\
+	0 & 0 & 0 & \textcolor{blue}{*} & \textcolor{blue}{*}\\
+	0 & \textcolor{blue}{*} & \textcolor{blue}{*} & 0 & 0\\
+	\textcolor{red}{*} & 0 & \textcolor{red}{*} & 0 & 0
   \end{bmatrix} \qquad \Rightarrow \qquad \textcolor{red}{v_1}=\begin{bmatrix} 1 & 0 & 0 & 1 \end{bmatrix} \& \quad \textcolor{blue}{v_2}=\begin{bmatrix} 0 & 1 & 1 & 0 \end{bmatrix}
 \end{equation}
 \subsection{Sparsity detection}
 The problem of grouping the columns or rows of a sparse matrix can be seen as a graph coloring problem. There is multiple way to model this problem as a graph coloring problem. For example, we can create a graph where each column is a node and there is an edge between two nodes if they share a non-zero entry. Then we can use a graph coloring algorithm to color the graph such that no two adjacent nodes have the same color. Each color then represents a group of columns that can be combined together for the JVPs. The same can be done for the rows for the VJPs. Here is a visual example: 
 \begin{equation}
   J = \begin{bmatrix}
-    0 & \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0\\
-    0 & 0 & 0 & \textcolor{blue}{*} & \textcolor{red}{*}\\
-    0 & \textcolor{red}{*} & \textcolor{blue}{*} & 0 & 0\\
-    \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0 & 0
+	0 & \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0\\
+	0 & 0 & 0 & \textcolor{blue}{*} & \textcolor{red}{*}\\
+	0 & \textcolor{red}{*} & \textcolor{blue}{*} & 0 & 0\\
+	\textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0 & 0
   \end{bmatrix}
 \end{equation}
 \begin{center}
   \begin {tikzpicture}[-latex ,auto ,node distance = 2.5 cm and 2.5 cm ,on grid ,
-    semithick ,
-    state1/.style ={ circle ,top color =white , bottom color = red ,
-    draw,red , text=black , minimum width =1 cm}, state2/.style ={ circle ,top color =white , bottom color = blue ,
-    draw,blue , text=black , minimum width =1 cm}]
-    \node[state1] (E) {$5$};
-    \node[state2] (D) [above right=of E] {$4$};
-    \node[state2] (C) [above left=of E] {$3$};
-    \node[state1] (B) [above =of D] {$2$};
-    \node[state1] (A) [above =of C] {$1$};
-    \path (A) edge (C);
-    \path (C) edge (B);
-    \path (B) edge (D);
-    \path (D) edge (E);
+	semithick ,
+	state1/.style ={ circle ,top color =white , bottom color = red ,
+	draw,red , text=black , minimum width =1 cm}, state2/.style ={ circle ,top color =white , bottom color = blue ,
+	draw,blue , text=black , minimum width =1 cm}]
+	\node[state1] (E) {$5$};
+	\node[state2] (D) [above right=of E] {$4$};
+	\node[state2] (C) [above left=of E] {$3$};
+	\node[state1] (B) [above =of D] {$2$};
+	\node[state1] (A) [above =of C] {$1$};
+	\path (A) edge (C);
+	\path (C) edge (B);
+	\path (B) edge (D);
+	\path (D) edge (E);
   \end{tikzpicture}
 \end{center}
 Be careful, with more complex sparsity patterns, we could have edges that link more than one times the same nodes. For example, consider the following Jacobian matrix:
 \begin{equation}
   J = \begin{bmatrix}
-    0 & 0 & * \\
-    * & * & 0 \\
-    * & * & 0
+	0 & 0 & * \\
+	* & * & 0 \\
+	* & * & 0
   \end{bmatrix}
 \end{equation}
 With that matrix, the node 1 and 2 should be linked by two edges because they share two non-zero entries. This means that when we color the graph, we need to make sure that the nodes linked by multiple edges do not share the same color.\\
 Another way to model this problem is to create a bipartite graph where one set of nodes represents the columns and the other set represents the rows. There is an edge between a column node and a row node if the corresponding entry in the matrix is non-zero. Considering the same example as before:
 \begin{equation}
   J = \begin{bmatrix}
-    0 & \textcolor{green}{*} & 0 & \textcolor{green}{*} & 0\\
-    0 & 0 & 0 & \textcolor{violet}{*} & \textcolor{violet}{*}\\
-    0 & \textcolor{violet}{*} & \textcolor{violet}{*} & 0 & 0\\
-    \textcolor{green}{*} & 0 & \textcolor{green}{*} & 0 & 0
+	0 & \textcolor{green}{*} & 0 & \textcolor{green}{*} & 0\\
+	0 & 0 & 0 & \textcolor{violet}{*} & \textcolor{violet}{*}\\
+	0 & \textcolor{violet}{*} & \textcolor{violet}{*} & 0 & 0\\
+	\textcolor{green}{*} & 0 & \textcolor{green}{*} & 0 & 0
   \end{bmatrix}  \qquad or \qquad \begin{bmatrix}
-    0 & \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0\\
-    0 & 0 & 0 & \textcolor{blue}{*} & \textcolor{red}{*}\\
-    0 & \textcolor{red}{*} & \textcolor{blue}{*} & 0 & 0\\
-    \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0 & 0
+	0 & \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0\\
+	0 & 0 & 0 & \textcolor{blue}{*} & \textcolor{red}{*}\\
+	0 & \textcolor{red}{*} & \textcolor{blue}{*} & 0 & 0\\
+	\textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0 & 0
   \end{bmatrix} 
 \end{equation}
 \begin{center}
   \begin {tikzpicture}[-latex ,auto ,node distance = 2 cm and 4 cm ,on grid ,
-    semithick ,
-    state1/.style ={ circle ,top color =white , bottom color = red , draw,red , text=black , minimum width =1 cm}, state2/.style ={ circle ,top color =white , bottom color = blue , draw,blue , text=black , minimum width =1 cm}, state3/.style ={ circle ,top color =white , bottom color = green , draw,green , text=black , minimum width =1 cm}, state4/.style ={ circle ,top color =white , bottom color = violet , draw,violet , text=black , minimum width =1 cm}]
-    \node[state3] (A) {$r_1$};
-    \node[state4] (B) [below=of A] {$r_2$};
-    \node[state4] (C) [below=of B] {$r_3$};
-    \node[state3] (D) [below=of C] {$r_4$};
-    \node[state1] (E) [right=of A] {$a_1$};
-    \node[state1] (F) [below=of E] {$a_2$};
-    \node[state2] (G) [below=of F] {$a_3$};
-    \node[state2] (H) [below=of G] {$a_4$};
-    \node[state1] (I) [below=of H] {$a_5$};
-    \path (A) edge (F);
-    \path (A) edge (H);
-    \path (B) edge (H);
-    \path (B) edge (I);
-    \path (C) edge (F);
-    \path (C) edge (G);
-    \path (D) edge (E);
-    \path (D) edge (G);
+	semithick ,
+	state1/.style ={ circle ,top color =white , bottom color = red , draw,red , text=black , minimum width =1 cm}, state2/.style ={ circle ,top color =white , bottom color = blue , draw,blue , text=black , minimum width =1 cm}, state3/.style ={ circle ,top color =white , bottom color = green , draw,green , text=black , minimum width =1 cm}, state4/.style ={ circle ,top color =white , bottom color = violet , draw,violet , text=black , minimum width =1 cm}]
+	\node[state3] (A) {$r_1$};
+	\node[state4] (B) [below=of A] {$r_2$};
+	\node[state4] (C) [below=of B] {$r_3$};
+	\node[state3] (D) [below=of C] {$r_4$};
+	\node[state1] (E) [right=of A] {$a_1$};
+	\node[state1] (F) [below=of E] {$a_2$};
+	\node[state2] (G) [below=of F] {$a_3$};
+	\node[state2] (H) [below=of G] {$a_4$};
+	\node[state1] (I) [below=of H] {$a_5$};
+	\path (A) edge (F);
+	\path (A) edge (H);
+	\path (B) edge (H);
+	\path (B) edge (I);
+	\path (C) edge (F);
+	\path (C) edge (G);
+	\path (D) edge (E);
+	\path (D) edge (G);
   \end{tikzpicture}
 \end{center}
 With this modeling, the coloring problem is a distance-2 graph coloring problem, meaning that two nodes that are at distance 2 from each other cannot share the same color. This is because two columns that share a non-zero entry are connected to the same row node, so they are at distance 2 from each other. The same applies for the rows.\\ 
@@ -428,19 +547,19 @@ With this modeling, the coloring problem is a distance-2 graph coloring problem,
 When the Hessian matrix is symmetric, we can use a more efficient algorithm to compute the HVP. For example, consider the following symmetric Hessian matrix:
 \begin{equation}
   J = \begin{bmatrix}
-    a_1 & a_2 & a_3 & 0\\
-    a_2 & a_4 & 0 & a_5\\
-    a_3 & 0 & a_6 & 0\\
-    0 & a_5 & 0 & a_7
+	a_1 & a_2 & a_3 & 0\\
+	a_2 & a_4 & 0 & a_5\\
+	a_3 & 0 & a_6 & 0\\
+	0 & a_5 & 0 & a_7
   \end{bmatrix}
 \end{equation}
 With the previous sparse AD techniques, we would need to compute 3 HVP or 3 VHP, instead of 4. But if we take into account the symmetry of the matrix we could even do it in 2 HVP or 2 VHP. Indeed, we can group the columns like this:
 \begin{equation}\label{eq:sym_norm}
   J = \begin{bmatrix}
-    \textcolor{red}{a_1} & \textcolor{blue}{a_2} & \textcolor{blue}{a_3} & 0\\
-    \textcolor{red}{a_2} & \textcolor{blue}{a_4} & 0 & \textcolor{red}{a_5}\\
-    \textcolor{red}{a_3} & 0 & \textcolor{blue}{a_6} & 0\\
-    0 & \textcolor{blue}{a_5} & 0 & \textcolor{red}{a_7}
+	\textcolor{red}{a_1} & \textcolor{blue}{a_2} & \textcolor{blue}{a_3} & 0\\
+	\textcolor{red}{a_2} & \textcolor{blue}{a_4} & 0 & \textcolor{red}{a_5}\\
+	\textcolor{red}{a_3} & 0 & \textcolor{blue}{a_6} & 0\\
+	0 & \textcolor{blue}{a_5} & 0 & \textcolor{red}{a_7}
   \end{bmatrix}
 \end{equation}
 At first sight, it seems that the columns 2 and 3 cannot be grouped together because they share a non-zero entry at position (1,2) and (1,3). But because of the symmetry, we already have the information of those entries in the collumn 1 and thus we will be able to retrieve the full matrix. Let us compute the two HVPs and see how we can retrieve the full matrix:
@@ -453,20 +572,20 @@ We have a graph $G=(V,E)$, a coloring function $\phi: V \to \{1, \ldots, p\}$. A
 Let us see an example considering the same symmetric Hessian matrix as before:
 \begin{equation}
   J = \begin{bmatrix}
-    a_1 & a_2 & a_3 & 0\\
-    a_2 & a_4 & 0 & a_5\\
-    a_3 & 0 & a_6 & 0\\
-    0 & a_5 & 0 & a_7
+	a_1 & a_2 & a_3 & 0\\
+	a_2 & a_4 & 0 & a_5\\
+	a_3 & 0 & a_6 & 0\\
+	0 & a_5 & 0 & a_7
   \end{bmatrix}
 \end{equation}
 If we color its associated graph with the classic distance-1 coloring, we would get the same matrix as \eqref{eq:sym_norm} and thus if we do the HVPs we would get the matrix \eqref{eq:sym_norm_sol} and we would need to solve a linear equation system to retrieve the value $a_2$. 
 But if we use a star coloring, we could retrieve explicitly all the element. Let us show how:
 \begin{equation}
   J = \begin{bmatrix}
-    \textcolor{red}{a_1} & \textcolor{blue}{a_2} & \textcolor{blue}{a_3} & 0\\
-    \textcolor{red}{a_2} & \textcolor{blue}{a_4} & 0 & \textcolor{green}{a_5}\\
-    \textcolor{red}{a_3} & 0 & \textcolor{blue}{a_6} & 0\\
-    0 & \textcolor{blue}{a_5} & 0 & \textcolor{green}{a_7}
+	\textcolor{red}{a_1} & \textcolor{blue}{a_2} & \textcolor{blue}{a_3} & 0\\
+	\textcolor{red}{a_2} & \textcolor{blue}{a_4} & 0 & \textcolor{green}{a_5}\\
+	\textcolor{red}{a_3} & 0 & \textcolor{blue}{a_6} & 0\\
+	0 & \textcolor{blue}{a_5} & 0 & \textcolor{green}{a_7}
   \end{bmatrix}
 \end{equation}
 The use of the green color ensure the star coloring condition. Now if we compute the 3 HVPs:
@@ -520,35 +639,35 @@ To propagate and update the information through the network we use forward pass 
 We can describe the forward pass of a neural network in two equivalent ways:
 \begin{equation}
   \begin{aligned}
-    &\text{Right to left:} \qquad &&\text{Left to right:}\\
-    &S_0 = X \qquad &&S_0 = x\\
-    &S_{2k-1} = W_k S_{2k-2} + b_k \qquad &&S_{2k-1} = S_{2k-2}W_k + b_k\\
-    &S_{2k} = \sigma(S_{2k-1}) \qquad &&S_{2k} = \sigma(S_{2k-1})\\
-    &S_{2H+1} = W_{k+1}S_{2H} \qquad &&S_{2H+1} = S_{2H}W_{k+1}\\
-    &S_{2H+2} = \ell(S_{2H+1}, Y) \qquad &&S_{2H+2} = \ell(S_{2H+1}, Y)\\ 
+	&\text{Right to left:} \qquad &&\text{Left to right:}\\
+	&S_0 = X \qquad &&S_0 = x\\
+	&S_{2k-1} = W_k S_{2k-2} + b_k \qquad &&S_{2k-1} = S_{2k-2}W_k + b_k\\
+	&S_{2k} = \sigma(S_{2k-1}) \qquad &&S_{2k} = \sigma(S_{2k-1})\\
+	&S_{2H+1} = W_{k+1}S_{2H} \qquad &&S_{2H+1} = S_{2H}W_{k+1}\\
+	&S_{2H+2} = \ell(S_{2H+1}, Y) \qquad &&S_{2H+2} = \ell(S_{2H+1}, Y)\\ 
   \end{aligned}
 \end{equation}
 The principal differences is that the weights acts on the left or on the right of the data, it can be useful depending whether you represents inputs as rowvectors or columnvectors.\\
 It can be represented by this computational graph:\\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{img/nn_fd.png}
-    \caption{Neural network forward pass}
-    \label{fig:nn_fd}
+	\centering
+	\includegraphics[width=\textwidth]{img/nn_fd.png}
+	\caption{Neural network forward pass}
+	\label{fig:nn_fd}
 \end{figure}
 And the backward pass can be represented like this:\\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{img/nn_bd.png}
-    \caption{Neural network backward pass}
-    \label{fig:nn_bd}
+	\centering
+	\includegraphics[width=\textwidth]{img/nn_bd.png}
+	\caption{Neural network backward pass}
+	\label{fig:nn_bd}
 \end{figure}
 \section{Autoregressive models}
 An Autoregressive model wants to predict the next values in a sequence based on its previous values. Given a sequence of $n_{cxt}$ (context) past vectors $x_{-1}, x_{-2}, \ldots, x_{-n_{cxt}}$, the model aims to predict the next vector $x_0$ and maybe more $x_1$. Example, we want to predict $x_0$ and $x_1$ based on the past:
 \begin{equation}
   \begin{aligned}
-    p(x_0, x_1 | x_{-1}, \ldots, x_{-n_{cxt}}) &= p(x_0 | x_{-1}, \ldots, x_{-n_{cxt}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{cxt} + 1}, x_{-n_{cxt}}) \\
-    &\approx p(x_0 | x_{-1}, \ldots, x_{-n_{cxt}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{cxt} + 1})
+	p(x_0, x_1 | x_{-1}, \ldots, x_{-n_{cxt}}) &= p(x_0 | x_{-1}, \ldots, x_{-n_{cxt}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{cxt} + 1}, x_{-n_{cxt}}) \\
+	&\approx p(x_0 | x_{-1}, \ldots, x_{-n_{cxt}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{cxt} + 1})
   \end{aligned} 
 \end{equation}
 So the models aims to predict the probability distribution of the next vector $x_0$ with $\hat{p}(x_0 | X)$ with $X$ that concatenates all the context vectors. And then we use the cross-entropy to measure how well the predicted distribution $\hat{p}$ matches the true distribution $p$:
@@ -587,17 +706,17 @@ Let's investigate the case where we have $n_{cxt} > 1$. When $n_{cxt} > 1$, the 
 We can note that now $W_1$ has $n_{cxt}d_{emb}$ columns. Assuming $d_{emb} \ll n_{voc}$ and $n_{cxt} \gg 1$, this is much smaller than the $n_{ctx}n_{voc}$ that we had before the embedding. The number of rows of $W_2$ is not affected by the embedding so it remains $n_{voc}$.\\
 We could represent this model like this:\\
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{img/shared_embedding.png}
-    \caption{Neural network with shared embedding}
-    \label{fig:shared_embedding}
+	\centering
+	\includegraphics[width=0.7\textwidth]{img/shared_embedding.png}
+	\caption{Neural network with shared embedding}
+	\label{fig:shared_embedding}
 \end{figure}
 \section{Recurrent neural networks (RNN)}
 A RNN is a type of neural network that is designed to process sequential data by taking advantages of the memory of previous inputs. The idea is to have a hidden state $h_t$ that depends on the current input $x_t$ and the previous hidden state $h_{t-1}$. With this idea, the network reuses the same weights at every time step and thus gives meaning to the sequence. The equations of a simple RNN are:
 \begin{equation}
   \begin{cases}
-    h_{t+1} = \tanh(W h_{t} + U x_{t-1} + b) \\
-    \hat{y}_t = \text{softmax}(V h_t + c)
+	h_{t+1} = \tanh(W h_{t} + U x_{t-1} + b) \\
+	\hat{y}_t = \text{softmax}(V h_t + c)
   \end{cases}
 \end{equation}
 Where $W, U, V$ are weight matrices and $b, c$ are bias vectors.\\
@@ -623,16 +742,16 @@ To ensure that the model only attends to previous tokens and not future tokens, 
 So with masked attention, the equation becomes:
 \begin{equation}
   \begin{cases}
-    M = \begin{bmatrix} 0 & 0 &  \cdots & 0 \\ -\infty & 0 &  \ddots & 0 \\ \vdots & \ddots & \ddots & \vdots \\ -\infty & -\infty &  \cdots & 0 \\ \end{bmatrix}\\
-    \text{Attention}(Q,K,V) = V\text{softmax}\left(M+\frac{K^TQ}{\sqrt{d_k}}\right)
+	M = \begin{bmatrix} 0 & 0 &  \cdots & 0 \\ -\infty & 0 &  \ddots & 0 \\ \vdots & \ddots & \ddots & \vdots \\ -\infty & -\infty &  \cdots & 0 \\ \end{bmatrix}\\
+	\text{Attention}(Q,K,V) = V\text{softmax}\left(M+\frac{K^TQ}{\sqrt{d_k}}\right)
   \end{cases}
 \end{equation}
 \subsection{Multi-head attention}
 Instead of having a single attention head, we can have multiple attention heads that can understand different aspects of the input data. Each head has its own set of weights and computes its own attention output, all in parallel. After computing all the heads, their outputs are concatenated and linearly transformed to be in the right dimension with $W^O$, this is thus gathering all of the meanings of the attention different heads to a single representation. So the multi-head attention can be defined as:
 \begin{equation}
   \begin{cases}
-    \text{head}_j = \text{Attention}(W_j^QQ, W_j^KK, W_j^VV) \\
-    \text{MultiHead}(Q,K,V) = W^O \begin{bmatrix} \text{head}_1 \\ \text{head}_2 \\ \vdots \\ \text{head}_h \end{bmatrix}
+	\text{head}_j = \text{Attention}(W_j^QQ, W_j^KK, W_j^VV) \\
+	\text{MultiHead}(Q,K,V) = W^O \begin{bmatrix} \text{head}_1 \\ \text{head}_2 \\ \vdots \\ \text{head}_h \end{bmatrix}
   \end{cases}
 \end{equation}
 \section{Decoder-only transformer}
@@ -642,9 +761,9 @@ The positional encoding is essential in a transformer model because it provides 
 We cannot use one-hot encoding for the position because the dimension would be $n_{ctx}$ and not $d_{emb}$ as expected. The classic approach is to use sines and cosines with an angle that depends on the position of the token and the embedding dimension. The positional encoding for a token at position $pos$ and with the embedding dimension index $i$ and embedding dimension $d_{emb}$ could be defined as:
 \begin{equation}
   \begin{cases}
-    angle = \frac{pos}{10000^{2i/d_{emb}}} \\
-    PE[pos, 2i] = \sin\left(angle\right) \\
-    PE[pos, 2i+1] = \cos\left(angle\right)
+	angle = \frac{pos}{10000^{2i/d_{emb}}} \\
+	PE[pos, 2i] = \sin\left(angle\right) \\
+	PE[pos, 2i+1] = \cos\left(angle\right)
   \end{cases}
 \end{equation}
 And then we add this positional encoding to the input embeddings before doing the attention mechanism:
@@ -708,6 +827,34 @@ We can also observe that the dimension of the vocabulary $n_{voc}$ does not appe
 % \section{Encoder-decoder transformers}
 % \textcolor{red}{Idk what to say}
 \chapter{Diffusion Models}
+The objective of diffusion models is to generate data by learning how to reverse a gradual noising process, turning random noise into structured samples through iterative denoising. 
+\section{Tweedie's formula}
+First, we need to understand why diffusion models can be trained by denoising and why predicting the noise is equivalent to learning a score. For that, we need to introduce Tweedie's formula. Consider that we observe a noisy version of a random variable $X$. The noisy observation is given by $Y = X + \sigma \epsilon$, where $\epsilon \sim \mathcal{N}(0, 1)$. We want, given this noisy observation $Y=y$, to estimate the original variable $X$. The MMSE estimator is given by $\mathbb{E}[X | Y=y]$. Tweedie's formula states that:
+\begin{equation}
+  \mathbb{E}[X | Y=y] = y + \sigma^2 \nabla_y \log f_Y(y)
+\end{equation}
+where $f_Y(y)$ is the probability density function of the noisy observation $Y$. And thus $\nabla_y \log f_Y(y)$ is a score function that tells us in which direction the probability mass increases and thus where cleaner data is. We can also estimate the noise $\epsilon$:
+\begin{equation}
+  \mathbb{E}[\epsilon | Y=y] = - \sigma \nabla_y \log f_Y(y)
+\end{equation}
+And this means that if we can predict the noise, we can also estimate the score function and thus the denoised data. This is the principle used in diffusion models.
+\section{Langevin dynamics (sampling)}
+Langevin dynamics is a way to sample from a probability distribution ($p(y)$) when you only know its log-density gradient (the score), not the density itself. The idea is to iteratively update a sample by taking small steps in the direction of the score, while also adding some random noise to ensure exploration of the space. The update rule for Langevin dynamics is given by:
+\begin{equation}
+  y_{k+1} = y_k + \delta_k \nabla_y \log p(y_k) + \sqrt{2 \delta_k} w_k	
+\end{equation}
+with $w_k \sim \mathcal{N}(0, 1)$ and $\delta_k$ is a small step size. By repeating this process many times, the samples $y_k$ will converge to the target distribution $p(y)$. Adding this noise is important because it helps the samples to explore the space more effectively and avoid getting stuck in local modes of the distribution. The Langevin dynamics is seen in diffusion models at each denoising step.
+\section{Score matching}
+This is the part "learning the score" of diffusion models. Here the idea is to fix a noise level $\sigma$ and to corrupt the data $X$ with Gaussian noise to get $Y = X + \sigma \epsilon$, with $\epsilon \sim \mathcal{N}(0, 1)$. Then we want to minimize the error to learn the noisy data distribution ($p_{X+\sigma \epsilon}$):
+\begin{equation}
+	  \mathbb{E}\left[ \| \epsilon_\theta (X+ \sigma \epsilon) - \epsilon \|^2 \right]
+\end{equation}
+But with this, $\sigma$ needs to be scaled properly, otherwise the model will not learn well. If $\sigma$ is too small, then the support of $X+ \sigma \epsilon$ may not cover the whole space, and thus $\epsilon_\theta(y)$ may be inaccurate. If $\sigma$ is too large, then the noise dominates the signal, and the model may struggle to learn meaningful patterns.
+\subsection{Variance dependent score}
+To address the issue of choosing the right noise level $\sigma$, we can introduce a variance-dependent score function. Instead of using a fixed $\sigma$, we can define a score function that depends on the noise level. The idea is to train a model $\epsilon_\theta(y, \sigma)$ that takes both the noisy observation $y$ and the noise level $\sigma$ as inputs. The training objective becomes:
+\begin{equation}
+	\mathbb{E}\left[ \| \epsilon_\theta (X+ \sigma \epsilon, \sigma) - \epsilon \|^2 \right]
+\end{equation}
 \chapter{Kernels}
 \begin{figure}[H]
 	\centering
@@ -721,7 +868,7 @@ A kernel is a function that transforms a dataset into another, typically of high
 where the kernel function then is 
 \begin{equation}\label{eq:example}
   \phi(x) = \begin{pmatrix}
-    x_1^2 \\ x_2^2 \\ \sqrt{2}x_1x_2
+	x_1^2 \\ x_2^2 \\ \sqrt{2}x_1x_2
   \end{pmatrix}
 \end{equation}
 \section{Reminders on scalar product}
@@ -738,8 +885,8 @@ A scalar product $\langle \cdot, \cdot \rangle_V$ verifies
 Consider a positive definite symmetric matrix $M\succ 0\in \R^{n\times n}$ with the scalar product $\langle x,y\rangle_M = x^TMy$. Any such matrix can be factored as $M=L^TL$, where $L$ is invertible. We can do a change of coordinates to re-express under the cartesian scalar product:
 \begin{equation}
   \begin{cases}
-    w = Lx \\
-    z = Ly
+	w = Lx \\
+	z = Ly
   \end{cases} \Longrightarrow \langle x,y\rangle_M = \langle w,z\rangle_{\R^n}
 \end{equation}
 Then, all $n$-dimensional Euclidean spaces are equivalent up to a change of coordinates. 
@@ -775,14 +922,14 @@ Then, remembering $\phi(x_i) = K e_i$,
 Let us prove the "up to a rotation" part. Define 
 \begin{equation}
   \begin{cases}
-    \phi':X\to \R^N \\ \phi'(x) = Q\phi(x) \\ \langle x,y\rangle_{M'} = \langle x,y\rangle_{QK^{-1}Q^T}
+	\phi':X\to \R^N \\ \phi'(x) = Q\phi(x) \\ \langle x,y\rangle_{M'} = \langle x,y\rangle_{QK^{-1}Q^T}
   \end{cases}
 \end{equation}
 where $Q$ is a rotation matrix, i.e. $Q^TQ = I$. Then,
 \begin{equation}
   \begin{aligned}
-    \langle \phi'(x),\phi'(y)\rangle_{M'}&= (Q\phi(x))^T Q K^{-1} Q^T (Q\phi(y))\\
-    &= \phi(x)^T K^{-1}\phi(y) = \langle \phi(x),\phi(y)\rangle_{K^{-1}}
+	\langle \phi'(x),\phi'(y)\rangle_{M'}&= (Q\phi(x))^T Q K^{-1} Q^T (Q\phi(y))\\
+	&= \phi(x)^T K^{-1}\phi(y) = \langle \phi(x),\phi(y)\rangle_{K^{-1}}
   \end{aligned}
 \end{equation}
 The result is true for any rotation matrix $Q$. 
@@ -805,8 +952,8 @@ Mathematically, the kernel function is the equivalent of the kernel matrix, but 
 For a RKHS $H$, we verify 
 \begin{equation}
   \begin{cases}
-    \forall x\in X\: : \: k(x,\cdot)\in H\\
-    \forall x\in X\: ,\forall f\in H, \: f(x) = \langle f,k(x,\cdot)\rangle_K
+	\forall x\in X\: : \: k(x,\cdot)\in H\\
+	\forall x\in X\: ,\forall f\in H, \: f(x) = \langle f,k(x,\cdot)\rangle_K
   \end{cases}
 \end{equation}
 The reproducing kernel property is 
@@ -817,8 +964,8 @@ The reproducing kernel property is
 \begin{thm}
   A continuous map $k:X\times X \to \R$ is the kernel of some RKHS $H\subset \mathcal{C}(X,\R)$
   \begin{itemize}
-    \item iff $k(x,y) = \langle \phi(x),\phi(y)\rangle_H$ for some feature map $\phi:X\to H$;
-    \item iff, for all finite subsets $X_0\subset X$, the kernel matrix is symmetric positive definite.
+	\item iff $k(x,y) = \langle \phi(x),\phi(y)\rangle_H$ for some feature map $\phi:X\to H$;
+	\item iff, for all finite subsets $X_0\subset X$, the kernel matrix is symmetric positive definite.
   \end{itemize}
 \end{thm}
 \section{Polynomial kernels}
