@@ -92,15 +92,15 @@ To prove the correctness of an algorithm, we generally use the Hoare triple, i.e
 \end{aligned}
 \end{equation}
 where IS is the insertion sort algorithm, and $x$ is the sorted array. \\
-In practice, to prove the correctness of an algorithm, we define the invariant and the base case, and do an induction step show that the invariant is preserved. The proof is done is my notes at page 1.\\
+In practice, to prove the correctness of an algorithm, we define the invariant and the base case, and do an induction step show that the invariant is preserved. The proof is done in my notes at page 1.\\
 \section{Definition of complexity}
 For some functions $f,g:\mathbb{N} \to \R^+$, 
 \begin{equation}
   	\begin{aligned}
 		&f\in \mathcal{O}(g) \Longleftrightarrow \exists c>0, \exists n_0, \forall n>n_0,\ f(n)\le cg(n)\\
 		&f\in \Omega(g)\Longleftrightarrow g\in \mathcal{O}(f)\\
-		& f\in \Theta(g)\Longleftrightarrow f\in \mathcal{O}(g)\text{ and } f\in \Theta(g)\\
-		&f\in o(g) \Longleftrightarrow \exists c>0, \exists n_0, \forall n>n_0,\ f(n)< cg(n)\\
+		&f\in \Theta(g)\Longleftrightarrow f\in \mathcal{O}(g)\text{ and } f\in \Omega(g)\\
+		&f\in o(g) \Longleftrightarrow \forall c>0, \exists n_0, \forall n>n_0,\ f(n)< cg(n)\\
 		&f\in \omega(g)\Longleftrightarrow g\in o(f)\\
   	\end{aligned}
 \end{equation}
@@ -138,6 +138,7 @@ The idea of this algorithm is to shift the elements to the left until they are w
 		\EndFor 
 	\end{algorithmic}
 \end{algorithm}
+The invariant of this algorithm is that the elements 1 to $i-1$ are sorted.
 \subsection{Quick Sort}
 The quick sort algorithm is based on divide and conquer methods (see chapter \ref{sec:d&c}): it splits and solves smaller sorting problems, and recombines the outputs at the end into a sorted instance.
 \begin{algorithm}[H]
@@ -169,7 +170,7 @@ The recurrence equation for the complexity is
 \begin{equation}
 	t_n = 2t_{\lceil n/2\rceil} + \Theta(n) \Longrightarrow t(n) = \Theta(n\log(n))
 \end{equation}
-The disadvatange of quick sort that this algorithm does not have is the randomness, as it is complex to simulate. However, the constant in the complexity order is higher than for the quick sort, and the memory usage can be higher too. 
+The disadvatange of quick sort is that this algorithm does not have randomness, as it is complex to simulate. However, the constant in the complexity order is higher than for the quick sort, and the memory usage can be higher too. 
 \section{Decision tree}
 A decision tree focuses on strategies and outcomes. It captures the main operations and the leaves are the possible outcomes ($\mathcal{O}(n!)$ in sorting problems, for $n$ the size of the data). This helps us compute the complexity of a sorting algorithm: the number of steps is the depth $S$ of the tree. Then, we have 
 \begin{equation}
@@ -227,7 +228,7 @@ In that case, we find a recurrence relation for the computation time:
 The factor $4$ comes from the fact that we need $4$ products, and the $\Theta(n)$ is the complexity of the sum of the products. \\
 
 We introduce the Master theorem to solve this equation, see section \ref{sec:master}. It gives a complexity of $T(n) = \Theta(n^{\log_2(4)}) = \Theta(n^2)$.\\
-To reduce the complexity, we can change the value of the parameter $a$ from 4 to 3 by calculating only 3 products:
+To reduce the complexity, we can change the value of the coefficient before $T(n/2)$ from 4 to 3 by calculating only 3 products:
 \begin{equation}
 	\begin{cases}
 		\gamma_0 = \alpha_0\beta_0\\
@@ -327,7 +328,7 @@ From the previous section, if we take the points as the $n$ complex roots of 1, 
 \end{equation}
 This gives us 
 \begin{equation}
-	\mat{V}^{-1} = \frac{1}{n} \begin{bmatrix}
+	\left(\mat{V}^{-1}\right)_{ij} = \frac{1}{n} \begin{bmatrix}
 		\omega_n^{-(i-1)(j-1)}
 	\end{bmatrix}
 \end{equation}
@@ -379,7 +380,7 @@ Let us define three notations:
 \begin{equation}
 	\begin{aligned}
 		\textbf{x}^{[0]} &= (x_0,\dots, x_{n/2-1})\\
-		\textbf{x}^{[1]} &= (x_{n/2},\dots, x_{n})\\
+		\textbf{x}^{[1]} &= (x_{n/2},\dots, x_{n-1})\\
 		\mat{T}_n = \begin{pmatrix}
 			\omega_n^0 & & \\ & \ddots & \\ & & \omega_n^{n/2-1}
 		\end{pmatrix}
@@ -424,7 +425,7 @@ The Straßen algorithm uses the same idea as in section \autoref{sec:int_mult}: 
 		M_1 + M_4 - M_5 + M_7 & M_3 + M_5\\ M_2+M_4 & M_1-M_2+M_3+M_6
 	\end{pmatrix}
 \end{equation}
-Which has a complexity of $\Theta(n^{\log_2 7}) \approx \Theta(n^{2.81})$. The lower bound for the complexity is $\Omega(n^2)$, as we need to make at least one operation per element of $C$, and the current best algorithm (galactic) is in $\Theta(n^{371339})$. 
+Which has a complexity of $\Theta(n^{\log_2 7}) \approx \Theta(n^{2.81})$. The lower bound for the complexity is $\Omega(n^2)$, as we need to make at least one operation per element of $C$, and the current best algorithm (galactic) is in $\Theta(n^{2.371339})$. 
 \subsection{Matrix inversion}
 As we can assume intuitively, matrix multiplication and inversion are closely linked. Therefore, the complexity to compute both should be linked too. Let us call $M(n)$ the time complexity of multiplication of matrices of size $n$, and $I(n)$ the time complexity of inversion of a matrix of size $n$. Then,
 \begin{equation}
@@ -455,7 +456,7 @@ where $S = D-C^TB^{-1}C$ is the Schur complement of $A$. From \autoref{eq:reduct
 	I(n) = \mathcal{O}(M(n))
 \end{equation}
 \begin{itemize}
-	\item [$\rightarrow$] Note: the hypotheses that $A=A^T$ and $A\succ 0$ are not binding. If $A$ is invertible but does not verify those conditions, we can work with $AA^T$ that does, and we find the inverse of $A$ with $A^{-1} = A^T(AA^T)^{-1}$. 
+	\item [$\rightarrow$] Note: the hypotheses that $A=A^T$ and $A\succ 0$ are not binding. If $A$ is invertible but does not verify those conditions, we can work with $AA^T$ that does, and we find the inverse of $A$ with $A^{-1} =(A^TA)^{-1} A^T$. 
 \end{itemize}
 \chapter{Dynamic Programming}
 \section{Two approaches}
@@ -495,17 +496,17 @@ This basic algorithm has a very bad complexity, but memoization can improve it.
 		\State $r[0:n] = -\infty $
 		\Function{CRM\_Aux}{$p,n,r$}
 		\If{$r[n]\ge 0$}
-		\State \Return r
+		\State \Return $r[n]$
 		\EndIf 
 		\If {$n=0$}
-		\State \Return 0
+		\State \Return $0$
 		\EndIf 
 		\State $q=-\infty$
 		\For{i=1 to n}
 		\State $q=\max\{q, p_i + CRM\_Aux(p,n-i,r)\}$
 		\EndFor
-		\State $r[n]=q$
-		\Return r
+		\State $r[n]=q$\\
+		\qquad \: \: \Return $q$
 		\EndFunction\\
 		\qquad \Return CRM\_Aux(p,n,r)
 		\EndFunction 
@@ -537,7 +538,7 @@ This problems consists in doing the multiplication of matrices $A_1A_2\dots A_n$
 \end{equation}
 Let us define $m[i,j]$ the optimal cost of the product $A_i\dots A_j$. Our goal is to compute $m[1,n]$, with the initial condition $m[i,i] = 0$ for all $i$. The recurrence relation is 
 \begin{equation}
-	m[i,j] = \min_{i\le k \le j} \{m[i,k] + m[k+1,j] + p_ip_kp_j\} \qquad \forall 1\le i\le j<n	
+	m[i,j] = \min_{i\le k < j} \{m[i,k] + m[k+1,j] + p_{i-1}p_kp_j\} \qquad \forall 1\le i\le j \le n	
 \end{equation}
 This gives a complexity $\Theta(n^2)$, as we need to compute the entries of a triangular matrix $n\times n$. 
 \section{Generating functions}
@@ -553,11 +554,12 @@ From the recurrence equation, we can get the generative function:
 \begin{equation}
 	\begin{aligned}
 		f(x) &= f_0 x^0 + f_1 x^1 + \sum_{k\ge 2} f_k x^k = f_0 + f_1 x + \sum_{k\ge 0} f_{k+2}x^{k+2}\\
-		&= f_0 + f_1 x + \sum_{k\ge0 } f_{k+1} x^k + \sum_{k\ge 0}f_k x^k\\
+		&= f_0 + f_1 x + x^2\sum_{k\ge0 } f_{k+1} x^k + x^2\sum_{k\ge 0}f_k x^k\\
 		&= f_0 + f_1 x + x(f(x)-f_0) + x^2 f(x)\\
 		&= \frac{f_0 + (f_1-f_0)x}{1-x-x^2}
 	\end{aligned}
 \end{equation}
+Knowing that $\sum_{k\ge0 } f_{k+1} x^k = \frac{f(x)-f_0}{x}$ 
 \chapter{Randomized Algorithms}
 \section{Probabilistic analysis and randomized algorithm}
 In probabilistic computing, we need a distribution of the inputs to be able to sample. Based on prior knowledge or assumptions, we can determine the average-case complexity. The goal is for it to be lower than the deterministic algorithm, although it comes at the price of the accuracy of the solution.\\
@@ -649,7 +651,7 @@ Let us take functions $f,g:X\to Y$ and an element $s\in X$. We define the sequen
 		y_i = g(x_i)
 	\end{cases}
 \end{equation}
-The output of this pseudo-random generator is the sequence (usual bits) $y= (y_0,\dots,y_n)$. One famous example of pseudo-random generator is Blum-Blum-Shub (BBS): \\
+The output of this pseudo-random generator (PRG) is the sequence (usual bits) $y= (y_0,\dots,y_n)$. One famous example of pseudo-random generator is Blum-Blum-Shub (BBS): \\
 select random $\kappa$-bit prime integers $p,q$ such that $p=q=3 \mod 4$, and let $N=pq$. The PRG is 
 \begin{equation}
 	\begin{cases}
