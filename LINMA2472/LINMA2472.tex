@@ -1017,8 +1017,8 @@ And then we add this positional encoding to the input embeddings before doing th
 \begin{equation}
   \text{MultiHead}(CX + PE, CX + PE, CX + PE)
 \end{equation}
-\subsection{Resi\text{Dual} connection}
-The principle of resi\text{Dual} connection is to add the input of a layer to its output before applying the layer normalization (next subsection). This helps to mitigate the vanishing gradient problem and help the network to learn because its learning is more controlled, because we remind it of the original input.\\
+\subsection{Residual connection}
+The principle of residual connection is to add the input of a layer to its output before applying the layer normalization (next subsection). This helps to mitigate the vanishing gradient problem and help the network to learn because its learning is more controlled, because we remind it of the original input.\\
 \subsection{Layer normalization}
 The norm of the gradient increases exponentially with the number of layers, so to prevent this we can use layer normalization. This helps stabilize the training process and improve convergence, by rescaling the data before the activation function, which means that we control the mean and the variance of the data. There is two way of doing this normalization, the batch normalization and the layer normalization. The batch normalization is difficult and not very efficient to use in transformers, so we use layer normalization. It is done like this:
 \begin{equation}
