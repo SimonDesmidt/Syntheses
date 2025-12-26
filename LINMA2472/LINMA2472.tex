@@ -289,7 +289,7 @@ For any function $f:\R^n\to\R^m$, the Hessian, per output, is a matrix of dimens
 \begin{equation}
   (\nabla^2 f(x))_{ij} = \dfrac{\partial^2 f(x)}{\partial x_i \partial x_j}
 \end{equation}
-The Hessian can be also be seen as the Jacobian of the function's gradient
+The Hessian can also be seen as the Jacobian of the function's gradient
 \begin{equation}
   \nabla^2 f(x) = J_{\nabla f}(x)
 \end{equation}
@@ -307,7 +307,7 @@ into a more AD-suitable expression.
 Let $s_0 = x$ and $s_k = f_k(s_{k-1})$ for $k \ge 1$.
 Denote by $J_k \triangleq J_{f_k}(s_{k-1})$ the Jacobian of $f_k$ evaluated at $s_{k-1}$.
 
-%Writing $\partial f_k\overset\triangle=\partial f_k(s_{k-1})$ and $\partial^2f_k\overset\triangle=\partial^2 f_k({s_{k-1}})$, one obtains
+%Writing $\partial f_k\triangleq\partial f_k(s_{k-1})$ and $\partial^2f_k\triangleq\partial^2 f_k({s_{k-1}})$, one obtains
 % \begin{equation}
 %   \begin{aligned}
 %     \dfrac{\partial^2 (f_2 \circ f_1)}{\partial x_i \partial x_j} &= \dfrac{\partial}{\partial x_j} \left( \dfrac{ \partial (f_2 \circ f_1)}{\partial x_i} \right) \\
@@ -323,14 +323,14 @@ Denote by $J_k \triangleq J_{f_k}(s_{k-1})$ the Jacobian of $f_k$ evaluated at $
   \end{aligned}
 \end{equation}
 
-Introducing $\He_{kj} \overset\triangle= \dfrac{\partial\J_k}{\partial x_j} = \dfrac{\partial \J_k}{s_{k-1}}\J_{k-1}$, 
+Introducing $\He_{kj} \triangleq \dfrac{\partial\J_k}{\partial x_j} = \dfrac{\partial \J_k}{s_{k-1}}\J_{k-1}$, 
 the final expression reads
 \begin{equation}
   \dfrac{\partial^2 (f_2 \circ f_1)}{\partial x_i \partial x_j} = \He_{2j} \dfrac{\partial f_1}{\partial x_i} + \J_2 \dfrac{\partial^2 f_1}{\partial x_i \partial x_j}
 \end{equation}
 
 \subsubsection{\text{Dual} numbers}
-\emph{\text{Dual} numbers} is a concept borrowed from algebra. Initially introduced in 1873 to represent 
+\emph{\text{Dual} numbers} are a concept borrowed from algebra. Initially introduced in 1873 to represent 
 the \hyperlink{https://en.wikipedia.org/wiki/\text{Dual}\_number\#History}{angle} between lines in space, it can also be applied to automatic differentiation.
 
 A \text{Dual} number is an expression of the form $a+b\varepsilon$ where $a$ and $b$ are real numbers and $\varepsilon$ is a symbol such that $\varepsilon^2=0$ 
@@ -390,8 +390,9 @@ This process can be summarized as the following equations, with $g_k(x) = f_k \c
   \end{cases}
 \end{equation}
 
-\warning\ As one may one, the value of $w^THv$ is a scalar.
-The full process must be repeated for every pair of input variables, making this strategy improper for decent Hessian computing.
+\warning\ As one may see, the value of $w^THv$ is a scalar.
+The full process must be repeated for every pair of input variables, this strategy requires $n^2$ evaluations 
+and is therefore impractical except for very small $n$.
 \subsection{Forward on reverse}
 \begin{formal}
   "Directional derivative of the gradient"
@@ -413,14 +414,14 @@ Operationally, this results in:
         tangent components.
 \end{enumerate}
 
-Defining $s_1 \overset\triangle= \text{Dual}\left(f_1(x)\ \middle|\ \dfrac{\partial f_1}{\partial x_j}\right)$ 
+Defining $s_1 \triangleq \text{Dual}\left(f_1(x)\ \middle|\ \dfrac{\partial f_1}{\partial x_j}\right)$ 
 \begin{enumerate}
   \item Compute $s_2 = f_2(s_1) $
   \item Compute $\J_{f_2}(s_1)$ which gives $\text{Dual}(\J_2, \He_{2j})$
 \end{enumerate}
 The backward pass follows. 
 
-Defining $r_2 \overset\triangle= \text{Dual}(r_{2,1}\mid r_{2,2})$, the computation is
+Defining $r_2 \triangleq \text{Dual}(r_{2,1}\mid r_{2,2})$, the computation is
 \begin{equation}
   \begin{aligned}
     r_2 \J_2 &= \text{Dual}(r_{2,1}\mid r_{2,2}) \text{Dual}(\J_2\mid \He_{2j})\\ &= \text{Dual}(r_{2,1} \J_2\mid r_{2,1} \He_{2j} + r_{2,2} \J_2)
@@ -435,6 +436,7 @@ where the backward recurrence follows the same graph structure as
 reverse-mode AD, and each adjoint update is performed using Dual
 arithmetic.
 
+Here, the tangent component of each adjoint stores the mixed second derivative.
 \subsection{Reverse on forward}
 
 \subsubsection{Mathematically}
@@ -447,8 +449,8 @@ The last equation stands due to the symmetric nature of the Hessian matrix.
 \subsubsection{Algorithmically}
 The reverse-on-forward strategy starts with a forward pass.
 
-Defining $s_1\overset\triangle= \text{Dual}\left(f_1(x)\ \middle|\ \dfrac{\partial f_1}{\partial x_i }\right)$
-\footnote{Note the difference with the previous modes ($j \to i$)}, the algorithms follows
+Defining $s_1\triangleq \text{Dual}\left(f_1(x)\ \middle|\ \dfrac{\partial f_1}{\partial x_i }\right)$
+\footnote{Note the difference with the previous modes ($j \to i$)}, the algorithm follows
 \begin{enumerate}
   \item Compute $s_2 = f_2(s_1) = \text{Dual}\left(f_2(s_1)\ \middle|\ \J_2 \dfrac{\partial f_1}{\partial x_i}\right)$
   \item The reverse mode computes the local Jacobian.
@@ -474,24 +476,87 @@ The solution of the recurrence equation is given by
 \end{equation}
 
 \subsection{Reverse on reverse}
-First we need to set up the forward pass, so we have $s_2 = f_2(s_1)$, again we need to compute its jacobian $\J_2 = \dfrac{\partial s_2}{\partial s_1}$. Then we need compute the backward pass with $r_1 = r_2 \J_2$. Then we need to compute again the backward pass, in order to get the second order derivative. Let $\Dot{r}_k$ be the second order reverse tangent for $r_k$, then we have:
-\begin{equation}
-  \begin{aligned}
-	\Dot{r}_2 &= \J_2 \Dot{r}_1  \\
-	\Dot{s}_1 &= (r_2 \partial^2 f_2(s_1))\Dot{r}_1 + \Dot{s}_2 \J_2
-  \end{aligned}
-\end{equation}
+\subsubsection{Mathematically}
 
-So we can get the solution of the recurrence relation with $\Dot{s}_0 = e_i$:
+\begin{equation}
+  \nabla^2f(x)=J_{\nabla f}(x)
+\end{equation}
+Equivalently, for a given direction $w$, it computes the Vector-Hessian Product (VHP)
+\begin{equation}
+  D(\nabla f)^*[w]=H^Tw=Hw
+\end{equation}
+The last equation stands due to the symmetric nature of the Hessian matrix. 
+Repeating this process for every basis $w=e_i$ yields the full Hessian.
+
+\subsubsection{Order}
+The reverse-on-forward strategy applies the reverse-mode to the reverse-mode computation of the gradient.
+\begin{enumerate}
+  \item A forward pass to obtain function's values
+  \item A first reverse pass to compute first-order adjoints
+  \item A second reverse pass to compute second-order adjoints
+\end{enumerate}
+
+\subsubsection{Forward pass (values computation)}
+Let the primal variables 
+\begin{equation}
+  s_0 = x,\quad s_k = fk(s_{k-1}),\quad k=1,\dots K
+\end{equation}
+During the forward pass, the $K$ intermediary values are stored, as in standard reverse-mode AD.
+
+\subsubsection{First reverse pass (gradient computation)}
+Define the first-order adjoints 
+\begin{equation}
+  r_k\triangleq\frac{\partial f}{\partial s_k}
+\end{equation}
+They satisfy the recurrence equations obtained above
 \begin{equation}
   \begin{cases}
-	r_k = \J_K \dots \J_{k+1}\\
-	\Dot{r}_k = \J_k \dots \J_{1} e_i\\
-	(r_k \partial^2 f_k) \Dot{r}_{k-1} = r_k (\partial^2 f_k \Dot{r}_{k-1})\\
-	\qquad \qquad \qquad = r_k \He_{ki}\\
-	\Dot{s}_k = \sum_{k=1}^{K} r_k \He_{ki} \J_{k-1} \dots \J_1
+    r_K=1,\\
+    r_{k-1}=r_k\J_k
   \end{cases}
 \end{equation}
+with $\J_k=\frac{\partial f_k}{\partial s_{k-1}}$.
+
+At the end of the pass, we obtain $\nabla f(x)=r_0$. All adjoints are stored, as they are required for the second reverse pass.
+
+\subsubsection{Second reverse pass (second-order adjoints)}
+
+The adjoint equations are differentiates w.r.t themselves.
+
+Let $\dot{r}_k$ denote the \emph{second-order adjoint} defined by 
+\begin{equation}
+  \dot r_k\triangleq\frac{\partial}{\partial x_i}\left(\frac{\partial f}{\partial s_k}\right)
+\end{equation}
+for a fixed input direction $e_i$ (one-hot encoding of $x_i$).
+
+Differentiating the first-order recurrence
+\begin{equation}
+  r_{k-1}=r_k\J_k
+\end{equation}
+w.r.t $x_i$ yields
+\begin{equation}
+  \dot r_{k-1}=\dot r_k\J_k+r_k\frac{\partial \J_k}{\partial x_i}
+\end{equation}
+Using the chain rule,
+\begin{equation}
+  \frac{\partial \J_k}{\partial x_i}=\frac{\partial \J_k}{\partial s_{k-1}}\frac{\partial s_{k-1}}{\partial x_i} = \He_{ki}
+\end{equation}
+where $\He_{ki}$ denotes the Hessian of $f_k$ contracted with the forward sensitivity $\dfrac{\partial s_{k-1}}{\partial x_i}$.
+
+The second-order reverse recurrence becomes 
+\begin{equation}
+  \dot r_{k-1}=\dot r_k\J_k+r_k\He_{ki}
+\end{equation}
+with the initial condition $\dot r_K=0$ since $r_K=1$ is constant.
+
+After completing the second reverse pass, the Hesian column corresponding to direction $e_i$ is obtained as 
+\begin{equation}
+  \nabla^2f(x)e_i=\dot r_0
+\end{equation}
+Repeating the process for all $i=1,\dots n$ yields the full Hessian matrix.
+
+\subsection{Comparison}
+
 \section{Implicit differentiation}
 Up to now, we have only considered functions that are explicitly defined, meaning that we know each step explicitly between the input and the output. But what about implicit function, when the output isn't given by an explicit formula. For example, iterative algorithms (Newton's method, Grandient Descent), or functions defined in other language and called from our main program ? As before we want to compute the derivative of these functions, but we do not know them. To solve some of those problems, we could use naive AD but it would be very inefficient because we would need to unroll the whole computation graph of the implicit function. Instead, we can use implicit differentiation, because we know that the derivatives depends on the solution and not on how you got there.\\
 First let us consider a simple example, and show how we can get it's implicit equivalent. Consider the square root function $x=\sqrt{a}$, we want to rewrite it as a fixed point equation.
