@@ -47,6 +47,7 @@
 \newcommand{\He}{\mathbf{H}}
 \newcommand{\Lo}{\mathcal{L}}
 \theoremstyle{definition}
+\newtheorem{exmp}{Example}[chapter]
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
 \newtheorem{lem}[thm]{Lemma}
@@ -676,8 +677,13 @@ at a computational cost comparable to that of a gradient evaluation, while avoid
 of reverse-on-reverse differentiation.
 
 \section{Implicit differentiation}
-Up to now, we have only considered functions that are explicitly defined, meaning that we know each step explicitly between the input and the output. But what about implicit function, when the output isn't given by an explicit formula. For example, iterative algorithms (Newton's method, Grandient Descent), or functions defined in other language and called from our main program ? As before we want to compute the derivative of these functions, but we do not know them. To solve some of those problems, we could use naive AD but it would be very inefficient because we would need to unroll the whole computation graph of the implicit function. Instead, we can use implicit differentiation, because we know that the derivatives depends on the solution and not on how you got there.\\
-First let us consider a simple example, and show how we can get it's implicit equivalent. Consider the square root function $x=\sqrt{a}$, we want to rewrite it as a fixed point equation.
+Above sections considered \emph{explicit} functions where each intermediary step was known. 
+\emph{Implicit} functions differentiation is considered when the intermediary steps are hidden and only the output is known (e.g. Newton's method, Gradient Descent).
+
+Usual AD is inefficient for this type of functions due to the requirements of unrolling the implicit function behavior.
+Instead, one could use the fact that the derivatives depends on the solution and the path.
+
+For instance, one may consider the square root function $x=\sqrt a$ and extract its implicit formulation through a fixed-point equation.
 \begin{equation}
   \begin{aligned}
 	x &= \sqrt{a} \\ 
@@ -686,64 +692,95 @@ First let us consider a simple example, and show how we can get it's implicit eq
 	g(x,a) = x &= \frac{1}{2} \left( x + \frac{a}{x} \right)
   \end{aligned}
 \end{equation}
-With this fixed point equation, we can iterate (with $x_{k+1} = g(x_k,a)$) starting from an initial guess $x_0$ to get the solution $x^*$ at convergence, which would be $x = \sqrt{a}$. The implicit equation is then $F(x,a) = x - g(x,a)$ and it's solution satisfies $F(x^*,a) = 0$.\\
-First we need to states the inverse function theorem:
+Iterating, using $x_{k+1} = g(x_k,a)$, from an initial guess $x_0$, the solution would eventually converge to $x^* = \sqrt{a}$. 
+The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*,a) = 0$.
+
 \begin{thm}[Inverse function theorem]
-  If:
+  Assume
   \begin{itemize}
-	\item $f:\mathcal{W} \to \mathcal{W}$ is $C^2$
-	\item $\partial f (w_0)$ is invertible.
+    \item $f:\mathcal{W} \to \mathcal{W}$ is $C^2$
+    \item $\partial f (w_0)$ is invertible.
   \end{itemize}
-  Then $f$ is bijective from a neighborhood of $w_0$ to a neighborhood of $f(w_0)$ and from this neighborhood $w$, $f^{-1}$ is $C^2$ and:
-  \begin{equation}
-	\partial f^{-1} \left(f\left(w\right)\right) = \left(\partial f \left(f^{-1}\left(w\right)\right)\right)^{-1}
-  \end{equation}
-  With the previous formula, that comes directly from the chain rule.
+  Then 
+  \begin{itemize}
+    \item $f$ is bijective from a neighborhood of $w_0$ to a neighborhood of $f(w_0)$
+    \item For $\omega$ in a neighborhood of $f(w_0)$, $f^{-1}$ is $C^2$ and $\partial f^{-1}(\omega)=(\partial f(f^{-1}(w)))^{-1}$
+    where the last equation has been obtained through the chain rule.
+  \end{itemize}
 \end{thm}
-And the implicit function theorem:
+
 \begin{thm}[Implicit function theorem (IFT, univariate case)]
-  If:
+  Assume
   \begin{itemize}
-	\item $F:\R^2 \to \R$
-	\item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\frac{\partial F}{\partial w}(w_0, \lambda_0) \neq 0$
-	\item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$ 
+    \item $F:\R \to \R$
+    \item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\dfrac{\partial F}{\partial w}(w_0, \lambda_0) \neq 0$
+    \item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$ 
   \end{itemize}
-  Then there exists a neighborhood $\mathcal{V} \subseteq \mathcal{U}$ there exists $w^*(\lambda)$ such that:
+  Then there exists a neighborhood $\mathcal{V} \subseteq \mathcal{U}$ where exists $w^*(\lambda)$ such that:
   \begin{equation}
 	\begin{aligned}
 		w^*(\lambda_0) &= w_0 \\
 		F(w^*(\lambda), \lambda) &= 0, \quad \forall (w^*(\lambda),\lambda) \in \mathcal{V} \\
-		\partial w^*(\lambda) &= - \frac{\frac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)}{\frac{\partial F}{\partial w} (w^*(\lambda), \lambda)}
+		\partial w^*(\lambda) &= - \left(\dfrac{\partial F}{\partial w} (w^*(\lambda), \lambda)\right)^{-1}\dfrac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)
 	\end{aligned}
   \end{equation}
 \end{thm}
+\begin{exmp}
+  Implicit relation between $x$ and $y$
+  \begin{equation*}
+    x^2+y^2 = 1
+  \end{equation*}
+  Two possible explicit functions
+  \begin{equation*}
+    \begin{aligned}
+      y^+(x)&=\sqrt{1-x^2}\\
+      y^-(x)&=-\sqrt{1-x^2}
+    \end{aligned}
+  \end{equation*}
+  Let $F(y,x)=x^2+y^2-1$. Given an initial point $(x_0,y_0)$ with $x^2_0+y^2_0=1$.
+  \begin{itemize}
+    \item if $y_0>0$ then IFT holds and $y^*(x)=y^+(x)$,
+    \item if $y_0<0$ then IFT holds and $y^*(x)=y^-(x)$,
+    \item if $y_0=0$ then $\dfrac{\partial F}{\partial y}(y_0,x_0)=2y_0=0$ so IFT does not hold
+  \end{itemize}
+  This example shows that even a function such as $F(y,x)=x^2+y^2-1$ with 2 possible explicit functions does not violate the IFT.
+\end{exmp}
 \begin{thm}[Implicit function theorem (IFT, multivariate case)]
-  If:
+  Assume
   \begin{itemize}
 	\item $F:\mathcal{W} \times \Lambda \to \mathcal{W}$
-	\item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\frac{\partial F}{\partial w}(w_0, \lambda_0) \neq 0$
+	\item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\dfrac{\partial F}{\partial w}(w_0, \lambda_0) \neq 0$
 	\item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$ 
   \end{itemize}
-  Then there exists a neighborhood $\mathcal{V} \subseteq \mathcal{U}$ there exists $w^*(\lambda)$ such that:
+  Then there exists a neighborhood $\mathcal{V} \subseteq \mathcal{U}$ where exists $w^*(\lambda)$ such that:
   \begin{equation}
 	\begin{aligned}
 		w^*(\lambda_0) &= w_0 \\
 		F(w^*(\lambda), \lambda) &= 0, \quad \forall (w^*(\lambda),\lambda) \in \mathcal{V} \\
-		\partial w^*(\lambda) &= - \frac{\frac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)}{\frac{\partial F}{\partial w} (w^*(\lambda), \lambda)}
+		\partial w^*(\lambda) &= - \left(\dfrac{\partial F}{\partial w} (w^*(\lambda), \lambda)\right)^{-1}\dfrac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)
 	\end{aligned}
   \end{equation}
 \end{thm}
 \subsection{Implicit JVP and VJP}
-To propagate the derivative through the graph when we have an implicit function, we need to do it differently than before. Consider the implicit function defined by $F(w^*, \lambda) = 0$, we want to compute the JVP and VJP through this function.\\
-Reminder, we want to compute the forward tangent $t_k$, knowing the previous tangent $t_{k-1}$ and the function at this step. Assuming the IFT holds, we have this equality:
+For implicit differentiation, derivatives must be propagated differently.
+
+Consider the implicit function defined by $F(w^*, \lambda) = 0$, from which one may want to compute the JVP and VJP.
+
+\subsubsection{JVP}
+Reminding that the forward tangent a step $k$, $t_k$, is computed using the known previous tangent $t_{k-1}$, and the function at the step,
+assuming the IFT holds, the following equality may be derived.
 \begin{equation}
 	t_k = - \left( \frac{\partial F}{\partial w} (w^*, \lambda) \right)^{-1} \cdot \frac{\partial F}{\partial \lambda} (w^*, \lambda) \cdot t_{k-1}
 \end{equation}
-Knowing that $t_k = \partial w^*(\lambda)/\partial s_0$ and $t_{k-1} = \partial \lambda / \partial s_0$. We thus have a linear system to solve for each JVP for an implicit function. Setting $A = -\frac{\partial F}{\partial w} (w^*(\lambda), \lambda)$ and $B =  \frac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)$, we need to solve:
+where $t_k = \partial w^*(\lambda)/\partial s_0$ and $t_{k-1} = \partial \lambda / \partial s_0$. 
+Each JVP of the implicit function may be obtaine by solving a linear system. 
+
+Setting $A = -\dfrac{\partial F}{\partial w} (w^*(\lambda), \lambda)$ and $B = \dfrac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)$, 
+the system to solve becomes:
 \begin{equation}
 	t_k = A^{-1} B t_{k-1}
 \end{equation}
-Once the forward pass is done, $A$ is fixed and so we can do an LU decomposition of $A$ to solve the linear system efficiently for each JVP.\\
+Once the forward pass is done, $A$ is fixed and the linear system can be solved efficiently for each JVP by using the LU decomposition of $A$.\\
 \begin{equation}
 	\begin{aligned}
 		LU t_k = B t_{k-1}&\\
@@ -754,11 +791,17 @@ Once the forward pass is done, $A$ is fixed and so we can do an LU decomposition
 		\end{cases}
 	\end{aligned}
 \end{equation}
-And for the VJP, we want to compute the reverse tangent $r_{k-1}$ knowing the next reverse tangent $r_k$ and the function at this step. Assuming the IFT holds, we have this equality:
+
+\subsubsection{VJP}
+
+Computing the VJP boils down to the computation of the reverse tangent $r_{k-1}$ knowing the next reverse tangent $r_k$ and the function at this step. 
+Assuming the IFT holds, the following equality can be derived.
 \begin{equation}
   r_{k-1} = - \left( \frac{\partial F}{\partial \lambda} (w^*, \lambda) \right)^T \cdot \left( \frac{\partial F}{\partial w} (w^*, \lambda) \right)^{-T} \cdot r_k
 \end{equation}
-Knowing that $r_{k-1} = \partial s_0 / \partial \lambda$ and $r_k = \partial s_0 / \partial w^*(\lambda)$, and with $A = \frac{\partial F}{\partial w} (w^*(\lambda), \lambda)$ and $B = \frac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)$. We thus have a linear system to solve for each VJP for an implicit function. And we can do it like this:
+where $r_{k-1} = \partial s_0 / \partial \lambda$ and $r_k = \partial s_0 / \partial w^*(\lambda)$.
+Denoting $A = \frac{\partial F}{\partial w} (w^*(\lambda), \lambda)$ and $B = \frac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)$, 
+the VJP can also be obtained as the solution of a linear system.
 \begin{equation}
   \begin{cases}
 	A^T y = r_k \\
