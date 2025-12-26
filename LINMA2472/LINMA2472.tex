@@ -556,6 +556,124 @@ After completing the second reverse pass, the Hesian column corresponding to dir
 Repeating the process for all $i=1,\dots n$ yields the full Hessian matrix.
 
 \subsection{Comparison}
+\begin{table}[H]
+\centering
+\label{tab:second_order_ad_summary}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\textbf{Strategy} 
+& \textbf{Object computed} 
+& \textbf{Output per run} 
+& \textbf{Passes} 
+& \textbf{Time cost} 
+& \textbf{Memory cost}\\
+\hline
+FoF 
+& $w^T H v$ 
+& Scalar 
+& $1 \to$ 
+& $\mathcal{O}(K)$ 
+& Low \\
+\hline
+FoR 
+& $H v$ 
+& $\mathbb{R}^n$ 
+& $1 \to + 1 \leftarrow$ 
+& $\mathcal{O}(K)$ 
+& Moderate \\
+\hline
+RoF 
+& $H w$ 
+& $\mathbb{R}^n$ 
+& $1 \to + 1 \leftarrow$
+& $\mathcal{O}(K)$ 
+& Moderate \\
+\hline
+RoR 
+& $\nabla^2 f$ (column-wise) 
+& $\mathbb{R}^n$ 
+& $1 \to + 2 \leftarrow$ 
+& $\mathcal{O}(K)$ 
+& Very high \\
+\hline
+\end{tabular}
+\caption{Comparison of second-order AD strategies ($\to$: forward, $\leftarrow$: backward)}
+\end{table}
+
+\begin{table}[H]
+\centering
+\label{tab:second_order_ad_features}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Criterion} 
+& \textbf{FoF} 
+& \textbf{FoR} 
+& \textbf{RoF} 
+& \textbf{RoR} \\
+\hline
+Computes full Hessian directly 
+& \textcolor{red}{No} & \textcolor{red}{No} & \textcolor{red}{No} & \textcolor{red}{No} \\
+\hline
+Produces Hessian-vector product 
+& \textcolor{red}{No} & \textcolor{green}{Yes} & \textcolor{green}{Yes} & \textcolor{green}{Yes} \\
+\hline
+Uses dual numbers 
+& \textcolor{green}{Yes} & \textcolor{green}{Yes} & \textcolor{green}{Yes} & \textcolor{red}{No} \\
+\hline
+Requires primal trace storage 
+& \textcolor{red}{No} & \textcolor{green}{Yes} & \textcolor{green}{Yes} & \textcolor{green}{Yes} \\
+\hline
+Requires adjoint storage 
+& \textcolor{red}{No} & \textcolor{green}{Yes} & \textcolor{green}{Yes} & \textcolor{green}{Yes} \\
+\hline
+Requires second derivatives of primitives 
+& \textcolor{green}{Yes} & \textcolor{green}{Yes} & \textcolor{green}{Yes} & \textcolor{green}{Yes} \\
+\hline
+Exploits Hessian symmetry 
+& \textcolor{red}{No} & \textcolor{green}{Yes} & \textcolor{green}{Yes} & \textcolor{green}{Yes} \\
+\hline
+Suitable for large $n$ 
+& \textcolor{red}{No} & \textcolor{green}{Yes} & \textcolor{green}{Yes} & \textcolor{red}{No} \\
+\hline
+Implementation complexity 
+& Low & Medium & Medium & Very high \\
+\hline
+\end{tabular}
+\caption{Feature comparison of Hessian computation strategies}
+\end{table}
+
+\begin{table}[h]
+\centering
+\label{tab:full_hessian_cost}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Strategy} 
+& \textbf{Number of runs} 
+& \textbf{Total cost} \\
+\hline
+FoF 
+& $n^2$ 
+& $\mathcal{O}(n^2 K)$ \\
+\hline
+FoR 
+& $n$ 
+& $\mathcal{O}(n K)$ \\
+\hline
+RoF 
+& $n$ 
+& $\mathcal{O}(n K)$ \\
+\hline
+RoR 
+& $n$ 
+& $\mathcal{O}(n K)$ (large constant) \\
+\hline
+\end{tabular}
+\caption{Cost of assembling the full Hessian matrix}
+\end{table}
+
+Among the four strategies, forward-on-reverse is generally preferred in practice, as it provides Hessian-vector products 
+at a computational cost comparable to that of a gradient evaluation, while avoiding the prohibitive memory requirements 
+of reverse-on-reverse differentiation.
 
 \section{Implicit differentiation}
 Up to now, we have only considered functions that are explicitly defined, meaning that we know each step explicitly between the input and the output. But what about implicit function, when the output isn't given by an explicit formula. For example, iterative algorithms (Newton's method, Grandient Descent), or functions defined in other language and called from our main program ? As before we want to compute the derivative of these functions, but we do not know them. To solve some of those problems, we could use naive AD but it would be very inefficient because we would need to unroll the whole computation graph of the implicit function. Instead, we can use implicit differentiation, because we know that the derivatives depends on the solution and not on how you got there.\\
