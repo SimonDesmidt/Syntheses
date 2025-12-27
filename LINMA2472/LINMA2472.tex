@@ -46,6 +46,7 @@
 \newcommand{\J}{\mathbf{J}}
 \newcommand{\He}{\mathbf{H}}
 \newcommand{\Lo}{\mathcal{L}}
+\newcommand{\softmax}{\text{softmax}}
 \theoremstyle{definition}
 \newtheorem{exmp}{Example}[chapter]
 \newtheorem{thm}{Theorem}[chapter]
@@ -1137,7 +1138,9 @@ For every graph G,
 $\xi_1$ is the usual distance-1 chromatic number, $\xi_2$ the distance-2 chromatic number.
 \chapter{Neural networks}
 % \textcolor{red}{TODO link tangent with neural networks}\\
-Neural networks are a class of machine learning models inspired by the structure and function of the human brain. They are composed of layers of interconnected nodes (neurons) that process and transmit information.\\
+Neural networks are a class of machine learning models inspired by the structure and function of the human brain. 
+They are composed of layers of interconnected nodes (neurons) that process and transmit information.
+
 First let's define some variables:
 \begin{itemize}
   \item $X$: input data (matrix)
@@ -1149,88 +1152,158 @@ First let's define some variables:
   \item $H$: number of hidden layers
   \item $S_i$: intermediate state  
 \end{itemize} 
-To propagate and update the information through the network we use forward pass and backward pass and so automatic differentiation.\\
-We can describe the forward pass of a neural network in two equivalent ways:
+A neural network can be seen as a composition of functions, the type of which was discussed in sections above.
+A neural network needs to be trained, or in other words its parameters have to be optimized. Optimization requires computing derivatives and that's where automatic differentiation 
+comes at play.
+
+The forward pass of a neural network can be described in two equivalent ways.
 \begin{equation}
   \begin{aligned}
 	&\text{Right to left:} \qquad &&\text{Left to right:}\\
-	&S_0 = X \qquad &&S_0 = x\\
+	&S_0 = X \qquad &&S_0 = X\\
 	&S_{2k-1} = W_k S_{2k-2} + b_k \qquad &&S_{2k-1} = S_{2k-2}W_k + b_k\\
 	&S_{2k} = \sigma(S_{2k-1}) \qquad &&S_{2k} = \sigma(S_{2k-1})\\
 	&S_{2H+1} = W_{k+1}S_{2H} \qquad &&S_{2H+1} = S_{2H}W_{k+1}\\
 	&S_{2H+2} = \ell(S_{2H+1}, Y) \qquad &&S_{2H+2} = \ell(S_{2H+1}, Y)\\ 
   \end{aligned}
 \end{equation}
-The principal differences is that the weights acts on the left or on the right of the data, it can be useful depending whether you represents inputs as rowvectors or columnvectors.\\
-It can be represented by this computational graph:\\
+The main differences resides in the fact that weights are applied on the left side or on the right side of the data.
+It can be useful depending on whether the inputs are represented as rowvectors or columnvectors.
+
+Figures \ref{fig:nn_fd} and \ref{fig:nn_bd} shows the respective computational graphs.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{img/nn_fd.png}
 	\caption{Neural network forward pass}
 	\label{fig:nn_fd}
 \end{figure}
-And the backward pass can be represented like this:\\
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{img/nn_bd.png}
 	\caption{Neural network backward pass}
 	\label{fig:nn_bd}
 \end{figure}
+
+Following sections will focus on the building blocks leading to a transformer. The first step consists in defining the mathematical model. Once it is obtained,
+one shall find a strategy to encode text into vectors efficiently. Eventually, the full transformer architecture may be presented.
 \section{Autoregressive models}
-An Autoregressive model wants to predict the next values in a sequence based on its previous values. Given a sequence of $n_{cxt}$ (context) past vectors $x_{-1}, x_{-2}, \ldots, x_{-n_{cxt}}$, the model aims to predict the next vector $x_0$ and maybe more $x_1$. Example, we want to predict $x_0$ and $x_1$ based on the past:
+Autoregressive models want to predict the next values in a sequence based on previous values. 
+
+Given a sequence of $n_{ctx}$ (context size) past vectors $x_{-1}, x_{-2}, \ldots, x_{-n_{ctx}}$, named \emph{receding horizon}, 
+the model aims to predict the next vector $x_0$ and maybe more ($x_1, x_2,\dots$). 
+
+For instance, one may want to predict $x_0$ and $x_1$ based on past data.
 \begin{equation}
   \begin{aligned}
-	p(x_0, x_1 | x_{-1}, \ldots, x_{-n_{cxt}}) &= p(x_0 | x_{-1}, \ldots, x_{-n_{cxt}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{cxt} + 1}, x_{-n_{cxt}}) \\
-	&\approx p(x_0 | x_{-1}, \ldots, x_{-n_{cxt}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{cxt} + 1})
+	p(x_0, x_1 | x_{-1}, \ldots, x_{-n_{ctx}}) &= p(x_0 | x_{-1}, \ldots, x_{-n_{ctx}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{ctx} + 1}, \color{red}{x_{-n_{ctx}}}) \\
+	&\approx p(x_0 | x_{-1}, \ldots, x_{-n_{ctx}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{ctx} + 1})
   \end{aligned} 
 \end{equation}
-So the models aims to predict the probability distribution of the next vector $x_0$ with $\hat{p}(x_0 | X)$ with $X$ that concatenates all the context vectors. And then we use the cross-entropy to measure how well the predicted distribution $\hat{p}$ matches the true distribution $p$:
-\begin{equation}
-  \Lo(X) = - \sum_{x_0} p(x_0 | X) \log(\hat{p}(x_0 | X))
-\end{equation}
+\begin{itemize}
+  \item \textbf{Model}: Probability of next vector $\hat p(x_0\mid X)$ where $X$ concatenates $x_{-1},\dots, x_{-n_{ctx}}$
+  \item \textbf{Loss}: Cross-entropy to assess the error of $\hat p$ w.r.t. $p$ \begin{equation*}\Lo(X) = - \sum_{x_0} p(x_0 | X) \log(\hat{p}(x_0 | X))\end{equation*}
+\end{itemize}
+In the particular (and common) case where the probability distribution $p$ puts all the mass on the expected output vector $y$, $p(x_0\mid X)=\delta_y(x_0)$ 
+where $\delta_y(x_0)=1$ if $x_0=y$ and $0$ otherwise. 
+
+Accordingly, the cross-entropy can be simplified 
+\begin{equation*}
+  \begin{aligned}
+    \Lo(X) &= - \sum_{x_0} \delta_y\log(\hat{p}(x_0 | X))\\
+          &= -\log(\hat{p}(y | X)) 
+  \end{aligned}
+\end{equation*} 
+
 \section{Tokenization}
-How can we use this autoregressive model for LLM (Large Language Models) for example ? Consider that we have $n_{cxt}$ characters of context and we want to predict the next characters, this means that we would have a one-hot encoding in $\R^{26}$, which means $n_{voc} = 26$. This means that $n_{cxt}$ should be a very large number, but this is annoying because transormers have a quadratic complexity in $n_{cxt}$.\\ 
-Another idea could be to turn each word into a one-hot encoding, but the vocabulary size is often very large (+200k words), with this we could have a relative low $n_{ctx}$, but $n_{voc}$ would be to big.\\
-An intermediate solution is to use byte pair encoding algorithm which greedily merges the most frequent pairs of characters into new tokens.\\ 
-Example: consider the word "abracadabra", we see that we have two frequent pairs "ab" and "ra", so we can merge them into new tokens $X$ and $Y$ respectively:
+\begin{formal}
+  First step of word vectorization is \emph{tokenization}.
+\end{formal}
+
+Considering one has $n_{ctx}$ characters of context and wants to predict the next characters. The one-hot encoding would lie in $\R^{26}$, thus $n_{voc} = 26$. 
+It imposes $n_{ctx}$ to be very large, which is not a good news because transormers have a quadratic complexity in $n_{ctx}$.
+
+Another strategy consists in one-hot encoding each word, but the vocabulary size is often very large (+200k words).
+While this strategy could lead to relative low $n_{ctx}$, $n_{voc}$ would be to big.
+
+\subsection{Byte Pair Encoding (BPE)}
+An intermediate solution is to use a \emph{Byte Pair Encoding} algorithm which greedily merges the most frequent pairs of characters into new tokens.
+
+For instance, considering the word \texttt{abracadabra}, one may observe that it has two frequent pairs \texttt{ab} and \texttt{ra}, 
+which can be merged into new tokens \texttt X and \texttt Y respectively.
 \begin{equation}
-  \text{abracadabra} \to \text{XYcadXY}
+  \texttt{abracadabra} \to \texttt{XYcadXY}
 \end{equation}
-then we can repeat the process until we reach the desired vocabulary size.\\ The next iteration could give:
+This process can be repeated until the the desired vocabulary size is reached.
+
+The next iteration could give:
 \begin{equation}
-  \text{XYcadXY} \to \text{ZcadZ}
+  \texttt{XYcadXY} \to \texttt{ZcadZ}
 \end{equation}
-This tokenization method allows us to have good trade-off between the vocabulary size $n_{voc}$ and the context size $n_{cxt}$. But if the model isn't trained enough we could have an issue which is that the model doesn't output fully constructed words, for example it could output half of a word because that what makes more sense even though the word is half complete.\\
+This tokenization method allows to have a good trade-off between the vocabulary size $n_{voc}$ and the context size $n_{ctx}$. 
+
+However, if the model isn't trained enough, it could return a sequence of words if this sequence is the most common token present after the given input context 
+in the training corpus.
+
+\subsection{Byte BPE}
+\emph{Byte BPE} (Byte Byte Pair Encoding) consists in replacing every character by its numerical value in an ASCII extended table 
+(for instance the \hyperlink{https://en.wikipedia.org/wiki/ISO_8859-1}{ISO 8859-1} table). This allows the model to be more flexible on word encodings and accept any language. 
+
+The greatest strength of the Byte BPE encoding consists in separating radicals from prefixes and suffixes. For instance, the words \textbf{optimiz}e, \textbf{optimiz}ing, 
+\textbf{opimiz}ation, ..., all have the radical \textbf{optimiz} in common and the Byte BPE encoder would be able to determine that \textbf{optimiz} is an enough repeating 
+sequence of character to form a single token. Instead of storing the 3 words separately, it will store the radical \textbf{optimiz}, and the suffixes \emph{e},\emph{ing}, 
+and \emph{ation} which are pretty common in other English words. 
+
+However, if the encoder is not trained enough, it could be affected by the same issue affecting the usual BPE described above.
+
 \section{Embedding}
-Consider a vocabulary of size $n_{voc}$, a bigram model and a network with $d$ layers. The model would be:
+\begin{formal}
+  Second step of word vectorization is \emph{embedding}
+\end{formal}
+
+Consider a vocabulary of size $n_{voc}$, a bigram model and a network with $d$ layers. 
+
+The model would be:
 \begin{equation}
-  \hat{p}(x_0 | x_{-1}) = \text{softmax}(W_d \tanh(\dots \tanh(W_1 x_{-1}) \dots ))
+  \hat{p}(x_0 | x_{-1}) = \softmax(W_d \tanh(\dots \tanh(W_1 x_{-1}) \dots ))
 \end{equation}
-The matrix $W_1$ has $n_{voc}$ columns and $W_d$ has $n_{voc}$ rows, so when $n_{voc}$ is large, the model becomes very big.\\
-So an idea would be to use an encoder and a decoder to reduce the sizes, it is called an embedding size $d_{emb} \ll n_{voc}$. The encoder ($C \in \R^{d_{emb} \times n_{voc}}$) maps the one-hot encoding of size $n_{voc}$ to a dense vector of size $d_{emb}$ and the decoder ($D \in \R^{n_{voc} \times d_{emb}}$) maps back the dense vector to a vector of size $n_{voc}$. So the model becomes:
+The matrix $W_1$ has $n_{voc}$ columns and $W_d$ has $n_{voc}$ rows. When $n_{voc}$ is large, the model becomes problematically big.
+
+The main idea resides in using a pair of encoder / decoder to reduce the size. This techniques is called \emph{embedding} and it reduces the vocabulary size to 
+the embedding size $d_{emb}$ with $d_{emb} \ll n_{voc}$. The encoder ($C \in \R^{d_{emb} \times n_{voc}}$) maps the one-hot encoding of size $n_{voc}$ to 
+a dense vector of size $d_{emb}$ and the decoder ($D \in \R^{n_{voc} \times d_{emb}}$) maps back the dense vector to a vector of size $n_{voc}$. 
+
+The model becomes
 \begin{equation}
-  \hat{p}(x_0 | x_{-1}) = \text{softmax}(D W_d \tanh(\dots \tanh(W_1 C x_{-1})\dots ))
+  \hat{p}(x_0 | x_{-1}) = \softmax(D W_d \tanh(\dots \tanh(W_1 C x_{-1})\dots ))
 \end{equation}
-If we choose wisely $d_{emb}$, which means much smaller than $n_{voc}$, then it is faster to compute $W_1(C x_{-1})$ than in the previous model. Moreover we are forcing $W_1C$ to be low-rank which can help to reduce overfitting but reduce the expressivness (capacity to capture a range of possible relation between input and output) of the model. It is useful to share the embedding between different input and output when $n_{ctx} > 1$, we also found that forcing $D = C^T$ appears to work well in practice.\\
+Choosing $d_{emb}$ wisely ($d_{emb}\ll n_{voc}$), it becomes faster to compute $W_1(C x_{-1})$ in the new embedding size. 
+Moreover, this forces $W_1C$ to be low-rank which can help to reduce overfitting but reduce the \emph{expressiveness} (capacity to capture a range of possible relation between 
+input and output) of the model. When $n_{ctx} > 1$, it is possible to compute the embedding matrix once for every vector in the input context. 
+
+In experimentation, it appeared that forcing $D = C^T$ works well in practice.
+
 \subsection{Shared embedding}
-Let's investigate the case where we have $n_{cxt} > 1$. When $n_{cxt} > 1$, the encoder C is shared by all tokens, so we get this model:
+When $n_{ctx} > 1$, the encoder C is shared by all tokens, and the model can be written as
 \begin{equation}
-  \hat{p}(x_0 | x_{-1}, \ldots, x_{-n_{cxt}}) = \text{softmax}(D W_d \tanh(\dots \tanh(W_1 \begin{bmatrix} C x_{-1} \\ \vdots \\ C x_{-n_{cxt}} \end{bmatrix}) \dots ))
+  \hat{p}(x_0 | x_{-1}, \ldots, x_{-n_{ctx}}) = \softmax(D W_d \tanh(\dots \tanh(W_1 \begin{bmatrix} C x_{-1} \\ \vdots \\ C x_{-n_{ctx}} \end{bmatrix}) \dots ))
 \end{equation}
-We can note that now $W_1$ has $n_{cxt}d_{emb}$ columns. Assuming $d_{emb} \ll n_{voc}$ and $n_{cxt} \gg 1$, this is much smaller than the $n_{ctx}n_{voc}$ that we had before the embedding. The number of rows of $W_2$ is not affected by the embedding so it remains $n_{voc}$.\\
-We could represent this model like this:\\
+$W_1$ is a matrix of dimensions $n_{voc}\times n_{ctx}d_{emb}$. Assuming $d_{emb} \ll n_{voc}$ and $n_{ctx} \gg 1$, this is much smaller than $n_{ctx}n_{voc}$ 
+occurring before the embedding phase. The number of rows of $W_2$ is not affected by the embedding and remains $n_{voc}$.
+
+Figure \ref{fig:shared_embedding} depicts the model with shared embedding.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{img/shared_embedding.png}
 	\caption{Neural network with shared embedding}
 	\label{fig:shared_embedding}
 \end{figure}
+
 \section{Recurrent neural networks (RNN)}
 A RNN is a type of neural network that is designed to process sequential data by taking advantages of the memory of previous inputs. The idea is to have a hidden state $h_t$ that depends on the current input $x_t$ and the previous hidden state $h_{t-1}$. With this idea, the network reuses the same weights at every time step and thus gives meaning to the sequence. The equations of a simple RNN are:
 \begin{equation}
   \begin{cases}
 	h_{t+1} = \tanh(W h_{t} + U x_{t-1} + b) \\
-	\hat{y}_t = \text{softmax}(V h_t + c)
+	\hat{y}_t = \softmax(V h_t + c)
   \end{cases}
 \end{equation}
 Where $W, U, V$ are weight matrices and $b, c$ are bias vectors.\\
@@ -1240,9 +1313,9 @@ First we need to define a numerical dictionary. Consider keys $k_i \in \R^{d_k}$
 \begin{equation}
   \text{Attention}(Q,K,V) = \sum_{i=1}^{n_{ctx}} \alpha_i v_i
 \end{equation}
-where $\alpha = \text{softmax}(<q,k_1>, \cdots, <q,k_{n_{ctx}}>)$ is the attention weight for key $k_i$. But in practice, we have vectors of queries, keys and values, each contained in matrices $Q, K, V$. So we can rewrite the attention head as:
+where $\alpha = \softmax(<q,k_1>, \cdots, <q,k_{n_{ctx}}>)$ is the attention weight for key $k_i$. But in practice, we have vectors of queries, keys and values, each contained in matrices $Q, K, V$. So we can rewrite the attention head as:
 \begin{equation}
-  \text{Attention}(Q,K,V) = V\text{softmax}\left(\dfrac{K^TQ}{\sqrt{d_k}}\right)
+  \text{Attention}(Q,K,V) = V\softmax\left(\dfrac{K^TQ}{\sqrt{d_k}}\right)
 \end{equation}
 Where the division by $\sqrt{d_k}$ is used to prevent the dot-product from growing too large.\\
 For a transformers, we could explain $Q, K, V$ like this, for each token we have a vector $q, k, v$ that represent:
@@ -1257,7 +1330,7 @@ So with masked attention, the equation becomes:
 \begin{equation}
   \begin{cases}
     M = \begin{bmatrix} 0 & 0 &  \cdots & 0 \\ -\infty & 0 &  \ddots & 0 \\ \vdots & \ddots & \ddots & \vdots \\ -\infty & -\infty &  \cdots & 0 \\ \end{bmatrix}\\
-    \text{Attention}(Q,K,V) = V\text{softmax}\left(M+\dfrac{K^TQ}{\sqrt{d_k}}\right)
+    \text{Attention}(Q,K,V) = V\softmax\left(M+\dfrac{K^TQ}{\sqrt{d_k}}\right)
   \end{cases}
 \end{equation}
 \subsection{Multi-head attention}
