@@ -44,6 +44,7 @@
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\V}{\mathbb{V}}
 \newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Oo}{\mathcal{O}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
@@ -597,8 +598,20 @@ We can also compute the expectation: let $X_{ij}$ be the 1 if the people $i$ and
 \end{equation}
 This means that for at least $\sqrt{2n}+1$ people in a room, we can EXPECT at least one collision. For $n=365$, this is $k=28$ people.
 \subsection{Hash table}
-A hash table is a data structure in which inserting, searching and deleting is done in $\mathcal{O}(1)$ in average. 
-\textcolor{red}{J'ai pas compris les slides 18-19/19 du CM7.}
+A hash table is a data structure in which inserting, searching and deleting is done in $\Oo(1)$ in average. The idea of a hash table is to store elements in an array of size $m$ using a hash function $h:U\to \{0,\dots,m-1\}$, where $U$ is the set of possible keys. So instead of using a direct addressing table, where $k$ is stored at $T[k]$ ($\Oo(n)$ space), we store $k$ at $T[h(k)]$ ($\Oo(m)$ space). This idea save space but introduces collision. We can deal with collisions using multiples way, this will be investigated later. The simplest hash function is the modulo function $h(k) = k \mod m$.\\
+Using deterministic hash functions can lead to bad performance. If the input is well chosen, we could have a worst-case complexity of $\Oo(n)$. To overcome this, we randomize the choice of the hash function.
+\begin{definition}
+	A family of hash functions $\mathcal{H}$ is universal if for all $k\neq l \in U$,
+	\begin{equation}
+		Pr_{h\in \mathcal{H}}[h(k) = h(l)] \le \frac{1}{m}
+	\end{equation}
+\end{definition}
+This definition means that even with well-chosen inputs, the probability of collision is garanteed to be low. An example of universal hash function family is the following:
+\begin{equation}
+	\mathcal{H} = \{h_{a,b}(k) = ((ak+b) \mod p) \mod m \: | \: a\in \{1,\dots,p-1\}, b\in \{0,\dots,p-1\}\}
+\end{equation}
+where $p$ is a prime number $p > |U|$. The randomness comes from the random choice of $a$ and $b$.\\
+There exists multiples ways to manage collisions. It is possible to ignore collisions, in that case you lose data. Another way is to use buckets with linked lists to store multiple elements at the same index. We can also use probing. Linear probing consists into putting the element at the next available index after a collision, so we try $h(k)$ then $h(k)+1$ then $h(k)+2$ and so on. Quadratic probing uses $h(k)+i^2$ instead of $h(k)+i$. Double hashing uses a second hash function $h_2$ to compute the next index: $h(k)+i\cdot h_2(k)$. And finally, Cuckoo hashing that consists in using two hashing function ($h_1(k)$ and $h_2(k)$) and allowing an item $k$ to be either in the place given by $h_1(k)$ or by $h_2$.\\
 \subsection{Randomized algorithm for computing integrals}
 To approximate $\pi$ , we can put $n$ random points on a square of size 1. For each point, we define the associated random variable $X_i=1$ if $x_i^2 + y_i^2\le 1$ and 0 otherwise. If we observe $k$ points in the orthant, we have 
 \begin{equation}
@@ -637,9 +650,15 @@ Given $A,B,C\in \R^{n\times n}$, we want to check if $AB=C$. Doing the product i
 	A(Bx) -Cx\overset{?}{=}0
 \end{equation}
 This is a $n$-variate polynomial of degree 1 and we can use the same method as in the previous section.
-\textcolor{red}{Dunno what to do with slides 13->17 of CM8.}
+\subsubsection{MaxCut Problem}
+Given a graph $G=(V,E)$, we want to partition $V$ into two sets $S_0$ and $S_1$ such that we maximize edges crossing the cut. If we assign each vertex randomly to one of the two sets with a probability $1/2$, then:
+\begin{equation}
+	\E[|\text{RandomCut}(S_0,S_1)|] \geq \frac{1}{2}\text{MaxCut}(G)
+\end{equation}
+\subsection{Amplification of Stochastic Advantage}
+A randomized algorithm may be wrong but it has a bias towards the correct answer. The idea is to run $k$ times the algorithm to take advantages of the properties of the randomness. For example, for one-sided error, with Schwartz-Zippel, we know that we have no false negative. So if we get at least one TRUE in $k$ runs, we can be sure that it is TRUE. For two-sided error, we can run $k$ times independently and take the majority answer.
 \section{Las Vegas and Monte Carlo}
-An algorithm is said to be Las Vegas when the output is correct, but the time taken to get to this solution is random. On the other hand, an algorithm is said to be Monte Carlo when the output is correct with some probability, or we only get a bound on the real value. 
+An algorithm is said to be Las Vegas when the output is correct, but the time taken to get to this solution is random. On the other hand, an algorithm is said to be Monte Carlo when the output is correct with some probability, or we only get a bound on the real value.
 \section{Hash tables}
 \textcolor{red}{TODO}
 \section{Randomness generation}
