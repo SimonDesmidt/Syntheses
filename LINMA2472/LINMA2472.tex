@@ -518,7 +518,7 @@ They satisfy the recurrence equations obtained above
 \end{equation}
 with $\J_k=\frac{\partial f_k}{\partial s_{k-1}}$.
 
-At the end of the pass, we obtain $\nabla f(x)=r_0$. All adjoints are stored, as they are required for the second reverse pass.
+At the end of the pass, $\nabla f(x)=r_0$ is obtained. All adjoints are stored, as they are required for the second reverse pass.
 
 \subsubsection{Second reverse pass (second-order adjoints)}
 
@@ -856,7 +856,7 @@ Computing the Hessian using the standard AD techniques would require 5 JVP or 4 
 It is possible to reduce the cost by grouping rows or columns together as long as they do not share any non-zero entry. 
 For instance, with the Jacobian matrix above, the Hessian can be computed with only 2 JVP or 2 VJP. 
 
-The intuition comes from the fact that when we compute a JVP or a VJP, the zero entries do not contribute to the result.
+The intuition comes from the fact that when computing a JVP or a VJP, the zero entries do not contribute to the result.
 Hence, columns or rows can be grouped together if they do not share non-zero entries. 
 
 For instance, computing the first two JVPs yields
@@ -1048,30 +1048,87 @@ All the values can be immediately retrieved from the matrix without solving any 
 
 This proves its better efficiency compared to the usual distance-1 coloring (4 HVPs), and the symmetric distance-1 coloring (2 HVPs + linear system).
 \subsection{Acyclic coloring}
-Given a graph $G=(V,E)$, and a coloring function $\phi: V \to \{1, \ldots, p\}$, an acyclic coloring is a distance-1 coloring with the additional constraint 
-that every cycle uses at least 3 colors. This allows to form forests of disjoints trees with the subgraph of each color pair. 
 
-%With that, we can do this little algorithm:\\
-% \begin{enumerate}
-%   \item Compute HVPs for each color
-%   \item Look at a 2-color subgraph (a tree)
-%   \item Read all leaf edges
-%   \item Substract their contribution from their parent
-%   \item Remove the leaves
-%   \item Repeat until the tree is empty
-% \end{enumerate}
+For any Hessian $H$ and vector $v$, computing 
+\begin{equation*}
+  y=Hv
+\end{equation*}
+gives a vector $y$ whose components are defined as 
+\begin{equation}
+  \label{eq:sum_hvp}
+  y_i=\sum_{j\in\mathcal N(i)}H_{ij}v_j
+\end{equation}
+where $\mathcal N(i)$ is the set of non-zero entry column indexes at row $i$.
 
-% For example, consider the following Hessian matrix:
-% \begin{equation}
-%   J = \begin{bmatrix}
-%     a_1 & a_2 & 0 & a_3 & 0\\
-%     a_2 & a_4 & a_5 & 0 & 0\\ 
-%     0 & a_5 & a_6 & 0 & a_7\\
-%     a_3 & 0 & 0 & a_8 & a_9\\
-%     0 & 0 & a_7 & a_9 & a_{10}
-%   \end{bmatrix}
-% \end{equation}
-\textcolor{red}{TODO better explain HVP computation with acyclic coloring and give an example}
+From here, assume $\phi: V \to \{1, \ldots, p\}$ is a proper coloring such that no two neighboring nodes have the same color.
+\subsubsection{Diagonal entries}
+Diagonal values are easy to extract. Assume node $i$ is colored in $c$. Then given the vector $v^{(c)}$ whose $j$-th component is $1$ iff $j$ is colored in $c$,
+the $i$-th component of the HVP yields²
+\begin{equation*}
+  (Hv^{(c)})_i = H_{ii}
+\end{equation*} 
+
+\subsubsection{Off-diagonal entries}
+It is readily seen that for a node $i$, colored $c_1$ and linked to a node $j$, colored $c_2$, $H_{ij}=H_{ji}$ appears in $(Hv^{(c_2)})_i$ and $(Hv^{(c_1)})_j$.
+Unfortunately, due to eq.\ref{eq:sum_hvp}, these entries appear summed with others. For instance 
+\begin{equation*}
+  (Hv^{(c_2)})_i=H_{ij}+H_{ik}+H_{il}
+\end{equation*}
+
+\subsubsection{Cycles}
+Cycles are a problem in coloring. Assume column nodes $i,j,k,l$ are connected in a cycle.
+\begin{center}
+  \begin {tikzpicture}
+	\node (A) {$i$};
+  \node (B) [right=of A]{$j$};
+	\node (C) [below=of A]{$k$};
+  \node (D) [below=of B]{$l$};
+	\draw (A) -- (B);
+  \draw (B) -- (D);
+  \draw (A) -- (C);
+  \draw (C) -- (D);
+  \end{tikzpicture}
+\end{center}
+Following eq.\ref{eq:sum_hvp}, equations for those components would be 
+\begin{equation*}
+  \left\{\begin{aligned}
+    y_i &= H_{ij} + H_{ik}\\
+    y_j &= H_{ji} + H_{jl}\\
+    y_k &= H_{ki} + H_{kl}\\
+    y_l &= H_{lj} + H_{lk}
+  \end{aligned}\right.
+\end{equation*}
+which are cycling equations. Solving this system requires additional HVPs.
+
+\subsubsection{Acyclic coloring}
+An \emph{acyclic coloring} ensures that for any two colors $c_1,c_2$, the induced subgraph has no cycles.
+It is, therefore, a \emph{tree} or a \emph{forest} where every connected component has at least one leaf.
+
+The algorithm follows
+\begin{enumerate}
+  \item Suppose node $i$ (colored $c_1$) is conneced to exactly one node $j$ (colored $c_2$). $i$ is a leaf.
+  \item From the HVP from color $c_2$, one obtains
+        \begin{equation*}
+          (Hv^{(c_2)})_i=H_{ij}
+        \end{equation*}
+        Indeed, since $i$ is a leaf of $j$, and thus the link $(i-j)$ is the only edge $i$ has, 
+        the only contribution to the $i$-th component of the $j$-th HVP (see eq. \ref{eq:sum_hvp}) is $H_{ij}$.
+  \item Once $H_{ij}$ is known, it can be substracted from the equation at $j$, the node $i$ can be removed from the tree, and the tree shrinks.
+  \item The process is repeated until the full Hessian is constructed. 
+\end{enumerate}
+This strategy only requires as much HVPs as there are colors required to form an acycling coloring, and often
+\begin{equation*}
+  \#\text{colors}\ll\#\text{variables}
+\end{equation*}
+
+Mentally, this process can be seen as 
+\begin{formal}
+  \begin{itemize}
+    \item Each HVP gives blurred information
+    \item Acyclic coloring makes sure that blue can always be unblurred locally
+  \end{itemize}
+\end{formal}
+
 \subsection{Chromatic number ($\xi$)}
 For every graph G,
 \begin{equation}
