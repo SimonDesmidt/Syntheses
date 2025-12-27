@@ -713,7 +713,7 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
   Assume
   \begin{itemize}
     \item $F:\R \to \R$
-    \item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\dfrac{\partial F}{\partial w}(w_0, \lambda_0) \neq 0$
+    \item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\partial_1 F(w_0, \lambda_0) \neq 0$
     \item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$ 
   \end{itemize}
   Then there exists a neighborhood $\mathcal{V} \subseteq \mathcal{U}$ where exists $w^*(\lambda)$ such that:
@@ -721,7 +721,7 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
 	\begin{aligned}
 		w^*(\lambda_0) &= w_0 \\
 		F(w^*(\lambda), \lambda) &= 0, \quad \forall (w^*(\lambda),\lambda) \in \mathcal{V} \\
-		\partial w^*(\lambda) &= - \left(\dfrac{\partial F}{\partial w} (w^*(\lambda), \lambda)\right)^{-1}\dfrac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)
+		\partial w^*(\lambda) &= - \left(\partial_1 F (w^*(\lambda), \lambda)\right)^{-1}\partial_2 F(w^*(\lambda), \lambda)
 	\end{aligned}
   \end{equation}
 \end{thm}
@@ -741,7 +741,7 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
   \begin{itemize}
     \item if $y_0>0$ then IFT holds and $y^*(x)=y^+(x)$,
     \item if $y_0<0$ then IFT holds and $y^*(x)=y^-(x)$,
-    \item if $y_0=0$ then $\dfrac{\partial F}{\partial y}(y_0,x_0)=2y_0=0$ so IFT does not hold
+    \item if $y_0=0$ then $\partial_1 F(y_0,x_0)=2y_0=0$ so IFT does not hold
   \end{itemize}
   This example shows that even a function such as $F(y,x)=x^2+y^2-1$ with 2 possible explicit functions does not violate the IFT.
 \end{exmp}
@@ -749,7 +749,7 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
   Assume
   \begin{itemize}
 	\item $F:\mathcal{W} \times \Lambda \to \mathcal{W}$
-	\item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\dfrac{\partial F}{\partial w}(w_0, \lambda_0) \neq 0$
+	\item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\partial_1 F(w_0, \lambda_0) \neq 0$
 	\item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$ 
   \end{itemize}
   Then there exists a neighborhood $\mathcal{V} \subseteq \mathcal{U}$ where exists $w^*(\lambda)$ such that:
@@ -757,7 +757,7 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
 	\begin{aligned}
 		w^*(\lambda_0) &= w_0 \\
 		F(w^*(\lambda), \lambda) &= 0, \quad \forall (w^*(\lambda),\lambda) \in \mathcal{V} \\
-		\partial w^*(\lambda) &= - \left(\dfrac{\partial F}{\partial w} (w^*(\lambda), \lambda)\right)^{-1}\dfrac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)
+		\partial w^*(\lambda) &= - \left(\partial_1 F(w^*(\lambda), \lambda)\right)^{-1}\partial_2 F(w^*(\lambda), \lambda)
 	\end{aligned}
   \end{equation}
 \end{thm}
@@ -770,12 +770,12 @@ Consider the implicit function defined by $F(w^*, \lambda) = 0$, from which one 
 Reminding that the forward tangent a step $k$, $t_k$, is computed using the known previous tangent $t_{k-1}$, and the function at the step,
 assuming the IFT holds, the following equality may be derived.
 \begin{equation}
-	t_k = - \left( \frac{\partial F}{\partial w} (w^*, \lambda) \right)^{-1} \cdot \frac{\partial F}{\partial \lambda} (w^*, \lambda) \cdot t_{k-1}
+	t_k = - \left( \partial_1 F(w^*, \lambda) \right)^{-1} \cdot \partial_2 F(w^*, \lambda) \cdot t_{k-1}
 \end{equation}
 where $t_k = \partial w^*(\lambda)/\partial s_0$ and $t_{k-1} = \partial \lambda / \partial s_0$. 
 Each JVP of the implicit function may be obtaine by solving a linear system. 
 
-Setting $A = -\dfrac{\partial F}{\partial w} (w^*(\lambda), \lambda)$ and $B = \dfrac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)$, 
+Setting $A = -\partial_1 F(w^*(\lambda), \lambda)$ and $B = \partial_2 F(w^*(\lambda), \lambda)$, 
 the system to solve becomes:
 \begin{equation}
 	t_k = A^{-1} B t_{k-1}
@@ -797,10 +797,10 @@ Once the forward pass is done, $A$ is fixed and the linear system can be solved 
 Computing the VJP boils down to the computation of the reverse tangent $r_{k-1}$ knowing the next reverse tangent $r_k$ and the function at this step. 
 Assuming the IFT holds, the following equality can be derived.
 \begin{equation}
-  r_{k-1} = - \left( \frac{\partial F}{\partial \lambda} (w^*, \lambda) \right)^T \cdot \left( \frac{\partial F}{\partial w} (w^*, \lambda) \right)^{-T} \cdot r_k
+  r_{k-1} = - \left( \partial_2 F(w^*, \lambda) \right)^T \cdot \left( \partial_1 F(w^*, \lambda) \right)^{-T} \cdot r_k
 \end{equation}
 where $r_{k-1} = \partial s_0 / \partial \lambda$ and $r_k = \partial s_0 / \partial w^*(\lambda)$.
-Denoting $A = \frac{\partial F}{\partial w} (w^*(\lambda), \lambda)$ and $B = \frac{\partial F}{\partial \lambda} (w^*(\lambda), \lambda)$, 
+Denoting $A = \partial_1 F(w^*(\lambda), \lambda)$ and $B = \partial_2 F(w^*(\lambda), \lambda)$, 
 the VJP can also be obtained as the solution of a linear system.
 \begin{equation}
   \begin{cases}
@@ -817,21 +817,21 @@ and its dual:
 \begin{equation}
   \max b^Ty \quad \text{s.t.} \quad A^Ty \leq c
 \end{equation}
-The KKT conditions gives us the optimality conditions for this problem:
+The KKT conditions gives the optimality conditions for this problem:
 \begin{equation}
   \begin{cases}
 	Ax = b \\
 	(A^Ty - c) \perp x \geq 0 
   \end{cases}
 \end{equation}
-We can rewrite these conditions as an implicit function $F((x,y),(A,b,c))$:
+The KKT conditions can be rewritten as an implicit function $F((x,y),(A,b,c))$:
 \begin{equation}
   F((x,y),(A,b,c)) = \begin{bmatrix}
 	Ax - b \\
 	Diag(x)(A^Ty - c)
   \end{bmatrix}
 \end{equation}
-If the IFT holds for this function, then we can compute $\frac{\partial F}{\partial w} (w^*, \lambda)$, which gives us:
+If the IFT holds for this function, then $\partial_1 F(w^*, \lambda)$ can be computed.
 \begin{equation}
   \frac{\partial F}{\partial (x,y)} = \begin{bmatrix}
 	A & 0 \\
@@ -839,8 +839,11 @@ If the IFT holds for this function, then we can compute $\frac{\partial F}{\part
   \end{bmatrix}
 \end{equation}
 \section{Sparse AD}
-Often in practice, the Jacobian matrix is sparse, meaning that many of its entries are zero. In such cases, we can use sparse automatic differentiation techniques to exploit this sparsity and reduce the computational cost of computing the Hessian. For this section, we will suppose that we know the sparsity pattern of the Jacobian matrix.
-Consider for example the following Jacobian matrix:
+Often in practice, the Jacobian matrix is sparse, meaning that many of its entries are zero. In such cases, sparse AD techniques can be used 
+to exploit the sparsity pattern and reduce the computational cost of the Hessian. 
+For this section, the sparsity pattern of the Jacobian matrix is assumed to be known.
+
+Consider for instance the following Jacobian matrix:
 \begin{equation}
   J = \begin{bmatrix}
 	0 & * & 0 & * & 0\\
@@ -849,16 +852,25 @@ Consider for example the following Jacobian matrix:
 	* & 0 & * & 0 & 0
   \end{bmatrix}
 \end{equation}
-If we computed the Hessian using the standard AD techniques, we would need to compute 5 JVP or 4 VJP. But what if we could group some columns or rows together to reduce the number of passes needed ? Yes we can combine the columns or rows that do not share any non-zero entry. For example, with the Jacobian matrix above, we can compute the Hessian with only 2 JVP or 2 VJP. the intuition behind this comes from the fact that when we compute a JVP or a VJP, the zero entries do not contribute to the result, so we can group together the columns or rows that do not share any non-zero entry. For example, let us compute the two firsts JVPs:
+Computing the Hessian using the standard AD techniques would require 5 JVP or 4 VJP. 
+It is possible to reduce the cost by grouping rows or columns together as long as they do not share any non-zero entry. 
+For instance, with the Jacobian matrix above, the Hessian can be computed with only 2 JVP or 2 VJP. 
+
+The intuition comes from the fact that when we compute a JVP or a VJP, the zero entries do not contribute to the result.
+Hence, columns or rows can be grouped together if they do not share non-zero entries. 
+
+For instance, computing the first two JVPs yields
 \begin{equation}
-	J\begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 0 \\ * \end{bmatrix} \qquad \& \qquad
+	J\begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 0 \\ * \end{bmatrix} \qquad \text{and} \qquad
 	J\begin{bmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} *\\ 0 \\ * \\ 0 \end{bmatrix}
 \end{equation}
-Combining these two JVPs, we get:
+Combining these two JVPs gives:
 \begin{equation}
 	J\begin{bmatrix} 1 \\ 1 \\ 0 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} * \\ 0 \\ * \\ * \end{bmatrix}
 \end{equation}
-And because we know the sparsity pattern we can then put the results back in the right place, this is called the decompression. So to compute the Hessian, we combine the following columns and so use those vectors for the JVPs:
+Using the known sparsity pattern, the results can be put back in the right place. This process is called \emph{decompression}. 
+
+Hence computing the Hessian boilds down to combining the following columns and using them as vectors for the JVPs:
 \begin{equation}
   \begin{bmatrix}
 	0 & \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0\\
@@ -866,7 +878,7 @@ And because we know the sparsity pattern we can then put the results back in the
 	0 & \textcolor{red}{*} & \textcolor{blue}{*} & 0 & 0\\
 	\textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0 & 0
   \end{bmatrix} \qquad \Rightarrow \qquad \textcolor{red}{v_1}=\begin{bmatrix} 1 \\ 1 \\
-	0 \\ 0 \\ 1 \end{bmatrix} \& \quad \textcolor{blue}{v_2}=\begin{bmatrix} 0 \\ 0 \\ 1 \\ 1 \\ 0 \end{bmatrix}
+	0 \\ 0 \\ 1 \end{bmatrix}, \quad \textcolor{blue}{v_2}=\begin{bmatrix} 0 \\ 0 \\ 1 \\ 1 \\ 0 \end{bmatrix}
 \end{equation}
 Or for the VJP:
 \begin{equation}
@@ -875,10 +887,16 @@ Or for the VJP:
 	0 & 0 & 0 & \textcolor{blue}{*} & \textcolor{blue}{*}\\
 	0 & \textcolor{blue}{*} & \textcolor{blue}{*} & 0 & 0\\
 	\textcolor{red}{*} & 0 & \textcolor{red}{*} & 0 & 0
-  \end{bmatrix} \qquad \Rightarrow \qquad \textcolor{red}{v_1}=\begin{bmatrix} 1 & 0 & 0 & 1 \end{bmatrix} \& \quad \textcolor{blue}{v_2}=\begin{bmatrix} 0 & 1 & 1 & 0 \end{bmatrix}
+  \end{bmatrix} \qquad \Rightarrow \qquad \textcolor{red}{v_1}=\begin{bmatrix} 1 & 0 & 0 & 1 \end{bmatrix}, \quad \textcolor{blue}{v_2}=\begin{bmatrix} 0 & 1 & 1 & 0 \end{bmatrix}
 \end{equation}
 \subsection{Sparsity detection}
-The problem of grouping the columns or rows of a sparse matrix can be seen as a graph coloring problem. There is multiple way to model this problem as a graph coloring problem. For example, we can create a graph where each column is a node and there is an edge between two nodes if they share a non-zero entry. Then we can use a graph coloring algorithm to color the graph such that no two adjacent nodes have the same color. Each color then represents a group of columns that can be combined together for the JVPs. The same can be done for the rows for the VJPs. Here is a visual example: 
+The problem of grouping the columns or rows of a sparse matrix can be modeled as a graph coloring problem in many ways.
+For instance, it could be a graph where each column is a node and where an edge connects two nodes if they share a non-zero entry. 
+
+Once the problem is modeled, any graph coloring algorithm can be used to color the graph such that no two adjacent nodes have the same color. 
+As a result, each color represents a group of columns that can be combined together for the JVPs. The same can be done for the rows for the VJPs. 
+
+Here is a visual example.
 \begin{equation}
   J = \begin{bmatrix}
 	0 & \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0\\
@@ -904,7 +922,8 @@ The problem of grouping the columns or rows of a sparse matrix can be seen as a 
 	\path (D) edge (E);
   \end{tikzpicture}
 \end{center}
-Be careful, with more complex sparsity patterns, we could have edges that link more than one times the same nodes. For example, consider the following Jacobian matrix:
+In more complex sparsity patterns, somes nodes could be linked multiple times, and therefore a particular care must be taken to ensure no multipy linked nodes
+share an edge.
 \begin{equation}
   J = \begin{bmatrix}
 	0 & 0 & * \\
@@ -912,8 +931,11 @@ Be careful, with more complex sparsity patterns, we could have edges that link m
 	* & * & 0
   \end{bmatrix}
 \end{equation}
-With that matrix, the node 1 and 2 should be linked by two edges because they share two non-zero entries. This means that when we color the graph, we need to make sure that the nodes linked by multiple edges do not share the same color.\\
-Another way to model this problem is to create a bipartite graph where one set of nodes represents the columns and the other set represents the rows. There is an edge between a column node and a row node if the corresponding entry in the matrix is non-zero. Considering the same example as before:
+Node 1 and 2 should be linked by two edges because they share two non-zero entries, hence the colors must be different.
+
+The probem can also be modeled as a bipartite graph, where one set of nodes represents the columns and the other set represents the rows. 
+There will be an edge between a column node and a row node if the corresponding entry in the matrix is non-zero. 
+Considering the same instance
 \begin{equation}
   J = \begin{bmatrix}
 	0 & \textcolor{green}{*} & 0 & \textcolor{green}{*} & 0\\
@@ -935,11 +957,11 @@ Another way to model this problem is to create a bipartite graph where one set o
 	\node[state4] (B) [below=of A] {$r_2$};
 	\node[state4] (C) [below=of B] {$r_3$};
 	\node[state3] (D) [below=of C] {$r_4$};
-	\node[state1] (E) [right=of A] {$a_1$};
-	\node[state1] (F) [below=of E] {$a_2$};
-	\node[state2] (G) [below=of F] {$a_3$};
-	\node[state2] (H) [below=of G] {$a_4$};
-	\node[state1] (I) [below=of H] {$a_5$};
+	\node[state1] (E) [right=of A] {$c_1$};
+	\node[state1] (F) [below=of E] {$c_2$};
+	\node[state2] (G) [below=of F] {$c_3$};
+	\node[state2] (H) [below=of G] {$c_4$};
+	\node[state1] (I) [below=of H] {$c_5$};
 	\path (A) edge (F);
 	\path (A) edge (H);
 	\path (B) edge (H);
@@ -950,9 +972,15 @@ Another way to model this problem is to create a bipartite graph where one set o
 	\path (D) edge (G);
   \end{tikzpicture}
 \end{center}
-With this modeling, the coloring problem is a distance-2 graph coloring problem, meaning that two nodes that are at distance 2 from each other cannot share the same color. This is because two columns that share a non-zero entry are connected to the same row node, so they are at distance 2 from each other. The same applies for the rows.\\ 
+With this modeling, the coloring problem is a distance-2 graph coloring problem. 
+Two column nodes being at distance 2 from each other can't share the same color because if they share a non-zero entry ar row $n$, 
+they will be connected to the same row node $n$.
+
+The same applies for the rows.
+
 \subsection{Symmetric matrix}
-When the Hessian matrix is symmetric, we can use a more efficient algorithm to compute the HVP. For example, consider the following symmetric Hessian matrix:
+When the Jacobian matrix is symmetric, a more efficient algorithm can be used to compute the HVP. 
+For instance, consider the following symmetric Jacobian matrix.
 \begin{equation}
   J = \begin{bmatrix}
 	a_1 & a_2 & a_3 & 0\\
@@ -961,7 +989,8 @@ When the Hessian matrix is symmetric, we can use a more efficient algorithm to c
 	0 & a_5 & 0 & a_7
   \end{bmatrix}
 \end{equation}
-With the previous sparse AD techniques, we would need to compute 3 HVP or 3 VHP, instead of 4. But if we take into account the symmetry of the matrix we could even do it in 2 HVP or 2 VHP. Indeed, we can group the columns like this:
+With the previous sparse AD techniques, 3 HVPs or 3 VHPs would be required, instead of 4 wit the standard AD. 
+Using the symmetry of the matrix, this computations can be reduced to 2 HVPs or 2 VHPs. Indeed, columns can colored as
 \begin{equation}\label{eq:sym_norm}
   J = \begin{bmatrix}
 	\textcolor{red}{a_1} & \textcolor{blue}{a_2} & \textcolor{blue}{a_3} & 0\\
@@ -970,14 +999,24 @@ With the previous sparse AD techniques, we would need to compute 3 HVP or 3 VHP,
 	0 & \textcolor{blue}{a_5} & 0 & \textcolor{red}{a_7}
   \end{bmatrix}
 \end{equation}
-At first sight, it seems that the columns 2 and 3 cannot be grouped together because they share a non-zero entry at position (1,2) and (1,3). But because of the symmetry, we already have the information of those entries in the collumn 1 and thus we will be able to retrieve the full matrix. Let us compute the two HVPs and see how we can retrieve the full matrix:
+Using the symmetry property, the entry shared between columns 2 and 3 can be ignored since this value would be also computed by the HVP on the 
+first column. Hence, it can be considered as 0 for now, and replaced back later.
+ 
+Computing the two HVPs and retrieving the full Hessian matrix shows
 \begin{equation}\label{eq:sym_norm_sol}
   J \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix} = \begin{bmatrix} a_1 & a_2+a_3 \\ a_2 +a_5 & a_4 \\ a_3 & a_6 \\ a_7 & a_5 \end{bmatrix}
 \end{equation}
-And as we can see, we can solve a little linear equation system to retrieve the value of $a_2$, and with all the values know and knowing the sparsity pattern, we can reform the full matrix. The same can be done for the VHP by grouping the rows instead of the columns.
+$a_2$ can be obtained by solving a small linear system. 
+
+Using computed values and knowing the sparsity pattern, the full matrix can be reconstructed. 
+
+The same process can be developed for VHPs by grouping rows instead of columns.
+
 \subsection{Star coloring}
-We have a graph $G=(V,E)$, a coloring function $\phi: V \to \{1, \ldots, p\}$. A star coloring is distance-1 coloring with the additional constraint that every path 4 vertices uses at least 3 colors. In other words, no path of length 3 is bi-chromatic. This prevents thus length-3 dependency chains.\\
-Let us see an example considering the same symmetric Hessian matrix as before:
+
+Given a graph $G=(V,E)$, and a coloring function $\phi: V \to \{1, \ldots, p\}$, a star coloring is distance-1 coloring with the additional constraint 
+that every path of 4 vertices uses at least 3 colors. In other words, no path of length 3 is \emph{bi-chromatic}. This prevents \emph{length-3} dependency chains.
+For instance, considering the same symmetric Jacobian matrix as above
 \begin{equation}
   J = \begin{bmatrix}
 	a_1 & a_2 & a_3 & 0\\
@@ -986,8 +1025,12 @@ Let us see an example considering the same symmetric Hessian matrix as before:
 	0 & a_5 & 0 & a_7
   \end{bmatrix}
 \end{equation}
-If we color its associated graph with the classic distance-1 coloring, we would get the same matrix as \eqref{eq:sym_norm} and thus if we do the HVPs we would get the matrix \eqref{eq:sym_norm_sol} and we would need to solve a linear equation system to retrieve the value $a_2$. 
-But if we use a star coloring, we could retrieve explicitly all the element. Let us show how:
+Coloring its associated graph with the classic distance-1 coloring would yield the same matrix as \eqref{eq:sym_norm}.
+Computing the HVPs, one would obtain the matrix \eqref{eq:sym_norm_sol} and solving a linear system would be required to retrieve $a_2$. 
+
+Usings star coloring, one could retrieve explicitly all the element. 
+
+Consider the following coloring
 \begin{equation}
   J = \begin{bmatrix}
 	\textcolor{red}{a_1} & \textcolor{blue}{a_2} & \textcolor{blue}{a_3} & 0\\
@@ -996,13 +1039,19 @@ But if we use a star coloring, we could retrieve explicitly all the element. Let
 	0 & \textcolor{blue}{a_5} & 0 & \textcolor{green}{a_7}
   \end{bmatrix}
 \end{equation}
-The use of the green color ensure the star coloring condition. Now if we compute the 3 HVPs:
+Using the green color ensures the star coloring condition. 
+Now, computing the 3 HVPs
 \begin{equation}
   J \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} = \begin{bmatrix} a_1 & a_2 + a_3 & 0 \\ a_2 & a_4 & a_5 \\ a_3 & a_6 & 0\\ 0 & a_5 & a_7 \end{bmatrix}
 \end{equation}
-And we see that we can directly retrieve all the values of the matrix without solving any linear equation system. It is thus more efficient than the classic distance-1 coloring (4 HVPs), and more efficient than the symmetric distance-1 coloring (2 HVPs + linear system).
+All the values can be immediately retrieved from the matrix without solving any linear equation system. 
+
+This proves its better efficiency compared to the usual distance-1 coloring (4 HVPs), and the symmetric distance-1 coloring (2 HVPs + linear system).
 \subsection{Acyclic coloring}
-We have a graph $G=(V,E)$, a coloring function $\phi: V \to \{1, \ldots, p\}$. An acyclic coloring is distance-1 coloring with the additional constraint that every cycle uses at least 3 colors. This allows us to forms forests of disjoints trees with the subgraph of each color pair. %With that, we can do this little algorithm:\\
+Given a graph $G=(V,E)$, and a coloring function $\phi: V \to \{1, \ldots, p\}$, an acyclic coloring is a distance-1 coloring with the additional constraint 
+that every cycle uses at least 3 colors. This allows to form forests of disjoints trees with the subgraph of each color pair. 
+
+%With that, we can do this little algorithm:\\
 % \begin{enumerate}
 %   \item Compute HVPs for each color
 %   \item Look at a 2-color subgraph (a tree)
@@ -1028,7 +1077,7 @@ For every graph G,
 \begin{equation}
   \xi_1(G) \leq \xi_{acyclic} (G) \leq \xi_{star}(G) \leq \xi_2(G)
 \end{equation}
-$\xi_1$ is the classic distance-1 chromatic number, $\xi_2$ the distance-2 chromatic number.
+$\xi_1$ is the usual distance-1 chromatic number, $\xi_2$ the distance-2 chromatic number.
 \chapter{Neural networks}
 % \textcolor{red}{TODO link tangent with neural networks}\\
 Neural networks are a class of machine learning models inspired by the structure and function of the human brain. They are composed of layers of interconnected nodes (neurons) that process and transmit information.\\
