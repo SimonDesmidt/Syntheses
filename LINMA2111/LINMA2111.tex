@@ -659,8 +659,6 @@ Given a graph $G=(V,E)$, we want to partition $V$ into two sets $S_0$ and $S_1$ 
 A randomized algorithm may be wrong but it has a bias towards the correct answer. The idea is to run $k$ times the algorithm to take advantages of the properties of the randomness. For example, for one-sided error, with Schwartz-Zippel, we know that we have no false negative. So if we get at least one TRUE in $k$ runs, we can be sure that it is TRUE. For two-sided error, we can run $k$ times independently and take the majority answer.
 \section{Las Vegas and Monte Carlo}
 An algorithm is said to be Las Vegas when the output is correct, but the time taken to get to this solution is random. On the other hand, an algorithm is said to be Monte Carlo when the output is correct with some probability, or we only get a bound on the real value.
-\section{Hash tables}
-\textcolor{red}{TODO}
 \section{Randomness generation}
 Let us take functions $f,g:X\to Y$ and an element $s\in X$. We define the sequence
 \begin{equation}
