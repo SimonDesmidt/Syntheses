@@ -954,7 +954,9 @@ Considering the same instance
 \begin{center}
   \begin {tikzpicture}[-latex ,auto ,node distance = 2 cm and 4 cm ,on grid ,
 	semithick ,
-	state1/.style ={ circle ,top color =white , bottom color = red , draw,red , text=black , minimum width =1 cm}, state2/.style ={ circle ,top color =white , bottom color = blue , draw,blue , text=black , minimum width =1 cm}, state3/.style ={ circle ,top color =white , bottom color = green , draw,green , text=black , minimum width =1 cm}, state4/.style ={ circle ,top color =white , bottom color = violet , draw,violet , text=black , minimum width =1 cm}]
+	state1/.style ={ circle ,top color =white , bottom color = red , draw,red , text=black , minimum width =1 cm}, state2/.style ={ circle ,top color =white , bottom color = blue , draw,blue , 
+  text=black , minimum width =1 cm}, state3/.style ={ circle ,top color =white , bottom color = green , draw,green , text=black , minimum width =1 cm}, state4/.style ={ circle ,top color =white , 
+  bottom color = violet , draw,violet , text=black , minimum width =1 cm}]
 	\node[state3] (A) {$r_1$};
 	\node[state4] (B) [below=of A] {$r_2$};
 	\node[state4] (C) [below=of B] {$r_3$};
@@ -1044,7 +1046,8 @@ Consider the following coloring
 Using the green color ensures the star coloring condition. 
 Now, computing the 3 HVPs
 \begin{equation}
-  J \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} = \begin{bmatrix} a_1 & a_2 + a_3 & 0 \\ a_2 & a_4 & a_5 \\ a_3 & a_6 & 0\\ 0 & a_5 & a_7 \end{bmatrix}
+  J \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} = 
+  \begin{bmatrix} a_1 & a_2 + a_3 & 0 \\ a_2 & a_4 & a_5 \\ a_3 & a_6 & 0\\ 0 & a_5 & a_7 \end{bmatrix}
 \end{equation}
 All the values can be immediately retrieved from the matrix without solving any linear equation system. 
 
@@ -1154,8 +1157,8 @@ First let's define some variables:
   \item $S_i$: intermediate state  
 \end{itemize} 
 A neural network can be seen as a composition of functions, the type of which was discussed in sections above.
-A neural network needs to be trained, or in other words its parameters have to be optimized. Optimization requires computing derivatives and that's where automatic differentiation 
-comes at play.
+A neural network needs to be trained, or in other words its parameters have to be optimized. Optimization requires computing derivatives 
+and that's where automatic differentiation comes at play.
 
 The forward pass of a neural network can be described in two equivalent ways.
 \begin{equation}
@@ -1535,42 +1538,83 @@ This dimension is indeed hidden in the embedding process.
 % \textcolor{red}{Idk what to say}
 
 \chapter{Diffusion Models}
-The objective of diffusion models is to generate data by learning how to reverse a gradual noising process, turning random noise into structured samples through iterative denoising. 
+The objective of diffusion models is to generate data by learning how to reverse a gradual noising process, turning random noise into structured samples 
+through iterative denoising. 
 \section{Tweedie's formula}
-First, we need to understand why diffusion models can be trained by denoising and why predicting the noise is equivalent to learning a score. For that, we need to introduce Tweedie's formula. Consider that we observe a noisy version of a random variable $X$. The noisy observation is given by $Y = X + \sigma \varepsilon$, where $\varepsilon \sim \mathcal{N}(0, 1)$. We want, given this noisy observation $Y=y$, to estimate the original variable $X$. The MMSE estimator is given by $\mathbb{E}[X | Y=y]$. Tweedie's formula states that:
+First, we need to understand why diffusion models can be trained by denoising and why predicting the noise is equivalent to learning a score. 
+For that, we need to introduce Tweedie's formula. 
+
+Consider that we observe a noisy version of a random variable $X$. 
+The noisy observation is given by $Y = X + \sigma \varepsilon$, where $\varepsilon \sim \mathcal{N}(0, 1)$. 
+We want, given this noisy observation $Y=y$, to estimate the original variable $X$. The MMSE estimator is given by $\mathbb{E}[X | Y=y]$. 
+
+Tweedie's formula states that:
 \begin{equation}
   \mathbb{E}[X | Y=y] = y + \sigma^2 \nabla_y \log f_Y(y)
 \end{equation}
-where $f_Y(y)$ is the probability density function of the noisy observation $Y$. And thus $\nabla_y \log f_Y(y)$ is a score function that tells us in which direction the probability mass increases and thus where cleaner data is. We can also estimate the noise $\varepsilon$:
+where $f_Y(y)$ is the probability density function of the noisy observation $Y$. And thus $\nabla_y \log f_Y(y)$ is a score function 
+that tells us in which direction the probability mass increases and thus where cleaner data is. 
+
+We can also estimate the noise $\varepsilon$:
 \begin{equation}
   \mathbb{E}[\varepsilon | Y=y] = - \sigma \nabla_y \log f_Y(y)
 \end{equation}
-And this means that if we can predict the noise, we can also estimate the score function and thus the denoised data. This is the principle used in diffusion models.
+And this means that if we can predict the noise, we can also estimate the score function and thus the denoised data. 
+This is the principle used in diffusion models.
+
 \section{Langevin dynamics (sampling)}
-Langevin dynamics is a way to sample from a probability distribution ($p(y)$) when you only know its log-density gradient (the score), not the density itself. The idea is to iteratively update a sample by taking small steps in the direction of the score, while also adding some random noise to ensure exploration of the space. The update rule for Langevin dynamics is given by:
+Langevin dynamics is a way to sample from a probability distribution ($p(y)$) when you only know its log-density gradient (the score), not the density itself. 
+The idea is to iteratively update a sample by taking small steps in the direction of the score, while also adding some random noise to 
+ensure exploration of the space. 
+
+The update rule for Langevin dynamics is given by:
 \begin{equation}
   y_{k+1} = y_k + \delta_k \nabla_y \log p(y_k) + \sqrt{2 \delta_k} w_k	
 \end{equation}
-with $w_k \sim \mathcal{N}(0, 1)$ and $\delta_k$ is a small step size. By repeating this process many times, the samples $y_k$ will converge to the target distribution $p(y)$. Adding this noise is important because it helps the samples to explore the space more effectively and avoid getting stuck in local modes of the distribution. The Langevin dynamics is seen in diffusion models at each denoising step.
+with $w_k \sim \mathcal{N}(0, 1)$ and $\delta_k$ is a small step size. 
+By repeating this process many times, the samples $y_k$ will converge to the target distribution $p(y)$. 
+Adding this noise is important because it helps the samples to explore the space more effectively and avoid getting stuck in local modes of the distribution. 
+
+The Langevin dynamics is seen in diffusion models at each denoising step.
+
 \section{Score matching}
-This is the part "learning the score" of diffusion models. Here the idea is to fix a noise level $\sigma$ and to corrupt the data $X$ with Gaussian noise to get $Y = X + \sigma \varepsilon$, with $\varepsilon \sim \mathcal{N}(0, 1)$. Then we want to minimize the error to learn the noisy data distribution ($p_{X+\sigma \varepsilon}$):
+This is the part "learning the score" of diffusion models. Here the idea is to fix a noise level $\sigma$ and to corrupt the data $X$ with Gaussian noise to 
+get $Y = X + \sigma \varepsilon$, with $\varepsilon \sim \mathcal{N}(0, 1)$. 
+
+Then we want to minimize the error to learn the noisy data distribution ($p_{X+\sigma \varepsilon}$):
 \begin{equation}
 	  \mathbb{E}\left[ \| \varepsilon_\theta (X+ \sigma \varepsilon) - \varepsilon \|^2 \right]
 \end{equation}
-But with this, $\sigma$ needs to be scaled properly, otherwise the model will not learn well. If $\sigma$ is too small, then the support of $X+ \sigma \varepsilon$ may not cover the whole space, and thus $\varepsilon_\theta(y)$ may be inaccurate. If $\sigma$ is too large, then the noise dominates the signal, and the model may struggle to learn meaningful patterns.
+But with this, $\sigma$ needs to be scaled properly, otherwise the model will not learn well. If $\sigma$ is too small, then 
+the support of $X+ \sigma \varepsilon$ may not cover the whole space, and thus $\varepsilon_\theta(y)$ may be inaccurate. 
+If $\sigma$ is too large, then the noise dominates the signal, and the model may struggle to learn meaningful patterns.
+
+The loss function used is the Fisher divergence
+\begin{equation*}
+  \E[\|\varepsilon_\theta(y)+\sigma\nabla_y\log f_Y(y)\|^2]=\int_yf_Y(y)\|\varepsilon_\theta(y)+\sigma\nabla_y\log f_Y(y)\|^2\mathrm dy
+\end{equation*}
+
 \subsection{Variance dependent score}
-To address the issue of choosing the right noise level $\sigma$, we can introduce a variance-dependent score function. Instead of using a fixed $\sigma$, we can define a score function that depends on the noise level. The idea is to train a model $\varepsilon_\theta(y, \sigma)$ that takes both the noisy observation $y$ and the noise level $\sigma$ as inputs. The training objective becomes:
+To address the issue of choosing the right noise level $\sigma$, we can introduce a variance-dependent score function. 
+Instead of using a fixed $\sigma$, we can define a score function that depends on the noise level. 
+The idea is to train a model $\varepsilon_\theta(y, \sigma)$ that takes both the noisy observation $y$ and the noise level $\sigma$ as inputs. 
+
+The training objective becomes
 \begin{equation}
 	\mathbb{E}\left[ \| \varepsilon_\theta (X+ \sigma \varepsilon, \sigma) - \varepsilon \|^2 \right]
 \end{equation}
 \section{Deterministic Sampling}
-On the picture below, we can see how does denoising looks like with DDIM (Denoising Diffusion Implicit Models). The idea is to use a deterministic process to reverse the diffusion process. If we denoise in one step, for low noise levels, it works quite well. For large noise levels, the score provides only a global direction, so multiple denoising steps are required to gradually approach the data manifold.
-\begin{figure}[H]
+On the picture below, we can see how does denoising looks like with DDIM (Denoising Diffusion Implicit Models). 
+The idea is to use a deterministic process to reverse the diffusion process. If we denoise in one step, for low noise levels, it works quite well. 
+
+For large noise levels, the score provides only a global direction, so multiple denoising steps are required to gradually approach the data manifold.
+\begin{figure}
 	\centering
 	\includegraphics[width=0.9\textwidth]{img/DDIM.png}
 	\caption{DDIM sampling example}
+  \label{fig:ddim}
 \end{figure}
-DDIM move from a variance $\sigma_t$ to a variance $\sigma_{t-1}$, like in the figure above (c):
+DDIM move from a variance $\sigma_t$ to a variance $\sigma_{t-1}$, like in figure \ref{fig:ddim}. 
 \begin{equation}
 	\begin{aligned}
 		X_t &= X_0 + \sigma_t \varepsilon\\
@@ -1581,13 +1625,22 @@ DDIM move from a variance $\sigma_t$ to a variance $\sigma_{t-1}$, like in the f
 	\end{aligned}
 \end{equation}
 \section{Denoising with randomness}
-Now we want to add some randomness to the denoising process, so we introduce DDPM (Denoising Diffusion Probabilistic Models). The idea is to add some noise during the denoising process to ensure diversity in the generated samples. Give $0 \leq \mu < 1$, pick $\sigma_{t'}$ such that $\sigma_{t-1} = \sigma_t^\mu \sigma_{t'}^{1-\mu}$ and we have the following sampler:
+Now we want to add some randomness to the denoising process, so we introduce DDPM (Denoising Diffusion Probabilistic Models). 
+The idea is to add some noise during the denoising process to ensure diversity in the generated samples. 
+
+Give $0 \leq \mu < 1$, pick $\sigma_{t'}$ such that $\sigma_{t-1} = \sigma_t^\mu \sigma_{t'}^{1-\mu}$ and we have the following sampler:
 \begin{equation}
 	x_{t-1} = x_t + (\sigma_{t'} - \sigma_t) \epsilon_\theta(x_t, \sigma_t) + \eta w_t 
 \end{equation}
-with $w_t \sim \mathcal{N}(0, 1)$. If we choose $\mu = 0$ and $\sigma_{t'} = \sigma_{t-1}$, we recover the DDIM sampler. And if we choose $\mu = 1/2$, we have the DDPM sampler. We have by assumption $\sigma_{t-1} < \sigma_t$. Then, because $\sigma_{t-1}$ is the geometric mean of $\sigma_t$ and $\sigma_{t'}$, it must be between so $\sigma_{t'} < \sigma_{t-1} < \sigma_t$. To choose $\eta$, we know we want $\sigma^2_{t-1} = \mathbb{V}(\sigma_{t'}\varepsilon_\theta(x_t,\sigma_t))+\eta W_t$. So we can choose $\eta = \sqrt{\sigma_{t-1}^2 - \sigma_{t'}^2}$.\\
+with $w_t \sim \mathcal{N}(0, 1)$. If we choose $\mu = 0$ and $\sigma_{t'} = \sigma_{t-1}$, we recover the DDIM sampler. 
+And if we choose $\mu = 1/2$, we have the DDPM sampler. We have by assumption $\sigma_{t-1} < \sigma_t$. 
+Then, because $\sigma_{t-1}$ is the geometric mean of $\sigma_t$ and $\sigma_{t'}$, it must be between so $\sigma_{t'} < \sigma_{t-1} < \sigma_t$. 
+To choose $\eta$, we know we want $\sigma^2_{t-1} = \mathbb{V}(\sigma_{t'}\varepsilon_\theta(x_t,\sigma_t))+\eta W_t$. 
+So we can choose $\eta = \sqrt{\sigma_{t-1}^2 - \sigma_{t'}^2}$.
+
 \subsection{Acceleration}
-We can accelerate the convergence of the previous sampler using the observation that "The noise prediction at a lower noise level is more accurate". We can thus define:
+We can accelerate the convergence of the previous sampler using the observation that "The noise prediction at a lower noise level is more accurate". 
+We can thus define:
 \begin{equation}
 	\bar{\epsilon}_t = \gamma \epsilon_\theta(x_t, \sigma_t) + (1-\gamma) \epsilon_\theta(x_{t+1}, \sigma_{t+1}) \qquad \gamma > 1
 \end{equation}
@@ -1596,20 +1649,31 @@ We want to find an encoder $E$ and a decoder $D$ that minimizes the loss:
 \begin{equation}
 	\E[\| X - D(E(X)) \|^2_2]
 \end{equation}
-$E(X)$ typically reduces the dimension of $X$ to force the model to keep only essential features. If $E$ and $D$ are linear, then the auto-encoder is $x \to DEx$ and so only the product $DE$ matters and the problem becomes:
+$E(X)$ typically reduces the dimension of $X$ to force the model to keep only essential features. 
+
+If $E$ and $D$ are linear, then the auto-encoder is $x \to DEx$ and so only the product $DE$ matters and the problem becomes:
 \begin{equation}
 	\min_{D,E} \E[\| X - DEX \|^2_F]
 \end{equation}
-Because we want to compress the data, we have the constraint $\text{rank}(DE) \leq r$. So the auto-encoder is searching for the best rank-$r$ approximation of X. We can use the SVD of $X = U \Sigma V^T$ to find the best rank-$r$ approximation, and in our case it is working the same way as the PCA. And thus to approximate $X$ we can choose $DE = U_r \Sigma_r U_r^T$. With all this, an Auto-Encoder can be thought of as a nonlinear generalization of PCA.
+Because we want to compress the data, we have the constraint $\text{rank}(DE) \leq r$. So the auto-encoder is searching for the best rank-$r$ approximation of X. 
+We can use the SVD of $X = U \Sigma V^T$ to find the best rank-$r$ approximation, and in our case it is working the same way as the PCA. 
+And thus to approximate $X$ we can choose $DE = U_r \Sigma_r U_r^T$. With all this, an Auto-Encoder can be thought of as a nonlinear generalization of PCA.
+
 \subsection{Variationnal Auto-Encoder}
-We want to learn the distribution of our data represented by the random variable $X$. To improve learning, we can add artificial noise to learn a more interesting distribution.
+We want to learn the distribution of our data represented by the random variable $X$. 
+To improve learning, we can add artificial noise to learn a more interesting distribution.
 \begin{equation}
 	\E [\| X - D(E_\mu(X) + \varepsilon \odot E_\sigma(X)) \|^2_2]
 \end{equation}
 \subsection{Evidence Lower Bound (ELBO)}
-The evidence lower bound is a useful lower bound on the log-likelihood of some observed data. It is useful because it provides a guarantee on the worst-case for the log-likelihood of some distribution (e.g. $p(X)$) which models a set of data. But first we need to introduce the Kullback-Leibler (KL) divergence. The KL divergence is a measure of how one probability distribution diverges from a second, expected probability distribution. For two distributions $P$ and $Q$, the KL divergence from $Q$ to $P$ is defined as:
+The evidence lower bound is a useful lower bound on the log-likelihood of some observed data. 
+It is useful because it provides a guarantee on the worst-case for the log-likelihood of some distribution (e.g. $p(X)$) which models a set of data. 
+But first we need to introduce the Kullback-Leibler (KL) divergence. 
+The KL divergence is a measure of how one probability distribution diverges from a second, expected probability distribution. 
+
+For two distributions $A$ and $B$, the KL divergence from $B$ to $A$ is defined as:
 \begin{equation}
-	D_{KL}(P \| Q) = \sum_{x} P(x) \log\left(\dfrac{P(x)}{Q(x)}\right)
+	D_{KL}(A \mid B) = \sum_{a\in\text{Dom}(A)} f_A(a) \log\dfrac{f_A(a)}{f_B(a)}=\E[\log f_A(A)-\log f_B(A)]
 \end{equation}
 And with that we can define the ELBO. 
 \begin{equation}
@@ -1617,7 +1681,11 @@ And with that we can define the ELBO.
 \end{equation}
 The KL divergence is always non-negative, and measure the error made by our estimator.
 \subsection{Gaussian ELBO}
-We can compute the ELBO in the case of Gaussian distributions, like with the variationnal Auto-Encoder. Suppose $X = D_\mu(Z) + \varepsilon_1 \odot D_\sigma(Z)$ and $Y = E_\mu(X) + \varepsilon_2 \odot E_\sigma(X)$, with $\varepsilon_1, \varepsilon_2 \sim \mathcal{N}(0, 1)$. Then we have:
+We can compute the ELBO in the case of Gaussian distributions, like with the variationnal Auto-Encoder. 
+Suppose $X = D_\mu(Z) + \varepsilon_1 \odot D_\sigma(Z)$ and $Y = E_\mu(X) + \varepsilon_2 \odot E_\sigma(X)$, 
+with $\varepsilon_1, \varepsilon_2 \sim \mathcal{N}(0, 1)$. 
+
+Then we have:
 \begin{equation}
 	2 D_{KL}((Y|X=x) \| Z) = \| E_\mu(X)\|^2_2 + \| E_\sigma(X) \|^2_2 - \left(\sum_{i=1}^{r} \log((E_\sigma(X))_i^2) +r\right)
 \end{equation}
@@ -1626,7 +1694,8 @@ And for the first term of the ELBO:
 	\begin{aligned}
 		&\E\left[\log(f_{X|Z}(x|Y))\right] \\
 		&= \E\left[\log(f_{X|Z}(x|E_\mu(X) + \varepsilon_2 \odot E_\sigma(X)))\right] \\
-		&= - \dfrac{\log(2\pi)}{2} + \E\left[\| \text{Diag}(D_\sigma(E_\mu(X) + \varepsilon_2 \odot E_\sigma(X)))^{-1} \left(x - D_\mu(D_\sigma(E_\mu(X) + \varepsilon_2 \odot E_\sigma(X)))\right) \|^2_2\right] 
+		&= - \dfrac{\log(2\pi)}{2} + \E\left[\| \text{Diag}(D_\sigma(E_\mu(X) + \varepsilon_2 \odot E_\sigma(X)))^{-1} \left(x - D_\mu(D_\sigma(E_\mu(X) 
+    + \varepsilon_2 \odot E_\sigma(X)))\right) \|^2_2\right] 
 	\end{aligned}	
 \end{equation}
 \subsection{Monte-Carlo sampling}
@@ -1639,13 +1708,20 @@ With the simple case where $D_\sigma(z) = 1$, we get this approximation ($L_2$ f
 	\E \left[ \log(f_{X|Z}(x|Y))\right] \approx - \dfrac{\log(2\pi)}{2} + \dfrac{1}{L} \sum_{i=1}^{L} \| x - D_\mu(E_\mu(x) + \epsilon_i ) \|^2_2
 \end{equation}
 \subsection{Maximum Likelihood Estimator with variationnal Auto-Encoder}
-Reminder, the encoder $E$ maps a data point $x$ to a Gaussian distribution $Y \sim \mathcal{N}(E_\mu(x), E_\sigma(x))$. The decoder $D$ maps a latent variable $z$ to the Gaussian distribution $\mathcal{N}(D_\mu)$. The maximum likelihood estimator, maximizes the following sum over our datapoints $x$ with its ELBO:
+Reminder, the encoder $E$ maps a data point $x$ to a Gaussian distribution $Y \sim \mathcal{N}(E_\mu(x), E_\sigma(x))$. 
+The decoder $D$ maps a latent variable $z$ to the Gaussian distribution $\mathcal{N}(D_\mu)$. 
+
+The maximum likelihood estimator, maximizes the following sum over our datapoints $x$ with its ELBO:
 \begin{equation}
 	\sum_{x} \log(f_X(x)) \geq \sum_{x} -D_{KL}((Y|X=x) \| Z) + \E[\log(f_{X|Z}(x|Y))]
 \end{equation}
 So it minimizes the loss i.e. the second term. And the KL divergence is acting as a regularizer to prevent overfitting.
 \subsection{Denoising Auto-Encoder}
-All of the previous subsections has been explained to get to this point: Denoising Auto-Encoder. Reminder the goal of the diffusion model is to denoise data ($Y = X + \sigma \varepsilon$) and find the noise $\varepsilon$, the denoising auto-encoder tries instead to find the original data $X$. We have those following structures:
+All of the previous subsections has been explained to get to this point: Denoising Auto-Encoder. 
+Reminder the goal of the diffusion model is to denoise data ($Y = X + \sigma \varepsilon$) and find the noise $\varepsilon$, 
+the denoising auto-encoder tries instead to find the original data $X$. 
+
+We have those following structures:
 \begin{itemize}[noitemsep]
 	\item Auto-Encoder $D(E(X))$
 	\item Variationnal Auto-Encoder $D(E(X) + \varepsilon)$
@@ -1656,14 +1732,23 @@ To train the denoising auto-encoder, we can use the Evidence Lower-Bound with $Y
 	-\log(f_X(x)) \leq D_{KL}((Y|X=x) \| Z) - \E[\log(f_{X|Z}(x|Y))]
 \end{equation}
 \section{Conditionned Diffusion Models}
-Conditioned diffusion generates data by denoising noise, but the denoising is guided by a conditioning signal (text, image, layout, etc.). Where unconditionned diffusion learn $p(x)$, conditionned diffusion learn $p(x|c)$, with $c$ the conditionning signal. It is for example used to train text-to-image generation, where the model generates an image based on a text description. This conditionned diffusion will need to learn the relationship between the text and the image so it will need cross-attention like in a transformers.
+Conditioned diffusion generates data by denoising noise, but the denoising is guided by a conditioning signal (text, image, layout, etc.). 
+Where unconditionned diffusion learn $p(x)$, conditionned diffusion learn $p(x|c)$, with $c$ the conditionning signal. 
+It is for example used to train text-to-image generation, where the model generates an image based on a text description. 
+This conditionned diffusion will need to learn the relationship between the text and the image so it will need cross-attention like in a transformers.
 \section{Classifier-Free Guidance}
-To improve the conditioned diffusion for multi-modal distributions, we can use a classifier but it need also training. So to overcome this, we can use classifier-free guidance. The idea is to train the model to handle both conditioned and unconditioned data. During training, we train both conditionned (with condition $\tau$) and unconditionned diffusion model and combine them with:
+To improve the conditioned diffusion for multi-modal distributions, we can use a classifier but it need also training. 
+So to overcome this, we can use classifier-free guidance. The idea is to train the model to handle both conditioned and unconditioned data. 
+During training, we train both conditionned (with condition $\tau$) and unconditionned diffusion model and combine them with:
 \begin{equation}
 	\bar{\epsilon}_t = \lambda \epsilon_\theta(x_t, \sigma_t, \tau) + (1-\lambda) \epsilon_\theta(x_t, \sigma_t) \qquad \lambda > 1
 \end{equation}
 \section{Optical illusions}
-To generate optical illusions, we do not need to create a specialized model, we can use a pre-trained diffusion model. We can use this model and at each step, we denoise the image under $N$ transformations ($v_i$), bring all denoising directions back to the original space, average them, and use this average as the update. The optimization problem can be formulated as:
+To generate optical illusions, we do not need to create a specialized model, we can use a pre-trained diffusion model. 
+We can use this model and at each step, we denoise the image under $N$ transformations ($v_i$), bring all denoising directions back to the original space, 
+average them, and use this average as the update. 
+
+The optimization problem can be formulated as:
 \begin{equation}
 	\bar{\epsilon}_t = \dfrac{1}{N} \sum_{i=1}^{N} v_i^{-1} (\epsilon_\theta(v_i(x_t), \sigma_t, \tau))
 \end{equation}
