@@ -27,6 +27,7 @@
 \usepackage[bottom]{footmisc}
 \usepackage{pdfpages}
 \usepackage{tabularx}
+\usepackage{enumitem}           % for adjusting space between bullet points
 \usepackage {tikz}
 \usetikzlibrary{positioning}
 \usepackage[strict]{changepage} % for adjustwidth environment
@@ -261,7 +262,7 @@ In backward mode, the full jacobian matrix is obtained by vertical concatenation
 Consider a function $f:\R^n \to \R^m$. Computing the full Jacobian requires $n$ forward passes (JVP) or $m$ backward passes (VJP). 
 
 Therefore,
-\begin{itemize}
+\begin{itemize}[noitemsep]
   \item If $n \ll m$, the forward mode is faster
   \item If $n \gg m$, the backward mode is faster
   \item If $n \approx m$, none prevail
@@ -283,7 +284,7 @@ As a consequence, the memory usage will increase during the forward pass, and th
 	\label{fig:bd_mem}
 \end{figure}
 Concluding with this section, the forward mode is deemed more memory efficient than the backward mode. 
-However, this aspect is generally less significant than the number of operations performed (JVP vs VJP).
+However, this aspect is, in general, less significant than the number of operations performed (JVP vs VJP).
 \section{Second order AD}
 Automatic Differentiation is also able to compute higher-order derivatives, such as the Hessian. 
 
@@ -348,7 +349,7 @@ One can readily see an application equivalent to the Taylor's first-order approx
 
 Back to the automatic differentiation concept, $f(a)$ is the function's value evaluated at $a$, while $bf'(a)\varepsilon$ is the Jacobian-vector product 
 evaluated at $a$. 
-\begin{itemize}
+\begin{itemize}[noitemsep]
   \item $b$ represents the tangent vector
   \item $f'(a)$ is the derivative (Jacobian) evaluated at $a$ in the scalar-output case
 \end{itemize}
@@ -370,7 +371,7 @@ Usually, when computing the full Hessian, they are taken as the one-hot encoding
 \subsubsection{Algorithmically}
 Defining $\text{Dual}(s_1\mid t_1)$, with $s_1 = \text{Dual}\left(f_1(x)\ \middle|\ \dfrac{\partial f_1}{\partial x_j}\right)$ and 
 $t_1 = \text{Dual}\left(\dfrac{\partial f_1}{\partial x_i}\ \middle|\ \dfrac{\partial^2 f_1}{\partial x_i \partial x_j}\right)$, the forward-on-forward algorithm reads as follows.
-\begin{enumerate}
+\begin{enumerate}[noitemsep]
   \item Compute $s_2 = f_2(s_1) = \text{Dual}\left(f_2(f_1(x))\ \middle|\ \J_2 \dfrac{\partial f_1}{\partial x_j}\right)$
   \item Compute $\J_{f_2}(s_1)$, which gives $\text{Dual}(\J_2\mid\He_{2j})$
   \item Compute 
@@ -410,14 +411,14 @@ The forward on reverse strategy computes the Hessian-Vector Product (HVP)
 The forward-on-reverse strategy consists in applying forward-mode AD
 to the reverse-mode computation of the gradient.
 Operationally, this results in:
-\begin{enumerate}
+\begin{enumerate}[noitemsep]
   \item a forward pass propagating both primal values and tangents,
   \item a backward pass in which adjoint variables are augmented with
         tangent components.
 \end{enumerate}
 
 Defining $s_1 \triangleq \text{Dual}\left(f_1(x)\ \middle|\ \dfrac{\partial f_1}{\partial x_j}\right)$ 
-\begin{enumerate}
+\begin{enumerate}[noitemsep]
   \item Compute $s_2 = f_2(s_1) $
   \item Compute $\J_{f_2}(s_1)$ which gives $\text{Dual}(\J_2, \He_{2j})$
 \end{enumerate}
@@ -453,7 +454,7 @@ The reverse-on-forward strategy starts with a forward pass.
 
 Defining $s_1\triangleq \text{Dual}\left(f_1(x)\ \middle|\ \dfrac{\partial f_1}{\partial x_i }\right)$
 \footnote{Note the difference with the previous modes ($j \to i$)}, the algorithm follows
-\begin{enumerate}
+\begin{enumerate}[noitemsep]
   \item Compute $s_2 = f_2(s_1) = \text{Dual}\left(f_2(s_1)\ \middle|\ \J_2 \dfrac{\partial f_1}{\partial x_i}\right)$
   \item The reverse mode computes the local Jacobian.
 
@@ -492,7 +493,7 @@ Repeating this process for every basis $w=e_i$ yields the full Hessian.
 
 \subsubsection{Order}
 The reverse-on-forward strategy applies the reverse-mode to the reverse-mode computation of the gradient.
-\begin{enumerate}
+\begin{enumerate}[noitemsep]
   \item A forward pass to obtain function's values
   \item A first reverse pass to compute first-order adjoints
   \item A second reverse pass to compute second-order adjoints
@@ -673,7 +674,7 @@ RoR
 \caption{Cost of assembling the full Hessian matrix}
 \end{table}
 
-Among the four strategies, forward-on-reverse is generally preferred in practice, as it provides Hessian-vector products 
+Among the four strategies, forward-on-reverse is, preferred in practice, as it provides Hessian-vector products 
 at a computational cost comparable to that of a gradient evaluation, while avoiding the prohibitive memory requirements 
 of reverse-on-reverse differentiation.
 
@@ -698,12 +699,12 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
 
 \begin{thm}[Inverse function theorem]
   Assume
-  \begin{itemize}
+  \begin{itemize}[noitemsep]
     \item $f:\mathcal{W} \to \mathcal{W}$ is $C^2$
     \item $\partial f (w_0)$ is invertible.
   \end{itemize}
   Then 
-  \begin{itemize}
+  \begin{itemize}[noitemsep]
     \item $f$ is bijective from a neighborhood of $w_0$ to a neighborhood of $f(w_0)$
     \item For $\omega$ in a neighborhood of $f(w_0)$, $f^{-1}$ is $C^2$ and $\partial f^{-1}(\omega)=(\partial f(f^{-1}(w)))^{-1}$
     where the last equation has been obtained through the chain rule.
@@ -712,7 +713,7 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
 
 \begin{thm}[Implicit function theorem (IFT, univariate case)]
   Assume
-  \begin{itemize}
+  \begin{itemize}[noitemsep]
     \item $F:\R \to \R$
     \item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\partial_1 F(w_0, \lambda_0) \neq 0$
     \item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$ 
@@ -739,7 +740,7 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
     \end{aligned}
   \end{equation*}
   Let $F(y,x)=x^2+y^2-1$. Given an initial point $(x_0,y_0)$ with $x^2_0+y^2_0=1$.
-  \begin{itemize}
+  \begin{itemize}[noitemsep]
     \item if $y_0>0$ then IFT holds and $y^*(x)=y^+(x)$,
     \item if $y_0<0$ then IFT holds and $y^*(x)=y^-(x)$,
     \item if $y_0=0$ then $\partial_1 F(y_0,x_0)=2y_0=0$ so IFT does not hold
@@ -748,7 +749,7 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
 \end{exmp}
 \begin{thm}[Implicit function theorem (IFT, multivariate case)]
   Assume
-  \begin{itemize}
+  \begin{itemize}[noitemsep]
 	\item $F:\mathcal{W} \times \Lambda \to \mathcal{W}$
 	\item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\partial_1 F(w_0, \lambda_0) \neq 0$
 	\item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$ 
@@ -1106,7 +1107,7 @@ An \emph{acyclic coloring} ensures that for any two colors $c_1,c_2$, the induce
 It is, therefore, a \emph{tree} or a \emph{forest} where every connected component has at least one leaf.
 
 The algorithm follows
-\begin{enumerate}
+\begin{enumerate}[noitemsep]
   \item Suppose node $i$ (colored $c_1$) is conneced to exactly one node $j$ (colored $c_2$). $i$ is a leaf.
   \item From the HVP from color $c_2$, one obtains
         \begin{equation*}
@@ -1124,7 +1125,7 @@ This strategy only requires as much HVPs as there are colors required to form an
 
 Mentally, this process can be seen as 
 \begin{formal}
-  \begin{itemize}
+  \begin{itemize}[noitemsep]
     \item Each HVP gives blurred information
     \item Acyclic coloring makes sure that blue can always be unblurred locally
   \end{itemize}
@@ -1142,7 +1143,7 @@ Neural networks are a class of machine learning models inspired by the structure
 They are composed of layers of interconnected nodes (neurons) that process and transmit information.
 
 First let's define some variables:
-\begin{itemize}
+\begin{itemize}[noitemsep]
   \item $X$: input data (matrix)
   \item $y$: target data
   \item $W_k$: weights matrix at layer $k$
@@ -1184,8 +1185,11 @@ Figures \ref{fig:nn_fd} and \ref{fig:nn_bd} shows the respective computational g
 	\label{fig:nn_bd}
 \end{figure}
 
-Following sections will focus on the building blocks leading to a transformer. The first step consists in defining the mathematical model. Once it is obtained,
-one shall find a strategy to encode text into vectors efficiently. Eventually, the full transformer architecture may be presented.
+Following sections will focus on the building blocks leading to a \emph{transformer}, one type of neural network, involved in Natural Language Processing (NLP) 
+and extensively used nowadays in models such as \emph{ChatGPT}, \emph{Claude}, or \emph{LLama}. 
+
+The first step consists in defining the mathematical model. Once it is obtained, one shall find a strategy to encode text into vectors efficiently. 
+Eventually, the full transformer architecture may be presented.
 \section{Autoregressive models}
 Autoregressive models want to predict the next values in a sequence based on previous values. 
 
@@ -1199,7 +1203,7 @@ For instance, one may want to predict $x_0$ and $x_1$ based on past data.
 	&\approx p(x_0 | x_{-1}, \ldots, x_{-n_{ctx}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{ctx} + 1})
   \end{aligned} 
 \end{equation}
-\begin{itemize}
+\begin{itemize}[noitemsep]
   \item \textbf{Model}: Probability of next vector $\hat p(x_0\mid X)$ where $X$ concatenates $x_{-1},\dots, x_{-n_{ctx}}$
   \item \textbf{Loss}: Cross-entropy to assess the error of $\hat p$ w.r.t. $p$ \begin{equation*}\Lo(X) = - \sum_{x_0} p(x_0 | X) \log(\hat{p}(x_0 | X))\end{equation*}
 \end{itemize}
@@ -1299,86 +1303,201 @@ Figure \ref{fig:shared_embedding} depicts the model with shared embedding.
 \end{figure}
 
 \section{Recurrent neural networks (RNN)}
-A RNN is a type of neural network that is designed to process sequential data by taking advantages of the memory of previous inputs. The idea is to have a hidden state $h_t$ that depends on the current input $x_t$ and the previous hidden state $h_{t-1}$. With this idea, the network reuses the same weights at every time step and thus gives meaning to the sequence. The equations of a simple RNN are:
+A RNN is a type of neural network that is designed to process sequential data by taking advantages of the memory of previous inputs. 
+
+The idea is to have a hidden state $h_t$ that depends on the current input $x_t$ and the previous hidden state $h_{t-1}$. 
+With this idea, the network reuses the same weights at every time step and thus gives meaning to the sequence. 
+
+The equations of a simple RNN are:
 \begin{equation}
   \begin{cases}
 	h_{t+1} = \tanh(W h_{t} + U x_{t-1} + b) \\
 	\hat{y}_t = \softmax(V h_t + c)
   \end{cases}
 \end{equation}
-Where $W, U, V$ are weight matrices and $b, c$ are bias vectors.\\
-This model presents some limitations, for example it is difficult to learn long-term dependencies because of the vanishing/exploding gradient problem. The fact that it processes a sequence step by step makes it difficult to parallelize the computations. The fact that it need to store the hidden state at each time step can be also memory-intensive for long sequences.\\
-\section{Attention head}
-First we need to define a numerical dictionary. Consider keys $k_i \in \R^{d_k}$, values $v_i \in \R^{d_v}$. Given a query $q \in \R^{d_k}$, we want to retrieve the value $v_i$ corresponding to the key $k_i$ that is the most similar to the query $q$. To do this, we can use the dot-product. With that definition, we can define the attention head:
+where $W, U, V$ are weight matrices and $b, c$ are bias vectors.
+
+This model presents some limitations. 
+\begin{itemize}[noitemsep]
+  \item Long-term dependencies hard to learn due to vanishing/exploding gradient problem.
+  \item Hard to parallelize due to step-by-step sequence processing
+  \item Memory-intesive for long sequences due to hidden state storage at each time step
+\end{itemize}
+
+\section{Attention is all you need}
+\subsection{Attention}
+\subsubsection{Numerical Dictionnary}
+Consider keys $k_i \in \R^{d_k}$, values $v_i \in \R^{d_v}$. 
+Given a query $q \in \R^{d_k}$, one may wants to retrieve the value $v_i$ corresponding to the key $k_i$ that is the most similar to the query $q$. 
+The adapated tool for this task is the dot-product. 
+
+For each token, the query $q_i$, the key $k_i$, and the vaue $v_i$ may be seen as answers to the following questions.
+\begin{itemize}[noitemsep]
+  \item $q_i$: What am I looking for?
+  \item $k_i$: What do I contain?
+  \item $v_i$: What information do I pass if I’m selected?
+\end{itemize}
+
+One key aspect of this numerical dictionnary is its \emph{differentiability}. This property will be useful when training the full model.
+
+\subsubsection{Attention definition}
+With a numerical dictionnary defined as above, \emph{attention head} is defined as
 \begin{equation}
   \text{Attention}(Q,K,V) = \sum_{i=1}^{n_{ctx}} \alpha_i v_i
 \end{equation}
-where $\alpha = \softmax(<q,k_1>, \cdots, <q,k_{n_{ctx}}>)$ is the attention weight for key $k_i$. But in practice, we have vectors of queries, keys and values, each contained in matrices $Q, K, V$. So we can rewrite the attention head as:
+where $\alpha = \softmax(<q,k_1>, \cdots, <q,k_{n_{ctx}}>)$ is the attention weight for key $k_i$. 
+In practice, however, queries, keys, and values are vectors. They are respectively contained in matrices $Q, K, V$. 
+
+With the matrix definition, the \emph{attention head} may be rewritten.
 \begin{equation}
   \text{Attention}(Q,K,V) = V\softmax\left(\dfrac{K^TQ}{\sqrt{d_k}}\right)
 \end{equation}
-Where the division by $\sqrt{d_k}$ is used to prevent the dot-product from growing too large.\\
-For a transformers, we could explain $Q, K, V$ like this, for each token we have a vector $q, k, v$ that represent:
-\begin{itemize}
-  \item $q$: What am I looking for?
-  \item $k$: What do I contain?
-  \item $v$: What information do I pass if I’m selected?
-\end{itemize}
+where the division by $\sqrt{d_k}$ is used to prevent the dot-product from growing too large.
+
+Figure \ref{fig:attention_heatmap} shows the heatmap of the matrix 
+\begin{equation*}
+  K^TQ=\begin{bmatrix}k_1&\dots&k_{n_{ctx}}\end{bmatrix}\begin{bmatrix}q_1\\\vdots\\q_{n_{ctx}}\end{bmatrix}=\begin{bmatrix}
+    \langle k_1,q_1\rangle&\dots&\langle k_1,q_{n_{ctx}}\rangle\\
+    \vdots&\ddots&\vdots\\
+    \langle k_{n_{ctx}},q_1\rangle&\dots&\langle k_{n_{ctx}},q_{n_{ctx}}\rangle
+  \end{bmatrix}
+\end{equation*}
+This heatmap provides intuition for the attention mechanism. 
+It is the key characteristic that allows the transformer to capture the meaning of a sentence by combining the meaning of individual words. 
+
+In particular, it helps the model understand that \emph{blue} and \emph{monster} are not two independant concepts, but rather form a single idea : \emph{a blue monster}. 
+
+The heatmap shown represents the attention weights of a transformer trained for translation. It clearly shows that although \emph{européenne} and 
+\emph{European} do not appear at the same position in the source and target sentences, the transformer is able to determinate they share a closely related meaning.
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\linewidth]{img/attention_heatmap.png}
+  \caption{Heatmap representation of the attention of a transformer trained for translation}
+  \label{fig:attention_heatmap}
+\end{figure}
+
 \subsection{Masked attention}
-To ensure that the model only attends to previous tokens and not future tokens, we can use a masked attention mechanism. This is done by applying a mask to the attention weights before the softmax operation. The mask is typically a lower triangular matrix that sets the weights corresponding to future tokens to negative infinity, effectively preventing them from contributing to the attention output.\\
-So with masked attention, the equation becomes:
+To ensure that the model only attends to previous tokens and not future tokens, a masked attention mechanism must bed. 
+This is done by applying a mask to the attention weights before the softmax operation. 
+The mask is typically a lower triangular matrix that sets the weights corresponding to future tokens to negative infinity, 
+effectively preventing them from contributing to the attention output.
+
+With masked attention, the equation becomes
 \begin{equation}
-  \begin{cases}
-    M = \begin{bmatrix} 0 & 0 &  \cdots & 0 \\ -\infty & 0 &  \ddots & 0 \\ \vdots & \ddots & \ddots & \vdots \\ -\infty & -\infty &  \cdots & 0 \\ \end{bmatrix}\\
-    \text{Attention}(Q,K,V) = V\softmax\left(M+\dfrac{K^TQ}{\sqrt{d_k}}\right)
-  \end{cases}
+  \begin{aligned}
+    M &= \begin{bmatrix} 0 & 0 &  \cdots & 0 \\ -\infty & 0 &  \ddots & 0 \\ \vdots & \ddots & \ddots & \vdots \\ -\infty & -\infty &  \cdots & 0 \end{bmatrix}\\
+    \text{Attention}(Q,K,V) &= V\softmax\left(M+\dfrac{K^TQ}{\sqrt{d_k}}\right)
+  \end{aligned}
 \end{equation}
 \subsection{Multi-head attention}
-Instead of having a single attention head, we can have multiple attention heads that can understand different aspects of the input data. Each head has its own set of weights and computes its own attention output, all in parallel. After computing all the heads, their outputs are concatenated and linearly transformed to be in the right dimension with $W^O$, this is thus gathering all of the meanings of the attention different heads to a single representation. So the multi-head attention can be defined as:
+Instead of having a single attention head, having multiple attention heads can help the model understand different aspects of the input data. 
+Each head has its own set of weights and computes its own attention output. 
+
+After computing all the heads in parallel, their outputs are concatenated and linearly transformed to fit the dimension of $W^O$, the output weights matrix.
+This corresponds to a gathering of all of the meanings of the attention different heads to a single representation. 
+
+The multi-head attention mechanism can be defined as
 \begin{equation}
   \begin{cases}
 	\text{head}_j = \text{Attention}(W_j^QQ, W_j^KK, W_j^VV) \\
 	\text{MultiHead}(Q,K,V) = W^O \begin{bmatrix} \text{head}_1 \\ \text{head}_2 \\ \vdots \\ \text{head}_h \end{bmatrix}
   \end{cases}
 \end{equation}
+
 \section{Decoder-only transformer}
-A decoder-only transformer is a type of transformer architecture that is used for autoregressive model. It consists of reading the tokens and predicting the next token in the sequence. In this type of transformer, the matrices $Q, K, V$ are the same, and we define them as the input tokens $CX$, $C$ being the embedding matrix. So the decoder-only transformer can be computed with $\text{MultiHead}(CX,CX,CX)$. Let's seek the different mechanisms used in a decoder-only transformer.\\
+\emph{Decoder-only} is a transformer architecture used with autoregressive models, predicting the next token based on the past known sequence. 
+In this architecture, matrices $Q, K, V$ are the same, and are defined as the input tokens $CX$, where $C$ is the embedding matrix. 
+Hence, a decoder-only transformer computes $\text{MultiHead}(CX,CX,CX)$. 
+
+Figure \ref{fig:decoder_arch} depicts the decoder-only transformer architecture that will be discussed in the following sections.
+The key component of it, attention, has already been detailed in previous sections.
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\linewidth]{img/decoder_arch.png}
+  \caption{Decoder-only transformer architecture}
+  \label{fig:decoder_arch}
+\end{figure}
 \subsection{Positional encoding}
-The positional encoding is essential in a transformer model because it provides information about the order of the tokens in the input sequence. Since transformers do not have a built-in notion of sequence order like RNNs, positional encodings are added to the input embeddings to give the model a sense of position.\\
-We cannot use one-hot encoding for the position because the dimension would be $n_{ctx}$ and not $d_{emb}$ as expected. The classic approach is to use sines and cosines with an angle that depends on the position of the token and the embedding dimension. The positional encoding for a token at position $pos$ and with the embedding dimension index $i$ and embedding dimension $d_{emb}$ could be defined as:
+The positional encoding is essential in a transformer model because it provides information about the order of the tokens in the input sequence. 
+Since transformers do not have a built-in notion of sequence order like RNNs, positional encodings are added to the input embeddings 
+to give the model a sense of position.
+
+The one-hot encodings can't be used for the position because the dimension would be $n_{ctx}$ and not $d_{emb}$ as expected. 
+The classic approach uses sines and cosines with an angle depending on the position of the token and the embedding dimension. 
+
+The positional encoding of a token at position $pos$, with the embedding index $i$, and embedding dimension $d_{emb}$, could be defined as
 \begin{equation}
   \begin{cases}
-    angle = \dfrac{pos}{10000^{2i/d_{emb}}} \\
-    PE[pos, 2i] = \sin\left(angle\right) \\
-    PE[pos, 2i+1] = \cos\left(angle\right)
+    \text{angle} = \dfrac{\text{pos}}{10000^{2i/d_{emb}}} \\
+    \text{PE}[\text{pos}, 2i] = \sin\left(\text{angle}\right) \\
+    \text{PE}[\text{pos}, 2i+1] = \cos\left(\text{angle}\right)
   \end{cases}
 \end{equation}
-And then we add this positional encoding to the input embeddings before doing the attention mechanism:
+
+The positional encoding is added to the input embedding before applying the attention mechanism
 \begin{equation}
   \text{MultiHead}(CX + PE, CX + PE, CX + PE)
 \end{equation}
+
 \subsection{Residual connection}
-The principle of residual connection is to add the input of a layer to its output before applying the layer normalization (next subsection). This helps to mitigate the vanishing gradient problem and help the network to learn because its learning is more controlled, because we remind it of the original input.\\
+The principle of \emph{residual connection} is to add the input of a layer to its output before applying the layer normalization (see next section).
+\footnote{It corresponds to the \emph{Add} part of a \emph{Add\&Norm} layer}
+
+This mitigates the vanishing gradient problem and helps the network's learning by reminding it of the original input.
+
 \subsection{Layer normalization}
-The norm of the gradient increases exponentially with the number of layers, so to prevent this we can use layer normalization. This helps stabilize the training process and improve convergence, by rescaling the data before the activation function, which means that we control the mean and the variance of the data. There is two way of doing this normalization, the batch normalization and the layer normalization. The batch normalization is difficult and not very efficient to use in transformers, so we use layer normalization. It is done like this:
+The norm of the gradient increases exponentially with the number of layers. Multiple techniques have been developped to remediate to this problem. 
+
+Two normalization techniques are typically considered.
+\begin{enumerate}
+  \item Batch normalization computes the mean and average per \textbf{feature}, across all \emph{samples}. 
+  It aims to normalize the importance of a feature for every sample. For a feature $j$, every sample will have the same mean and variance.  
+
+  Due to its dependence on the number of samples, this techniques performs poorly for RNNs and autoregressive models, which are based on sequences.
+  \item Layer normalization computes the mean and average per \textbf{sample}, across all \emph{features}.
+  It aims to normalize the importance of all features in a sample such that none is preponderant.
+
+  Since it does not depend on the number of samples, layer normalization is usually preferred for transformers.
+\end{enumerate}
+
+A \emph{normalization layer} helps stabilize the training process and improve convergence by rescaling the data before the activation function. 
+It helps keeping data's mean and variance under control. 
+
+It can be formulated as
 \begin{equation}
   \text{LayerNorm}(y_i) = \gamma \dfrac{y_i - \mu_i}{\sigma_i} + \beta 
 \end{equation}
-With $\gamma$ and $\beta$ two learnable parameters, $\mu_i$ the mean of the elements of $y_i$ and $\sigma_i$ the standard deviation of the elements of $y_i$. Then we can add this in the transformer architecture like this:
+where $\gamma$ and $\beta$ are two learnable parameters, $\mu_i$ the mean of $y_i$'s features, and $\sigma_i$ their standard deviation. 
+
+In the transformer architecture, the \emph{Layer Norm} always follows another layer needing normalization.
 \begin{equation}
   \text{LayerNorm}(\text{MultiHead}(CX + PE, CX + PE, CX + PE) + (CX + PE))
 \end{equation}
 \subsection{Feed-forward network (FFN)}
-The feed-forward network consists in doing this operation:
+A \emph{feed-forward layer}, also nown as \emph{dense layer}, simply\footnote{lovely} consists in a matrix product, a vector sum, 
+and an activation function (ReLU\footnote{ReLU, for Rectified Linear Unit, is defined as $\text{ReLU}(x)=max(0,x)$}), 
+applied to each token independently and identically,
 \begin{equation}
   \text{FFN}(x) = W_2 \text{ReLU}(W_1 x + b_1) + b_2
 \end{equation}
-With $W_1 \in \R^{d_{ff} \times d_{emb}}$ and $W_2 \in \R^{d_{emb} \times d_{ff}}$, $d_{ff}$ being the dimension of the feed-forward network, generally $d_{ff} = 4d_{emb}$. This feed-forward network is applied to each token independently and identically. The feed-forward network is used to introduce non-linearity and increase the model's capacity to learn complex patterns in the data. It is used the memorize more complex information in the weights, which helps the model to better understand the complex relationships between tokens in the sequence.
+with
+\begin{itemize}
+  \item $W_1 \in \R^{d_{ff} \times d_{emb}}$ 
+  \item $W_2 \in \R^{d_{emb} \times d_{ff}}$
+  \item $d_{ff}$ the dimension of the feed-forward layer. Empirically, it appears that $d_{ff}=4d_{emb}$ works nicely
+\end{itemize}
+The feed-forward network is used to introduce non-linearity and increase the model's capacity to learn complex patterns in the data. 
+
+It is used the remember more complex information in the weights\footnote{For instance, an FNN layer could be used to remember that Max Verstappen is an 
+F1 driver although it is not written explicitly in the input context.}, which helps the model to better understand the complex relationships between 
+tokens in the sequence.
+
 \subsection{Transformers variation}
+
 \textcolor{red}{To investigate ?}
 \section{Performances of transformers}
-Before analysing the complexity of a transformer, let us reminds the main dimension of the variables:
-\begin{itemize}
+Before analyzing the complexity of a transformer, here is a quick reminder of the key dimensions used in a transformer
+\begin{itemize}[noitemsep]
   \item $n_{ctx}$: context size (number of tokens in the input sequence)
   \item $n_{voc}$: vocabulary size (number of unique tokens)
   \item $d_{emb}$: embedding size (dimension of embeddings)
@@ -1386,8 +1505,8 @@ Before analysing the complexity of a transformer, let us reminds the main dimens
   \item $d_{ff}$: feed-forward network dimension
   \item $N$: number of layers
 \end{itemize}
-We can thus analyse the time complexity of a transformer step by step (ignoring the mebeding step):
-\begin{enumerate}
+The time complexity of a transformer can be analyzed step by step, ignoring the embedding step,
+\begin{enumerate}[noitemsep]
   \item Linear projections for $Q, K, V$ (with $W_j^Q, W_j^K, W_j^V$): $\Oo\left(d_k d_{emb} n_{ctx}\right)$
   \item Attention score computation ($K^TQ$): $\Oo\left((d_k+d_v)n_{ctx}^2\right)$
   \item Output projection ($W^O$): $\Oo\left(d_v d_{emb} n_{ctx}\right)$
@@ -1397,22 +1516,24 @@ This brings the total cost for a single layer to:
 \begin{equation}
   \Oo\left( (d_k + d_v) n_{ctx}^2 + (d_k + d_v + d_{ff}) d_{emb} n_{ctx} \right)
 \end{equation}
-To get the total cost for $N$ layers, we just need to multiply by $N$.\\
+To get the total cost for $N$ layers, it just needs to be multiplied by $N$.
 \begin{equation}
   \Oo\left( N (d_k + d_v) n_{ctx}^2 + N (d_k + d_v + d_{ff}) d_{emb} n_{ctx} \right)
 \end{equation}
-Knowing that generally $d_k \approx d_v \approx d_{emb} \approx d_{ff}$, we can simplify the complexity to:
+Knowing that, in general, $d_k \approx d_v \approx d_{emb} \approx d_{ff}$, the complexity can be simplified.
 \begin{equation}
   \Oo\left( N d_{emb} n_{ctx}^2 + N d_{emb}^2 n_{ctx} \right) = \Oo\left( N d_{emb} n_{ctx} (n_{ctx} + d_{emb}) \right)
 \end{equation}
-Here we can see the two dominant terms of the complexity:
-\begin{itemize}
-  \item $N d_{emb} n_{ctx}^2$: comes from the attention score computation, it is the most critical term when $n_{ctx}$ is large.
-  \item $N d_{emb}^2 n_{ctx}$: comes from the FFN and the projection, it is the most critical term when $d_{emb}$ and thus for wide models.
+Two major terms emerge from the above complexity. 
+\begin{itemize}[noitemsep]
+  \item $N d_{emb} n_{ctx}^2$: coming from the attention score computation. It is the most critical term when $n_{ctx}$ is large.
+  \item $N d_{emb}^2 n_{ctx}$: coming from the FFN and the projection. It is the most critical term when $d_{emb}$ is large and thus important for wide models.
 \end{itemize}
-We can also observe that the dimension of the vocabulary $n_{voc}$ does not appear in the complexity. It is because it is only involved in the embedding complexity.
+It can be noticed that the dimension of the vocabulary $n_{voc}$ does not appear in the complexity. 
+This dimension is indeed hidden in the embedding process.
 % \section{Encoder-decoder transformers}
 % \textcolor{red}{Idk what to say}
+
 \chapter{Diffusion Models}
 The objective of diffusion models is to generate data by learning how to reverse a gradual noising process, turning random noise into structured samples through iterative denoising. 
 \section{Tweedie's formula}
@@ -1525,7 +1646,7 @@ Reminder, the encoder $E$ maps a data point $x$ to a Gaussian distribution $Y \s
 So it minimizes the loss i.e. the second term. And the KL divergence is acting as a regularizer to prevent overfitting.
 \subsection{Denoising Auto-Encoder}
 All of the previous subsections has been explained to get to this point: Denoising Auto-Encoder. Reminder the goal of the diffusion model is to denoise data ($Y = X + \sigma \varepsilon$) and find the noise $\varepsilon$, the denoising auto-encoder tries instead to find the original data $X$. We have those following structures:
-\begin{itemize}
+\begin{itemize}[noitemsep]
 	\item Auto-Encoder $D(E(X))$
 	\item Variationnal Auto-Encoder $D(E(X) + \varepsilon)$
 	\item Denoising Auto-Encoder $D(E(X + \sigma \varepsilon))$
@@ -1583,11 +1704,11 @@ where the kernel function then is
   \end{pmatrix}
 \end{equation}
 \section{Reminders on scalar product}
-\begin{itemize}
+\begin{itemize}[noitemsep]
   \item [$\to$] Reminder: a Euclidean space is a finite-dimensional vector space endowed with a scalar product. 
 \end{itemize}
 A scalar product $\langle \cdot, \cdot \rangle_V$ verifies 
-\begin{itemize}
+\begin{itemize}[noitemsep]
   \item Symmetry: $\forall x,y\in V, \: \langle x,y\rangle_V = \langle y,x \rangle_V$;
   \item Definite positive: if $x\in V$ and $x\neq 0$, then $\langle x,x\rangle >0$, and if $x=0$, then $\langle x,x\rangle=0$;
   \item Bilinearity: $\forall x,y,z\in V, \: \forall \alpha,\beta \in \mathbb{F}, \langle(\alpha x+\beta y),z\rangle_V = \alpha \langle x,z\rangle_V + \beta \langle y,z\rangle_V$.
@@ -1613,7 +1734,7 @@ Text embedding has as objective to represent a text with a vector. The general i
   K_{ij} = \langle \phi(x_i),\phi(x_j)\rangle_K \in [-1,1]
 \end{equation}
 A value of $1$ means that the words $x_i$ and $x_j$ are identical, but if the value is $-1$, their meaning are opposite. In the case of a $0$, there is no connection between the words. Now, we can calculate the Cholesky decomposition $K=L^TL$ for a new basis, and use the usual scalar product. 
-\begin{itemize}
+\begin{itemize}[noitemsep]
   \item [$\to$] Note: if the matrix $K$ is not invertible, we just hit a degenerate case where the $\phi(x_i)$ are not linearly independent. This is not a problem. 
 \end{itemize}
 \subsection{Kernel trick}
@@ -1644,7 +1765,7 @@ where $Q$ is a rotation matrix, i.e. $Q^TQ = I$. Then,
   \end{aligned}
 \end{equation}
 The result is true for any rotation matrix $Q$. 
-\begin{itemize}
+\begin{itemize}[noitemsep]
   \item [$\to$] Note: the complexity of computing $K$ is $\mathcal{O}(N^2)$, while the Cholesky decomposition to find the new basis has a complexity of $\mathcal{O}(N^3)$. This decomposition is to be avoided if not really necessary. 
 \end{itemize}
 \subsection{Advantages}
@@ -1674,7 +1795,7 @@ The reproducing kernel property is
 \subsection{Properties}
 \begin{thm}
   A continuous map $k:X\times X \to \R$ is the kernel of some RKHS $H\subset \mathcal{C}(X,\R)$
-  \begin{itemize}
+  \begin{itemize}[noitemsep]
 	\item iff $k(x,y) = \langle \phi(x),\phi(y)\rangle_H$ for some feature map $\phi:X\to H$;
 	\item iff, for all finite subsets $X_0\subset X$, the kernel matrix is symmetric positive definite.
   \end{itemize}
