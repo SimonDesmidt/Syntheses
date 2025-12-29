@@ -1233,9 +1233,9 @@ Another strategy consists in one-hot encoding each word, but the vocabulary size
 While this strategy could lead to relative low $n_{ctx}$, $n_{voc}$ would be to big.
 
 \subsection{Byte Pair Encoding (BPE)}
-An intermediate solution is to use a \emph{Byte Pair Encoding} algorithm which greedily merges the most frequent pairs of characters into new tokens.
+An intermediate solution is to use a \emph{Byte Pair Encoding} algorithm which greedily merges the most frequent pairs of tokens into new tokens.
 
-For instance, considering the word \texttt{abracadabra}, one may observe that it has two frequent pairs \texttt{ab} and \texttt{ra}, 
+For instance, considering the word \texttt{abracadabra} at the character level, one may observe that it has two frequent pairs \texttt{ab} and \texttt{ra}, 
 which can be merged into new tokens \texttt X and \texttt Y respectively.
 \begin{equation}
   \texttt{abracadabra} \to \texttt{XYcadXY}
@@ -1248,17 +1248,19 @@ The next iteration could give:
 \end{equation}
 This tokenization method allows to have a good trade-off between the vocabulary size $n_{voc}$ and the context size $n_{ctx}$. 
 
-However, if the model isn't trained enough, it could return a sequence of words if this sequence is the most common token present after the given input context 
+However, if the model isn't trained enough, it could return a sequence of tokens making no sense (a sequence of words not related to the previous token) 
+if this sequence is the most common token present after the given input context (for instance, returning "is my daughter" after "During the month of April")
 in the training corpus.
 
 \subsection{Byte BPE}
 \emph{Byte BPE} (Byte Byte Pair Encoding) consists in replacing every character by its numerical value in an ASCII extended table 
 (for instance the \hyperlink{https://en.wikipedia.org/wiki/ISO_8859-1}{ISO 8859-1} table). This allows the model to be more flexible on word encodings and accept any language. 
 
-The greatest strength of the Byte BPE encoding consists in separating radicals from prefixes and suffixes. For instance, the words \textbf{optimiz}e, \textbf{optimiz}ing, 
-\textbf{opimiz}ation, ..., all have the radical \textbf{optimiz} in common and the Byte BPE encoder would be able to determine that \textbf{optimiz} is an enough repeating 
-sequence of character to form a single token. Instead of storing the 3 words separately, it will store the radical \textbf{optimiz}, and the suffixes \emph{e},\emph{ing}, 
-and \emph{ation} which are pretty common in other English words. 
+The greatest strength of the Byte BPE encoding consists in separating radicals from prefixes and suffixes by working at character level. 
+For instance, the words \textbf{optimiz}e, \textbf{optimiz}ing, \textbf{opimiz}ation, ..., all have the radical \textbf{optimiz} in common 
+and the Byte BPE encoder would be able to determine that \textbf{optimiz} is an enough repeating sequence of character to form a single token. 
+Instead of storing the 3 words separately, it will store the radical \textbf{optimiz}, and the suffixes \emph{e},\emph{ing}, and \emph{ation} 
+which are pretty common in other English words. 
 
 However, if the encoder is not trained enough, it could be affected by the same issue affecting the usual BPE described above.
 
