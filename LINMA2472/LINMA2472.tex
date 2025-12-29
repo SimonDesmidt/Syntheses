@@ -1780,7 +1780,7 @@ The fact that we try to retrieve the same image under different transformations 
 \end{figure}
 A kernel is a function that transforms a dataset into another, typically of higher dimension. This helps separate the nonlinear feature, to use the usual linear tools. For example, the canonical kernel is 
 \begin{equation}
-  r(x,y) = (x^Ty)^2 = \phi(x)^T \phi(y)
+  r(x,y) = (x^Ty)^2 = \langle \phi(x), \phi(y)\rangle 
 \end{equation} 
 where the kernel function then is 
 \begin{equation}\label{eq:example}
@@ -1888,13 +1888,264 @@ The reproducing kernel property is
 \section{Polynomial kernels}
 Polynomial kernels are a particular type of continuous kernels, where the feature map is a function 
 \begin{equation}
-  \phi:R^n \to \R^\ell 
+  \phi:\R^n \to \R^\ell 
 \end{equation}
-Let us take our initial example \ref{eq:example}, and generalize it to 
+Let us take our initial example \ref{eq:example}, and generalize it to degree $d$. 
 \begin{equation}
   k(x,y) = (x^Ty)^d  \qquad X = \R^n 
 \end{equation}
 Then, the dimension of the out space $H = \R^\ell$ is $\ell = \begin{pmatrix}
   n+d-1 \\d
 \end{pmatrix}$. 
+Of course, with the kernel trick, the embedding $\phi$ is never actually computed in practice, as the only thing that we need is the scalar product. \\
+From the kernel, we can recover automatically the feature map $\psi(x) = k(x, \cdot)$. For example, with $d=2$,
+\begin{equation}
+  \forall x=\begin{pmatrix}
+    x_1 & x_2
+  \end{pmatrix}^T, \: \psi(x_1,x_2) : \R^2 \to \R :(y_1,y_2) \to x_1^2y_1^2 + x_2^2 y_2^2 + 2x_1x_2y_1y_2
+\end{equation}
+and we have some examples:
+\begin{equation}
+  \begin{aligned}
+    &\psi(1,0) :\R^2 \to \R : (y_1,y_2) \to y_1^2 \\
+    &\psi(1,-1) :\R^2 \to \R : (y_1,y_2) \to y_1^2 + y_2^2 - 2y_1y_2 \\
+  \end{aligned}
+\end{equation}
+We can see that $\psi(1,-1) = 2\psi(1,0)+2\psi(0,1) - \psi(1,1)$, and we can actually show that $\psi(x_1,x_2)$ can always be expressed as a linear combination of $\{\psi(1,0), \psi(0,1), \psi(1,1)\}$, meaning that there is an equivalence between this feature map and the kernel function $\phi(x)$ defined in the initial example. 
+\section{Operations on kernel}
+\begin{itemize}
+	\item The sum of two kernels is a kernel: if $k_1:X\times X \to \R$ and $k_2 : X\times X\to \R$ are two kernels, then so is $k = c_1k_1+c_2k_2$, $c_1,c_2\ge 0$. This is because if $K_1\succeq 0$ and $K_2\succeq 0$, then $K\succeq 0$. 
+	\item The product of two kernels is a kernel: if $k_1:X\times X \to \R$ and $k_2 : X\times X\to \R$ are two kernels, then so is $k=k_1k_2$. This is because if $K_1\succeq 0$ and $K_2\succeq 0$, then $K=K_1 \odot K_2 \succeq 0$.
+	\item The positive-coefficient polynomial function of a kernel is a kernel: if $k:X\times X\to \R$ is a kernel, then so is $p(k)$. This is because of the two rules above. 
+	\item For any scalar map $c:X\to \R$, if $k(x,y)$ is a kernel, then so is $c(x)k(x,y)c(y)$. This is proven by $K\succeq 0\Longrightarrow CKC\succeq 0$ for $C=diag(c(x_i))$. 
+\end{itemize}
+\section{Gaussian kernel}
+If $X\subseteq \R^n$, then the Gaussian kernel is 
+\begin{equation}
+	(x,y)\to k(x,y) = e^{-\frac{\|x-y\|^2}{2\sigma^2}}
+\end{equation}
+This kernel has infinite dimension: we can reexpress it using a Taylor development:
+\begin{equation}
+	k(x,y) = e^{- \frac{\|x-y\|^2}{2\sigma^2}} = e^{-\frac{\|x\|^2}{2\sigma^2}} \sum_{d=0}^\infty \frac{1}{d!} \frac{(x^Ty)^d}{\sigma^{2d}} e^{-\frac{\|y\|^2}{2\sigma^2}}
+\end{equation}
+As it is an infinite sum of polynomial kernels of degree $d$, it has indeed infinite dimension.\\
+Obviously, $k(x,x)=1$, and that means that all points $\phi(x)$ are on the unit sphere in the space $H$, and $k(x,y)=\cos(\theta)$, $\theta$ being the angle between $\phi(x)$ and $\phi(y)$ on the sphere. \\
+
+If $\|x-y\| \ll \sigma$, then we can do some approximations with Taylor developments:
+\begin{equation}
+	\begin{aligned}
+		\cos(\theta) &\approx 1-\frac{\theta^2}{2}\\
+		e^x &\approx 1+x \Longrightarrow e^{-\frac{\|x-y\|^2}{2\sigma^2}} \approx 1-\frac{\|x-y\|^2}{2\sigma^2}
+	\end{aligned}
+\end{equation}
+Then, for close points $x,y$, there is a relation connecting the norm in both spaces:
+\begin{equation}
+	\theta = \| \phi(x)-\phi(y)\|_H \approx \frac{\|x-y\|_{\R^n}}{\sigma}
+\end{equation}
+This means that the feature map preserves the local geometry of $X$, up to a scaling factor. \\
+Furthermore, if $\|x-y\|_{\R^n} \gg \sigma$, then $\langle \phi(x),\phi(y)\rangle_H \approx 0$, meaning that the feature map acts like a one-hot encoding on distant points. Points far away from each other in $\R^n$ are orthogonal in $H$. 
+\section{Random Fourier Features}
+The main limitation of kernels is the computation of the kernel matrix $K$: it requires $\mathcal{O}(N^2)$ in storage for $N$ data points, and $\mathcal{O}(N^2)$ (or even $\mathcal{O}(N^3)$) in computation time. \\
+The kernel trick is a way to implicitly work in a hgih dimensional feature space. Here, we want to explicitly approximate the feature space to reduce the computational complexity of kernels. For that, we construct a mapping $z:\R^n\to \R^D$, with $D$ reasonably small, such that 
+\begin{equation}
+	\forall x,y\in X , \qquad k(x,y) = \langle \phi(x),\phi(y)\rangle  \approx \langle z(x), z(y)\rangle 
+\end{equation}
+The kernel matrix of $z$ is $K'_{ij} = k'(x,y) = \langle z(x), z(y)\rangle$. Here, intead of computing this kernel matrix, we compute the embedding, i.e. the opposite of the kernel trick:
+\begin{itemize}
+	\item Kernel trick: embed the points into high or infinite dimension space implicitly: $\mathcal{O}(N^2)$;
+	\item Kernel approximation: embed the points into a small (finite) space explicitly: $\mathcal{O}(Nd)$.
+\end{itemize}
+\subsection{Recognizing a kernel}
+Given a function $k:X\times X \to \R : (x,y) \to k(x,y)$, we can check that it is a kernel using the following methods:
+\begin{itemize}
+	\item Check for every set $\{x_i\}_{i=1}^N$ that $K$ is symmetric definite-positive;
+	\item Find an embedding $\phi:X\to H$ such that $k(x,x') = \langle\phi(x),\phi(x')\rangle$ for all $x,x'\in X$;
+	\item Recognize that $k$ is a product, combination, function of known kernels;
+	\item Use a specific theorem, e.g. Bochner (see later).
+\end{itemize}
+\subsection{Shift-invariant kernels and Bochner's theorem}
+A kernel $k$ is shift-invariant if $k(x,y)=k(0, x-y)$. 
+\begin{thm}
+	A shift-invariant function $k(x,y)$ is a kernel iff $f(u)=c \mathbb{E}_{\omega \sim \mathcal{P}} [e^{i\omega^T u}]$, where $f(u) = f(x-y) = k(0,x-y)$, for some distribution $\mathcal{P}$ and for some constant $c\in \R^+_0$. 
+\end{thm}
+This is in fact connected to the Fourier transform of $p$:
+\begin{equation}
+	k(x,y) = k(0,x-y) = f(x-y) = \int_\omega e^{i \omega^T(x-y)}p(\omega)d\omega = \mathbb{E}_p [e^{i\omega^T (x-y)}]
+\end{equation}
+\begin{itemize}
+	\item [$\to$] Note: the polynomial kernels are not shift invariant, but the Gaussian kernel is. 
+\end{itemize}
+As $\mathcal{P}(\omega)$ is a probability function form which we can get a sample, we can use a Monte-Carlo method to approximate the kernel function: for a sample of $D$ points, 
+\begin{equation}
+	\begin{aligned}
+		k'(x,y) = \frac{1}{D}\sum_{j=1}^D e^{i\omega_j^T(x-y)} = \frac{1}{D} \sum_{j=1}^D e^{i\omega_j^Tx}e^{-i\omega_j^T y} = z(x)^*z(y)
+	\end{aligned}
+\end{equation}
+Then, 
+\begin{equation}
+	z:\R^N \to \C^D : x \to \frac{1}{\sqrt{D}} \begin{pmatrix}
+		e^{i \omega_1^T x}\\ \vdots \\ e^{i\omega_D^Tx}
+	\end{pmatrix}
+\end{equation}
+If the probability distribution $\mathcal{P}(\omega)$ is symmetric, $p(\omega)=p(-\omega)$, we can extend the dimension of $z$, and stay in the real space:
+\begin{equation}
+	\begin{aligned}
+		k(x,y) = \E_{\omega \sim \mathcal{P}}[e^{i\omega^T(x-y)}] &= \int_\omega [cos(\omega^T(x-y)) + i\sin(\omega^T (x-y))] p(\omega)d\omega\\
+		& =\int_\omega \cos(\omega^T(x-y)) p(\omega)d\omega + i\underbrace{\int_\omega \sin(\omega^T (x-y))p(\omega)d\omega}_{= 0 \text{ because odd function}}\\
+		& =\E_{\omega\sim \mathcal{P}} [\cos(\omega^T(x-y))] = \E_{\omega \sim \mathcal{P}} \left[\begin{pmatrix}
+			\cos(\omega^Tx) \\ \sin(\omega^T x)
+		\end{pmatrix}^T \begin{pmatrix}
+			\cos(\omega^Ty) \\ \sin(\omega^T y)
+		\end{pmatrix}\right]\\
+		&\Longrightarrow k'(x,y) = \frac{1}{D} \sum_{j=1}^D \begin{pmatrix}
+			\cos(\omega_j^Tx) \\ \sin(\omega_j^T x)
+		\end{pmatrix}^T \begin{pmatrix}
+			\cos(\omega_j^Ty) \\ \sin(\omega_j^T y)
+		\end{pmatrix}\\
+		& \Longrightarrow z:X\to \R^{2D} : x\to z(x) = \frac{1}{\sqrt{D}} \begin{pmatrix}
+			\cos(\omega_1^T x)\\ \sin(\omega_1^T x) \\ \vdots \\ \cos(\omega_D^T x)\\ \sin(\omega_D^T x)
+		\end{pmatrix}
+	\end{aligned}
+\end{equation}
+We can also add some uniform shift on $[0,2\pi]$, to get rid of the sine terms: 
+\begin{equation}
+	\begin{aligned}
+		k(x,y) &= \mathbb{E}_{\omega \sim \mathcal{P}} \bigl[\cos(\omega^{\top}(x-y))\bigr] \\	
+		&= \mathbb{E}_{\substack{\omega \sim \mathcal{P} \\ b \sim \mathrm{Uni}[0,2\pi]}}\bigl[\cos(\omega^{\top}(x-y))\bigr] + \underbrace{\mathbb{E}_{\substack{\omega \sim \mathcal{P} \\ b \sim \mathrm{Uni}[0,2\pi]}}\bigl[\cos(\omega^{\top}(x+y) + 2b)\bigr]}_{=\,0 \text{ by computing the integral}}\\
+		&= \E_{\substack{\omega \sim \mathcal{P} \\ b\sim \mathrm{Uni}[0,2\pi]}} \left[2\cos(\omega^T x+b)\cos(\omega^Ty+b)\right]
+	\end{aligned}	
+\end{equation}
+Let us pick $D$ points $\omega_j \sim \mathcal{P}$ and $b_j\sim \mathrm{Uni}[0,2\pi]$. We get the kernel:
+\begin{equation}
+	\begin{aligned}
+		k'(x,y) = \frac{1}{D}\sum_{j=1}^D 2\cos(\omega_j^Tx+b_i)\cos(\omega^T_jy+b_j) = \langle z(x), z(y)\rangle\\
+		\Longrightarrow z :X\to \R^D : x\to z(x) = \sqrt{\frac{2}{D}} \begin{pmatrix}
+			\cos(\omega_1 x+b_1)\\ \vdots \\ \cos(\omega_Dx + b_D)
+		\end{pmatrix}
+	\end{aligned}
+\end{equation}
+The form of $z(x)$ is what we call the Random Fourier Features. \\
+It is also possible to find the distribution $\mathcal{P}$ from the kernel by doing the inverse Fourier transform:
+\begin{equation}
+	k(x,y) = \mathcal{F}_\omega(p(\omega)) \Longrightarrow \mathcal{P}(\omega) = \mathcal{F}^{-1}(k)
+\end{equation}
+For example, for the Gaussian kernel, $k(x,y)=f(u) = e^{-\frac{\|u\|^2}{2\sigma^2}}$ and 
+\begin{equation}
+	\begin{aligned}
+		p(\omega) &= \frac{1}{(2\pi)^n} \int_u e^{-\frac{\|u\|^2}{2\sigma^2}} e^{-i\omega^T u} du = \frac{1}{(2\pi)^n} e^{-\frac{\sigma^2}{2} \|\omega\|^2}\int_u e^{-\frac{1}{2\sigma^2} \|u+i\sigma^2\omega\|^2}du\\
+		&= \frac{1}{(2\pi)^n}e^{-\frac{\sigma^2}{2} \|\omega\|^2} (2\pi)^{n/2}\sigma^n = \frac{1}{(2\pi)^n} \sigma^n e^{-\frac{\sigma^2}{2}\|\omega\|^2}\\
+		&\Longrightarrow p\sim \mathcal{N}(0, \frac{1}{\sigma^2}I_n)
+	\end{aligned}
+\end{equation}
+and we can estimate the error of the kernel approximation:
+\begin{equation}
+	P\left[|k'(x,y)-k(x,y)|\ge \epsilon\right] = P\left[|z^T(x)z(y)-k(x,y)|\ge \epsilon\right] \le 2 e^{-D\epsilon^2/4}
+\end{equation}
+We say that the kernel $k'$ is probably approximately correct (PAC). 
+\section{Applications of kernels}
+\subsection{Kernel Ridge Regression}
+The classical Ridge regression is a linear regression with a penalty term on the slope of the line: 
+\begin{equation}
+	\alpha^* = \arg\min_{\alpha\in \R^N} \frac{1}{2}\|X\alpha - y\|^2 + \lambda \frac{1}{2}\alpha^T \alpha 
+\end{equation}
+where $X$ is the data matrix. The kernel Ridge regression uses the kernel matrix $K$ instead:
+\begin{equation}
+	\alpha^* = \arg\min_{\alpha \in \R^N} \frac{1}{2}\|K\alpha -y\|^2_2 + \lambda \frac{1}{2}\alpha^T K \alpha 
+\end{equation}
+where $K_{ij} = k(x_i, x_j)$. We can generalize further the loss function and the regularization function:
+\begin{equation}
+	\alpha^* = \arg\min_{\alpha \in \R^N} \mathcal{L}(x_i, y_i, f(x_i)) + \lambda \Omega(\|f\|^2_H)
+\end{equation}
+where $\mathcal{L}$ is the loss function and $\Omega$ the regularization function. This allows to find nonlinear regressions more easily. 
+\begin{thm}\textbf{Representer theorem.}
+	Let $H$ be a RKHS associated with a kernel $k(x,y)$, with feature map $\phi(x)$. The solution of the problem 
+	\begin{equation}
+		\arg\min_{f\in H}\mathcal{L}(x_i, y_i, f(x_i)) + \lambda \Omega(\|f\|_H^2)
+	\end{equation}
+	is a linear combination of the featured data:
+	\begin{equation}
+		f^*(\cdot) = \sum_{i=1}^N \alpha_i k(\cdot, x_i) = \sum_{i=1}^N \alpha_i \phi(x_i)
+	\end{equation}
+	and 
+	\begin{equation}
+		\begin{aligned}
+			f(x_i) &= \sum_{j=1}^N \alpha_j k(x_i, x_j) = \sum_{j=1}^N \alpha_j K_{ij} = (K\alpha)_i = K^T_i \alpha \\
+			\|f\|_H^2&= \left\| \sum_{i=1}^N \alpha_i \phi(x_i)\right\|_H^2 = \sum_{i=1}^N\sum_{j=1}^N \alpha_i \alpha_j \langle\phi(x_i), \phi(x_j)\rangle_H = \alpha^T K \alpha 
+		\end{aligned}
+	\end{equation}
+	This means that the minimisation on the function $f$ is equivalent to the minimisation on the vector $\alpha$ (much easier). 
+\end{thm}
+\subsection{Support Vector Machines}
+A classical linear classifier searches for parameters $w$ and $b$ to define a hyperplane that cuts the space between two classes: $d(x) = w^Tx +b$. If $d(x)>0$, $y_{pred} = 1$ and if $d(x)<0$, $y_{pred} = -1$. There is thus the constraint that $y_i (w^Tx_i+b)>0$. There is usually a relatively large space in which the plane can go. To determine the "best" hyperplane that classifies correctly, we can decide to take the one that maximizes the margin to the closest point of each class:
+\begin{equation}
+	\mathrm{margin} = \min_{i, y_i=1} \frac{|w^Tx_{i}^{(1)} + b|}{\|w\|_2} + \min_{i, y_i=-1} \frac{|w^Tx_i^{(-1)} +b|}{\|w\|_2}
+\end{equation}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\textwidth]{img/svm.png}
+\end{figure}
+Then, the optimal parameters are 
+\begin{equation}
+	\arg\max_{w,b} -\frac{\max_i w^Tx_i^{(1)} + b}{\|w\|_2} + \frac{\min_{i} w^T x_i^{(-1)}+b}{\|w\|_2} \qquad \text{ s.t. }y_i (w^Tx_i + b)>0 \: \forall i \in \{1, \dots,N\}
+\end{equation}
+This formulation is invariant to the scaling of the parameters: reformulating the constraints as 
+\begin{equation}
+	y_i (w^Tx_i + b) \ge \epsilon \: \forall i, \epsilon>0\Longleftrightarrow y_i \left(\frac{w}{\epsilon}^T x_i + \frac{b}{\epsilon}\right) \ge 1 \: \forall i, \epsilon>0 
+\end{equation}
+The support vectors are the points for which the constraints are tight:
+\begin{equation}
+	\begin{cases}
+		w^T x_i^{(1)} = 1\\
+		w^T x_i^{(-1)} = -1\\
+	\end{cases}
+\end{equation}
+In that case, the margin is $2/\|w\|_2$ and the problem to find the parameters of the support vectors are the solution of 
+\begin{equation}
+	\arg\max_{w, b} \frac{2}{\|w\|_2} \qquad \text{ s.t. } y_i (w^Tx_i + b)\ge 1\qquad \forall i\in \{1,\dots, N\}
+\end{equation}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\textwidth]{img/support_vectors.png}
+\end{figure}
+We can simplify the objective to $\arg\min_{w,b} \frac{1}{2}w^Tw$. In that case, the problem becomes convex (quadratic) and only involves the basic scalar product. We call this the hard-margin SVM.\\
+
+Moreover, the margin should be completely determined by the data, meaning that we can express $w$ and $b$ as a linear combination of the data:
+\begin{equation}
+	w^* = \sum_{i=1}^N \gamma_i^* x_i 
+\end{equation}
+As the margin constraints are tight on the support vectors only, these are the only weights that are nonzero: $\gamma_i^* \neq 0$ for $x_i$ a support vector. Then,
+\begin{equation}
+	\begin{aligned}
+		w^* &= \sum_{\substack{i = 1 \\ \gamma_i^* \neq 0}}^N \gamma_i^* x_i \\
+		b^* &= y_i - w^{*T} x_i 
+	\end{aligned}
+\end{equation}
+\subsubsection{Kernel SVM}
+We can generalize the hard-margin SVM to kernels by changing the scalar product:
+\begin{equation}
+	\begin{aligned}
+		\arg\min_{f_w\in H} &\frac{1}{2}\langle f_w,f_w\rangle_H \\
+		& y_i (\langle f_w, f_{x_i}\rangle_H+b)\ge 1 \qquad \forall i \in \{1,\dots, N\}
+	\end{aligned}
+\end{equation}
+where $f_w(\cdot) = \phi(w) = k(w,\cdot)$ and $H = \{f_w:\R^n\to \R:f_w(\cdot)=k(w,\cdot) \text{ s.t. } w\in \R^n\}$. The scalar product is 
+\begin{equation}
+	\langle f_w, f_{x_i}\rangle_H = \langle \phi(w),\phi(x_i)\rangle_H = k(w,x_i) = f_{x_i}(w)
+\end{equation}
+As we are minimizing on a function, the search space is infinite. However, as previously, we can express the solution as a linear combination of the embeddings of the data points and work in a finite-dimensional space. We consider the bias to be fixed for now. 
+\begin{equation}
+	\begin{aligned}
+		\arg\min_{\gamma \in \R^N}& \frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N \gamma_i\gamma_j \langle f_{x_i}, f_{x_j}\rangle_H \\
+		& y_i \left(\sum_{j=1}^N \gamma_j \langle f_{x_j}, f_{x_i}\rangle_H + b\right) \ge 1 \qquad \forall i \in \{1,\dots,N\}
+	\end{aligned}
+\end{equation}
+The kernel matrix appears and we can compute it beforehand to simplify the optimisation:
+\begin{equation}
+	\arg\min_{\gamma \in \R^N} \frac{1}{2}\gamma^TK\gamma \qquad \text{ s.t. } \qquad y_i (K_i^T\gamma + b)\ge1\qquad \forall i\in\{1,\dots,N\}
+\end{equation}
+This problem is convex since K is positive-definite. The number of variables is small compared to the infinite-dimensional space of functions from the initial situation.\\
+Once the $\gamma^*$ are found, we can easily compute the optimal bias:
+\begin{equation}
+	b^* = y_i - \sum_{\substack{j=1\\ \gamma_j^* \neq 0}}^N \gamma_j^* \phi(x_j)^T \phi(x_i) = y_i - \sum_{\substack{j=1\\ \gamma_j^* \neq 0}}^N \gamma_j^* k(x_j, x_i)
+\end{equation}
 \end{document}
