@@ -1668,20 +1668,97 @@ To improve learning, we can add artificial noise to learn a more interesting dis
 	\E [\| X - D(E_\mu(X) + \varepsilon \odot E_\sigma(X)) \|^2_2]
 \end{equation}
 \subsection{Evidence Lower Bound (ELBO)}
-The evidence lower bound is a useful lower bound on the log-likelihood of some observed data. 
-It is useful because it provides a guarantee on the worst-case for the log-likelihood of some distribution (e.g. $p(X)$) which models a set of data. 
-But first we need to introduce the Kullback-Leibler (KL) divergence. 
-The KL divergence is a measure of how one probability distribution diverges from a second, expected probability distribution. 
 
-For two distributions $A$ and $B$, the KL divergence from $B$ to $A$ is defined as:
+The whole goal of diffusion models is to learn a distribution $p_\theta(x)$. 
+
+Ideally, one would like to maximize the log-likelihood
 \begin{equation}
-	D_{KL}(A \mid B) = \sum_{a\in\text{Dom}(A)} f_A(a) \log\dfrac{f_A(a)}{f_B(a)}=\E[\log f_A(A)-\log f_B(A)]
+  \max_\theta\E_{p_{data}(x)}[\log p_\theta(x)]
 \end{equation}
-And with that we can define the ELBO. 
+However, as explained above, diffusion models are formulated as \emph{latent-variable models}, where the latent variables correspond to progressively noised versions of the data.
+
+Using a latent trajectory $Z=x_{1:T}$, representing noisy versions of $x_0$ where the latent variables $z\sim Z = (x_1,\dots,x_T)$ correspond to progressively corrupted versions of the data, one can write
 \begin{equation}
-	\mathcal{L}(x) = \E[\log(f_{X|Z}(x|Y))] - D_{KL}((Y|X=x) \| Z)
+  p_\theta(x) = \int p_\theta(x,z)\ \mathrm dz
+  \label{eq:diffusion_latent_expression}
 \end{equation}
-The KL divergence is always non-negative, and measure the error made by our estimator.
+However, this integral is usually intractable.
+
+The goal of the \emph{ELBO} on $\log p_\theta(x)$ is to provide a tractable expression of a lower bound that can be used to optimize the model by maximizing it.
+
+Introducing the distribution $q(z\mid x)$\footnote{$q(z\mid x)$ represents the \emph{variational posterior}. It corresponds to an approximation of the posterior distribution 
+with useful properties such as easier sampling, parametrization (often using a neural net), and the most important one, a tractable density. It is called \emph{variational} because the 
+definition of \emph{ELBO} is often generalized and in some cases, $q(z\mid x)$'s parameters may be learned, hence $q(z\mid x)$ can variate. In diffusion models, however, the learning problem 
+consists solely in learning the reverse process $p_\theta(z\mid x)$, while $q(z\mid x)$ is fixed}, eq.\ref{eq:diffusion_latent_expression} can be rewritten 
+\begin{equation}
+  \begin{aligned}
+    \log p_\theta(x)  &= \log\int p_\theta(x,z)\ \mathrm dz\\
+                      &= \log \int q(z\mid x)\frac{p_\theta(x,z)}{q(z\mid x)}\ \mathrm dz
+    \label{eq:log_latent}
+  \end{aligned}
+\end{equation}
+
+Using the definition of expectation 
+\begin{equation}
+  \E_{p(z)}[f(z)] = \int p(z)f(z)\ \mathrm dz
+\end{equation}
+expression \ref{eq:log_latent} becomes 
+\begin{equation}
+  \log p_\theta(x) = \log\E_{q(z\mid x)}\left\lbrack\frac{p_\theta(x,z)}{q(z\mid x)}\right\rbrack
+\end{equation}
+and since the $\log$ function is concave, it respects $\log \E[f(x)]\ge \E[\log f(x)]$, and the \emph{Evidence Lower Bound} (ELBO) on $p_\theta(x)$ may be derived
+\begin{equation}
+  \log p_\theta(x) \ge E_{q(z\mid x)}\left\lbrack\log\frac{p_\theta(x,z)}{q(z\mid x)}\right\rbrack = E_{q(z\mid x)}[\log p_\theta(x,z) - \log q(z\mid x)] \triangleq \mathcal L_\text{ELBO}(x)
+\end{equation}
+
+In diffusion model convention, the ELBO is usually decomposed over time steps
+\begin{equation}
+  \mathcal L_\text{ELBO}(x)=\E_q\left\lbrack\log p_\theta(x_0\mid x_1)+\sum^T_{t=2}\log p_\theta(x_{t-1}\mid x_t)\right\rbrack + \log p(x_T)
+\end{equation}
+
+\subsection{KL Divergence}
+\emph{The KL divergence} is a meaningful tool to understand how maximizing the \emph{ELBO} leads to learn the right distribution.
+
+It is defined as 
+\begin{equation}
+  D_{KL}(p\| q)=\E_{X\sim p}\left\lbrack\log\frac{p(x)}{q(x)}\right\rbrack=\E_{X\sim p}[\log p(x)-\log q(x)]
+  \label{eq:kld_def}
+\end{equation}
+which somehow looks like the \emph{ELBO} derived in the previous section. It can be thought of as a measure of the discrepancy between any two distributions.
+
+Recalling that the joint and posterior distributions are related 
+\begin{equation}
+    p_\theta(z\mid x) = \frac{p_\theta(x,z)}{p_\theta(x)}
+\end{equation}
+and using the definition \ref{eq:kld_def}. The following \emph{KL Divergence} stands 
+\begin{equation}
+  \begin{aligned}
+    D_{KL}(q(z\mid x)\| p_\theta(z\mid x))  &= \E_{q(z\mid x)}\left\lbrack\log\frac{q(z\mid x)}{p_\theta(z\mid x)}\right\rbrack\\
+                                            &= \E_{q(z\mid x)}\left\lbrack\log\frac{q(z\mid x)p_\theta(x)}{p_\theta(x,z)}\right\rbrack\\
+                                            &= \E_{q(z\mid x)}[\log q(z\mid x) + \log p_\theta(x) - \log p_\theta(x,z)]\\
+                                            &= \underbrace{\E_{q(z\mid x)}[\log q(z\mid x) - \log p_\theta(x,z)]}_{-\mathcal L_\text{ELBO}(x)} + \log p_\theta(x)
+  \end{aligned}
+\end{equation}
+where the last equality stands because $\log p_\theta(x)$ is constant in $z$.
+
+Hence, the final expression is 
+\begin{equation}
+  D_{KL}(q(z\mid x)\| p_\theta(z\mid x)) = \log p_\theta(x) - \mathcal L_\text{ELBO}(x)
+  \label{eq:variational_inference}
+\end{equation}
+
+Although $p_\theta(x)$ is not a tractable expression, and neither is the \emph{KL Divergence}, it provides an insight into how maximizing the lower bound leads to approximating the underlying 
+distribution $p_\theta(x)$ efficiently. 
+
+As $\mathcal L_{p_\theta(x)}(x)$ is a lower bound on $p_\theta(x)$, $D_{KL}$ is always non-negative, which is a required condition for a measure. $D_{KL}$ measures the error 
+introduced by approximating the true posterior distribution during inference.
+
+Eventually, eq.\ref{eq:variational_inference} explains where the name \emph{variational inference} comes from. The \emph{variational} aspect is due to the optimized nature of 
+$q(z\mid x)$'s parameters, while the \emph{inference} keyword is because this expression transforms the learning process into an approximation of the \textbf{Bayesian inference}. 
+The goal is to \textbf{infer} a variational posterior distribution $q(z\mid x)$ that minimizes the distance to the true posterior $p_\theta(z\mid x)$.
+
+This identity can be seen as a \emph{certificate of optimality}.
+
 \subsection{Gaussian ELBO}
 We can compute the ELBO in the case of Gaussian distributions, like with the variationnal Auto-Encoder. 
 Suppose $X = D_\mu(Z) + \varepsilon_1 \odot D_\sigma(Z)$ and $Y = E_\mu(X) + \varepsilon_2 \odot E_\sigma(X)$, 
