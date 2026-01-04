@@ -1859,7 +1859,7 @@ The fact that we try to retrieve the same image under different transformations 
 \end{figure}
 A kernel is a function that transforms a dataset into another, typically of higher dimension. This helps separate the nonlinear feature, to use the usual linear tools. For example, the canonical kernel is 
 \begin{equation}
-  r(x,y) = (x^Ty)^2 = \langle \phi(x), \phi(y)\rangle 
+  r(x,y) = (x^Ty)^2 = \phi(x)^T \phi(y)
 \end{equation} 
 where the kernel function then is 
 \begin{equation}\label{eq:example}
