@@ -229,7 +229,7 @@ The disadvatange of quick sort is that this algorithm does not have randomness, 
 This algorithm takes the advantages of the two previous ones: being a deterministic algorithm in $\mathcal{O}(n\log(n))$, and sorting in-place (does not need to copy the original array to another structure, hence requiring little extra memory). \\
 We define a data structure as a static structured set, with a set of operations that describe how to access or modify the structure set. What we need is a priority queue: each entry is associated with a number (its priority) and two operations:
 \begin{itemize}
-    \item Insert (entry priority): ine-serts the entry with the given priority;
+    \item Insert (entry priority): inserts the entry with the given priority;
     \item ExtractMax: removes and otuputs the entry witht the highest priority number. 
 \end{itemize}
 The Heap Sorting algorithm consists in inserting the $n$ elements in a priority queue, and ExtractMax $n$ times. \\
@@ -246,7 +246,7 @@ A heap is a tree with the following properties:
     \item Essentially binary complete (only the last level may be incomplete, it is filled from left to right);
     \item entry (x) $\le$ entry(father(x)) for all nodes $x$ different from the root;
 \end{itemize}
-The insertion consists in adding the new neode to the last level in the first free position, and swap it with its father until the heap is properly re-established ($\mathcal{O}(\log(n))$). The ExtractMax consists in removing the root (max entry) and putting the last entry at the root, then swap the new root with its largest child until the heap is properly restored. \\
+The insertion consists in adding the new node to the last level in the first free position, and swap it with its father until the heap is properly re-established ($\mathcal{O}(\log(n))$). The ExtractMax consists in removing the root (max entry) and putting the last entry at the root, then swap the new root with its largest child until the heap is properly restored. \\
 The result algorithm is called HeapSort and has complexity $\mathcal{O}(n\log(n))$. The heap may be stored as an array, if we read the entries from top to bottom and left to right. Because the heap is essentially binary complete, this is an unambiguous representation: every array can be interpreted as representing a certain, unique, heap. \\
 \begin{equation}
     \begin{aligned}
@@ -525,6 +525,15 @@ Given $n\ge2$ compatible matrices, we want find the order (associativity) in whi
 \begin{equation}
     ((A_1A_2)(A_3A_4))(A_5\dots) = (A_1(A_2A_3)(A_4A_5))\dots 
 \end{equation}
+This problems consists in doing the multiplication of matrices $A_1A_2\dots A_n$ with dimensions $p_0, p_1,\dots, p_n$. The total number of operations depends heavily on the order of the multiplication. The idea for the algorithm is to split the chain into smaller chains until we get to a product of two matrices. The splitting happens at the index $i$ that minimizes the total number of operations, knowing the cost of computing a subchain:
+\begin{equation}
+	Algo(p) = \min_{1\le i \le n-1} \{ Algo(p[0:i]) + Algo(p[i+1:n]) + p_0p_ip_n\}
+\end{equation}
+Let us define $m[i,j]$ the optimal cost of the product $A_i\dots A_j$. Our goal is to compute $m[1,n]$, with the initial condition $m[i,i] = 0$ for all $i$. The recurrence relation is 
+\begin{equation}
+	m[i,j] = \min_{i\le k < j} \{m[i,k] + m[k+1,j] + p_{i-1}p_kp_j\} \qquad \forall 1\le i\le j \le n	
+\end{equation}
+This gives a complexity $\Theta(n^2)$, as we need to compute the entries of a triangular matrix $n\times n$. 
 \begin{thm}
     \begin{equation}
         C_{n+1} = \sum_{k=0}^nC_kC_{n-k} \qquad \forall n\ge0
@@ -635,7 +644,7 @@ This is a powerful tool for solving recurrence equations. The idea is to associa
 \begin{equation}
     f(z) = \sum_{k\ge 0}F_k z^k
 \end{equation}
-From the recurrence equation, we decuce that 
+From the recurrence equation, we deduce that 
 \begin{equation}
     \begin{aligned}
         \sum_{k\ge0} F_{k+2} z^{k+2} = \sum_{k\ge 0} F_{k+1}z^{k+2} + F_k z^{k+2}\\
@@ -664,11 +673,11 @@ This gives $f(z) = \frac{1-\sqrt{1-4z}}{2z}$, rejecting the positive sign since 
 \begin{equation}
     \sqrt{1-4z} = \sum_{n=0}^\infty \begin{pmatrix}
         1/2\\n
-    \end{pmatrix} (-4z)^n = 1+\sum_{n=1}^\infty \frac{\left(\frac{1}{2}\right)\left(-\frac{1}{2}\right)\dots \left(\frac{3}{2}-n\right)}{n!}(-1)^n 2^{2^n}z
+    \end{pmatrix} (-4z)^n = 1+\sum_{n=1}^\infty \frac{\left(\frac{1}{2}\right)\left(-\frac{1}{2}\right)\dots \left(\frac{3}{2}-n\right)}{n!}(-1)^n 2^{2^n}z^n
 \end{equation}
 Which gives 
 \begin{equation}
-    f(z) = -\frac{1}{2z} \sum_{n=1}^\infty \frac{\left(\frac{1}{2}\right)\left(-\frac{1}{2}\right)\dots \left(\frac{3}{2}-n\right)}{n!}(-1)^n 2^{2^n}z
+    f(z) = -\frac{1}{2z} \sum_{n=1}^\infty \frac{\left(\frac{1}{2}\right)\left(-\frac{1}{2}\right)\dots \left(\frac{3}{2}-n\right)}{n!}(-1)^n 2^{2^n}z^n
 \end{equation}
 from which we deduce that for all $n\in \N_0$, 
 \begin{equation}
@@ -734,7 +743,7 @@ Given a set of activities $\{a_1,\dots,a_n\}$ and the knowledge that activity $a
     \item [$\to$] Note: the subinterval should start and finish at the end times of activities in the optimal set.
 \end{itemize}
 This dynamic programming algorithm can be done in $\mathcal{O}(n^2)$. However, there is a better approach, using a greedy algorithm: if we sort the activities with respect to their ending time, we take the first activity that finishes, then the first activity that starts and finishes after the ending time of the first one, and so on. This approach guarantees optimality. If we have an optimal solution that starts with an activity that is not the first to finish, then we can replace that first activity by the one that finishes first, keeping the same total number of activities. \\
-The tie complexity is $\Theta(n\log(n))+\Theta(n)$, as we first need to sort the activities and then do once through the array.
+The time complexity is $\Theta(n\log(n))+\Theta(n)$, as we first need to sort the activities and then do once through the array.
 \chapter{Randomized algorithms}
 In probabilistic computing, we need a distribution of the inputs to be able to sample. Based on prior knowledge or assumptions, we can determine the average-case complexity. The goal is for it to be lower than the deterministic algorithm, although it comes at the price of the accuracy of the solution.
 \section{The secretary problem}
@@ -768,13 +777,13 @@ The birthday paradox is not stricly speaking a paradox, but is called that way b
 And for $k$ people, denoting $B_k$ the event that $k$ people have distinct birthdays, we have 
 \begin{equation}
 	\begin{aligned}
-		Pr[B_k] &= 1\cdot \frac{n-1}{n}\frac{n-2}{n}\dots \frac{n-k+1}{n} = 1\cdot \left(1-\frac{1}{n}\right)\cdot (1-\frac{2}{n})\dots \left(1-\frac{k-1}{n}\right)\\
+		Pr[B_k] &= 1\cdot \frac{n-1}{n}\frac{n-2}{n}\dots \frac{n-k+1}{n} = 1\cdot \left(1-\frac{1}{n}\right)\cdot \left(1-\frac{2}{n}\right)\dots \left(1-\frac{k-1}{n}\right)\\
 		&\le e^{-1/n}e^{-2/n}\dots e^{-(k-1)/n} = e^{-k(k-1)/2n}
 	\end{aligned}
 \end{equation}
 Then, for $Pr[B_k]\ge 1/2$, we get 
 \begin{equation}
-	k(k-1) \ge 2n \ln{2}\Longleftrightarrow k\ge 23
+	k(k-1) \le 2n \ln{2}\Longleftrightarrow k\le 23
 \end{equation}
 We can also compute the expectation: let $X_{ij}$ be the 1 if the people $i$ and $j$ have the same birthday and 0 otherwise. Then $\E[X_{ij}] = 1/n$ and for $X = \sum_{i=1}^k\sum_{j=i+1}^k X_{ij}$, 
 \begin{equation}
@@ -782,7 +791,7 @@ We can also compute the expectation: let $X_{ij}$ be the 1 if the people $i$ and
 \end{equation}
 This means that for at least $\sqrt{2n}+1$ people in a room, we can EXPECT at least one collision. For $n=365$, this is $k=28$ people.
 \section{Hash table}
-A hash table is a data structure in which inserting, searching and deleting is done in $\Oo(1)$ in average. The idea of a hash table is to store elements in an array of size $m$ using a hash function $h:U\to \{0,\dots,m-1\}$, where $U$ is the set of possible keys. So instead of using a direct addressing table, where $k$ is stored at $T[k]$ ($\Oo(n)$ space), we store $k$ at $T[h(k)]$ ($\Oo(m)$ space). This idea save space but introduces collision. We can deal with collisions using multiples way, this will be investigated later. The simplest hash function is the modulo function $h(k) = k \mod m$.\\
+A hash table is a data structure in which inserting, searching and deleting is done in $\Oo(1)$ in average. The idea of a hash table is to store elements of a set $U$ (the biggest value in $U$ is denoted $n$) in an array of size $m$ using a hash function $h:U\to\{0,\dots,m-1\}$, where $U$ is the set of possible keys. So instead of using a direct addressing table, where $k$ is stored at index $k$ ($\Oo(n)$ space), we store $k$ at index $h(k)$ ($\Oo(m)$ space). This idea save space but introduces collisions. We can deal with collisions using multiples way, this will be investigated later. The simplest hash function is the modulo function $h(k) = k \mod m$.\\
 Using deterministic hash functions can lead to bad performance. If the input is well chosen, we could have a worst-case complexity of $\Oo(n)$. To overcome this, we randomize the choice of the hash function.
 \begin{definition}
 	A family of hash functions $\mathcal{H}$ is universal if for all $k\neq l \in U$,
@@ -828,7 +837,7 @@ One-dimensional integrals are usually better evaluated by deterministic methods,
 A Monte Carlo method can be used to evaluate any integral $\int_X F(x)p(x)dx$, where $p$ is a probability density function, or sums $\sum_{x\in X} F(x)p(x)$, where $p$ is a probability distribution over a large discrete set $X$. \\
 The interests of the Monte Carlo integration are:
 \begin{itemize}
-    \item Robin Hood effect: for every deterministic integration method, there are functions for which the method will fail, e.g. if the function is zero at all the integration points. Those methods have a very poor worst-case behabiour, while the choice of random points makes all instances behave equally well.
+    \item Robin Hood effect: for every deterministic integration method, there are functions for which the method will fail, e.g. if the function is zero at all the integration points. Those methods have a very poor worst-case behaviour, while the choice of random points makes all instances behave equally well.
     \item For higher dimensional integrals, the error of the Monte Carlo approximation still decreases in $\mathcal{O}(1/\sqrt{n})$, where $n$ is the number of evaluation points, while the multidimensional rectangle method's error decreases in $\mathcal{O}(1/\sqrt[d]{n})$, meaning that when the dimension increases, we need exponentially more points to fill the space and preserve the accuracy. 
     \item For domains with complicated geometry, or no explicit description, it may not be clear how to apply a deterministic method, while if we have a method that can generate points within $X$ with probability $p(x)$, then we can still apply the MC method. 
 \end{itemize}
@@ -842,7 +851,7 @@ The most common MCMC strategy for jumping from $x_t$ to $x_{t+1}$ is the Metropo
 \end{equation}
 We set $x_{t+1} = y$ with probability $\alpha$ and $x$ otherwise. The resulting transition probability for the Metropolis-Hastings random walk from $x$ towards any $y\neq x$ are thus 
 \begin{equation}
-    m(y|x) = f(y|x) \alpha(y|x) = \min\left\{\frac{f(y)g(x|y)}{f(x)}, f(y|x)\right\}
+    m(y|x) = g(y|x) \alpha(y|x) = \min\left\{\frac{f(y)g(x|y)}{f(x)}, g(y|x)\right\}
 \end{equation}
 \begin{thm}
     Let $f$ be a real valued function over a set $X$ and $\forall x\in X$. Let $g(\cdot|x)$ define a probability distribution over $X$. The stationary distribution of the Metropolis-Hastings random walk on $X$ is unique and equal to 
@@ -885,10 +894,11 @@ An algorithm using this idea has a probability of success
         &\ge Pr[P\equiv 0] + \left(1-\frac{d}{|S|}\right) Pr[P\not \equiv0] \ge 1 - \frac{d}{|S|}
     \end{aligned}
 \end{equation}
-We may improve this using amplification of stochastic advantage: repeating $k$ times improves the probability lower bound to $\left(1-\frac{d}{|S|}\right)^d$. \\
+We may improve this using amplification of stochastic advantage: repeating $k$ times improves the probability lower bound to $\left(1-\frac{d}{|S|}\right)^k$. \\
 Amplification of stochastic advantage is very powerful when errors on a decision problem are one-sided: there may be false negatives, but not false positives, or the contrary.\\
-If we have a two-sided error, amplification of stochastic advantage still works: \\ if $Pr[\text{True}|\text{it is true}] \ge 1/2 + \varepsilon$ and $Pr[\text{False}|\text{it is false}] \ge 1/2 + \varepsilon$. Then, we may proceed to a majority vote after $k$ trials. \\
-Let $X_i=1$ if the $i$-th run is correct and 0 otherwise. Then, $\E[X_i] \ge 1/2+\varepsilon$. Let us take the worst case: $\E[X_i] = 1/2+\varepsilon$. The repeated algorithm is rong if $\sum_i X_i < n/2$. But
+
+If we have a two-sided error, amplification of stochastic advantage still works: \\ if $Pr[\text{True}|\text{it is true}] \ge 1/2 + \varepsilon$ and $Pr[\text{False}|\text{it is false}] \ge 1/2 + \varepsilon$. Then, we may proceed to a majority vote after $n$ trials. \\
+Let $X_i=1$ if the $i$-th run is correct and 0 otherwise. Then, $\E[X_i] \ge 1/2+\varepsilon$. Let us take the worst case: $\E[X_i] = 1/2+\varepsilon$. The repeated algorithm is wrong if $\sum_i X_i < n/2$. But
 \begin{equation}
     \begin{cases}
         \E[\sum_{i}X_i] = n \left(\frac{1}{2}+\varepsilon\right) \\
@@ -922,7 +932,7 @@ Another example is Blum-Blum-Schub:
 \begin{algorithm}[H]
     \caption{BBS}
     \begin{algorithmic}[1]
-        \State Select random $k$-bit prime numbers $p$ and $q$ such that $p\equiv q\equiv 3\mod 4$;
+        \State Select random prime numbers $p$ and $q$ such that $p\equiv q\equiv 3\mod 4$;
         \State Let $N=pq$;
         \State Let $s\in \Z_N^*$;
         \State $f_N(x) = x^2 \mod N$ and $g(x) = x \mod 2$.
@@ -930,8 +940,8 @@ Another example is Blum-Blum-Schub:
 \end{algorithm}
 The same seed $s$ will generate the same sequence of bits. Assuming that factoring $N$ is difficult, this is a good PRG, i.e. any algorithm that distinguishes the output from true randomness can factor $N$. 
 \section{Derandomization}
-Generating truly i.i.d. random bits is far from obvious. Therefore, the number of random bits required by an algorithm is a costly resource. In some circumstances, it is possibel to derandomise random algorithms, i.e. make them use less random bits, or no random bits at all, while keeping the same or similar guarantees on accuracy and time/space complexity.\\
-There are two genereic derandomization techniques:
+Generating truly i.i.d. random bits is far from obvious. Therefore, the number of random bits required by an algorithm is a costly resource. In some circumstances, it is possible to derandomise random algorithms, i.e. make them use less random bits, or no random bits at all, while keeping the same or similar guarantees on accuracy and time/space complexity.\\
+There are two generic derandomization techniques:
 \begin{itemize}
     \item Use a PRG: cheap but still needs some randomness;
     \item Try all possible random values: remove all randomness but can be a polynomial time slowdown.
@@ -944,8 +954,8 @@ This comes from the fact that
 \begin{equation}
     Pr[e\text{ is in the cut}] = Pr[r_u \in S]Pr[r_v\in T] + Pr[r_u\in T]Pr[r_v\in S]
 \end{equation}
-Hence we only need pairwise independence between the random vits, and not full independence. This allows us to use less bits. Indeed, consider for exmaple the variables $X=Y\oplus Z$, with $X,Y,Z\in \{0,1\}$. If $Y$ and $Z$ are pairwise independent, then so are $X$ and $Y$, and $X$ and $Z$; but $X,Y,Z$ are not jointly independent. \\
-Suppose now that we can generate $r_1,\dots,r_k$ i.i.d. random bits. For any subset $A\subseteq \{1,\dots,k\}$ such that $A\neq \emptyset$, we define $s_A = \sum_{i\in A}r_i\mod 2$. There are $2^k-1$ such subsets $A$ with associated uniformly distributed bits $s_A$, which are all pairwise independent. Indeed, $\forall A,B\subseteq \{1,\dots,k\}$ such that $A\neq B, A,B\neq \emptyset$, $s_A$ and $s_B$ are independent since $s_A = s_B \oplus s_{A\setminus} B \oplus s_{B\setminus A}$ and if $A\setminus B\neq \emptyset$, then $s_{A\setminus B}$ is independent from $s_B$ and that implies independence of $s_A$ and $s_B$. The same argument applies when $B\setminus A\neq \emptyset$. \\
+Hence we only need pairwise independence between the random bits, and not full independence. This allows us to use less bits. Indeed, consider for example the variables $X=Y\oplus Z$, with $X,Y,Z\in \{0,1\}$. If $Y$ and $Z$ are pairwise independent, then so are $X$ and $Y$, and $X$ and $Z$; but $X,Y,Z$ are not jointly independent. \\
+Suppose now that we can generate $r_1,\dots,r_k$ i.i.d. random bits. For any subset $A\subseteq \{1,\dots,k\}$ such that $A\neq \emptyset$, we define $s_A = \sum_{i\in A}r_i\mod 2$. There are $2^k-1$ such subsets $A$ with associated uniformly distributed bits $s_A$, which are all pairwise independent. Indeed, $\forall A,B\subseteq \{1,\dots,k\}$ such that $A\neq B, A,B\neq \emptyset$, $s_A$ and $s_B$ are independent since $s_A = s_B \oplus s_{A\setminus B} \oplus s_{B\setminus A}$ and if $A\setminus B\neq \emptyset$, then $s_{A\setminus B}$ is independent from $s_B$ and that implies independence of $s_A$ and $s_B$. The same argument applies when $B\setminus A\neq \emptyset$. \\
 For the MaxCut problem, since we need $n$ pairwise independent pairs of random bits, it is sufficient to draw $k=\lceil \log_2 (n+1)\rceil$ i.i.d. random bits. To derandomize completely, we need to try all of the $2^k$ different possibilities for $r_1,\dots,r_k$, which is then linear in $n$ since $2^k=\Theta(n)$.
 \chapter{Computability and decidability}
 A problem $f$ is a (possibly partial) mapping from a set of instances to a set of outputs (both defined as words of a finite alphabet $A$): $f:A^*\to A^*:w\to f(w)$ or undefined. \\
@@ -955,7 +965,7 @@ A Turing machine has the following elements:
 \begin{itemize}
     \item An infinite tape as an unlimited memory;
     \item A head that reads and writes symbols on the cells and moves around the tape;
-    \item A specific blank symbol \textvisiblespace proper to the machine;
+    \item A specific blank symbol \textvisiblespace \: proper to the machine;
     \item Initially, the tape contains only the input string and is blank elsewhere;
     \item Storing information can be done by writing on the tape through the head;
     \item Reading information can be done by moving left or right the head over it;
@@ -1037,7 +1047,7 @@ Each multitape Turing Machine has an equivalent single-tape Turing machine.
 \section{Non-deterministic Turing Machines}
 A non-deterministic TM proceeds according to several possibilities. The transition function returns a probability distribution over $Q\times \Gamma\times\{L,R\}$. The computation of a non-deterministic TM is a tree whose branches correspond to different possibilities for the machine. If some branch of the computation leads to the ACCEPT state, the machine accepts. 
 \begin{thm}
-    Every non-deterministic TM has an equivalent determinstic TM.
+    Every non-deterministic TM has an equivalent deterministic TM.
 \end{thm}
 \begin{proof}
     Let $N$ be a non-deterministic TM. We design $D$, a TM inspecting the branches of $N$'s tree by using BFS. Let $b$ be the size of the largest set of possible choices given $N$'s transition function. To every node in the tree, we assign an address as a string over $\Gamma_b =\{1,\dots,b\}$. \\
@@ -1118,7 +1128,7 @@ Computability theory looks at what it means to compute; the fundamental limits o
 Let $M$ be a deterministic TM that halts on all inputs. The running time (or time complexity) of $M$ is the function $f:\N\to\N$ where $f(n)$ is the maximum number of steps that $M$ uses on any input of lengt $n$. \\
 Let $t:\N\to \R^+$. The time complexity class $TIME(t(n))$ is the collection of languages decidable by a $\mathcal{O}(t(n))$ time TM. 
 \begin{prop}
-    Let $t(n)\ge n$. Every $t(n)$ time multitape TM has an equivaelnt $\mathcal{O}(t^2(n))$ time single-tape TM. 
+    Let $t(n)\ge n$. Every $t(n)$ time multitape TM has an equivalent $\mathcal{O}(t^2(n))$ time single-tape TM. 
 \end{prop}
 Let $N$ be a nondeterministic TM that is a decider. The running time pf $N$ is the function $f:\N\to\N$ where $f(n)$ is the maximum number of steps that $N$ uses on any branch of its computation on any input of length $n$.
 \begin{prop}
@@ -1209,7 +1219,7 @@ A language $A$ is polynomial time reducible to a language $B$, written $A \le_P 
     A language $B$ is NP-complete if $B\in NP$ and every $A\in NP$ is polynomial-time reducible to $B$.
 \end{definition}
 \begin{thm}
-    IF $B$ is NP-complete and $B\le_P C$ for some $C\in NP$, then $C$ is NP-complete. 
+    If $B$ is NP-complete and $B\le_P C$ for some $C\in NP$, then $C$ is NP-complete. 
 \end{thm}
 We define the problem of satisfiability of a Boolean formula SAT in the following way:
 \begin{itemize}
@@ -1226,9 +1236,9 @@ We define the problem of satisfiability of a Boolean formula SAT in the followin
     \end{itemize}
 \end{proof}
 \section{Reduction}
-The usual way to prove that a given problem $S$ is Np-complete is to show that $S\in NP$ and that for some other NP-complete problem $T$, we have $T\le_P S$. The 3-SAT problem is a restriction of SAT to a subset of instances, where we have conjunctions of clauses, which are disjunctions of 3 (possibly negated) variables. 
+The usual way to prove that a given problem $S$ is NP-complete is to show that $S\in NP$ and that for some other NP-complete problem $T$, we have $T\le_P S$. The 3-SAT problem is a restriction of SAT to a subset of instances, where we have conjunctions of clauses, which are disjunctions of 3 (possibly negated) variables. 
 \begin{thm}
-    The 3-SAT problem is NP-complete
+    The 3-SAT problem is NP-complete.
 \end{thm}
 Indeed, it is in NP and SAT is polynomial reducible to 3-SAT, using the Conjuction Normal Form, possibly adding some useless variables. 
 \begin{thm}
