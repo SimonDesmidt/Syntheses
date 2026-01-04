@@ -1,4 +1,5 @@
 \documentclass[12pt, openany]{report}
+\usepackage{qtree}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amsfonts,amssymb}
@@ -8,6 +9,7 @@
 \usepackage[english]{babel}
 \usepackage{libertine}
 \usepackage{graphicx}
+\usepackage{multirow}
 \usepackage{wrapfig}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -17,7 +19,6 @@
 \usepackage[]{titletoc}
 \usepackage{empheq}
 \usepackage{titlesec}
-\usepackage{qtree}
 \usepackage{mathpazo}
 \usepackage{xfrac}
 \usepackage{textcomp}
@@ -49,6 +50,9 @@
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
 \newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{corollary}[thm]{Corollary}
+\newtheorem{example}[thm]{Example}
 \def\mat#1{\underline{\underline{#1}}}
 
 \hbadness=100000
@@ -61,7 +65,7 @@
         { \huge \bfseries LINMA2111 - Discrete mathematics II \\[0.4cm] }
     
         \HRule \\[1.5cm]
-        \textsc{\LARGE Simon Desmidt\\ Issambre L'Hermite Dumont}\\[1cm]
+        \textsc{\LARGE Charles Van Hees \\Simon Desmidt\\ Issambre L'Hermite Dumont}\\[1cm]
         \vfill
         \vspace{2cm}
         {\large Academic year 2025-2026 - Q1}
@@ -77,25 +81,10 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-\chapter{Introduction}
-\section{Sorting problems}
-A sorting problem is a problem that consists of taking a sequence of $n$ objects and putting them in order. This kind of problem is made of three main elements:
-\begin{itemize}
-  \item Context: set $S$ with a partial order $<$;
-  \item Input: $n$ elements of $S$;
-  \item Output: permutation of the input elements respecting the order.
-\end{itemize}
-To prove the correctness of an algorithm, we generally use the Hoare triple, i.e. a tuple for any input array $x_0$:
-\begin{equation}
-  \begin{aligned}
-	&\{\text{Algorithm to be used};\ \text{Precondition}; \ \text{Postcondition}\}\\
-	&\left\{IS;\ x=x_0;\ x\text{ is sorted and is a permutation of }x_0\right\}
-\end{aligned}
-\end{equation}
-where IS is the insertion sort algorithm, and $x$ is the sorted array. \\
-In practice, to prove the correctness of an algorithm, we define the invariant and the base case, and do an induction step show that the invariant is preserved. The proof is done in my notes at page 1.\\
-\section{Definition of complexity}
-For some functions $f,g:\mathbb{N} \to \R^+$, 
+\chapter{Sorting Algorithms}
+Let $S$ be a set with a total order $\le$. Given an array of $n$ elements of $S$, we owuld like to get a permutation of that input array that respects the order. When analyzing an algorithm, we would like to check its correctness and its complexity (both time and space). 
+\section{Bachman-Landau complexity notations}
+Let $f,g:\N\to \R^+$. We write 
 \begin{equation}
   	\begin{aligned}
 		&f\in \mathcal{O}(g) \Longleftrightarrow \exists c>0, \exists n_0, \forall n>n_0,\ f(n)\le cg(n)\\
@@ -105,18 +94,22 @@ For some functions $f,g:\mathbb{N} \to \R^+$,
 		&f\in \omega(g)\Longleftrightarrow g\in o(f)\\
   	\end{aligned}
 \end{equation}
-\begin{itemize}
-	\item The time complexity is the number of operations as a function of the input size;
-	\item The space complexity is the amount of memory used (in addition to the input) as a function of the input size. 
-\end{itemize}
-We define the average case complexity as an expectation of the time taken by the algorithm on each input possible, with a dependence in the size of the input.
+For example, $\frac{n(n-1)}{2}\in \mathcal{O}(n^3)$ and $\frac{n(n-1)}{2}\in \Omega (n\log(n))$. 
+\begin{prop}
+    \begin{equation}
+        \begin{aligned}
+            \forall f,g, \qquad& \Theta(f)+\Theta(g) = \Theta(f+g)=\Theta(\max(f,g))\\
+            &\mathcal{O}(f)+\mathcal{O}(g) = \mathcal{O}(f+g) = \mathcal{O}(\max(f,g))
+        \end{aligned}
+    \end{equation}
+\end{prop}
+The time complexity is the number of operations as a function of the input size. The space complexity is the amount of memory (used in addition to the input) as a function of the input size. \\
+The worst-case (respectively best-case) time complexity is the maximum (respectively minimum) running time over all instances of size $n$. The average-case time complexity is the average time over all instances of size $n$, for some probability distribution over the instances:
 \begin{equation}
 	t = \mathbb{E}_{x\sim D}[T(x)]
 \end{equation}
 where $D$ is the distribution of the input.\\
-\section{Complexity of sorting algorithms}
-No sorting algorithm can be faster than $\Omega(n \log(n))$. This can be proven through the complexity of comparison-based algorithms. 
-\section{Sorting algorithms}
+\section{Sorting Algorithms}
 \subsection{Selection Sort}
 This algorithm is the naive approach in complexity $\mathcal{O}(n^2)$. It goes as follows:
 \begin{algorithm}[H]
@@ -139,9 +132,33 @@ The idea of this algorithm is to shift the elements to the left until they are w
 		\EndFor 
 	\end{algorithmic}
 \end{algorithm}
-The invariant of this algorithm is that the elements 1 to $i-1$ are sorted.
-\subsection{Quick Sort}
-The quick sort algorithm is based on divide and conquer methods (see chapter \ref{sec:d&c}): it splits and solves smaller sorting problems, and recombines the outputs at the end into a sorted instance.
+The invariant of this algorithm is that the elements 1 to $i-1$ are sorted.\\ 
+To prove correctness of the algorithm:
+\begin{enumerate}
+    \item Check the basic and the induction cases;
+    \item Check that it is a permutation of the original array;
+    \item Check that it is sorted.
+\end{enumerate}
+To prove the correctness of an algorithm, we generally use the Hoare triple, i.e. a tuple for any input array $x_0$:
+\begin{equation}
+  \begin{aligned}
+	&\{\text{Algorithm to be used};\ \text{Precondition}; \ \text{Postcondition}\}\\
+	&\left\{IS;\ x=x_0;\ x\text{ is sorted and is a permutation of }x_0\right\}
+\end{aligned}
+\end{equation}
+where IS is the insertion sort algorithm, and $x$ is the sorted array. \\
+In practice, to prove the correctness of an algorithm, we define the invariant and the base case, and do an induction step show that the invariant is preserved. The proof is done in my notes at page 1.\\
+For insertion sort, 
+\begin{itemize}
+    \item the worst-case complexity is $\mathcal{O}(n^2)$;
+    \item the best-case complexity is $\mathcal{O}(n)$;
+    \item the average-case complexity is $\mathcal{O}(n^2)$: for a uniform probability distribution over the instances,
+    \begin{equation}
+        \E(time) = \E\left[\Theta(\sum_{i=2}^nt_i)\right] = \Theta\left[\sum_{i=2}^n \E(t_i)\right] = \Theta\left[\sum_{i=2}^n \frac{i}{2}\right] = \Theta(n^2)
+    \end{equation}
+\end{itemize}
+\subsection{Quick sort}
+The quick sort algorithm is based on divide and conquer methods (see chapter \ref{chap:d&c}): it splits and solves smaller sorting problems, and recombines the outputs at the end into a sorted instance.
 \begin{algorithm}[H]
 	\caption{Quick Sort algorithm}
 	\begin{algorithmic}[1]
@@ -153,10 +170,30 @@ The quick sort algorithm is based on divide and conquer methods (see chapter \re
 		\State T = [T\_low; pivot; T\_high];
 	\end{algorithmic}
 \end{algorithm}
-The worst-case complexity is still $\mathcal{O}(n^2)$. However, here, the average-case complexity is lower: $\mathcal{O}(n\log (n))$. \\
-The randomized version of the algorithm consists in shuffling before applying the classical quick sort, in order to change the pivot value. As this is a random algorithm, the worst-case complexity corresponds to the expected complexity, i.e. $\mathcal{O}(n\log(n))$. 
+The worst-case complexity is still $\mathcal{O}(n^2)$:
+\begin{equation}
+    t_n = t_{n-1}+\Theta(n) = t_{n-2}+\Theta(n-1)+\Theta(n) = \Theta(n^2)
+\end{equation}
+where the $\Theta(n)$ comes from the partioning of the array. 
+The average-case complexity is lower: $\mathcal{O}(n\log (n))$:
+\begin{equation}
+    t_n = 2 t_{n/2} + \Theta(n) = 2^{\log_2(n)}t_1 + \Theta(n\log_2(n)) = \Theta(n\log(n))
+\end{equation}
+The randomized version of the algorithm consists in shuffling before applying the classical quick sort, in order to change the pivot value. As this is a random algorithm, the worst-case complexity corresponds to the expected complexity, i.e. $\mathcal{O}(n\log(n))$. This is the "Robin Hood effect": we put all instances on an equal footing, and steal from the rich (good) instances to give to the poor ones. 
+\begin{thm}
+    For a non decreasing, nonnegative function $f(\cdot)$, we have the inequalities
+    \begin{equation}
+        f(0) + \dots + f(n-1) \le \int_0^n f(x)dx \le f(1)+\dots +f(n)
+    \end{equation}
+\end{thm}
+\begin{thm}\textbf{Markov's inequality}
+    For a random variable $T$ taking only nonnegative values, 
+    \begin{equation}
+        Pr[T>a \E[T]] \le \frac{1}{a} \qquad a>0
+    \end{equation}
+\end{thm}
 \subsection{Merge Sort}
-The merge sort algorithm is also based on divide-and-conquer, and its complexity is also $\mathcal{O}(n^2)$. 
+The merge sort algorithm is also based on divide-and-conquer, and its complexity is also $\Theta(n\log(n))$. 
 \begin{algorithm}[H]
 	\caption{Merge Sort algorithm}\label{algo:merge-sort}
 	\begin{algorithmic}[1]
@@ -171,43 +208,121 @@ The recurrence equation for the complexity is
 \begin{equation}
 	t_n = 2t_{\lceil n/2\rceil} + \Theta(n) \Longrightarrow t(n) = \Theta(n\log(n))
 \end{equation}
-The disadvatange of quick sort is that this algorithm does not have randomness, as it is complex to simulate. However, the constant in the complexity order is higher than for the quick sort, and the memory usage can be higher too. 
-\section{Decision tree}
-A decision tree focuses on strategies and outcomes. It captures the main operations and the leaves are the possible outcomes ($\mathcal{O}(n!)$ in sorting problems, for $n$ the size of the data). This helps us compute the complexity of a sorting algorithm: the number of steps is the depth $S$ of the tree. Then, we have 
+The disadvatange of quick sort is that this algorithm does not have randomness, as it is complex to simulate. However, the constant in the complexity order is higher than for the quick sort, and the memory usage can be higher too.
+\begin{center}
+    \begin{tabular}{|p{3cm}|p{5.5cm}|p{6cm}|}
+        \hline
+        Algorithm & Pros & Cons \\ \hline
+        \multirow{2}{*}{\parbox{3cm}{Randomized Quick Sort}}
+        & Small hidden constants if implemented efficiently
+        & Requires randomness generation, which may be nontrivial \\ \cline{2-3}
+        & Can be implemented in-place; requires $\Theta(\log n)$ extra memory for recursion
+        & Worst-case behavior possible due to unlucky random choices \\ \hline
+        \multirow{2}{*}{\parbox{3cm}{Merge Sort}}
+        & Requires little extra memory when the input is a linked list
+        & Larger hidden constant \\ \cline{2-3}
+        & Stable and predictable performance
+        & Requires $\Theta(n)$ extra memory for direct-access arrays \\ \hline
+    \end{tabular}
+\end{center}
+\subsection{Heap Sort}
+This algorithm takes the advantages of the two previous ones: being a deterministic algorithm in $\mathcal{O}(n\log(n))$, and sorting in-place (does not need to copy the original array to another structure, hence requiring little extra memory). \\
+We define a data structure as a static structured set, with a set of operations that describe how to access or modify the structure set. What we need is a priority queue: each entry is associated with a number (its priority) and two operations:
+\begin{itemize}
+    \item Insert (entry priority): ine-serts the entry with the given priority;
+    \item ExtractMax: removes and otuputs the entry witht the highest priority number. 
+\end{itemize}
+The Heap Sorting algorithm consists in inserting the $n$ elements in a priority queue, and ExtractMax $n$ times. \\
+The complexity is 
 \begin{equation}
-	2^S \ge n! \Longrightarrow S = \mathcal{O}(log(n!))
+    \Theta(cost(Insert) + cost(ExtractMax))
 \end{equation}
-This is equivalent to $\mathcal{O}(n\log(n))$ : 
+\begin{itemize}
+    \item For an unordered table, the insert is in $\mathcal{O}(1)$ and the ExtractMax in $\mathcal{O}(n)$, and the algorithm then corresponds to the selection sort ($\mathcal{O}(n^2)$).
+    \item For an ordered table, the insert is in $\mathcal{O}(n)$ and the ExtractMax in $\mathcal{O}(1)$, and the algorithm corresponds to the insertion sort ($\mathcal{O}(n^2)$).
+\end{itemize}
+A heap is a tree with the following properties:
+\begin{itemize}
+    \item Essentially binary complete (only the last level may be incomplete, it is filled from left to right);
+    \item entry (x) $\le$ entry(father(x)) for all nodes $x$ different from the root;
+\end{itemize}
+The insertion consists in adding the new neode to the last level in the first free position, and swap it with its father until the heap is properly re-established ($\mathcal{O}(\log(n))$). The ExtractMax consists in removing the root (max entry) and putting the last entry at the root, then swap the new root with its largest child until the heap is properly restored. \\
+The result algorithm is called HeapSort and has complexity $\mathcal{O}(n\log(n))$. The heap may be stored as an array, if we read the entries from top to bottom and left to right. Because the heap is essentially binary complete, this is an unambiguous representation: every array can be interpreted as representing a certain, unique, heap. \\
 \begin{equation}
-	S = \log(n!) = \sum_{i=1}^n \log(i) \le \int_1^n log(x)dx 
+    \begin{aligned}
+        \text{LeftChild}(T(i)) = T(2i) &\qquad \text{RightChild}(T(i)) = T(2i+1)\\
+        \text{Father}(T(i)) &= T(\lfloor i/2\rfloor)
+    \end{aligned}
 \end{equation}
-and we know that $S \ge \int_1^{n+1} \log(x)dx$\footnote{Why?}. Then, 
+\subsection{Searching for a better complexity}
+Assume a comparison-based algorithm, i.e. the only query on the data is "Is $x\le y$?". Can we sort in $o(n\log(n))$, i.e. in a complexity strictly better than $n\log(n)$. 
+\begin{thm}
+    A binary tree with at most 2 children for each node, wit $N$ leaves, has at least $\lfloor \log_2(N)\rfloor$ levels.
+\end{thm}
+\begin{thm}
+    There does not exist a deterministic algorithm that can sort $n$ entries (only using comparisons) in worst-case time complexity in $o(n\log(n))$.
+\end{thm}
+\begin{proof}
+    A sorting algorithm running on an array of $n$ entries proceeds with a sequence of comparisons, e.g. "is $T(1)<T(S)$?". Depending on the answer, it will eventually proceed to another comparison. This sequence of comparisons and their answers can be represented by a decision tree. The number of leaves of this tree is $n!$, i.e. the number of permutations of the data. \\
+    Indeed, two distinct initial orders on the data require a different permutation to become correctly sorted, and therefore a different sequence of actions from the algorithm, while a deterministic algorithm following the same computation path in the tree for two distinct instances will treat these instances in the same exact way. Therefore, the binary tree has at least $\log_2 (n!)$ levels, and each path from root to leaf is a sequence of binary answers queried from the data, thus a lower bound on the computation time. \\
+    Finally, $\log(n!) = \Theta(n\log(n))$:
+    \begin{equation}
+        \begin{aligned}
+            \int_1^n \log(x)dx \le \log(n!) = \sum_{i=1}^n \log(i)\le \int_1^{n+1} \log(x)dx\\
+            \Longrightarrow [x\log(x)-x]_1^n \le \log(n!)\le [x\log(x)-x]_1^{n+1} \Longleftrightarrow S = \Theta(n\log(n))
+        \end{aligned}
+    \end{equation}
+\end{proof}
+This is the answer to the best worst-case complexity. What about the average-case? 
+\begin{thm}\textbf{Shannon theorem.}
+    Let a $N$-set be endowed with the probabilistic distribution $\rho_1,\dots,\rho_N$. If we label every entry with a binary word (called prefix), such that no word is a prefix of another, then the expected length (weighted by the $\rho_i$) is at least 
+    \begin{equation}
+        -\sum_{i=1}^N \rho_i \log(\rho_i)
+    \end{equation}
+\end{thm}
+If $S=\{1,\dots,N\}$ and $P$ is a random variable over $S$ such that $Pr[P=i]=\rho_i$ and $f:S\to \{0,1\}^*$ is a prefix code, then 
 \begin{equation}
-	\begin{aligned}
-		\left[x\log(x)-x\right]_1^n \le S&\le \left[x\log(x)-x\right]_1^{n+1}\\
-		S &= \mathcal{O}(n\log (n))
-	\end{aligned}
+    \sum_{i=1}^N \rho_i |f(i)| \ge -\sum_{i=1}^N\rho_i \log_2(\rho_i) \eqqcolon H(P)
 \end{equation}
-\subsection{Shannon coding theorem}
-Let $\mathcal{S}=\{1,\dots,N\}$ and $P$ a random variable over $\mathcal{S}$ such that $Pr[P=i] = p_i$. Let $f:\mathcal{S}\to \{0,1\}^*$ maps a number to its binary representation, under the constraint that no number is a prefix of another one. Then,
-\begin{equation}
-	\sum_{i=1}^N p_i |f(i)| \ge H(P) = -\sum_{i=1}^N p_i \log_2 (p_i)
-\end{equation}
-where $H(P)$ is called the entropy of the probability distribution $P$. This theorem states that the average length of the prefix of the encoding of $N$ elements must be at least $\log(N)$ characters long.  
-\subsection{Yao's minimax principle}
-Consider a probability distribution over instances of a given size of a given problem. There, there exists a deterministic algorithm solving the problem for thoses instances, whose average-case complexity for the given distribution is lower than the worst-case expected complexity of any random algorithm solving the same problem. \\
-This means that a random algorithm cannot be better than a deterministic algorithm in every case of a problem. 
-\subsection{What about the part on thermodynamics in CM2?}
-\chapter{Divide-and-conquer algorithms}\label{sec:d&c}
-The divide-and-conquer method consists in three steps:
-\begin{enumerate}
-	\item Divide: create smaller subproblems;
-	\item Recurse: solve them;
-	\item Combine: merge the solutions.
-\end{enumerate}
-In sorting problems, a divide-and-conquer algorithm is the merge sort algorithm. It consists in dividing the array in two, sorting each half recursively, and merging the two sorted halves. The merge operation is done in linear time.\\
-\section{Complexity of an integer multiplication}\label{sec:int_mult}
-Given two $n$-digit numbers, we want to compute their product:
+We call $H(P)$ the entropy of the probabilistic distribution. The entropy of any probabilistic distribution over $N$ elements is at most $\log_2(N)$, which is attained for the uniform distribution. If the $N$ elements are $N$ leaves of a binary tree, enconded by their path from root to leaf (giving the prefix code), we obtain the following theorem:
+\begin{thm}
+    The expected length of a path root to leaf of an $N$-leaf binary tree, with probability $\rho_1,\dots,\rho_N$ on the leaves, is at least the entropy $H(P)$. In particular, if all leaves occur equally likely, the average length of the path is at least $\log_2(N)$. 
+\end{thm}
+\begin{thm}
+    The average-case complexity, for uniform distributions over all instances, of any deterministic sorting algorithm using comparisons is $\Omega(n\log(n))$.
+\end{thm}
+And now, can we do better with randomized algorithms? 
+\begin{thm}\textbf{Yao's minimax principle.}
+    Consider a probabilistic distribution over the instances of a given size of a given problem. Then, there exists a deterministic algorithm solving the problem for those instances, whose average-case complexity for this distribution is lower than the worst-case expected complexity of any random algorithm solving the same problem. 
+\end{thm}
+\begin{proof}
+    Consider all instances $x_1,\dots,x_N$ of a given size, with probabilities $\rho_1,\dots,\rho_N$. Consider a random algorithm $A$, drawing i.i.d. bit sequences $B$ to decide of its random actions. Consider also a specific bit sequence $B=b$. Then, knowing this specific of bits, the algorithm is now deterministic, with a fixed running time $t(A,xi|B=b)$ on each instance $x_i$. Then,
+    \begin{equation}
+        \E_B [t(A, x_i)] = \sum_b t(A,x_i|B=b)Pr[B=b]
+    \end{equation}
+    The worst-case expected complexity is thus 
+    \begin{equation}
+        \begin{aligned}
+            \max_{x_i} \E_B[t(A, xi)] &= \max_{x_i}\sum_b t(A,x_i|B=b)Pr[B=b]\\
+            & \ge \E_{x_i} \sum_b t(A,x_i|B=b)Pr[B=b]\\
+            & \ge \min_b \E_{x_i} t(A, x_i|B=b)Pr[B=b]
+        \end{aligned}
+    \end{equation}
+    where the first inequality is the average-case expected complexity, and the second is the average-case complexity of the deterministic algorithm $A$ with a fixed sequence $B=b$. \\
+\end{proof}
+Applying this to the comparison-based sorting, the worst-case expected complexity of any random algorithm is even higher than the average-case deterministic complexity of sorting with respect to any distribution over the instances. In particular, this is true for the uniform distribution, which has been proven to be $\Omega(n\log(n))$. 
+\begin{itemize}
+    \item [$\to$] Note: with additional knowledge about the data, we can beat the $\Omega(n\log(n))$ bound, e.g. using counting sort.
+\end{itemize}
+\chapter{Divide-and-conquer algorithms}\label{chap:d&c}
+A divide-and-conquer method consists in three steps:
+\begin{itemize}
+    \item Divide the problem in smaller subproblems;
+    \item Conquer the subproblems by solving them recursively. When it is sufficiently small, solving it is straightforward. Subproblems can be distributed on several processors;
+    \item Combine the solutions of the subproblems into the solution of the original problem.
+\end{itemize}
+\section{Multiplication of large integers}\label{sec:int_mult}
+We want to multiply two $n$-digit numbers. The elementary school method has a complexity $\Theta(n^2)$:
 \begin{equation}
   	\begin{cases}
 		a = a_{n-1}a_{n-2}...a_1a_0\\
@@ -243,7 +358,7 @@ Following a similar reasoning, we can instead divide $a$ and $b$ into 3 sums ins
 Let $a\ge 1$ and $b>1$ be constants and $f(n)$ a positive function, and let $T(n)$ be defined by $T(0)>0$ and $T(n) = aT(\lfloor n/b\rfloor)+f(n)$. Then,
 \begin{itemize}
 	\item If $f(n) = \mathcal{O}(n^{\log_b (a)-\epsilon})$ for some $\epsilon>0$, then $T(n) = \Theta(n^{\log_b(a)})$;
-	\item If $f(n) = \Theta(n^{\log_b(a)})$, then, $T(n) = \Theta(n^{\log_b(a)}\log(n))$;
+	\item If $f(n) = \Theta(n^{\log_b(a)})$, then $T(n) = \Theta(n^{\log_b(a)}\log(n))$;
 	\item If $f(n) = \Omega(n^{\log_b(a)+\epsilon})$ for some $\epsilon>0$ and if, for some $c>1$ and $n_0$ such that $af(\lfloor n/b\rfloor)\le cf(n)$ for all $n\ge n_0$, then $T(n)=\Theta(f(n))$;
 \end{itemize}
 \subsection{Proof of the master theorem}
@@ -270,134 +385,45 @@ Under the assumption that $\alpha \neq \log_b(a)$. As $k=\log_b(n)$, we can repl
 \begin{equation}
 	T(n) = a^k (k+1) = a^{\log_b(n)} (\log_b(n)+1) = \Theta(n^{\log_b(a)}\log(n))
 \end{equation}
-\section{Multiplying polynomials}
-Consider $a(x) = a_0+a_1x+a_2 x^2 + \dots + a_{n-1}x^{n-1}$. It can either be represented by its coefficients, or some values $(a(x_0),\dots, a(x_{n-1}))$ for $n$ distinct values. To compute those values, we can use a matrix-vector product:
-\begin{equation}
-	\begin{bmatrix}
-		1 & x_0 & \dots & x_0^{n-1}\\
-		\vdots & \vdots & \ddots & \vdots \\
-		1 & x_{n-1} & \dots & x_{n-1}^{n-1}\\
-	\end{bmatrix}\begin{bmatrix}
-		a_0 \\ \vdots \\ a_{n-1}
-	\end{bmatrix} = \mat{V}\textbf{a}
-\end{equation}
-where the matrix $\mat{V}$ is called the Vandermonde matrix. 
-\subsection{Convolution theorem}
-\begin{center}
-	\begin{tikzpicture}[node distance=4cm, auto, font=\small]
-		
-		% Nodes
-		\node[draw, red, thick, rectangle, inner sep=8pt] (A) {\textcolor{black}{
-			$\begin{aligned}
-				a(x) &= \sum_i a_i x^i \\ 
-				b(x) &= \sum_i b_i x^i
-			\end{aligned}$}
-			};
-			
-			\node[draw, red, thick, rectangle, inner sep=8pt, right=of A] (B) {
-				\textcolor{black}{$c(x) = \sum_i c_i x^i$}
-				};
-				
-				\node[draw, red, thick, rectangle, inner sep=8pt, below=of A] (C) {
-					\textcolor{black}{$\begin{matrix}
-						a(x_0) & \dots & a(x_{2n-1}) \\
-						b(x_0) & \dots & b(x_{2n-1})
-					\end{matrix}$}
-					};
-					
-					\node[draw, red, thick, rectangle, inner sep=8pt, right=of C] (D) {
-						\textcolor{black}{$c(x_0) \dots c(x_{2m-1})$}
-						};
-						
-				% Arrows
-				\draw[->, red, thick] (D) -- (B) node[midway, above] {\small \textcolor{black}{Interpolate $\mat{V}^{-1}$}};
-				\draw[->, red, thick] (A) -- (C) node[midway, left] {\small \textcolor{black}{Evaluate $\mat{V}$}};
-				\draw[->, red, thick] (C) -- (D) node[midway, below] {\small \textcolor{black}{pointwise mult}};
-						
-	\end{tikzpicture}
-\end{center}
-This method gives bad conditioning, but this is not a problem here as we consider integer matrices. 
 \section{Discrete Fourier Transform}
-From the previous section, if we take the points as the $n$ complex roots of 1, i.e. $x_0 = e^{2\pi i/n}$ and $x_j = e^{2\pi ij/n}$, then we get a Discrete Fourier Transform matrix. Defining $\omega_n = x_0$,
-\begin{equation}
-	\mat{V} = \begin{bmatrix}
-			1 & 1 & 1 & 1 \\
-			\vdots & \omega_n & \dots & \omega_n^{n-1}\\
-			\vdots & \ddots & \omega_n^{(i-1)(j-1)} & \vdots \\
-			1 & \omega_n ^{n-1} & \dots & \omega_n^{(n-1)^2}
-		\end{bmatrix}
-\end{equation}
-This gives us 
-\begin{equation}
-	\left(\mat{V}^{-1}\right)_{ij} = \frac{1}{n} \begin{bmatrix}
-		\omega_n^{-(i-1)(j-1)}
-	\end{bmatrix}
-\end{equation}
-and so $\mat{V} = \frac{1}{n}\mat{V}^*$. We conclude on 
-\begin{equation}
-	DFT(\textbf{x}) = \mat{V}\textbf{x}
-\end{equation}
-\subsection{Fast Fourier Transform}
-The Fast Fourier Transform (FFT) algorithm uses the divide-and-conquer approach from above to compute the Fourier transform of a vector $x$. The exact algorithm is the following.\\
-Assume that $n=2^k$, $k\ge 1$, $\textbf{x}=(x_0,\dots, x_{n-1})$ and $(y_0,\dots,y_{n-1}) = \mat{V}_n \textbf{x}$. The explicit formula to calculate $y_i$, $i=0,\dots,n/2-1$ is 
-\begin{equation}
-	\begin{aligned}
-		y_i &= \sum_{j=0}^{n-1} x_j \omega_n^{ji} = \sum_{j=0}^{n/2-1}x_{2j}\omega_{n}^{2ji} + \sum_{j=0}^{n/2-1} x_{2j+1}\omega_n^{(2j+1)i} \\
-		&= \sum_{j=0}^{n/2-1}x_{2j}\omega_{n/2}^{ji} + \omega^i_n\sum_{j=0}^{n/2-1} x_{2j+1}\omega_{n/2}^{ji}
-	\end{aligned}
-\end{equation}
-And in matrix form:
-\begin{equation}
-	\begin{pmatrix}
-		y_0 \\ y_1 \\ \vdots \\ y_{n/2-1}
-		\end{pmatrix} = \mat{V}_{n/2} \begin{pmatrix}
-			x_0\\x_2 \\ \vdots \\ x_{n-2}
-		\end{pmatrix} + \begin{pmatrix}
-			\omega_n^0 && \\ & \ddots & \\ & & \omega_n^{n/2-1}
-	\end{pmatrix} \mat{V}_{n/2} \begin{pmatrix}
-		x_1\\x_3\\\vdots \\x_{n-1}
-	\end{pmatrix}
-\end{equation}
-And for the next half of $y$, we have a similar expression:
-\begin{equation}
-	\begin{aligned}
-		y_{i+n/2} &= \sum_{j=0}^{n/2-1} x_{2j}\omega_{n}^{2ji}\left(\omega_{n/2}^{n/2}\right)^j + \omega_n^{i+n/2}\sum_{j=0}^{n/2-1} x_{2j+1}\omega_n^{ji}\left(\omega_{n/2}^{n/2}\right)^j \\
-		&= \sum_{j=0}^{n/2-1}x_{2j}\omega_{n/2}^{ji} + (-1)\cdot \omega^i_n\sum_{j=0}^{n/2-1} x_{2j+1}\omega_{n/2}^{ji}
-	\end{aligned}
-\end{equation}
-And, once again, in matrix form:
-\begin{equation}
-	\begin{pmatrix}
-		y_{n/2} \\ y_{n/2+1} \\ \vdots \\ y_{n-1}
-		\end{pmatrix} = \mat{V}_{n/2} \begin{pmatrix}
-			x_0\\x_2 \\ \vdots \\ x_{n-2}
-		\end{pmatrix} - \begin{pmatrix}
-			\omega_n^0 && \\ & \ddots & \\ & & \omega_n^{n/2-1}
-	\end{pmatrix} \mat{V}_{n/2} \begin{pmatrix}
-		x_1\\x_3\\\vdots \\x_{n-1}
-	\end{pmatrix}
-\end{equation}
-Let us define three notations: 
-\begin{equation}
-	\begin{aligned}
-		\textbf{x}^{[0]} &= (x_0,\dots, x_{n/2-1})\\
-		\textbf{x}^{[1]} &= (x_{n/2},\dots, x_{n-1})\\
-		\mat{T}_n = \begin{pmatrix}
-			\omega_n^0 & & \\ & \ddots & \\ & & \omega_n^{n/2-1}
-		\end{pmatrix}
-	\end{aligned}
-\end{equation}
-Then,
-\begin{equation}
-	\mat{DFT}(\textbf{x}) = \begin{pmatrix}
-		\mat{DFT}(\textbf{x}^{[0]} + \mat{T}_n \mat{DFT}(\textbf{x}^{[1]}))\\
-		\mat{DFT}(\textbf{x}^{[0]} - \mat{T}_n \mat{DFT}(\textbf{x}^{[1]}))
-	\end{pmatrix}
-\end{equation}
-The time complexity of this algorithm is $\Theta(n\log(n))$. 
+Let us consider two polynomials $A(z) = a_0+a_1z + \dots +a_{N-1}z^{N-1}$ and $B(z) = b_0+b_1z +\dots + b_{N-1}z^{N-1}$, where $a_i, b_i\in \R$ or $\C$. It is equivalent to describe a polynomial with a list of $N$ coefficients or with its evaluation at $N$ distinct points. Those two representations correspond to two bases of the vector space of polynomials of degree $N-1$, and are therefore related by an invertible matrix. The two representations are computationally convenient for different tasks:
 \begin{itemize}
-	\item [$\rightarrow$] Note: there exists other algorithm to compute the FFT, such as the non power-of-two $n$ alorithm.
+    \item Evaluation of a polynomial at an arbitrary value $z$: use coefficients ($\Theta(N)$); 
+    \item Multiplication of two polynomials: use the evaluations ($\Theta(N)$).
 \end{itemize}
+To take advantage of both representations, we must choose a list of evaluation points $z_0,\dots,z_{N-1}$ for which the conversion between representations is fast to compute. \\
+
+We can take $z_k = \omega^k$, for $k=0,\dots, N-1$ and $\omega=\exp{2\pi i /N}$, where $\omega$ is an $N$th root of unity, meaning $z_k$ are all the roots of unity, satisfying $z_k^N = 1$. The sequence of evaluations $(A(z_0), \dots, A(z_{N-1}))$ is called the Discrete Fourier Transform (DFT) of the sequence of coefficients $(a_0, \dots,a_{N-1})$, denoted $\mathcal{F}(a_0,\dots,a_{N-1})$. \\
+The evaluation of $A(\omega^k)$ is facilitated by the following observation:
+\begin{equation}
+    A(z) = A_{\text{even}}(z^2) + z A_{\text{odd}} (z^2)
+\end{equation}
+where $A_{\text{even}}(z) = a_0 + a_2 z + a_4 z^2 + \dots$ and $A_{\text{odd}}(z) = a_1 + a_3 z + a_5 z^2 +\dots$. Assume $N$ to be even for simplicity. Then, 
+\begin{equation}
+    A_{\text{even}} ((\omega^k)^2) = A_{\text{even}}((\omega^2)^k)
+\end{equation}
+where $\omega^2$ is a $N/2$-th root of unity, by definition of $\omega$. Thus, the sequence of $\{A_{\text{even}}((\omega^k)^2)\}_{k=1}^{\frac{N}{2}-1}$ is the DFT of the even coefficients, $\mathcal{F}_{N/2}(a_0,a_2,\dots,a_{N-2})$. As for $k=\frac{N}{2},\dots, N-1$, we observe that $(\omega^2)^{N/2+\ell}=(\omega^2)^\ell$ since $\omega^N=1$. Therefore, the sequence of $A_{\text{even}}((\omega^k)^2)$ for $k=\frac{N}{2},\dots, N-1$ is once again $\mathcal{F}_{N/2}(a_0,\dots, a_{N-2})$. \\
+The same reasoning can be made with $A_{\text{odd}}((\omega^k)^2)$, which creates the sequence $$\{(\mathcal{F}_{N/2}(a_1,a_3,\dots,a_{N-1}), \mathcal{F}_{N/2}(a_1,a_3,\dots,a_{N-1}))\}_{k=0}^{N-1}$$
+\begin{equation}
+    \begin{aligned}
+        \mathcal{F}_N (a_0,a_1,\dots,a_{N-1}) = &\left[\mathcal{F}_{N/2}(a_0,a_2,\dots,a_{N-2}), \mathcal{F}_{N/2}(a_0,a_2,\dots,a_{N-2})\right] \\ 
+        &+ \omega \left[\mathcal{F}_{N/2}(a_1,a_3,\dots,a_{N-1}), \mathcal{F}_{N/2}(a_1,a_3,\dots,a_{N-1})\right]
+    \end{aligned}
+\end{equation}
+If $N$ is a power of $2$, we can apply this formula recursively, with the following relation for complexity:
+\begin{equation}
+    t_N = 2 t_{N/2} + \Theta(N) \Longrightarrow t_N = \Theta(N\log(N))
+\end{equation}
+Finally, let us notice that $\mathcal{F}_N(a) = Va$, where $a$ is the vector of coefficients and $V$ is a Vandermonde matrix such that $V_{jk} = \omega^{jk}$ for $j,k=0,\dots,N-1$. With this, $V^{-1} = \frac{1}{N} V^*$ where the star denotes the conjugate transpose of $V$.\\
+
+This divide-and-conquer strategy to compute the direct and inverse DFT is called the Fast Fourier Transform (FFT). This gives a rigorous method for the multiplication of two polynomials in the coefficient representation: given $A(z)$ and $B(z)$ of degree $N-1$, we want to compute $C(z) = A(z) B(z)$ of degree $2N-2$.
+\begin{enumerate}
+    \item Compute the FFT of the coefficients of $A$ and the FFT of the coefficients of $B$, padded with zeros so as to reach $2N-2$ or the next power of 2; [$\Theta(N\log(N))$]
+    \item Multiply the two resulting Fourier domain representations pointwise, which results in the Fourier domain representation of the coefficients of $C$; [$\Theta(N)$]
+    \item Compute the inverse DFT in order to obtain the coefficients of $C$. [$\Theta(N\log(N))$]
+    \item [$\to$] The total cost is $\Theta(N\log(N))$ elementary operations.
+\end{enumerate}
+This idea can be used to compute the product of two large numbers: represent them in polynomials using their base $b$ ($X=x_{N-1} b^{N-1}+ \dots$), compute the Fourier domain representations like for polynomials above, and evaluate them at the base value $b$. Doing it in a finite field, the complexity is $\Theta(N\log(N)\log(\log(N)))$. 
 \section{Matrix multiplication}
 Given $A,B\in \Z^{n\times n }$, we want to compute $C = A\cdot B$. The basic algorithm is in $\Theta(n^3)$, but we want a better one. 
 \subsection{Straßen algorithm}
@@ -442,7 +468,6 @@ This kind of inequality is called reduction. Given problems $A$ and $B$, if $A$ 
 	T_A(n) \le T_R(n) + T_B(f(n))
 \end{equation}
 For example, the problem of finding the median of an array can be transformed into the problem of sorting the array.\\
-\subsection{Matrix inversion upper bound}
 Let us assume that $A=A^T$ and $A\succ 0$.
 \begin{equation}
 	A = \begin{pmatrix}
@@ -459,7 +484,10 @@ where $S = D-C^TB^{-1}C$ is the Schur complement of $A$. From \autoref{eq:reduct
 \begin{itemize}
 	\item [$\rightarrow$] Note: the hypotheses that $A=A^T$ and $A\succ 0$ are not binding. If $A$ is invertible but does not verify those conditions, we can work with $AA^T$ that does, and we find the inverse of $A$ with $A^{-1} =(A^TA)^{-1} A^T$. 
 \end{itemize}
-\chapter{Dynamic Programming}
+\begin{thm}
+    Matrix inversion and multiplication have the same complexity.
+\end{thm}
+\chapter{Dynamic programming}
 \section{Two approaches}
 There are two approaches for a dynamic programming algorithm: bottom-up and top-down. In the bottom-up approach, we solve the subproblems first, and then use their solutions to solve bigger problems. In the top-down approach, we start from the main problem, and recursively solve the subproblems as needed. \\
 \begin{itemize}
@@ -467,8 +495,67 @@ There are two approaches for a dynamic programming algorithm: bottom-up and top-
 	\item The main idea of top-down is recursion.
 \end{itemize}
 Dynamic programming is used to improve time complexity by trading time for space.
-\section{Examples}
-\subsection{Rod cutting }
+\section{Computing binomial coefficients}
+Given integers $0\le k \le n$, we seek to compute the number $\begin{pmatrix}
+    n\\k
+\end{pmatrix}$ of subsets of size $k$ of a set of size $n$. Pascal's rule is 
+\begin{equation}
+    \begin{pmatrix}
+        n\\k
+    \end{pmatrix} = \begin{pmatrix}
+        n-1\\k-1
+    \end{pmatrix} + \begin{pmatrix}
+        n-1 \\ k 
+    \end{pmatrix} \qquad 0<k<n
+\end{equation}
+A naive implementation is the direct translation into a recursive algorithm using $\begin{pmatrix}
+    n\\0
+\end{pmatrix} = \begin{pmatrix}
+    n\\n 
+\end{pmatrix} = 1$. The time complexity is $\Theta\left(\begin{pmatrix}
+    n\\k
+\end{pmatrix}\right)$ and its space complexity is $\Theta(n)$, i.e. the height of the computation tree. \\
+To be more efficient, we can use a divide-and-conquer approach using Pascal's rule, where we store the intermediate results in a table $n\times k$. An efficient implementation of this algorithm uses only one array of size $k+1$, as we only need to store the last column, not the whole table. The space complexity becomes $\Theta(k)$ and the time complexity is $\Theta(nk-k^2)$. \\
+This is a "bottom-up" approach of dynamic programming.\\
+For our initial problem, the time complexity does not change, but the space complexity is worse: $\Theta(nk-k^2)$. The top-down approach works well when we do not know in advance what small instances will have to be treated because it then computes exactly what is needed. \\
+
+Like the divide-and-conquer approach, dynamic programming solves a problem by combining solutions to subproblems. Dynamic progamming differs from the divide-and-conquer by storing the solutions of subproblems: a subproblem appearing many times is solved only once.
+\section{Chained matrix products}
+Given $n\ge2$ compatible matrices, we want find the order (associativity) in which perfoming products leads to the smallest cost. The number of possible groupings for computing the product of $n$ matrices is the $(n-1)$-th Catalan number, denoted $C_{n-1}$. It is also the number of full binary trees\footnote{In a binary tree, every node has between 0 and 2 children.} with $n$ leaves. 
+\begin{equation}
+    ((A_1A_2)(A_3A_4))(A_5\dots) = (A_1(A_2A_3)(A_4A_5))\dots 
+\end{equation}
+\begin{thm}
+    \begin{equation}
+        C_{n+1} = \sum_{k=0}^nC_kC_{n-k} \qquad \forall n\ge0
+    \end{equation}
+\end{thm}
+\begin{proof}
+    Let $n\in \N$. Any grouping of $n+2$ factors has the form 
+    \begin{equation}
+        M_1\dots M_{n+2} = (M_1\dots M_{k+1})(M_{k+2}\dots M_{n+2})
+    \end{equation}
+    for some $k\in\{0,\dots,n\}$, where the first $k+1$ terms are further parenthesised in $C_k$ possible ways, and so are the $n-k+1$ last factors in $C_{n-k}$ possible ways. By the rule of product, there are thus $C_kC_{n-k}$ ways for grouping the product $M_1\dots M_{n+2}$. As it is true for every $k\in \{0,\dots,n\}$, we get the desired result by the rule of sum. 
+\end{proof}
+    We can show that\footnote{See section \ref{sec:generating-functions}.} 
+    \begin{equation}
+    C_n = \frac{1}{n+1} \begin{pmatrix}
+        2n\\n
+    \end{pmatrix} = \Theta\left(\frac{4^n}{n\sqrt{n}}\right)
+\end{equation}
+To solve the problem, we can use a bottom-up dynamic programming approach: 
+\begin{itemize}
+    \item Create a matrix $C$ of size $n\times n$;
+    \item Fill in the main diagonal with 0;
+    \item Fill the immediate upper diagonal $j=i+1$;
+    \item Fill all other upper diagonals one by one.
+\end{itemize}
+The time to compute $C[i,j]$ is $\Theta(j-i)$, so the total time is 
+\begin{equation}
+    \sum_{i=1}^n\sum_{j=1}^n \Theta(j-i) = \sum_{i=1}^n \Theta((n-i)^2) = \sum_{k=0}^{n-1}\Theta(k^2) = \Theta(n^3)
+\end{equation}
+Notice that we only need $\Theta(n)$ memory space as we only need the diagonal we are currently working on. 
+\section{Rod cutting}
 The problem of rod cutting consists in wanting to cut a beam of length $n$, given commands of clients.Finding the optimal solution can be done by computing a solution on sub-beams and merging them. 
 \begin{algorithm}[H]
 \caption{Rod Cutting Algorithm}
@@ -532,51 +619,148 @@ Finally, another algorithm exists, using a bottom-up approach in dynamic program
 		\EndFunction 
 	\end{algorithmic}
 \end{algorithm}
-\subsection{Matrix chain multiplication}
-This problems consists in doing the multiplication of matrices $A_1A_2\dots A_n$ with dimensions $p_0, p_1,\dots, p_n$. The total number of operations depends heavily on the order of the multiplication. The idea for the algorithm is to split the chain into smaller chains until we get to a product of two matrices. The splitting happens at the index $i$ that minimizes the total number of operations, knowing the cost of computing a subchain:
+\section{Principles of dynamic programming}
+\begin{itemize}
+    \item Principle of optimality: for any optimal structure (e.g. list, tree) answering the problem for an instance, the substructures are also optimal for the subinstances.
+    \item Subproblems are overlapping: divide-and-conquer is wasteful because it solves many times the same subinstance. 
+\end{itemize}
+\section{Generating functions}\label{sec:generating-functions}
+This is a powerful tool for solving recurrence equations. The idea is to associate a power series to a sequence $\{a_n\}_{n\in \N}$: 
 \begin{equation}
-	Algo(p) = \min_{1\le i \le n-1} \{ Algo(p[0:i]) + Algo(p[i+1:n]) + p_0p_ip_n\}
+    f(z) = \sum_{n=0}^\infty a_n z^n \qquad z\in \C 
 \end{equation}
-Let us define $m[i,j]$ the optimal cost of the product $A_i\dots A_j$. Our goal is to compute $m[1,n]$, with the initial condition $m[i,i] = 0$ for all $i$. The recurrence relation is 
+\begin{itemize}
+    \item Example with the Fibonacci sequence: $F_0=0, F_1=1, F_n = F_{n-1}+F_{n-2}$ for all $n\ge 2$. We define the power series: 
+\end{itemize}
 \begin{equation}
-	m[i,j] = \min_{i\le k < j} \{m[i,k] + m[k+1,j] + p_{i-1}p_kp_j\} \qquad \forall 1\le i\le j \le n	
+    f(z) = \sum_{k\ge 0}F_k z^k
 \end{equation}
-This gives a complexity $\Theta(n^2)$, as we need to compute the entries of a triangular matrix $n\times n$. 
-\section{Generating functions}
-Let $\{a_k\}_{k=0}^\infty$ be a sequence. We associate the function $\sum_{k=0}^\infty a_kx^k$ to the sequence, on which we have addition, multiplication, differentiation, etc. \\ Example: 
+From the recurrence equation, we decuce that 
 \begin{equation}
-	a_k = 1 \ \forall k\in \N \Longrightarrow f(x) = \sum_{k=0}^\infty x^k = \frac{1}{1-x} = x \sum_{k=0}^\infty x^k + 1 = xf(x) + 1
+    \begin{aligned}
+        \sum_{k\ge0} F_{k+2} z^{k+2} = \sum_{k\ge 0} F_{k+1}z^{k+2} + F_k z^{k+2}\\
+        \Longleftrightarrow f(z)-F_0-F_1z = z(f(z)-F_0)+z^2f(z)\\
+        \Longleftrightarrow f(z) = \frac{F_0+(F_1-F_0)z}{z^2+z-1} = \frac{z}{(z+\varphi)(z-\bar\varphi)}
+    \end{aligned}
 \end{equation}
-Another example is the Fibonacci sequence:
+where $\varphi = \frac{1+\sqrt{5}}{2}$ and $\bar \varphi = \frac{1-\sqrt{5}}{2}$. Using partial fraction decomposition, 
 \begin{equation}
-	f_{n+2} = f_{n+1} + f_n \qquad f_0 = 0\qquad f_1 = 1
+    \begin{aligned}
+        f(z) = \frac{1}{\sqrt{5}} \left(\frac{\bar \varphi}{z+\bar\varphi}-\frac{\varphi}{z+\varphi}\right) = \frac{1}{\sqrt{5}} \sum_{k\ge 0} (\varphi^k-\bar \varphi^k)z^k\\
+        \Longrightarrow F_n = \frac{\varphi^n -\bar \varphi^n}{\sqrt{5}}
+    \end{aligned}
 \end{equation}
-From the recurrence equation, we can get the generative function:
+\begin{itemize}
+    \item Example with the Catalan numbers: $C_0 = C_1 = 1$, $C_{n+1} = \sum_{k=0}^n C_k C_{n-k}$. We define the power series:
+\end{itemize}
 \begin{equation}
-	\begin{aligned}
-		f(x) &= f_0 x^0 + f_1 x^1 + \sum_{k\ge 2} f_k x^k = f_0 + f_1 x + \sum_{k\ge 0} f_{k+2}x^{k+2}\\
-		&= f_0 + f_1 x + x^2\sum_{k\ge0 } f_{k+1} x^k + x^2\sum_{k\ge 0}f_k x^k\\
-		&= f_0 + f_1 x + x(f(x)-f_0) + x^2 f(x)\\
-		&= \frac{f_0 + (f_1-f_0)x}{1-x-x^2}
-	\end{aligned}
+    \begin{aligned}
+        f(z) &= \sum_{n\ge0} C_n z^n = 1 + z\sum_{n\ge 0}C_{n+1}z^n = 1 + z \sum_{n\ge 0}\sum_{k=0}^n C_k C_{n-k}z^n\\
+        &= 1 + z \sum_{n\ge0}\sum_{k=0}^n (C_kz^k)(C_{n-k}z^{n-k})\\
+        &= 1 + z\left(\sum_{n\ge 0}C_n z^n \right)\left(\sum_{k\ge 0}C_k z^k\right) = 1 + zf(z)^2
+    \end{aligned}
 \end{equation}
-Knowing that $\sum_{k\ge0 } f_{k+1} x^k = \frac{f(x)-f_0}{x}$ 
-\chapter{Randomized Algorithms}
-\section{Probabilistic analysis and randomized algorithm}
-In probabilistic computing, we need a distribution of the inputs to be able to sample. Based on prior knowledge or assumptions, we can determine the average-case complexity. The goal is for it to be lower than the deterministic algorithm, although it comes at the price of the accuracy of the solution.\\
-
-Let us use as example the hiring problem. We interview $n$ candidates, one at a time, and we need to decide wether we hire the candidate or not right after the interview. Our goal is of course to hire the best candidate. \\
-One approach would be to interview the $n/2$ first candidates and only observe their skills. Then, hire the first candidate that is more skilled than the average (or all) of the first half of candidates.
-\subsection{Indicator Random Variable}
-Given a sample space $S$ and an event $A$, we define the indicator random variable as 
+This gives $f(z) = \frac{1-\sqrt{1-4z}}{2z}$, rejecting the positive sign since $f(0)=1$. By the generalized binomial formula, 
 \begin{equation}
-	X_A = \begin{cases}
-		1 \text{ if $A$ occurs }\\ 0 \text{ otherwise}
-	\end{cases}
+    \sqrt{1-4z} = \sum_{n=0}^\infty \begin{pmatrix}
+        1/2\\n
+    \end{pmatrix} (-4z)^n = 1+\sum_{n=1}^\infty \frac{\left(\frac{1}{2}\right)\left(-\frac{1}{2}\right)\dots \left(\frac{3}{2}-n\right)}{n!}(-1)^n 2^{2^n}z
 \end{equation}
-where $Pr[X_A = 1] = Pr[A]$. This is useful because $\E[X_A] = Pr[A]$.
-\section{Random Sampling and Applications}
-\subsection{Birthday paradox}
+Which gives 
+\begin{equation}
+    f(z) = -\frac{1}{2z} \sum_{n=1}^\infty \frac{\left(\frac{1}{2}\right)\left(-\frac{1}{2}\right)\dots \left(\frac{3}{2}-n\right)}{n!}(-1)^n 2^{2^n}z
+\end{equation}
+from which we deduce that for all $n\in \N_0$, 
+\begin{equation}
+    \begin{aligned}
+        C_{n-1} &= -\frac{1}{2}\frac{\left(\frac{1}{2}\right)\dots \left(\frac{3}{2}-n\right)}{n!}(-1)^n2^{2n}\\
+        &= \frac{1}{2}\frac{\left(\frac{1}{2}\right)\left(\frac{1}{2}\right)\dots \left(n-\frac{3}{2}\right)}{n!}2^{2n} = \frac{1}{2}\frac{1\cdot 1\dots (2n-3)}{n!} 2^n\\
+        &= \frac{1}{2}\frac{(2n-2)!}{n! (2\cdot 4\dots (2n-2))} 2^n = \frac{1}{2}\frac{(2n-2)!}{n! 2^{n-1}(n-1)!}2^n = \frac{(2n-2)!}{n!(n-1)!} = \frac{1}{n}\begin{pmatrix}
+            2n-2\\n-1
+        \end{pmatrix}
+    \end{aligned}
+\end{equation}
+Then, 
+\begin{equation}
+    C_n = \frac{1}{n+1} \begin{pmatrix}
+        2n\\n 
+    \end{pmatrix} \approx \frac{\sqrt{4\pi n}\left(2\frac{n}{e}\right)^{2n}}{(n+1)(2\pi n)\left(\frac{n}{e}\right)^{2n}} = \Theta\left(\frac{4^n}{n\sqrt{n}}\right)
+\end{equation}
+using Stirling's approximation: $\lim_{n\to \infty} \frac{n!}{\sqrt{2\pi n} \left(\frac{n}{e}\right)^{2n}} = 1$.
+\subsection{Useful results for the proves}
+\begin{definition}
+    For all $r\in \C, n\in \N_0$, we define 
+    \begin{equation}
+        \begin{pmatrix}
+            r\\n
+        \end{pmatrix} = \frac{r(r-1)\dots (r-n+1)}{n!} = \frac{1}{n!}\prod_{i=0}^{n-1} (r-i)
+    \end{equation}
+    and $\begin{pmatrix}
+        r \\ 0 
+    \end{pmatrix} = 1$.
+\end{definition}
+\begin{thm}
+    For all $z\in \C$ such that $|z|<1, \: \forall r\in \C$, 
+    \begin{equation}
+        \sum_{n=0}^\infty \begin{pmatrix}
+            r\\n
+        \end{pmatrix} z^n = (1+z)^r 
+    \end{equation}
+\end{thm}
+\begin{thm}\textbf{Generalized binomial formula.}
+    \begin{equation}
+        \forall r, x,y\in \C \text{ such that }|x|>|y|, \qquad (x+y)^r = \sum_{n=0}^\infty \begin{pmatrix}
+            r \\ n
+        \end{pmatrix} x^{r-n}y^n
+    \end{equation}
+    \begin{itemize}
+        \item [$\to$] Note: in the real case with $r$ integer, all terms of index higher than $r$ are zero.
+    \end{itemize}
+\end{thm}
+\begin{thm}\textbf{Cauchy product formula.}
+    Let $\{u_n\}_{n\in \N}$ and $\{v_n\}_{n\in \N}$ be two $\C$ sequences. If the series $\sum_{n=0}^\infty u_n$ and $\sum_{n=0}^\infty v_n$ converge absolutely, then the series 
+    \begin{equation}
+        \sum_{n=0}^\infty \sum_{k=0}^n u_k v_{n-k}
+    \end{equation}
+    converges to 
+    \begin{equation}
+        \left(\sum_{n=0}^\infty u_n\right)\left(\sum_{n=0}^\infty v_n\right)
+    \end{equation}
+\end{thm}
+\chapter{Greedy algorithms}
+\section{Activity selection problem}
+Given a set of activities $\{a_1,\dots,a_n\}$ and the knowledge that activity $a_i$ takes the interval $[s_i, f_i[$, where $s_i$ is the start time and $f_i$ the end time. We want to find the maximum size set of mutually disjoint activities. A dynamic programming approach could be used as the optimality principle applies: if a set of activities is optimal for a certain time interval, then the subset of consecutive activities taking place in a subinterval is optimal for this subinterval, among all activities taking place in this subinterval. 
+\begin{itemize}
+    \item [$\to$] Note: the subinterval should start and finish at the end times of activities in the optimal set.
+\end{itemize}
+This dynamic programming algorithm can be done in $\mathcal{O}(n^2)$. However, there is a better approach, using a greedy algorithm: if we sort the activities with respect to their ending time, we take the first activity that finishes, then the first activity that starts and finishes after the ending time of the first one, and so on. This approach guarantees optimality. If we have an optimal solution that starts with an activity that is not the first to finish, then we can replace that first activity by the one that finishes first, keeping the same total number of activities. \\
+The tie complexity is $\Theta(n\log(n))+\Theta(n)$, as we first need to sort the activities and then do once through the array.
+\chapter{Randomized algorithms}
+In probabilistic computing, we need a distribution of the inputs to be able to sample. Based on prior knowledge or assumptions, we can determine the average-case complexity. The goal is for it to be lower than the deterministic algorithm, although it comes at the price of the accuracy of the solution.
+\section{The secretary problem}
+Consider that $n$ candidates of different quality apply for an open position. Every time you interview a candidate who proves better than any other previous one, you hire them and fire the previous one. They are sent in a random order. How many people will you hire on average? \\
+Let $X_i = 1$ if person $i$ is hired and 0 otherwise. Then, $\E[X_i] = Pr[\text{person } i \text{ is hired}] = \frac{1}{i}$ because the best among the $i$ first candidates is $i$ with probability $1/i$. \\
+Let $X$ be the number of people hired.
+\begin{equation}
+    \E[X] = \E\left(\sum_{i=1}^n X_i\right) = \sum_{i=1}^n \E[X_i] = \sum_{i=1}^n \frac{1}{i} \approx \int_1^n \frac{1}{i} di = \ln(n)
+\end{equation}
+What if we can only hire one candidate? First, we proceed to an observation phase of $k$ candidates. Next, we hire the first candidate that is better than the $k$ candidates of the observation phase. What is the optimal $k$? \\
+Let $S_k$ be the event that we hire the best candidate, with an observation phase of $k$ candidates, and let $B_i$ be the event that $i$ is the best candidate: $Pr[B_i] = \frac{1}{n}$, with $H_i$ the event that we hire the $i$-th candidate. 
+\begin{equation}
+    Pr[S_k] = \sum_{i=k+1}^n Pr[H_i|B_i] Pr[B_i]
+\end{equation}
+$H_i|B_i$ occurs iff the best among the first $i-1$ candidates is in the learning phase, which happens with probability $\frac{k}{i-1}$. Then,
+\begin{equation}
+    \begin{aligned}
+        Pr[S_k] = \sum_{i=k+1}^n \frac{k}{i-1} \frac{1}{n} = \frac{k}{n}\sum_{i=k}^{n-1}\frac{1}{i}
+    \end{aligned}
+\end{equation}
+Since $\int_k ^n \frac{1}{x}dx \le \sum_{i=k}^{n-1} \frac{1}{i}\le \int_{k-1}^{n-1}\frac{1}{x}dx$, 
+\begin{equation}
+    \frac{k}{n}(\ln(n)-\ln(k)) \le Pr[S_k] \le \frac{k}{n} (\ln(n-1)-\ln(k-1))
+\end{equation}
+The lower bound is maximized for $k^* = n / e$ and has maximal value $1/e \approx 37\%$. 
+\section{Birthday paradox}
 The birthday paradox is not stricly speaking a paradox, but is called that way because it goes against the first intuition. What is the number of people that must be in a room so that the probability that two people have the same birthday is higher than 1/2, assuming that the birthdays are uniformly distributed? Let $r={1,\dots,n}$ and $Pr[b_i=r] = 1/n$. Then, for two people,
 \begin{equation}
 	Pr[b_i = b_j] = \sum_{r=1}^n Pr[b_i=r \text{ and }b_j = r] = \sum_{r=1}^n Pr[b_i=r]Pr[b_j=r] = \sum_{r=1}^n \frac{1}{n^2} = \frac{1}{n}
@@ -597,7 +781,7 @@ We can also compute the expectation: let $X_{ij}$ be the 1 if the people $i$ and
 	\E[X] = \sum_{i=1}^k \sum_{j=i+1}^k X_{ij} = \frac{k(k-1)}{2n}
 \end{equation}
 This means that for at least $\sqrt{2n}+1$ people in a room, we can EXPECT at least one collision. For $n=365$, this is $k=28$ people.
-\subsection{Hash table}
+\section{Hash table}
 A hash table is a data structure in which inserting, searching and deleting is done in $\Oo(1)$ in average. The idea of a hash table is to store elements in an array of size $m$ using a hash function $h:U\to \{0,\dots,m-1\}$, where $U$ is the set of possible keys. So instead of using a direct addressing table, where $k$ is stored at $T[k]$ ($\Oo(n)$ space), we store $k$ at $T[h(k)]$ ($\Oo(m)$ space). This idea save space but introduces collision. We can deal with collisions using multiples way, this will be investigated later. The simplest hash function is the modulo function $h(k) = k \mod m$.\\
 Using deterministic hash functions can lead to bad performance. If the input is well chosen, we could have a worst-case complexity of $\Oo(n)$. To overcome this, we randomize the choice of the hash function.
 \begin{definition}
@@ -611,89 +795,175 @@ This definition means that even with well-chosen inputs, the probability of coll
 	\mathcal{H} = \{h_{a,b}(k) = ((ak+b) \mod p) \mod m \: | \: a\in \{1,\dots,p-1\}, b\in \{0,\dots,p-1\}\}
 \end{equation}
 where $p$ is a prime number $p > |U|$. The randomness comes from the random choice of $a$ and $b$.\\
-There exists multiples ways to manage collisions. It is possible to ignore collisions, in that case you lose data. Another way is to use buckets with linked lists to store multiple elements at the same index. We can also use probing. Linear probing consists into putting the element at the next available index after a collision, so we try $h(k)$ then $h(k)+1$ then $h(k)+2$ and so on. Quadratic probing uses $h(k)+i^2$ instead of $h(k)+i$. Double hashing uses a second hash function $h_2$ to compute the next index: $h(k)+i\cdot h_2(k)$. And finally, Cuckoo hashing that consists in using two hashing function ($h_1(k)$ and $h_2(k)$) and allowing an item $k$ to be either in the place given by $h_1(k)$ or by $h_2$.\\
-\subsection{Randomized algorithm for computing integrals}
-To approximate $\pi$ , we can put $n$ random points on a square of size 1. For each point, we define the associated random variable $X_i=1$ if $x_i^2 + y_i^2\le 1$ and 0 otherwise. If we observe $k$ points in the orthant, we have 
-\begin{equation}
-	\frac{k}{n}\approx \frac{\pi}{4}
+There exists multiples ways to manage collisions. It is possible to ignore collisions, in that case you lose data. Another way is to use buckets with linked lists to store multiple elements at the same index. We can also use probing. Linear probing consists into putting the element at the next available index after a collision, so we try $h(k)$ then $h(k)+1$ then $h(k)+2$ and so on. Quadratic probing uses $h(k)+i^2$ instead of $h(k)+i$. Double hashing uses a second hash function $h_2$ to compute the next index: $h(k)+i\cdot h_2(k)$. And finally, Cuckoo hashing that consists in using two hashing function ($h_1(k)$ and $h_2(k)$) and allowing an item $k$ to be either in the place given by $h_1(k)$ or by $h_2$.
+\section{Monte Carlo algorithm to compute an integral}
+Assume that we would like to compute $\int_a^b f(x)dx$, given that $f(x)\ge 0$, for $f$ bounded in $[0,c]$. We can use the following randomized algorithm:
+\begin{algorithm}[H]
+    \caption{Random algorithm to compute an integral}
+    \begin{algorithmic}[1]
+        \State $k=0$;
+        \For{$n$ times}
+            \State Pick $(x,y)$ in $[a,b]\times [0, c]$;
+            \State If $y\le f(x)$ : $k ++$;
+        \EndFor \\
+        \Return $(b-a)\cdot c\cdot \frac{k}{n}$
+    \end{algorithmic}
+\end{algorithm}
+Or a deterministic algorithm, where the upper bound on $f$ is not needed:
+\begin{algorithm}[H]
+    \caption{Deterministic algorithm to compute an integral}
+    \begin{algorithmic}[1]
+        \State $s=0; \: x= a; \: D = (b-a)/n$;
+        \For{$n$ times }
+            \State $x += D$; 
+            \State $s += f(x)$;
+        \EndFor\\
+        \Return $s\cdot D$
+    \end{algorithmic}
+\end{algorithm}
+This may be used to approximate $\pi$, since \begin{equation}
+    \frac{\pi}{4} = \int_0^1 \sqrt{1-x^2}dx
 \end{equation}
-And we can even compute the error using the variance of $X_n = \sum_{i=1}^nX_i$:
+One-dimensional integrals are usually better evaluated by deterministic methods, e.g. rectangles, Simpson, etc. \\
+A Monte Carlo method can be used to evaluate any integral $\int_X F(x)p(x)dx$, where $p$ is a probability density function, or sums $\sum_{x\in X} F(x)p(x)$, where $p$ is a probability distribution over a large discrete set $X$. \\
+The interests of the Monte Carlo integration are:
+\begin{itemize}
+    \item Robin Hood effect: for every deterministic integration method, there are functions for which the method will fail, e.g. if the function is zero at all the integration points. Those methods have a very poor worst-case behabiour, while the choice of random points makes all instances behave equally well.
+    \item For higher dimensional integrals, the error of the Monte Carlo approximation still decreases in $\mathcal{O}(1/\sqrt{n})$, where $n$ is the number of evaluation points, while the multidimensional rectangle method's error decreases in $\mathcal{O}(1/\sqrt[d]{n})$, meaning that when the dimension increases, we need exponentially more points to fill the space and preserve the accuracy. 
+    \item For domains with complicated geometry, or no explicit description, it may not be clear how to apply a deterministic method, while if we have a method that can generate points within $X$ with probability $p(x)$, then we can still apply the MC method. 
+\end{itemize}
+\section{Markov Chain Monte Carlo methods and Metropolis-Hastings algorithm}
+Sometimes, the generation of samples according to a given probability distribution is not straightforward, e.g. when the probability distribution is only known up to a factor, or when we do not know the set $X$ in which we sample uniformly (or its size). \\
+The following technique allows to generate samples to any probability distribution $p(x)$ proportional to $f(x)$ (known) in a discrete or continuous space $X$. The idea is to perform a Markov chain on $X$. Starting from an arbitrary $x_0$, we jump randomly (with a certain probability law) to another point $x_1$, then $x_2$, etc. in a way that the stationary distribution, i..e the probability distribution for $x_t$ for large $t$, is precisely $p(x)$. \\
+Starting from an arbitrary $x_0$, one simply has to simulate the Markov chain for sufficiently many steps and retrieve the subsequence $x_T, x_{2T},\dots$ for $T$ large enough, as an approximately i.i.d. sequence of samples with the correct distribution. \\
+The most common MCMC strategy for jumping from $x_t$ to $x_{t+1}$ is the Metropolis-Hastings random walk: from $x_t = x$, we generate a candidate $y$ with probability $g(y|x)$, for some well-chosen distribution $g(\cdot|x)$. We then compute an acceptance probability 
 \begin{equation}
-	\V(X_n) = \frac{1}{n}\V(X_i) = \frac{1}{n}(\E[X_i^2]-\E[X_i]^2) = \frac{1}{n}(\E[X_i]-\E[X_i]^2) = \frac{1}{n}\frac{\pi}{4}\left(1-\frac{\pi}{4}\right)
+    \alpha(y|x) = \min\left\{1, \frac{f(y)g(x|y)}{f(x)g(y|x)}\right\}
 \end{equation}
-This is can be done for any curve, not just the quarter of the circle, and we can thus approximate any integral with this method, with an absolutr error (standard deviation) of order $\mathcal{O}(1/\sqrt{n})$. This bound is valid for any dimension of the integration.
-\subsection{Randomized algorithm for decision problems}
-\subsubsection{Polynomials}
-An example of a decision problem is to determine wether a polynomial is identically 0 or not. In one dimension, it is easy: use $d+1$ points for a polynomial of degree $d$, and if all are $0$, then $P\equiv 0$. In more than one dimension, the number of roots of the polynomial is infinite and we need something more. We can use the Schwartz-Zippel lemma:\\
-
-Given a finite set $S$ of an integral domain, let $P$ be a polynomial of $n$ variables $(x_1,\dots,x_n)$ and of degree at most $d\ge0$. Let us pick a random point $(r_1,\dots,r_n)\in S$ uniformly:
+We set $x_{t+1} = y$ with probability $\alpha$ and $x$ otherwise. The resulting transition probability for the Metropolis-Hastings random walk from $x$ towards any $y\neq x$ are thus 
 \begin{equation}
-	Pr[P(r_1,\dots,r_n)=0] \le \frac{d}{|S|}
-\end{equation} 
-We can prove it by induction:
-\begin{equation}
-	P(x_1,\dots,x_n) = \sum_{i=0}^d x_1^iP_i(x_2,\dots,x_n)
+    m(y|x) = f(y|x) \alpha(y|x) = \min\left\{\frac{f(y)g(x|y)}{f(x)}, f(y|x)\right\}
 \end{equation}
-for some polynomials $P_i$ of degree at most $d-i$ and $n-1$ variables. We can go all the way to polynomials of one single variable and use the fundamental theorem of algebra.\\
-
-From this lemma, the probability to predict correctly from a set of points if a polynomial is identically zero or not is 
+\begin{thm}
+    Let $f$ be a real valued function over a set $X$ and $\forall x\in X$. Let $g(\cdot|x)$ define a probability distribution over $X$. The stationary distribution of the Metropolis-Hastings random walk on $X$ is unique and equal to 
+    \begin{equation}
+        p(x) = \frac{f(x)}{\sum_{x\in X}f(x)}
+    \end{equation}
+    provided that any configuration $x$ can be reached from any configuration $x_0$ in finitely many jumps with nonzero probability. 
+\end{thm}
+An application is in the field of statistical inference. Imagine that $x$ is a "hidden cause" generating the observations $z$ according to well-known distribution $P(z|x)$, sometimes called likelihood function. We are interested in $P(x|z)$: given the observations what are the probable causes explaining the observations? \\
+From Bayes's formula, 
 \begin{equation}
-	Pr[correct] = Pr[TRUE\ \& \ P\equiv 0] + Pr[FALSE\ \& \ P\not\equiv 0]
+    P(x|z) = \frac{P(z|x)P(x)}{\sum_{x\in X} P(z|x)P(x)}
 \end{equation}
-with $Pr[TRUE | P\equiv 0] = 1$ and $Pr[FALSE | P\not \equiv 0] \ge 1-\left(\frac{d}{|S|}\right)^k$. Then,
+$P(x)$ is sometimes called the prior distribution, it describes the probability of hidden causes prior to any observation, and $P(x|z)$ is the posterior distribution, i.e. the distribution on $x$ as adjusted after observing $z$. \\
+In this formula, the denominator is often difficult to compute explicitly. We can hope to sample the posterior thanks to MCMC techniques such as the Metropolis-Hastings random walk. 
+\section{MC algorithms for decision problems}
+We would like to determine whether a polynomial $P$ is identically zero or not. 
+\begin{lem}\textbf{Schwartz-Zippel. }
+    If $P(x_1,\dots, x_n)$ is a polynomial of degree $d$, then the probability that $P(x_1,\dots,x_n) = 0$ for $x_i$ randomly chosen in a finite set $S$, for all $i$, is at most $d/|S|$. 
+\end{lem}
+\begin{proof}
+    For $n=1$, it is true by the fundamental theorem of algebra: univariate polynomials of degree $d$ have at most $d$ roots. \\
+    For $n\ge 1$, we write $P(x_1, \dots,x_n) = \sum_{i=1}^d x_1^i P_i(x_2,\dots,x_n)$ for some polynomials $P_i$ of $n-1$ variables and of degree at most $d-i$. Let $j$ be the highest index for which $P_j\not \equiv 0$. By induction hypothesis, if you pick $r_2,\dots,r_n\in S$ uniformly, then 
+    \begin{equation}
+        Pr[P_j(r_2,\dots,r_n)=0] \le \frac{d-j}{|S|}
+    \end{equation}
+    If $P_j(r_2,\dots, r_n) \neq 0$, then $P(x_1,r_2,\dots,r_n)$ is a univariate polynomial in $x_1$, of degree $j$, and \begin{equation}
+        Pr[P(r_1,r_2,\dots,r_n)=0| P_j(r_2,\dots,r_n)\neq 0] \le \frac{j}{|S|}
+    \end{equation}
+    for a uniform $r_1$ in $S$. Bayes concludes that 
+    \begin{equation}
+        Pr[P(r_1,r_2,\dots,r_n) = 0] \le \frac{d-j}{|S|} + \frac{j}{|S|} =\frac{d}{|S|}
+    \end{equation}
+\end{proof}
+An algorithm using this idea has a probability of success 
 \begin{equation}
-	Pr[correct] \ge 1-(d/|S|)^k
+    \begin{aligned}
+        Pr[correct] &= Pr[\text{return } P\equiv 0 \text{ and }P\equiv 0] + Pr[\text{return }P\not \equiv 0 \text{ and }P\not \equiv 0]\\
+        &= Pr[\text{return }P\equiv 0|P\equiv 0] Pr[P\equiv 0] + Pr[\text{return }P\not \equiv 0| P\not \equiv 0]Pr[P\not \equiv 0]\\
+        &\ge Pr[P\equiv 0] + \left(1-\frac{d}{|S|}\right) Pr[P\not \equiv0] \ge 1 - \frac{d}{|S|}
+    \end{aligned}
 \end{equation}
-\subsubsection{Matrix product}
-Given $A,B,C\in \R^{n\times n}$, we want to check if $AB=C$. Doing the product is costly, so we can take random vectors $x\in \R^n$ and check the products:
+We may improve this using amplification of stochastic advantage: repeating $k$ times improves the probability lower bound to $\left(1-\frac{d}{|S|}\right)^d$. \\
+Amplification of stochastic advantage is very powerful when errors on a decision problem are one-sided: there may be false negatives, but not false positives, or the contrary.\\
+If we have a two-sided error, amplification of stochastic advantage still works: \\ if $Pr[\text{True}|\text{it is true}] \ge 1/2 + \varepsilon$ and $Pr[\text{False}|\text{it is false}] \ge 1/2 + \varepsilon$. Then, we may proceed to a majority vote after $k$ trials. \\
+Let $X_i=1$ if the $i$-th run is correct and 0 otherwise. Then, $\E[X_i] \ge 1/2+\varepsilon$. Let us take the worst case: $\E[X_i] = 1/2+\varepsilon$. The repeated algorithm is rong if $\sum_i X_i < n/2$. But
 \begin{equation}
-	A(Bx) -Cx\overset{?}{=}0
+    \begin{cases}
+        \E[\sum_{i}X_i] = n \left(\frac{1}{2}+\varepsilon\right) \\
+        Var[X_i] = \E[X_i^2] - \E[X_i]^2 = \E[X_i] - \E[X_i]^2 = \frac{1}{4}-\varepsilon^2 \\
+        \Longrightarrow Var[\sum_i X_i] = n \left(\frac{1}{4}-\varepsilon^2\right)
+    \end{cases}
 \end{equation}
-This is a $n$-variate polynomial of degree 1 and we can use the same method as in the previous section.
-\subsubsection{MaxCut Problem}
-Given a graph $G=(V,E)$, we want to partition $V$ into two sets $S_0$ and $S_1$ such that we maximize edges crossing the cut. If we assign each vertex randomly to one of the two sets with a probability $1/2$, then:
-\begin{equation}
-	\E[|\text{RandomCut}(S_0,S_1)|] \geq \frac{1}{2}\text{MaxCut}(G)
-\end{equation}
-\subsection{Amplification of Stochastic Advantage}
-A randomized algorithm may be wrong but it has a bias towards the correct answer. The idea is to run $k$ times the algorithm to take advantages of the properties of the randomness. For example, for one-sided error, with Schwartz-Zippel, we know that we have no false negative. So if we get at least one TRUE in $k$ runs, we can be sure that it is TRUE. For two-sided error, we can run $k$ times independently and take the majority answer.
-\section{Las Vegas and Monte Carlo}
-An algorithm is said to be Las Vegas when the output is correct, but the time taken to get to this solution is random. On the other hand, an algorithm is said to be Monte Carlo when the output is correct with some probability, or we only get a bound on the real value.
-\section{Randomness generation}
-Let us take functions $f,g:X\to Y$ and an element $s\in X$. We define the sequence
-\begin{equation}
-	\begin{cases}
-		x_ 0 = s\\
-		x_{i+1} = f(x_i)\\
-		y_i = g(x_i)
-	\end{cases}
-\end{equation}
-The output of this pseudo-random generator (PRG) is the sequence (usual bits) $y= (y_0,\dots,y_n)$. One famous example of pseudo-random generator is Blum-Blum-Shub (BBS): \\
-select random $\kappa$-bit prime integers $p,q$ such that $p=q=3 \mod 4$, and let $N=pq$. The PRG is 
-\begin{equation}
-	\begin{cases}
-		x_0 = s \in \Z_N^*\\
-		f_N(x) = x^2 \mod N \\
-		g(x) = x \mod 2
-	\end{cases}
-\end{equation}
+Using the Central Limit Theorem, $\sum_i X_i \sim \mathcal{N}\left(n\left(\frac{1}{2}+\varepsilon\right), n \left(\frac{1}{4}-\varepsilon^2\right)\right)$ if $n$ is large. Then, for example, if $n > 1/\varepsilon^2$ implies a probability of error smaller than 2.5\%.
+\section{Las Vegas Algorithms}
+For a class of problems $X$, $A$ is a 
+\begin{itemize}
+    \item Las Vegas algorithm if, for all input $x\in X$, if $A$ returns a solution $s$, then $s$ is a valid solution to $x$, but the runtime of $A$ is a random variable;
+    \item Monte Carlo algorithm if its output is randomized, and is not always a valid solution to the problem, but gives an approximate solution, or is correct with some probability.
+\end{itemize}
+Example with hash functions: the main problem is collisions. Ignoring them is a Monte Carlo approach, and storing the values elsewhere (e.g. linear probing) is a Las Vegas approach.
+\section{Random number generation}
+In a computer, randomness is simulated deterministically by generating pseudo-random numbers. \\
+Let $f:X\to X$, $g:X\to Y$ and $s\in X$. A general algorithm is 
+\begin{algorithm}[H]
+    \caption{Typical random number generator}
+    \begin{algorithmic}[1]
+        \State $x_0 = s$;
+        \For{i}
+            \State $x_{i+1} = f(x_i)$;
+            \State $y_i = g(x_i)$;
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+The output of the pseudo-random generator (PRG) is then $y=(y_0,\dots,y_n)$. $f,g$ is a PRG if $y$ "looks like" randomness when $s$ is uniformly chosen in $X$. 
+Another example is Blum-Blum-Schub:
+\begin{algorithm}[H]
+    \caption{BBS}
+    \begin{algorithmic}[1]
+        \State Select random $k$-bit prime numbers $p$ and $q$ such that $p\equiv q\equiv 3\mod 4$;
+        \State Let $N=pq$;
+        \State Let $s\in \Z_N^*$;
+        \State $f_N(x) = x^2 \mod N$ and $g(x) = x \mod 2$.
+    \end{algorithmic}
+\end{algorithm}
+The same seed $s$ will generate the same sequence of bits. Assuming that factoring $N$ is difficult, this is a good PRG, i.e. any algorithm that distinguishes the output from true randomness can factor $N$. 
 \section{Derandomization}
-Derandomization transforms a randomized algorithm into a deterministic algorithm, or at least into an algorithm using less randomness, without increasing time and memory costs too much. 
-\subsection{Techniques}
+Generating truly i.i.d. random bits is far from obvious. Therefore, the number of random bits required by an algorithm is a costly resource. In some circumstances, it is possibel to derandomise random algorithms, i.e. make them use less random bits, or no random bits at all, while keeping the same or similar guarantees on accuracy and time/space complexity.\\
+There are two genereic derandomization techniques:
 \begin{itemize}
-	\item Use a PRG: cheap, the randomness goes in the time complexity, and some randomness still exists;
-	\item Try all possible values: trades $n$ random bits for $2^n$ time, can remove all randomness, but can have a polynomial time slowdown.
+    \item Use a PRG: cheap but still needs some randomness;
+    \item Try all possible random values: remove all randomness but can be a polynomial time slowdown.
 \end{itemize}
-\chapter{Computability}
-\section{Turing machine}
-A Turing machine is made of the following elements:
+For example, consider the MaxCut problem for a graph $G=(V,E)$, with $|V| = n$ and $|E|=m$. A random algorithm consists in assigning each node either to the partition $S$ or $T$, by drawing $n$ i.i.d. random bits $r_1,\dots,r_n$. 
+\begin{equation}
+    \E(Cut(S,T)) = \sum_{e\in E} Pr[e\text{ is in the cut}] = \sum_{e\in E} \frac{1}{2} = \frac{m}{2}\ge \frac{MaxCut}{2}
+\end{equation}
+This comes from the fact that 
+\begin{equation}
+    Pr[e\text{ is in the cut}] = Pr[r_u \in S]Pr[r_v\in T] + Pr[r_u\in T]Pr[r_v\in S]
+\end{equation}
+Hence we only need pairwise independence between the random vits, and not full independence. This allows us to use less bits. Indeed, consider for exmaple the variables $X=Y\oplus Z$, with $X,Y,Z\in \{0,1\}$. If $Y$ and $Z$ are pairwise independent, then so are $X$ and $Y$, and $X$ and $Z$; but $X,Y,Z$ are not jointly independent. \\
+Suppose now that we can generate $r_1,\dots,r_k$ i.i.d. random bits. For any subset $A\subseteq \{1,\dots,k\}$ such that $A\neq \emptyset$, we define $s_A = \sum_{i\in A}r_i\mod 2$. There are $2^k-1$ such subsets $A$ with associated uniformly distributed bits $s_A$, which are all pairwise independent. Indeed, $\forall A,B\subseteq \{1,\dots,k\}$ such that $A\neq B, A,B\neq \emptyset$, $s_A$ and $s_B$ are independent since $s_A = s_B \oplus s_{A\setminus} B \oplus s_{B\setminus A}$ and if $A\setminus B\neq \emptyset$, then $s_{A\setminus B}$ is independent from $s_B$ and that implies independence of $s_A$ and $s_B$. The same argument applies when $B\setminus A\neq \emptyset$. \\
+For the MaxCut problem, since we need $n$ pairwise independent pairs of random bits, it is sufficient to draw $k=\lceil \log_2 (n+1)\rceil$ i.i.d. random bits. To derandomize completely, we need to try all of the $2^k$ different possibilities for $r_1,\dots,r_k$, which is then linear in $n$ since $2^k=\Theta(n)$.
+\chapter{Computability and decidability}
+A problem $f$ is a (possibly partial) mapping from a set of instances to a set of outputs (both defined as words of a finite alphabet $A$): $f:A^*\to A^*:w\to f(w)$ or undefined. \\
+A decision problem $P$ is given by a total function of the subset: $A^* \to \{\text{yes, no}\}$. A Python machine is given a syntatically correct, deterministic Python code that takes a string in $ A^*$ as input, and that outputs a string in $A$. The machine has infinite memory, meaning that the code can run without ever overflowing the memory. In doing so, the machine computes a function that associates to any given input string the corresponding output string. As the code may never stop, this function is possibly partial. This function is the problem computed by the Python machine. If the function is total with output in $\{\text{yes, no}\}$, we say that the corresponding decision problem is \textbf{decided} by the Python machine. A problem is \textbf{computable} if it is computed by some Python machine. 
+\section{Definition of a Turing machine}
+A Turing machine has the following elements:
 \begin{itemize}
-	\item An infinite tape serving as unlimited memory;
-	\item A head that reads and write the symbols and moves around the tape;
-	\item A specific blanc symbol \textvisiblespace or $\epsilon$;
-	\item The number of states must be finite.
+    \item An infinite tape as an unlimited memory;
+    \item A head that reads and writes symbols on the cells and moves around the tape;
+    \item A specific blank symbol \textvisiblespace proper to the machine;
+    \item Initially, the tape contains only the input string and is blank elsewhere;
+    \item Storing information can be done by writing on the tape through the head;
+    \item Reading information can be done by moving left or right the head over it;
+    \item The machine continues to compute until it decides to produce an output;
+    \item The outputs "ACCEPT" and "REJECT" are obtained by entering designated states: the accepting state $q_{accept}$ and the rejecting state is $q_{reject}$;
+    \item If the machine does not enter one of these states, it loops, never halting;
+    \item The number of states must be finite.
 \end{itemize}
-Initially, the tape contains only the input string and is blank elsewhere. Storing information can be done by writing on the tape with the head, and reading information can be done by moving the head over the information. The possible outputs are only \textit{accept} and \textit{reject}, obtained when entering the corresponding state $q_{accept}$ or $q_{reject}$. 
 \subsection{Formal definition}
 \begin{definition}
 	A Turing machine is a tuple $(Q, \Sigma, \Gamma, \delta, q_0,q_{accept},q_{reject})$ where $Q, \Sigma, \Gamma$ are finite sets and 
@@ -707,24 +977,20 @@ Initially, the tape contains only the input string and is blank elsewhere. Stori
 	\end{itemize}
 	For $a,b\in \Gamma$, and $q,r\in Q$, $\delta(q,a)=(r,b,L)$ means that if the machine is in state $q$ and the head is over a tape square containing a symbol $a$, it replaces $a$ with $b$, the state becomes $r$, and the head moves one step to the left. 
 \end{definition}
+The Turing machine (TM) $M$ receives its input $w=w_1\dots w_n\in \Sigma^*$ on the leftmost $n$ squares of the tape. Furthermore, $M$ never tries to move its head to the left of the left-hand end of the tape (it stays in the same place even though $\delta$ indicates $L$). \\
+As a TM computes, changes occur in the current state, in the tape content and in the head location. A setting of these 3 items is called a configuration of the TM. \\
+For a state $q$ and strings $u,v$ over $\Gamma$, we note $uqv$ for the configuration where the current state is $q$, the tape content is $uv$, and the current head location is the first symbol of $v$. \\
+\begin{example}
+    Assume we are in the configuration $uaq_ibv$ for $u,v\in \Gamma^*$, $a,b\in \Gamma$ and $q_i\in Q$. Then, if $\delta(q_i,b) = (q_j, c, L)$, the next configuration will be $uq_jacv$.
+\end{example}
+A Turing machine M accepts input $w$ if a sequence of configurations $c_1,\dots,c_k$ exists where 
 \begin{itemize}
-	\item [$\to$] Note: the input of length $n$ is on the $n$ leftmost squares of the tape, and the machine never tries to move its head to the left when it is on the first square.
+    \item $c_1 = q_0 w$ is the start configuration of M on input $w$;
+    \item each $c_i$ yields $c_{i+1}$;
+    \item $c_k$ is an accepting configuration.
 \end{itemize}
-\begin{definition}
-	We call the configuration of the Turing Machine the tuple (current state, current tape content, current head location). We write $uqv$ the configuration where the current state is $q$ and the tape content is the string $uv$, and the head location is the first symbol of $v$. \\
-\end{definition}
-A Turing machine $M$ accepts input $w$ if a sequence of configurations $C_1,C_2,\dots,C_k$ exists where 
-\begin{itemize}
-	\item $C_1$ is the start configuration of $M$ on input $w$, i.e. $C_1 = q_0w$;
-	\item each $C_i$ yields $C_{i+1}$;
-	\item $C_k$ is an accepting configuration.
-\end{itemize}
-The collection of string inputs that the machine accepts is called its language, and is denoted $\mathcal{L}(M)$. We say that the language is Turing-recognizable. \\
-\begin{definition}
-	A decider is a Turing machine that finds a finishing state on all inputs. A decider that recognizes some language is said to decide it, and the language is Turing-decidable is some Turing machine decides it.
-\end{definition}
-A decision problem is decidable iff it is computable, i.e. iff there exists an algorithm that can decide this problem. \\
-We say that two machines are equivalent if they recognize the same languages. 
+The collection of strings that $M$ accepts is the language of $M$, or the language recognized by $M$, denoted $\mathcal{L}(M)$. A language is \textbf{Turing-recognizable} if some Turing machine recognizes it.\\
+A decider is a Turing machine that halts on all inputs. A decider that recognizes some language decides it. A language is \textbf{Turing-decidable} if some TM decides it. 
 \subsection{Example}
 \begin{figure}[H]
 	\centering
@@ -746,6 +1012,7 @@ Here is the breakdown of the steps:
 	\item $q_4$: If the bit is 0, then marks it $x$ and goes to the right, back to state $q_3$. If it is $x$, goes to the right with no change of state. If it is \textvisiblespace, goes to the right in a reject configuration.
 	\item $q_5$: if the bit is $0$ or $x$, goes back to the left and no change of state. If the bit is \textvisiblespace, goes to the right and back to state $q_2$. 
 \end{itemize}
+What if we allowed the head to stay put? This is equivalent to the previous machine, as one model can simulate the other, and conversely: they are equivalent as they recognize the same languages. 
 \section{Multitape Turing Machines}
 \begin{definition}
 	A multitape Turing machine is a TM with several tapes, each with its own head. For $k$ tapes, the transition function then becomes 
@@ -756,19 +1023,36 @@ Here is the breakdown of the steps:
 Each multitape Turing Machine has an equivalent single-tape Turing machine. 
 \section{Enumerator}
 \begin{definition}
-	An enumerator is a Turing machine that always starts with a blank input on its tape, and that has an attached printer to print strings. Every time it wants to print a string to the list, it sends it to the printer. An enumerator does not have to halt, and may print an infinite list of strings. The language it enumerates is the collection of all strings that is printed out, and it can generate the strings in any order, possibly with repetitions. \\
+	An \textbf{enumerator} is a Turing machine that always starts with a blank input on its tape, and that has an attached printer to print strings. Every time it wants to print a string to the list, it sends it to the printer. An enumerator does not have to halt, and may print an infinite list of strings. The language it enumerates is the collection of all strings that is printed out, and it can generate the strings in any order, possibly with repetitions.
 \end{definition}
 \begin{thm}
-	A language is Turing recognizable iff some enumerator enumerates it. 
+    A language is Turing-recognizable iff some enumerator enumerates it. 
 \end{thm}
-\section{Non deterministic Turing Machine}
-A Turing machine is said to be non deterministic when its transition function is a probability distribution:
-\begin{equation}
-	\delta :Q\times \Gamma \to \mathcal{P}(Q\times \Gamma \times \{L,R\})
-\end{equation}
+\begin{proof}
+    $\Longrightarrow$: Let $E$ be an enumerator that enumerates $A$. The Turing machine that we define is $M$ = "on input $w$, run $E$; every time that $E$ outputs a string, compare it with $w$. If it is the same, accept; else continue."\\
+    $\Longleftarrow$: Let $M$ be a TM that recognizes $A$. Say $s_1,\dots$ is a list of all strings in $\Sigma^*$. We take as enumerator
+    $E$ : "ignore the input. Repeat the following for $i=1,2,\dots$: run $M$ for $i$ steps on each input $s_1,\dots,s_i$. If any computation accepts, then print out the corresponding $s_j$."\\
+    If $M$ accepts a particular string $s$, eventually it will appear on the list generated by $E$\footnote{In fact, it will apear on the list infinitely many times because $M$ runs from the beginning on each string for each repetition.}.
+\end{proof}
+\section{Non-deterministic Turing Machines}
+A non-deterministic TM proceeds according to several possibilities. The transition function returns a probability distribution over $Q\times \Gamma\times\{L,R\}$. The computation of a non-deterministic TM is a tree whose branches correspond to different possibilities for the machine. If some branch of the computation leads to the ACCEPT state, the machine accepts. 
 \begin{thm}
-	As a non deterministic TM can be represented as a tree, every non deterministic TM has an equivalent deterministic TM that goes through every possible state of the tree. 
+    Every non-deterministic TM has an equivalent determinstic TM.
 \end{thm}
+\begin{proof}
+    Let $N$ be a non-deterministic TM. We design $D$, a TM inspecting the branches of $N$'s tree by using BFS. Let $b$ be the size of the largest set of possible choices given $N$'s transition function. To every node in the tree, we assign an address as a string over $\Gamma_b =\{1,\dots,b\}$. \\
+    $D$ has three tapes: the first correspond to the input tape, the second to the simulation tape, and the last to the address tape. 
+    \begin{enumerate}
+        \item Initially, tape 1 contains the input $w$, and tapes 2 and 3 are empty;
+        \item Then, we copy tape 1 on tape 2 and initialize the string on tape 3 to be $\Gamma_b$;
+        \item We use tape 2 to simulate $N$ with input $w$ on one branch of its non-deterministic computation. Before each step of $N$, we consult the next symbol o, tape 3 to determine which choice to make among those allowed by $N$'s transition function. If no more symbols remain on tape 3 or if this non-deterministic choice is invalid, abort this branch by going to the next step. Also go to next step if a REJECT configuration is encountered. If an ACCEPT configuration is encountered, accept the input.
+        \item Replace the string on tape 3 with the next string in the string ordering. Simulate the next branch of $N$'s computation by going back to step 2. 
+    \end{enumerate}
+\end{proof}
+\begin{corollary}
+    A language is Turing-recognizable iff a non-deterministic TM recognizes it. 
+\end{corollary}
+The Church-Turing thesis is that our intuitive notion of algorithm is captured by a TM. Notice that TMs can always be designed to first check the validity of the encoding. 
 \subsection{10th Hilbert's problem}
 "Devise a process according to which it can be determined by a finite number of operation that a given multivariate polynomial has an integer root."\\
 
@@ -779,126 +1063,125 @@ The rigorous formulation of the 10th Hilbert problem is to find a decider for $D
 \end{equation}
 \section{Universal Turing Machine}
 \begin{definition}
-	
-	A universal Turing machine is a TM that solves the following problem:
-	\begin{itemize}
-		\item Input: a description of the TM (T) and a description of a finite word on an initial tape ($w$);
-		\item Output: $T(w)$, i.e. the finite content of the tape when $T$ stops; and undefined if $T$ never stops.
-	\end{itemize}
+    A universal TM is a TM that solves the following problem:
+    \begin{itemize}
+        \item Input: a description of a TM $M$ and a description of a finite word on initial tape $w$. We write $\langle M, w\rangle$.
+        \item Output: If $M$ stops when the initial tape is $w$, outputs the finite content of the tape when $M$ stops, i.e. the output $T(M)$ of $T$ on $w$. If $T$ never stops, undefined. 
+    \end{itemize}
+    Hence, the language $A_{TM}\coloneqq \{\langle M,w\rangle | M\text{ is a TM and $M$ accepts w}\}$ is Turing-recognizable, but it is not decidable, since the above constructed TM will loop on input $\langle M, w\rangle$ if $M$ loops on $w$. A TM can always be described as a finite word in an alphabet and can thus be used as an input to a TM. 
 \end{definition}
-\chapter{Decidability}
-\section{Countable sets}
-\begin{itemize}
-	\item Two sets have the same number of elements iff they are in bijective relation;
-	\item A set $S$ is countable if it either is finite or has the same size as $\N$, e.g. $\Z, \Q, \N^d,\dots$; 
-\end{itemize}
-\section{Undecidable language}
+\section{Decidability}
+The set of all TM is countable due to their finite encoding. The set $\mathcal{L}$ of all languages over $\Sigma$ has the size of $B$, the set of infinite binary sequences, and is therefore uncountable. 
 \begin{thm}
-	$A_{TM} = \{\langle M,w\rangle|M\text{ is a TM and }M\text{ accepts } w\}$ (called halting problem) is undecidable.  
+    \begin{equation}
+        A_{TM} \coloneqq \{\langle M, w\rangle | M\text{ is a TM and $M$ accepts }w\}
+    \end{equation}
+    is undecidable.
 \end{thm}
-This notation is the way to write a universal Turing machine with inputs $\langle M, w\rangle$, $M$ being a Turing machine and $w$ a string. Here is the proof of the theorem, by contradiction:\\
-Let $H$ be a decider for $A_{TM}$. Then
-\begin{equation}
-	H(\langle H,w\rangle) = \begin{cases}
-		\text{accept} & \text{ if } M \text{ accepts }w\\
-		\text{reject} & \text{ if } M \text{ does not accept }w
-	\end{cases}
-\end{equation}
-Build a Turing machine $D$ that, on input $\langle M\rangle$, runs $H$ on $\langle M, \langle M\rangle \rangle$ and halts with $\overline{H(\langle M,w\rangle)}$, i.e. $D$ returns the opposite of $H$:
-\begin{equation}
-	D(\langle M\rangle) = \begin{cases}
-		\text{accept} & \text{ if } M \text{ does not accept } \langle M\rangle\\
-		\text{reject} & \text{ if } M \text{ accepts } \langle M\rangle
-	\end{cases}
-\end{equation}
-But then, $D(\langle D\rangle)$ is a contradiction with itself. \textcolor{red}{Define notation $\langle M\rangle$!}
-\section{Unrecognizable language}
+\begin{proof}
+    By contradiciton, let $H$ be a decider for $A_{TM}$. Then 
+    \begin{equation}
+        H(\langle M,w\rangle) = \begin{cases}
+            \text{ACCEPT if $M$ accepts $w$}\\
+            \text{REJECT otherwise}
+        \end{cases}
+    \end{equation}
+    Let us build a TM $D$ that, on input $\langle M\rangle$, runs $H$ on $\langle M, \langle M\rangle \rangle$ and halts as $H(\langle M, w\rangle)$ is false, i.e. $D$ accepts if $H$ yields a rejecting configuration, and conversely. $D$ is a TM such that 
+    \begin{equation}
+        D(\langle M \rangle) = \begin{cases}
+            \text{ACCEPT if $M$ does not accept }\langle M\rangle \\
+            \text{REJECT otherwise}
+        \end{cases}
+    \end{equation}
+    But then, $D(\langle D\rangle)$ is in contradiction with itself.
+\end{proof}
 \begin{thm}
-	A language is decidable iff it is Turing-recognizable and co-Turing-recognizable.
+    A language is \textbf{decidable} iff it is Turing-recognizable and co-Turing recognizable. 
 \end{thm}
-Proof: \\
-\begin{itemize}
-	\item $\Rightarrow$ is trivial;
-	\item $\Leftarrow$
-\end{itemize}
-Let $M_1$ be a recognizer for $A$, and $M_1$ a recognizer for $\overline A$. We build $M$ that runs $M_1$ and $M_2$ in parallel, one step at a time, on input $w$. If $M_1$ accepts, ACCEPT, and if $M_2$ accepts, REJECT. 
-
-Therefore, $\overline{A_{TM}} = \{\langle M, w\rangle|M\text{ is a TM and }M \text{	does not accept }w\}$ is not Turing-recognizable. 
-\chapter{Complexity Theory}
-\section{Definitions}
-\begin{definition}
-	Let $M$ be a deterministic TM that halts on all inputs. The running time, or time complexity, of $M$ is the function $f:\N\to \N$ where $f(n)$ is the maximum number of steps that $M$ uses on any input of length $n$.
-\end{definition}
-\begin{definition}
-	Let $t:\N\to \R^+$ be the time complexit class TIME$(t(n))$, i.e. the collection of languages that are decidable by an $\mathcal{O}(t(n))$ time TM. 
-\end{definition}
-\subsection{Example}
-Let $\{0^k1^k|k\ge 0\}$ be a string composed of $k$ 0 followed by $k$ 1. The goal is to check if the number of 0 is the same as the number of 1. \\
-One method would be to start at the first element. If it is 0, cross it and go right until we find a 1. Then, go left until we find the first 0, and go again. Once we have no more 0 or 1, we check that it is also the case for the other character. If not, return FALSE. The complexity is $\mathcal{O}(k^2)$.\\
-Another method is to cross every other 0 and do the same with the 1. With what is left, do it again (so one every four characters), and so on. At the end, compare if there is one character left in one of the strings. The complexity of this is $O(k\log(k))$. 
-\begin{itemize}
-	\item [$\to$] Note: in the case where a counter variable is available, the overall complexity is not better, as the complexity to increment it is $\mathcal{O}(\log(k))$. 
-\end{itemize}
-\section{Complexity of multitape}
-\begin{thm}	\label{thm:multitape}
-	Let $t(n)\ge n$, as we can reasonably assume that we need to go through the whole input to find the solution. Every $t(n)$ time multitape TM has an equivalent $\mathcal{O}(t^2(n))$ time single-tape TM. 
-\end{thm}
-\section{Complexity of non deterministic TM}
-Let $N$ be a nondeterministic TM that is a decider. The running time of $N$ is the function $f:\mathcal{N}\to \mathcal{N}$ where $f(n)$ is the maximum number of steps that $N$ uses on any branch of its computation on any input of length $n$.
+\begin{proof}
+    $\Longrightarrow$: Trivial.\\
+    $\Longleftarrow$: Let $M_1$ be a recognizer for $A$ and $M_2$ be a recognizer for $\bar A$. Build $M$ that runs $M_1$ and $M_2$ in parallel, one step at a time, on input $w$. If $M_1$ accepts, ACCEPT. If $M_2$ acccepts, REJECT. 
+\end{proof}
+\begin{corollary}
+    $\overline{A_{TM}}\coloneqq \{\langle M,w\rangle | M\text{ is a TM and $M$ does not accept }w\}$ is not Turing-recognizable.
+\end{corollary}
 \begin{thm}
-	Let $t(n)\ge n$. Every $t(n)$ time nondeterministic single-tape TM has an equivalent $2^{\mathcal{O}(t(n))}$ time deterministic single-tape TM. 
+    Comparing two programs (determining if $P_1(x)=P_2(x)$, $\forall x$) is undecidable.
 \end{thm}
-This is because the number of nodes is in $\mathcal{O}(b^{f(n)})$, and the number of operations for one node is $\mathcal{O}(n+f(n))$. $b$ is the number of possibilities at each node. This gives a total complexity of
-\begin{equation}
-	\mathcal{O}\left((n+f(n))b^{f(n)}\right) = \mathcal{O}\left(2^{\log_2(b)(\log_b(f(n)) + f(n))}\right) = 2^{\mathcal{O}(f(n))}
-\end{equation}
-The result is the same for a multitape or single-tape TM, as (from \autoref{thm:multitape}):
-\begin{equation}
-	2^{\mathcal{O}(f(n))} \rightarrow \left(2^{\mathcal{O}(f(n))}\right)^2 = 2^{\mathcal{O}(f(n))}
-\end{equation}
+\begin{proof}
+    We will reduce the halting problem to the comparison problem. Suppose that we want to check if a program $P$ halts on $x$. Then, we create an instance of the comparison problem by defining the two programs: $P_1(y) \coloneqq P(x)$ for all $y$ (it is a constant function), and $P_2(y)$ such that it does not halt for all $y$. If $P$ does not halt on $x$, then $P_1(y) = P_2(y)$ for all $y$. If $P$ halts on $x$, then $P_1(y) \neq P_2(y)$ for all $y$. This implies that if the comparison problem is computable, so is the halting problem. But halting is undecidable, so the comparison problem is as well. \\
+    We constructed a reduction of the halting problem to the comparison problem, i.e. a total computable function converting each instance of the halting problem into an instance of the comparison problem of the same answer. 
+\end{proof}
+\chapter{Complexity classes}
+Computability theory looks at what it means to compute; the fundamental limits of computation. Complexity theory looks at how efficiently we can solve problems and for which of those problems we can find a solution in "reasonable time". 
+\section{Time complexity}
+Let $M$ be a deterministic TM that halts on all inputs. The running time (or time complexity) of $M$ is the function $f:\N\to\N$ where $f(n)$ is the maximum number of steps that $M$ uses on any input of lengt $n$. \\
+Let $t:\N\to \R^+$. The time complexity class $TIME(t(n))$ is the collection of languages decidable by a $\mathcal{O}(t(n))$ time TM. 
+\begin{prop}
+    Let $t(n)\ge n$. Every $t(n)$ time multitape TM has an equivaelnt $\mathcal{O}(t^2(n))$ time single-tape TM. 
+\end{prop}
+Let $N$ be a nondeterministic TM that is a decider. The running time pf $N$ is the function $f:\N\to\N$ where $f(n)$ is the maximum number of steps that $N$ uses on any branch of its computation on any input of length $n$.
+\begin{prop}
+    Let $t(n)\ge n$. Every $t(n)$ time non-deterministic single-tape TM has an equivalent $2^{\mathcal{O}(t(n))}$ time deterministic single-tape TM, e.g. using BFS on the tree of the non-deterministic TM. 
+\end{prop}
 \section{The class P}
-\begin{definition}
-	\textbf{P} is the class of languages that are decidable in polynomial time on a deterministic single-tape TM. 
-	\begin{equation}
-		\textbf{P} = \cup_k TIME(n^k)
-	\end{equation}
-\end{definition}
-\begin{definition}
-	\textbf{coP} is the class of languages such that their complement is in \textbf{P}.
-	\begin{equation}
-		\textbf{coP} = \{L|\overline{L}\in \textbf{P}\}
-	\end{equation}
-\end{definition}
-If $L\subset \textbf{P}(\Gamma^*)$, then $\overline{L} = \textbf{P}(\Gamma^*) \setminus L$, where $L$ is a language, and $\textbf{P}(\Gamma^*)$ is the class $\textbf{P}$ of argument $\Gamma^*$, $\Gamma$ is the alphabet and the star means the set of words of this alphabet. \\
+$P$ is the class of languages that are decidable in polynomial time on a deterministic single-tape TM. In other words, 
+\begin{equation}
+    P = \bigcup_k TIME(n^k)
+\end{equation}
+This class is the same for all reasonable languages we may use to code the algorithm, as coding on a TM involves only a polynomial slowdown with respect to higher level languages. \\
+We define the complement of $P$: $coP \coloneqq \{L|\bar L \in P\}$. 
+The complementary of a decision problem $A$, $\bar A$, is defined by the property that the positive instances of $\bar A$ are the negative instances of $A$ and conversely.
+\begin{thm}
+    $coP = P$.
+\end{thm}
+\begin{thm}
+    There is a decidable problem not in $P$.
+\end{thm}
+\begin{proof}
+    We enumerate a list of Python programs that solve all problems in $P$? We know that every problem in $P$ is solved by a Python machine in this list, and every Python machine in thislist runs in polynomial time. Let us call this list $(M_i)_{i\in \N}$ and let us suppose that we enumerate the possible inputs as $1,2,3,4,\dots$\\
+    We create a problem $A$ with input $n$ and that outputs YES if $M_n(n) = No$, and NO if $M_n(n) = Yes$. This problem outputs the opposite of the diagonal of the table (problems $\times$ inputs), and is not in $P$ because the diagonal is not a row of this table. This implies that we found a problem $A$ not in $P$. 
+\end{proof}
+\textbf{EXPTIME} is the class of languages that are decidable in exponential time on a deterministic single-tape TM. In other words, 
+\begin{equation}
+    EXPTIME = \bigcup_k TIME(2^{n^k})
+\end{equation}
 \begin{itemize}
-	\item [$\to$] Note: any problem in \textbf{coP} is in \textbf{P}, as it is only the inverse problem.
+    \item [$\to$] Note: the diagonal problem constructed in the proof above is in EXPTIME. In fact, we can repear the argument for any time-complexity class, and create a hierarchy of larger and larger time-complexity classes. 
 \end{itemize}
-\begin{equation*}
-	\Longrightarrow \textbf{P} = \textbf{coP}
-\end{equation*}
+\textbf{PSPACE} is the class of languages that are decidable by an algorithm using a polynomial amount of space. 
+\begin{thm}
+    $P\subseteq PSPACE$.
+\end{thm}
+\begin{proof}
+    In $N$ steps of time, one can only write $N$ new symbols in memory. The memory use is lower than $n+N$ where $n$ is the input size. Hence, if $N\in \mathcal{O}(n^d)$, then $n+N\in \mathcal{O}(n^d)$ for all $d$.
+\end{proof}
+\begin{thm}
+    $PSPACE \subseteq EXPTIME$.
+\end{thm}
 \section{The class NP}
 \begin{definition}
-	A verifier for a language $L$ is an algorithm $V$ where 
-	\begin{equation}
-		L = \{w|V\text{ accepts }\langle w,c\rangle\text{ for some string }c\}
-	\end{equation}
+    A verifier for a language $\mathcal{L}$ is an algorithm $V$ where 
+    \begin{equation}
+        \mathcal{L} = \{w| V\text{ accepts }\langle w,c\rangle \text{ for some string }c\}
+    \end{equation}
 \end{definition}
+We measure the time of a verifier only in terms of the length of $w$, so a polynomial-time verifier runs in polynomial time in the length of $w$. 
 \begin{definition}
-	The class \textbf{NP} is the class of languages that have a polynomial time verifier. 
+    NP is the class of languages that have a polynomial-time verifier.
 \end{definition}
 \begin{thm}
-	A language is in \textbf{NP} iff it is decided by some nondeterministic polynomial time TM. 
+    A language is in NP iff it is decided by some non deterministic polynomial time TM.
 \end{thm}
-We write $NTIME(t(n))$ the set of languages that are decided by a $\mathcal{O}(t(n))$ time nondeterministic TM, and so 
+\textbf{NTIME}(t(n)) is the class of languages that are decided by an $\mathcal{O}(t(n))$ time non-deterministic TM. 
 \begin{equation}
-	\textbf{NP} = \cup_k NTIME(n^k)
+    NP = \bigcup_k NTIME(n^k)
 \end{equation}
+Unlike P and PSPACE, NP is not closed under complementation: $NP\neq coNP \coloneqq \{\text{problems whose complementary is in NP}\}$. 
 \begin{thm}
-	\begin{equation}
-		\textbf{P}\subset \textbf{NP}
-	\end{equation}
+    $P\subseteq NP\subseteq PSPACE\subseteq EXPTIME$.
 \end{thm}
-This is obvious: any problem whose solution can be found in polynomial time has a verifier in polynomial time. 
+The only thing that we are sure of is that $P \subsetneq EXPTIME$. 
 \subsection{Example -- SAT}
 The SAT problem consists in finding boolean variables $\{x_n\}_{n\ge 0}$ such that a combination of boolean operators applied to them returns 1. For example,
 \begin{equation}
@@ -915,31 +1198,44 @@ We define the conjunctive normal form as
 We call $c_i$ the clauses and $l_j$ the literals. \\
 The 3SAT problem add the constraint that there are at most 3 $l_j$ per clause. \\
 
-The SAT problem is NP-complete (see section \ref{sec:NP-complete}).
-\section{The EXPTIME class}
-EXPTIME is the class of languages that are decidable in exponential time on a deterministic single-tape TM. 
-\begin{equation}
-	\textbf{EXPTIME} = \cup_k TIME(2^{n^k})
-\end{equation}
+The SAT problem is NP-complete.
+\section{NP-completeness}
+A function $f:\Sigma^*\to \Sigma^*$ is a polynomial time computable function if some polynomial time TM exists that halts with $f(w)$ on its tape when started on any input $w$. \\
+A language $A$ is polynomial time reducible to a language $B$, written $A \le_P B$ if there exists a polynomial time computable function $f$ such that for every $w$, $w\in A\Longleftrightarrow f(w)\in B$. We call $f$ the reduction of $A$ to $B$. 
 \begin{thm}
-	$\textbf{P} \subset \textbf{NP} \subset \textbf{EXPTIME}$
+    If $A\le_P B$ and $B\in P$, then $A\in P$.
 \end{thm}
-\section{Polynomial time reduction}\label{sec:NP-complete}
-\begin{definition}	
-	A function $f:\Sigma^*\to \Sigma^*$ is a polynomial time computable function if some polynomial time TM exists that halts with $f(w)$ on its tape when started on any input $w$. 
-\end{definition}
 \begin{definition}
-	A language $A$ is polynomial time reducible to a language $B$, written $A\le_P B$, if there exists a polynomial time computable function $f$ such that, for every $w$, $w\in A\Leftrightarrow f(w)\in B$. We call $f$ the reduction of $A$ to $B$.
+    A language $B$ is NP-complete if $B\in NP$ and every $A\in NP$ is polynomial-time reducible to $B$.
 \end{definition}
-\begin{equation}
-	A\le_P B \text{ and }B\in \textbf{P} \Longrightarrow A \in \textbf{P}
-\end{equation}
-\begin{definition}
-	A language $B$ is NP-complete if $B\in \textbf{NP}$ and every $A\in \textbf{NP}$ is reducible to $B$ in polynomial time. \\
-	If $B$ is NP-complete and $B\in \textbf{P}$, then $\textbf{P}=\textbf{NP}$. 
-\end{definition}
-\begin{equation}
-	\forall B \text{ NP-complete and }C\in \textbf{NP}, \: B \le_P C \Longrightarrow C\text{ is NP-complete}
-\end{equation}
-Je sais pas trop quoi faire des slides 21 à 26 du dernier cours. 
+\begin{thm}
+    IF $B$ is NP-complete and $B\le_P C$ for some $C\in NP$, then $C$ is NP-complete. 
+\end{thm}
+We define the problem of satisfiability of a Boolean formula SAT in the following way:
+\begin{itemize}
+    \item Instance: a boolean formula;
+    \item Output: yes if the formula is satisfiable, i.e. there exists a truth value for the variables such that the formula evaluates to true. 
+\end{itemize}
+\begin{thm}\textbf{Cook-Levin. }
+    SAT is NP-complete.
+\end{thm}
+\begin{proof}
+    \begin{itemize}
+        \item $SAT \in NP$. Indeed, the certificate that a boolean formula is satisfiable is a list of TRUE/FALSE values for all variables, and it can be checked in polynomial time that it makes a formula evaluated to YES.
+        \item Any language in NP is polynomial reducible to SAT, details are in CM12.
+    \end{itemize}
+\end{proof}
+\section{Reduction}
+The usual way to prove that a given problem $S$ is Np-complete is to show that $S\in NP$ and that for some other NP-complete problem $T$, we have $T\le_P S$. The 3-SAT problem is a restriction of SAT to a subset of instances, where we have conjunctions of clauses, which are disjunctions of 3 (possibly negated) variables. 
+\begin{thm}
+    The 3-SAT problem is NP-complete
+\end{thm}
+Indeed, it is in NP and SAT is polynomial reducible to 3-SAT, using the Conjuction Normal Form, possibly adding some useless variables. 
+\begin{thm}
+    The clique problem is NP-complete.
+\end{thm}
+\begin{proof}
+    We may reduce the 3-SAT problem to the clique problem in polynomial time. For this, we construct a graph with a triple of nodes for each clause. There is no edge inside a triple, nor between nodes with contradictory labels. The problem becomes to find a k-clique in the graph, where $k$ is the number of clauses. Indeed, if the 3-SAT instance is satisfiable, all the variables allowing the satisfiability will be connected in the graph, forming a k-clique. Conversely, if there is a k-clique, then we have a solution for the 3-SAT problem. \\
+    Finally, the clique problem is in NP since the certificate that there exists a k-clique in the graph $G$ is a list of the $k$ nodes of $G$ forming a clique, which can be checked in polynomial time. 
+\end{proof}
 \end{document}
