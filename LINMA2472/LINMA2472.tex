@@ -1859,7 +1859,7 @@ The fact that we try to retrieve the same image under different transformations 
 \end{figure}
 A kernel is a function that transforms a dataset into another, typically of higher dimension. This helps separate the nonlinear feature, to use the usual linear tools. For example, the canonical kernel is 
 \begin{equation}
-  r(x,y) = (x^Ty)^2 = \langle \phi(x), \phi(y)\rangle 
+  r(x,y) = (x^Ty)^2 = \phi(x)^T \phi(y)
 \end{equation} 
 where the kernel function then is 
 \begin{equation}\label{eq:example}
@@ -2025,7 +2025,7 @@ This means that the feature map preserves the local geometry of $X$, up to a sca
 Furthermore, if $\|x-y\|_{\R^n} \gg \sigma$, then $\langle \phi(x),\phi(y)\rangle_H \approx 0$, meaning that the feature map acts like a one-hot encoding on distant points. Points far away from each other in $\R^n$ are orthogonal in $H$. 
 \section{Random Fourier Features}
 The main limitation of kernels is the computation of the kernel matrix $K$: it requires $\mathcal{O}(N^2)$ in storage for $N$ data points, and $\mathcal{O}(N^2)$ (or even $\mathcal{O}(N^3)$) in computation time. \\
-The kernel trick is a way to implicitly work in a hgih dimensional feature space. Here, we want to explicitly approximate the feature space to reduce the computational complexity of kernels. For that, we construct a mapping $z:\R^n\to \R^D$, with $D$ reasonably small, such that 
+The kernel trick is a way to implicitly work in a high dimensional feature space. Here, we want to explicitly approximate the feature space to reduce the computational complexity of kernels. For that, we construct a mapping $z:\R^n\to \R^D$, with $D$ reasonably small, such that 
 \begin{equation}
 	\forall x,y\in X , \qquad k(x,y) = \langle \phi(x),\phi(y)\rangle  \approx \langle z(x), z(y)\rangle 
 \end{equation}
