@@ -649,16 +649,17 @@ From the recurrence equation, we deduce that
     \begin{aligned}
         \sum_{k\ge0} F_{k+2} z^{k+2} = \sum_{k\ge 0} F_{k+1}z^{k+2} + F_k z^{k+2}\\
         \Longleftrightarrow f(z)-F_0-F_1z = z(f(z)-F_0)+z^2f(z)\\
-        \Longleftrightarrow f(z) = \frac{F_0+(F_1-F_0)z}{z^2+z-1} = \frac{z}{(z+\varphi)(z-\bar\varphi)}
+        \Longleftrightarrow f(z) = \frac{F_0+(F_1-F_0)z}{1-z-z^2} = \frac{z}{(z-\varphi)(z-\bar\varphi)}
     \end{aligned}
 \end{equation}
 where $\varphi = \frac{1+\sqrt{5}}{2}$ and $\bar \varphi = \frac{1-\sqrt{5}}{2}$. Using partial fraction decomposition, 
 \begin{equation}
     \begin{aligned}
-        f(z) = \frac{1}{\sqrt{5}} \left(\frac{\bar \varphi}{z+\bar\varphi}-\frac{\varphi}{z+\varphi}\right) = \frac{1}{\sqrt{5}} \sum_{k\ge 0} (\varphi^k-\bar \varphi^k)z^k\\
-        \Longrightarrow F_n = \frac{\varphi^n -\bar \varphi^n}{\sqrt{5}}
+        f(z) &= \frac{1}{\bar \varphi-\varphi}\left(\frac{\phi}{z-\phi} - \frac{\bar \varphi}{z-\bar \varphi}\right) = \sum_{n\ge 0} \left(\frac{\bar \varphi^{-n}-\varphi^{-n}}{\bar \varphi-\varphi}\right)z^n\\
+        &\Longrightarrow F_n = \frac{\varphi^n-\bar \varphi^n}{\varphi-\bar \varphi}
     \end{aligned}
 \end{equation}
+where the expression of $F_n$ comes from $\varphi = - \bar \varphi^{-1}$.
 \begin{itemize}
     \item Example with the Catalan numbers: $C_0 = C_1 = 1$, $C_{n+1} = \sum_{k=0}^n C_k C_{n-k}$. We define the power series:
 \end{itemize}
@@ -881,9 +882,15 @@ We would like to determine whether a polynomial $P$ is identically zero or not.
     If $P_j(r_2,\dots, r_n) \neq 0$, then $P(x_1,r_2,\dots,r_n)$ is a univariate polynomial in $x_1$, of degree $j$, and \begin{equation}
         Pr[P(r_1,r_2,\dots,r_n)=0| P_j(r_2,\dots,r_n)\neq 0] \le \frac{j}{|S|}
     \end{equation}
-    for a uniform $r_1$ in $S$. Bayes concludes that 
+    for a uniform $r_1$ in $S$. 
+    Let us denote event $A="P_j(r_2,\dots,r_n) =0"$ and $B= "P(x_1,r_2,\dots,r_n)=0"$. Then,
     \begin{equation}
-        Pr[P(r_1,r_2,\dots,r_n) = 0] \le \frac{d-j}{|S|} + \frac{j}{|S|} =\frac{d}{|S|}
+        Pr[B] = Pr[B|\bar A]Pr[\bar A] + Pr[B|A]Pr[A]
+    \end{equation} 
+    We already know that $Pr[B|\bar A] = \frac{j}{|S|}$ and $Pr[A]=\frac{d-j}{|S|}$.
+    This gives 
+    \begin{equation}
+        Pr[P(x_1,r_2,\dots,r_n)=0] = Pr[B] = \frac{j}{|S|}Pr[\bar A] + \frac{d-j}{|S|}Pr[B|A] \le \frac{d-j}{|S|}+\frac{j}{|S|} = \frac{d}{|S|}
     \end{equation}
 \end{proof}
 An algorithm using this idea has a probability of success 
@@ -1073,13 +1080,17 @@ The rigorous formulation of the 10th Hilbert problem is to find a decider for $D
 \end{equation}
 \section{Universal Turing Machine}
 \begin{definition}
-    A universal TM is a TM that solves the following problem:
+    A universal TM $U$ is a TM that solves the following \textit{halting problem}:
     \begin{itemize}
         \item Input: a description of a TM $M$ and a description of a finite word on initial tape $w$. We write $\langle M, w\rangle$.
-        \item Output: If $M$ stops when the initial tape is $w$, outputs the finite content of the tape when $M$ stops, i.e. the output $T(M)$ of $T$ on $w$. If $T$ never stops, undefined. 
+        \item Output: If $M$ stops when the initial tape is $w$, $U$ outputs the finite content of the tape when $M$ stops, i.e. \ref{eq:UTM}. If $T$ never stops, undefined. 
     \end{itemize}
-    Hence, the language $A_{TM}\coloneqq \{\langle M,w\rangle | M\text{ is a TM and $M$ accepts w}\}$ is Turing-recognizable, but it is not decidable, since the above constructed TM will loop on input $\langle M, w\rangle$ if $M$ loops on $w$. A TM can always be described as a finite word in an alphabet and can thus be used as an input to a TM. 
+    \begin{equation}\label{eq:UTM}
+        U(\langle M,w\rangle)=M(w)
+    \end{equation}
+    Hence, the language $A_{TM}\coloneqq \{\langle M,w\rangle | M\text{ is a TM and $M$ accepts } w\}$ is Turing-recognizable, but it is not decidable, since the above constructed TM will loop on input $\langle M, w\rangle$ if $M$ loops on $w$. A TM can always be described as a finite word in an alphabet and can thus be used as an input to a TM. 
 \end{definition}
+The notation $\langle \cdot,\cdot\rangle$ simply means input, it can contains several arguments. A Universal Turing Machine outputs the same thing as the TM it has as input for the given string $w$. It is a bit like a translator that extracts the meaning of a sentence independently from the language. 
 \section{Decidability}
 The set of all TM is countable due to their finite encoding. The set $\mathcal{L}$ of all languages over $\Sigma$ has the size of $B$, the set of infinite binary sequences, and is therefore uncountable. 
 \begin{thm}
@@ -1089,7 +1100,7 @@ The set of all TM is countable due to their finite encoding. The set $\mathcal{L
     is undecidable.
 \end{thm}
 \begin{proof}
-    By contradiciton, let $H$ be a decider for $A_{TM}$. Then 
+    By contradiction, let $H$ be a decider for $A_{TM}$. Then 
     \begin{equation}
         H(\langle M,w\rangle) = \begin{cases}
             \text{ACCEPT if $M$ accepts $w$}\\
@@ -1098,22 +1109,43 @@ The set of all TM is countable due to their finite encoding. The set $\mathcal{L
     \end{equation}
     Let us build a TM $D$ that, on input $\langle M\rangle$, runs $H$ on $\langle M, \langle M\rangle \rangle$ and halts as $H(\langle M, w\rangle)$ is false, i.e. $D$ accepts if $H$ yields a rejecting configuration, and conversely. $D$ is a TM such that 
     \begin{equation}
-        D(\langle M \rangle) = \begin{cases}
+        \begin{aligned}
+        D(\langle M \rangle) = \overline{H(\langle M, \langle M\rangle \rangle )}&= 
+        \begin{cases}
             \text{ACCEPT if $M$ does not accept }\langle M\rangle \\
             \text{REJECT otherwise}
+        \end{cases}\\
+        & = \begin{cases}
+            \text{ACCEPT if }H(\langle M, \langle M\rangle \rangle) =\text{ REJECT}\\
+            \text{REJECT if }H(\langle M, \langle M\rangle \rangle) =\text{ ACCEPT}\\
         \end{cases}
+        \end{aligned}
     \end{equation}
-    But then, $D(\langle D\rangle)$ is in contradiction with itself.
+    But then, $D(\langle D\rangle)$ is in contradiction with itself:
+    \begin{equation}
+        \begin{aligned}
+            D(\langle D\rangle) &= \begin{cases}
+                \text{ACCEPT if }H(\langle D, \langle D\rangle \rangle) = \text{ REJECT}\\
+                \text{REJECT if }H(\langle D, \langle D\rangle \rangle) = \text{ ACCEPT}
+            \end{cases}\\
+            & = \begin{cases}
+                \text{ACCEPT if }D(\langle D\rangle) = \text{ REJECT}\\
+                \text{REJECT if }D(\langle D\rangle) = \text{ ACCEPT}\\
+            \end{cases}
+        \end{aligned}
+    \end{equation}
+    We thus show that the decider cannot decide itself.
 \end{proof}
 \begin{thm}
-    A language is \textbf{decidable} iff it is Turing-recognizable and co-Turing recognizable. 
+    A language is \textbf{decidable} iff it is Turing-recognizable and co-Turing recognizable\footnote{$\forall w\in \mathcal{L}$, M halts on $w\Longrightarrow \mathcal{L}$ is recognizable.\\ $\forall w\not \in \mathcal{L}$, M halts on $w\Longrightarrow \mathcal{L}$ is co-recognizable.}. 
 \end{thm}
 \begin{proof}
     $\Longrightarrow$: Trivial.\\
     $\Longleftarrow$: Let $M_1$ be a recognizer for $A$ and $M_2$ be a recognizer for $\bar A$. Build $M$ that runs $M_1$ and $M_2$ in parallel, one step at a time, on input $w$. If $M_1$ accepts, ACCEPT. If $M_2$ acccepts, REJECT. 
 \end{proof}
 \begin{corollary}
-    $\overline{A_{TM}}\coloneqq \{\langle M,w\rangle | M\text{ is a TM and $M$ does not accept }w\}$ is not Turing-recognizable.
+    $\overline{A_{TM}}\coloneqq \{\langle M,w\rangle | M\text{ is a TM and $M$ does not accept }w\}$ is not Turing-recognizable.\\
+    "$M$ does not accept $w$" means that it either rejects $w$, or does not halt on $w$. If it does not halt, it is not Turing-recognizable by definition.
 \end{corollary}
 \begin{thm}
     Comparing two programs (determining if $P_1(x)=P_2(x)$, $\forall x$) is undecidable.
@@ -1130,7 +1162,7 @@ Let $t:\N\to \R^+$. The time complexity class $TIME(t(n))$ is the collection of 
 \begin{prop}
     Let $t(n)\ge n$. Every $t(n)$ time multitape TM has an equivalent $\mathcal{O}(t^2(n))$ time single-tape TM. 
 \end{prop}
-Let $N$ be a nondeterministic TM that is a decider. The running time pf $N$ is the function $f:\N\to\N$ where $f(n)$ is the maximum number of steps that $N$ uses on any branch of its computation on any input of length $n$.
+Let $N$ be a nondeterministic TM that is a decider. The running time of $N$ is the function $f:\N\to\N$ where $f(n)$ is the maximum number of steps that $N$ uses on any branch of its computation on any input of length $n$.
 \begin{prop}
     Let $t(n)\ge n$. Every $t(n)$ time non-deterministic single-tape TM has an equivalent $2^{\mathcal{O}(t(n))}$ time deterministic single-tape TM, e.g. using BFS on the tree of the non-deterministic TM. 
 \end{prop}
@@ -1240,7 +1272,7 @@ The usual way to prove that a given problem $S$ is NP-complete is to show that $
 \begin{thm}
     The 3-SAT problem is NP-complete.
 \end{thm}
-Indeed, it is in NP and SAT is polynomial reducible to 3-SAT, using the Conjuction Normal Form, possibly adding some useless variables. 
+Indeed, it is in NP and SAT is polynomial reducible to 3-SAT, using the Conjunctive Normal Form, possibly adding some useless variables. 
 \begin{thm}
     The clique problem is NP-complete.
 \end{thm}
