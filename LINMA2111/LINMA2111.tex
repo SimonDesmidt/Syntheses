@@ -284,9 +284,9 @@ If $S=\{1,\dots,N\}$ and $P$ is a random variable over $S$ such that $Pr[P=i]=\r
 \begin{equation}
     \sum_{i=1}^N \rho_i |f(i)| \ge -\sum_{i=1}^N\rho_i \log_2(\rho_i) \eqqcolon H(P)
 \end{equation}
-We call $H(P)$ the entropy of the probabilistic distribution. The entropy of any probabilistic distribution over $N$ elements is at most $\log_2(N)$, which is attained for the uniform distribution. If the $N$ elements are $N$ leaves of a binary tree, enconded by their path from root to leaf (giving the prefix code), we obtain the following theorem:
+We call $H(P)$ the entropy of the probabilistic distribution. The entropy of any probabilistic distribution over $N$ elements is at most $\log_2(N)$, which is attained for the uniform distribution. If the $N$ elements are $N$ leaves of a binary tree, enco ded by their path from root to leaf (giving the prefix code), we obtain the following theorem:
 \begin{thm}
-    The expected length of a path root to leaf of an $N$-leaf binary tree, with probability $\rho_1,\dots,\rho_N$ on the leaves, is at least the entropy $H(P)$. In particular, if all leaves occur equally likely, the average length of the path is at least $\log_2(N)$. 
+    The expected length of a path from root to leaf of an $N$-leaf binary tree, with probabilities $\rho_1,\dots,\rho_N$ on the leaves, is at least the entropy $H(P)$. In particular, if all leaves occur equally likely, the average length of the path is at least $\log_2(N)$. 
 \end{thm}
 \begin{thm}
     The average-case complexity, for uniform distributions over all instances, of any deterministic sorting algorithm using comparisons is $\Omega(n\log(n))$.
@@ -296,16 +296,16 @@ And now, can we do better with randomized algorithms?
     Consider a probabilistic distribution over the instances of a given size of a given problem. Then, there exists a deterministic algorithm solving the problem for those instances, whose average-case complexity for this distribution is lower than the worst-case expected complexity of any random algorithm solving the same problem. 
 \end{thm}
 \begin{proof}
-    Consider all instances $x_1,\dots,x_N$ of a given size, with probabilities $\rho_1,\dots,\rho_N$. Consider a random algorithm $A$, drawing i.i.d. bit sequences $B$ to decide of its random actions. Consider also a specific bit sequence $B=b$. Then, knowing this specific of bits, the algorithm is now deterministic, with a fixed running time $t(A,xi|B=b)$ on each instance $x_i$. Then,
+    Consider all instances $x_1,\dots,x_N$ of a given size, with probabilities $\rho_1,\dots,\rho_N$. Consider a random algorithm $A$, drawing i.i.d. bit sequences $B$ to decide of its random actions. Consider also a specific bit sequence $B=b$. Then, knowing this specific sequence of bits, the algorithm is now deterministic, with a fixed running time $t(A,x_i|B=b)$ on each instance $x_i$. Then,
     \begin{equation}
         \E_B [t(A, x_i)] = \sum_b t(A,x_i|B=b)Pr[B=b]
     \end{equation}
     The worst-case expected complexity is thus 
     \begin{equation}
         \begin{aligned}
-            \max_{x_i} \E_B[t(A, xi)] &= \max_{x_i}\sum_b t(A,x_i|B=b)Pr[B=b]\\
-            & \ge \E_{x_i} \sum_b t(A,x_i|B=b)Pr[B=b]\\
-            & \ge \min_b \E_{x_i} t(A, x_i|B=b)Pr[B=b]
+            \max_{x_i} \E_B[t(A, x_i)] &= \max_{x_i}\sum_b t(A,x_i|B=b)Pr[B=b]\\
+            & \ge \E_{x_i} \left[\sum_b t(A,x_i|B=b)Pr[B=b]\right]\\
+            & \ge \min_b \E_{x_i} \left[t(A, x_i|B=b)\right]Pr[B=b]
         \end{aligned}
     \end{equation}
     where the first inequality is the average-case expected complexity, and the second is the average-case complexity of the deterministic algorithm $A$ with a fixed sequence $B=b$. \\
@@ -381,19 +381,57 @@ For a function $f(n)=n^\alpha$,
 \begin{equation}
 	T(n) = a^k \sum_{i=0}^k \left(\frac{b^\alpha}{a}\right)^i = a^k \frac{1-(\frac{b^\alpha}{a})^{k+1}}{1-b^\alpha/a}
 \end{equation}
-Under the assumption that $\alpha \neq \log_b(a)$. As $k=\log_b(n)$, we can replace above and simplify using the formula $a^{\log_b(n)} = n^{\log_b(a)}$. In the case where $a=b^\alpha$, then 
+Under the assumption that $\alpha \neq \log_b(a)$. As $k=\log_b(n)$, we can replace above and simplify using the formula $a^{\log_b(n)} = n^{\log_b(a)}$. Depending if $\alpha$ is bigger or larger than $\log_b(a)$, the simplifications change. In the case where $a=b^\alpha$, then 
 \begin{equation}
 	T(n) = a^k (k+1) = a^{\log_b(n)} (\log_b(n)+1) = \Theta(n^{\log_b(a)}\log(n))
 \end{equation}
 \section{Discrete Fourier Transform}
-Let us consider two polynomials $A(z) = a_0+a_1z + \dots +a_{N-1}z^{N-1}$ and $B(z) = b_0+b_1z +\dots + b_{N-1}z^{N-1}$, where $a_i, b_i\in \R$ or $\C$. It is equivalent to describe a polynomial with a list of $N$ coefficients or with its evaluation at $N$ distinct points. Those two representations correspond to two bases of the vector space of polynomials of degree $N-1$, and are therefore related by an invertible matrix. The two representations are computationally convenient for different tasks:
+Let us consider two polynomials $A(z) = a_0+a_1z + \dots +a_{N-1}z^{N-1}$ and $B(z) = b_0+b_1z +\dots + b_{N-1}z^{N-1}$, where $a_i, b_i\in \R$ or $\C$. There are two ways to describe a polynomial: with a list of $N$ coefficients or with its evaluation at $N$ distinct points. Those two representations correspond to two bases of the vector space of polynomials of degree $N-1$, and are therefore related by an invertible matrix. The two representations are computationally convenient for different tasks:
 \begin{itemize}
     \item Evaluation of a polynomial at an arbitrary value $z$: use coefficients ($\Theta(N)$); 
     \item Multiplication of two polynomials: use the evaluations ($\Theta(N)$).
 \end{itemize}
-To take advantage of both representations, we must choose a list of evaluation points $z_0,\dots,z_{N-1}$ for which the conversion between representations is fast to compute. \\
+However, sometimes we only have the coefficients, and we want to multiply the polynomials. The naive multiplication of the polynomials is $\Theta(N^2)$:
+\begin{equation}
+    A(z)B(z) = \sum_{j=0}^{N-1}\sum_{k=0}^{N-1} a_j b_k z^{j+k}
+\end{equation}
+We thus need an algorithm to make it faster. \\
+To take advantage of both representations, we will choose a list of evaluation points $z_0,\dots,z_{N-1}$ for which the conversion between representations is fast to compute. As the resulting polynomial of the product is of degree $2N-2$, we will use zero-padding to make $A(z)$ and $B(z)$ of degree $2N-2$ as well:
+\begin{equation}
+    \begin{aligned}
+        A(z) &= a_0 + a_1 z + \dots + a_{N-1}z^{N-1} + 0 z^N + \dots + 0 z^{2N-2}\\
+        B(z) &= b_0 + b_1 z + \dots + b_{N-1}z^{N-1} + 0 z^N + \dots + 0 z^{2N-2}
+    \end{aligned}
+\end{equation}
+For simplicity of the notations, we will explain the Fourier transform for the first $N$ coefficients, but it can of course be extended to the polynomials using the zero-padding. \\
 
-We can take $z_k = \omega^k$, for $k=0,\dots, N-1$ and $\omega=\exp{2\pi i /N}$, where $\omega$ is an $N$th root of unity, meaning $z_k$ are all the roots of unity, satisfying $z_k^N = 1$. The sequence of evaluations $(A(z_0), \dots, A(z_{N-1}))$ is called the Discrete Fourier Transform (DFT) of the sequence of coefficients $(a_0, \dots,a_{N-1})$, denoted $\mathcal{F}(a_0,\dots,a_{N-1})$. \\
+As points of evaluation, we can take $z_k = \omega^k$, for $k=0,\dots, N-1$ and $\omega=\exp{(2\pi i /N)}$, where $\omega$ is an $N$th root of unity, meaning $z_k$ are all the roots of unity, satisfying $z_k^N = 1$. The sequence of evaluations of the polynomial $(A(z_0), \dots, A(z_{N-1}))$ is called the Discrete Fourier Transform (DFT) of the sequence of coefficients $(a_0, \dots,a_{N-1})$, denoted $\mathcal{F}(a_0,\dots,a_{N-1})$. This computation is a matrix-vector product with a Vandermonde matrix:
+\begin{equation}
+    \begin{pmatrix}
+        A(z_0)\\A(z_1)\\\vdots \\ A(z_{N-1})
+    \end{pmatrix} = \begin{pmatrix}
+    A(1) \\ A(\omega)\\ \vdots \\A(\omega^{N-1})
+    \end{pmatrix}= \begin{pmatrix}
+        1 & 1 & 1 & \dots & 1 \\
+        1 & \omega & \omega^2 & \dots & \omega^{N-1}\\
+        1 & \omega^2 & \omega^4 & \dots & \omega^{2(N-1)}\\
+        \vdots & \ddots & \ddots & \ddots \vdots \\
+        1 & \omega^{N-1} & \omega^{2(N-1)} & \dots & \omega^{(N-1)^2}
+    \end{pmatrix}\begin{pmatrix}
+        a_0 \\a_1 \\a_2 \\ \vdots \\ a_{N-1}
+    \end{pmatrix}
+\end{equation}
+Please also note that computing the coefficients from the evaluation points $z_j$ is quite similar by the definition of the matrix $V$: 
+\begin{equation}
+    \begin{pmatrix}
+        a_0 \\ a_1\\\dots \\ a_{N-1}
+    \end{pmatrix} = \frac{1}{N} V^* \begin{pmatrix}
+        A(z_0)\\A(z_1)\\\dots \\A(z_{N-1})
+    \end{pmatrix}
+\end{equation}
+where $V^*$ is the conjugate transpose of $V$. \\
+The naive matrix-vector product is still in $\mathcal{O}(N^2)$, so we need to leverage more of the information that we have to accelerate the computations. \\
+
 The evaluation of $A(\omega^k)$ is facilitated by the following observation:
 \begin{equation}
     A(z) = A_{\text{even}}(z^2) + z A_{\text{odd}} (z^2)
@@ -402,24 +440,25 @@ where $A_{\text{even}}(z) = a_0 + a_2 z + a_4 z^2 + \dots$ and $A_{\text{odd}}(z
 \begin{equation}
     A_{\text{even}} ((\omega^k)^2) = A_{\text{even}}((\omega^2)^k)
 \end{equation}
-where $\omega^2$ is a $N/2$-th root of unity, by definition of $\omega$. Thus, the sequence of $\{A_{\text{even}}((\omega^k)^2)\}_{k=1}^{\frac{N}{2}-1}$ is the DFT of the even coefficients, $\mathcal{F}_{N/2}(a_0,a_2,\dots,a_{N-2})$. As for $k=\frac{N}{2},\dots, N-1$, we observe that $(\omega^2)^{N/2+\ell}=(\omega^2)^\ell$ since $\omega^N=1$. Therefore, the sequence of $A_{\text{even}}((\omega^k)^2)$ for $k=\frac{N}{2},\dots, N-1$ is once again $\mathcal{F}_{N/2}(a_0,\dots, a_{N-2})$. \\
-The same reasoning can be made with $A_{\text{odd}}((\omega^k)^2)$, which creates the sequence $$\{(\mathcal{F}_{N/2}(a_1,a_3,\dots,a_{N-1}), \mathcal{F}_{N/2}(a_1,a_3,\dots,a_{N-1}))\}_{k=0}^{N-1}$$
+where $\omega^2$ is a $N/2$-th root of unity, by definition of $\omega$. Thus, the sequence of $\{A_{\text{even}}((\omega^k)^2)\}_{k=1}^{\frac{N}{2}-1}$ is the DFT of the even coefficients, $\mathcal{F}_{N/2}(a_0,a_2,\dots,a_{N-2})$.\\
+As for $k=\frac{N}{2},\dots, N-1$, we observe that $(\omega^2)^{N/2+\ell}=(\omega^2)^\ell$ since $\omega^N=1$. Therefore, the sequence of $A_{\text{even}}((\omega^k)^2)$ for $k=\frac{N}{2},\dots, N-1$ is once again $\mathcal{F}_{N/2}(a_0,\dots, a_{N-2})$. \\
+
+The same reasoning can be made with $A_{\text{odd}}((\omega^k)^2)$, which creates the sequence $$\{(\mathcal{F}_{N/2}(a_1,a_3,\dots,a_{N-1}), \mathcal{F}_{N/2}(a_1,a_3,\dots,a_{N-1}))\}_{k=0}^{N-1}$$ The combination of the two thus gives
 \begin{equation}
     \begin{aligned}
         \mathcal{F}_N (a_0,a_1,\dots,a_{N-1}) = &\left[\mathcal{F}_{N/2}(a_0,a_2,\dots,a_{N-2}), \mathcal{F}_{N/2}(a_0,a_2,\dots,a_{N-2})\right] \\ 
         &+ \omega \left[\mathcal{F}_{N/2}(a_1,a_3,\dots,a_{N-1}), \mathcal{F}_{N/2}(a_1,a_3,\dots,a_{N-1})\right]
     \end{aligned}
 \end{equation}
-If $N$ is a power of $2$, we can apply this formula recursively, with the following relation for complexity:
+If $N$ is a power of $2$ (without loss of generality), we can apply this formula recursively, with the following relation for complexity:
 \begin{equation}
     t_N = 2 t_{N/2} + \Theta(N) \Longrightarrow t_N = \Theta(N\log(N))
 \end{equation}
-Finally, let us notice that $\mathcal{F}_N(a) = Va$, where $a$ is the vector of coefficients and $V$ is a Vandermonde matrix such that $V_{jk} = \omega^{jk}$ for $j,k=0,\dots,N-1$. With this, $V^{-1} = \frac{1}{N} V^*$ where the star denotes the conjugate transpose of $V$.\\
 
 This divide-and-conquer strategy to compute the direct and inverse DFT is called the Fast Fourier Transform (FFT). This gives a rigorous method for the multiplication of two polynomials in the coefficient representation: given $A(z)$ and $B(z)$ of degree $N-1$, we want to compute $C(z) = A(z) B(z)$ of degree $2N-2$.
 \begin{enumerate}
-    \item Compute the FFT of the coefficients of $A$ and the FFT of the coefficients of $B$, padded with zeros so as to reach $2N-2$ or the next power of 2; [$\Theta(N\log(N))$]
-    \item Multiply the two resulting Fourier domain representations pointwise, which results in the Fourier domain representation of the coefficients of $C$; [$\Theta(N)$]
+    \item Compute the FFT of the coefficients of $A$ (with zero-padding of the last $N-1$ coefficients) and the FFT of the coefficients of $B$ (with zero-padding also), padded with zeros so as to reach $2N-2$ or the next power of 2; [$\Theta(N\log(N))$]
+    \item Multiply the two resulting Fourier domain representations (each of size $2N-2$) pointwise, which results in the Fourier domain representation of the coefficients of $C$; [$\Theta(N)$]
     \item Compute the inverse DFT in order to obtain the coefficients of $C$. [$\Theta(N\log(N))$]
     \item [$\to$] The total cost is $\Theta(N\log(N))$ elementary operations.
 \end{enumerate}
@@ -489,7 +528,7 @@ where $S = D-C^TB^{-1}C$ is the Schur complement of $A$. From \autoref{eq:reduct
 \end{thm}
 \chapter{Dynamic programming}
 \section{Two approaches}
-There are two approaches for a dynamic programming algorithm: bottom-up and top-down. In the bottom-up approach, we solve the subproblems first, and then use their solutions to solve bigger problems. In the top-down approach, we start from the main problem, and recursively solve the subproblems as needed. \\
+There are two approaches for a dynamic programming algorithm: bottom-up and top-down. In the bottom-up approach, we solve the subproblems first, and then use their solutions to solve bigger problems. In the top-down approach, we start from the main problem, and recursively solve the subproblems as needed. 
 \begin{itemize}
 	\item The main idea of bottom-up is to use memoization, i.e. storing the solutions of subproblems to avoid recomputing them. 
 	\item The main idea of top-down is recursion.
@@ -508,10 +547,8 @@ Given integers $0\le k \le n$, we seek to compute the number $\begin{pmatrix}
         n-1 \\ k 
     \end{pmatrix} \qquad 0<k<n
 \end{equation}
-A naive implementation is the direct translation into a recursive algorithm using $\begin{pmatrix}
+A naive implementation is the direct translation into a recursive algorithm using the initial condition $\begin{pmatrix}
     n\\0
-\end{pmatrix} = \begin{pmatrix}
-    n\\n 
 \end{pmatrix} = 1$. The time complexity is $\Theta\left(\begin{pmatrix}
     n\\k
 \end{pmatrix}\right)$ and its space complexity is $\Theta(n)$, i.e. the height of the computation tree. \\
@@ -565,7 +602,7 @@ The time to compute $C[i,j]$ is $\Theta(j-i)$, so the total time is
 \end{equation}
 Notice that we only need $\Theta(n)$ memory space as we only need the diagonal we are currently working on. 
 \section{Rod cutting}
-The problem of rod cutting consists in wanting to cut a beam of length $n$, given commands of clients.Finding the optimal solution can be done by computing a solution on sub-beams and merging them. 
+The problem of rod cutting consists in wanting to cut a beam of length $n$, given commands of clients. Finding the optimal solution can be done by computing a solution on sub-beams and merging them. 
 \begin{algorithm}[H]
 \caption{Rod Cutting Algorithm}
 \begin{algorithmic}[1]
@@ -609,7 +646,7 @@ This basic algorithm has a very bad complexity, but memoization can improve it.
 		\EndFunction 
 	\end{algorithmic}
 \end{algorithm}
-Finally, another algorithm exists, using a bottom-up approach in dynamic programming. It has a complexity $\Theta(n^2)$.
+Finally, another algorithm exists, using a bottom-up approach in dynamic programming. It has a time complexity $\Theta(n^2)$.
 \begin{algorithm}[H]
 	\caption{Bottom-up efficient rod cutting algorithm}
 	\begin{algorithmic}[1]
@@ -638,9 +675,11 @@ This is a powerful tool for solving recurrence equations. The idea is to associa
 \begin{equation}
     f(z) = \sum_{n=0}^\infty a_n z^n \qquad z\in \C 
 \end{equation}
-\begin{itemize}
-    \item Example with the Fibonacci sequence: $F_0=0, F_1=1, F_n = F_{n-1}+F_{n-2}$ for all $n\ge 2$. We define the power series: 
-\end{itemize}
+\subsection{Fibonacci}
+\begin{equation}
+    F_n = F_{n-1}+F_{n-2} \qquad \forall n\ge 2 \qquad F_0=0; F_1=1
+\end{equation}
+We define the power series: 
 \begin{equation}
     f(z) = \sum_{k\ge 0}F_k z^k
 \end{equation}
@@ -660,9 +699,11 @@ where $\varphi = \frac{1+\sqrt{5}}{2}$ and $\bar \varphi = \frac{1-\sqrt{5}}{2}$
     \end{aligned}
 \end{equation}
 where the expression of $F_n$ comes from $\varphi = - \bar \varphi^{-1}$.
-\begin{itemize}
-    \item Example with the Catalan numbers: $C_0 = C_1 = 1$, $C_{n+1} = \sum_{k=0}^n C_k C_{n-k}$. We define the power series:
-\end{itemize}
+\subsection{Catalan numbers}
+\begin{equation}
+    C_{n+1} = \sum_{k=0}^n C_k C_{n-k} \qquad \forall n \ge 0 \qquad C_0 = 1
+\end{equation}
+We define the power series:
 \begin{equation}
     \begin{aligned}
         f(z) &= \sum_{n\ge0} C_n z^n = 1 + z\sum_{n\ge 0}C_{n+1}z^n = 1 + z \sum_{n\ge 0}\sum_{k=0}^n C_k C_{n-k}z^n\\
@@ -670,15 +711,15 @@ where the expression of $F_n$ comes from $\varphi = - \bar \varphi^{-1}$.
         &= 1 + z\left(\sum_{n\ge 0}C_n z^n \right)\left(\sum_{k\ge 0}C_k z^k\right) = 1 + zf(z)^2
     \end{aligned}
 \end{equation}
-This gives $f(z) = \frac{1-\sqrt{1-4z}}{2z}$, rejecting the positive sign since $f(0)=1$. By the generalized binomial formula, 
+where the last result uses theorem\autoref{thm:cauchy}. This gives $f(z) = \frac{1-\sqrt{1-4z}}{2z}$, rejecting the positive sign since $f(0)=1$. By the generalized binomial formula (\ref{thm-bin}), 
 \begin{equation}
     \sqrt{1-4z} = \sum_{n=0}^\infty \begin{pmatrix}
         1/2\\n
-    \end{pmatrix} (-4z)^n = 1+\sum_{n=1}^\infty \frac{\left(\frac{1}{2}\right)\left(-\frac{1}{2}\right)\dots \left(\frac{3}{2}-n\right)}{n!}(-1)^n 2^{2^n}z^n
+    \end{pmatrix} (-4z)^n = 1+\sum_{n=1}^\infty \frac{\left(\frac{1}{2}\right)\left(-\frac{1}{2}\right)\dots \left(\frac{3}{2}-n\right)}{n!}(-1)^n 2^{2n}z^n
 \end{equation}
 Which gives 
 \begin{equation}
-    f(z) = -\frac{1}{2z} \sum_{n=1}^\infty \frac{\left(\frac{1}{2}\right)\left(-\frac{1}{2}\right)\dots \left(\frac{3}{2}-n\right)}{n!}(-1)^n 2^{2^n}z^n
+    f(z) = -\frac{1}{2z} \sum_{n=1}^\infty \frac{\left(\frac{1}{2}\right)\left(-\frac{1}{2}\right)\dots \left(\frac{3}{2}-n\right)}{n!}(-1)^n 2^{2n}z^n
 \end{equation}
 from which we deduce that for all $n\in \N_0$, 
 \begin{equation}
@@ -717,7 +758,7 @@ using Stirling's approximation: $\lim_{n\to \infty} \frac{n!}{\sqrt{2\pi n} \lef
         \end{pmatrix} z^n = (1+z)^r 
     \end{equation}
 \end{thm}
-\begin{thm}\textbf{Generalized binomial formula.}
+\begin{thm}\textbf{Generalized binomial formula.}\label{thm-bin}
     \begin{equation}
         \forall r, x,y\in \C \text{ such that }|x|>|y|, \qquad (x+y)^r = \sum_{n=0}^\infty \begin{pmatrix}
             r \\ n
@@ -727,7 +768,7 @@ using Stirling's approximation: $\lim_{n\to \infty} \frac{n!}{\sqrt{2\pi n} \lef
         \item [$\to$] Note: in the real case with $r$ integer, all terms of index higher than $r$ are zero.
     \end{itemize}
 \end{thm}
-\begin{thm}\textbf{Cauchy product formula.}
+\begin{thm}\textbf{Cauchy product formula.}\label{thm:cauchy}
     Let $\{u_n\}_{n\in \N}$ and $\{v_n\}_{n\in \N}$ be two $\C$ sequences. If the series $\sum_{n=0}^\infty u_n$ and $\sum_{n=0}^\infty v_n$ converge absolutely, then the series 
     \begin{equation}
         \sum_{n=0}^\infty \sum_{k=0}^n u_k v_{n-k}
@@ -739,12 +780,12 @@ using Stirling's approximation: $\lim_{n\to \infty} \frac{n!}{\sqrt{2\pi n} \lef
 \end{thm}
 \chapter{Greedy algorithms}
 \section{Activity selection problem}
-Given a set of activities $\{a_1,\dots,a_n\}$ and the knowledge that activity $a_i$ takes the interval $[s_i, f_i[$, where $s_i$ is the start time and $f_i$ the end time. We want to find the maximum size set of mutually disjoint activities. A dynamic programming approach could be used as the optimality principle applies: if a set of activities is optimal for a certain time interval, then the subset of consecutive activities taking place in a subinterval is optimal for this subinterval, among all activities taking place in this subinterval. 
+Given a set of activities $\{a_1,\dots,a_n\}$ and the knowledge that activity $a_i$ takes the interval $[s_i, f_i[$, where $s_i$ is the start time and $f_i$ the end time. We want to find the maximum size set of mutually disjoint activities. A dynamic programming approach could be used, as the optimality principle applies: if a set of activities is optimal for a certain time interval, then the subset of consecutive activities taking place in a subinterval is optimal for this subinterval, among all activities taking place in this subinterval. 
 \begin{itemize}
     \item [$\to$] Note: the subinterval should start and finish at the end times of activities in the optimal set.
 \end{itemize}
 This dynamic programming algorithm can be done in $\mathcal{O}(n^2)$. However, there is a better approach, using a greedy algorithm: if we sort the activities with respect to their ending time, we take the first activity that finishes, then the first activity that starts and finishes after the ending time of the first one, and so on. This approach guarantees optimality. If we have an optimal solution that starts with an activity that is not the first to finish, then we can replace that first activity by the one that finishes first, keeping the same total number of activities. \\
-The time complexity is $\Theta(n\log(n))+\Theta(n)$, as we first need to sort the activities and then do once through the array.
+The time complexity is $\Theta(n\log(n))+\Theta(n)$, as we first need to sort the activities in order of their finishing time, and then go once through the array.
 \chapter{Randomized algorithms}
 In probabilistic computing, we need a distribution of the inputs to be able to sample. Based on prior knowledge or assumptions, we can determine the average-case complexity. The goal is for it to be lower than the deterministic algorithm, although it comes at the price of the accuracy of the solution.
 \section{The secretary problem}
