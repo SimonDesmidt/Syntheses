@@ -65,7 +65,8 @@
         { \huge \bfseries LINMA2111 - Discrete mathematics II \\[0.4cm] }
     
         \HRule \\[1.5cm]
-        \textsc{\LARGE Charles Van Hees \\Simon Desmidt\\ Issambre L'Hermite Dumont}\\[1cm]
+        \textsc{\LARGE Charles Van Hees \\Simon Desmidt\\ Issambre L'Hermite Dumont}\\[3cm]
+        {This summary may not be up-to-date, the newer version is available at this address: \hyperlink{https://github.com/SimonDesmidt/Syntheses}{https://github.com/SimonDesmidt/Syntheses}}
         \vfill
         \vspace{2cm}
         {\large Academic year 2025-2026 - Q1}
@@ -1321,4 +1322,58 @@ Indeed, it is in NP and SAT is polynomial reducible to 3-SAT, using the Conjunct
     We may reduce the 3-SAT problem to the clique problem in polynomial time. For this, we construct a graph with a triple of nodes for each clause. There is no edge inside a triple, nor between nodes with contradictory labels. The problem becomes to find a k-clique in the graph, where $k$ is the number of clauses. Indeed, if the 3-SAT instance is satisfiable, all the variables allowing the satisfiability will be connected in the graph, forming a k-clique. Conversely, if there is a k-clique, then we have a solution for the 3-SAT problem. \\
     Finally, the clique problem is in NP since the certificate that there exists a k-clique in the graph $G$ is a list of the $k$ nodes of $G$ forming a clique, which can be checked in polynomial time. 
 \end{proof}
+\begin{equation}
+    \phi(x_1,x_2,x_3,x_4) = \color{blue}\left(x_2 \vee x_1 \vee \bar x_3\right) \color{black}\bigwedge \color{green}\left(\bar x_1 \vee \bar x_2 \vee x_4\right) \color{black} \bigwedge \color{red} \left(x_2 \vee \bar x_4 \vee  x_3\right)\color{black}
+\end{equation}
+\begin{center}
+    \begin{tikzpicture}[
+        node/.style={circle, draw, minimum size=8mm},
+        edge/.style={-}
+        ]
+        % Horizontal nodes 
+        \node[circle, draw=green, ultra thick] (C1) at (4,0)  {$\bar x_1$};
+        \node[circle, draw=green] (C2) at (7,0)  {$\bar x_2$};
+        \node[circle, draw=green] (C3) at (10,0)  {$x_4$};
+        
+        % Right nodes
+        \node[circle, draw=blue] (A1) at (2,-2) {$x_2$};
+        \node[circle, draw=blue] (A2) at (2,-4) {$x_1$};
+        \node[circle, draw=blue, ultra thick] (A3) at (2,-6) {$\bar x_3$};
+        
+        % Left nodes
+        \node[circle, draw=red, ultra thick] (B1) at (12,-2) {$x_2$};
+        \node[circle, draw=red] (B2) at (12,-4) {$\bar x_4$};
+        \node[circle, draw=red] (B3) at (12,-6) {$x_3$};
+        
+        % Edges
+        \draw[edge] (A1) -- (C1);
+        \draw[edge] (A1) -- (C3);
+        \draw[edge] (A1) -- (B1);
+        \draw[edge] (A1) -- (B2);
+        \draw[edge] (A1) -- (B3);
+
+        \draw[edge] (A2) -- (C2);
+        \draw[edge] (A2) -- (C3);
+        \draw[edge] (A2) -- (B1);
+        \draw[edge] (A2) -- (B2);
+        \draw[edge] (A2) -- (B3);
+
+        \draw[color=violet, ultra thick] (A3) -- (C1);
+        \draw[edge] (A3) -- (C2);
+        \draw[edge] (A3) -- (C3);
+        \draw[color=violet, ultra thick] (A3) -- (B1);
+        \draw[edge] (A3) -- (B2);
+
+        \draw[color=violet, ultra thick] (C1) -- (B1);
+        \draw[edge] (C1) -- (B2);
+        \draw[edge] (C1) -- (B3);
+
+        \draw[edge] (C2) -- (B2);
+        \draw[edge] (C2) -- (B3);
+
+        \draw[edge] (C3) -- (B1);
+        \draw[edge] (C3) -- (B3);
+    \end{tikzpicture}
+\end{center}
+The clique is in violet. We put every element of the clique to True, and if some variable does not appear in the clique, its value is irrelevant and can be either True or False. In our example, the solutions are $(0,1,0,1)$ and $(0,1,0,0)$. 
 \end{document}
