@@ -27,12 +27,12 @@
 \usepackage[bottom]{footmisc}
 \usepackage{pdfpages}
 \usepackage{tabularx}
-\usepackage{enumitem}           % for adjusting space between bullet points
+\usepackage{enumitem}
 \usepackage {tikz}
 \usetikzlibrary{positioning}
-\usepackage[strict]{changepage} % for adjustwidth environment
-\usepackage{framed}             % for formal definitions
-\usepackage{fourier}            % for the warning symbol
+\usepackage[strict]{changepage}
+\usepackage{framed}
+\usepackage{fourier}
 \usepackage{amsthm}
 \usepackage[skins]{tcolorbox}
 \titleformat{\chapter}[display]
@@ -2228,4 +2228,98 @@ Once the $\gamma^*$ are found, we can easily compute the optimal bias:
 \begin{equation}
 	b^* = y_i - \sum_{\substack{j=1\\ \gamma_j^* \neq 0}}^N \gamma_j^* \phi(x_j)^T \phi(x_i) = y_i - \sum_{\substack{j=1\\ \gamma_j^* \neq 0}}^N \gamma_j^* k(x_j, x_i)
 \end{equation}
+\subsection{Kernel PCA}
+The classical PCA consists in selecting the $k$ features with the most variance in a space of dimension $n$. We can show (not done here) that the $k$ principal components of the dataset are the $k$ eigenvectors of the covariance matrix that correspond to the $k$ largest eigenvalues of that matrix. The algorithm is the following:
+\begin{algorithm}[H]
+  	\caption{PCA}
+  	\begin{algorithmic}[1]
+	    \State Dataset: $X = \begin{pmatrix}
+			x_1 & x_2 & \dots & x_N
+		\end{pmatrix} \in \R^{n\times N}$
+		\State Centered data: $\tilde X = X - X \frac{1_{N\times N}}{N}$
+		\State Empirical Covariance matrix: $C = \frac{1}{N}\tilde X\tilde 	X^T\in \R^{n\times n}$
+		\State Compute the $k$ principal components $v$:
+		\begin{equation}
+			Cv_k = \lambda_k v_k \qquad \text{ such that }\qquad v_k^Tv_k = 1
+		\end{equation}
+		\State Project the data on the $k$ Principal components:
+		\begin{equation}
+			y_k = V_k^T y
+		\end{equation}
+	\end{algorithmic}
+\end{algorithm}
+The dual of this problem (this is optimisation, although the form is simplified here) is 
+\begin{equation}
+	X^TX \alpha = \lambda \alpha 
+\end{equation}
+and we find back the principal components by doing the product $v=X\alpha$.\\
+
+The kernel PCA is almost the same, but it applies a kernel $\phi:\R^n\to \R^h$ on the data before applying the algorithm:
+\begin{algorithm}[H] 
+	\caption{Kernel PCA}
+	\label{algo:kpca}
+	\begin{algorithmic}[1]
+		\State Lifted dataset: $\Phi = \begin{pmatrix}
+			\phi(x_1) & \dots & \phi(x_N)
+		\end{pmatrix}\in \R^{h\times N}$ 
+		\State The kernel matrix is $K = \Phi^T\Phi \in \R^{N\times N}$
+		\State Center the lifted data: $\tilde \Phi = \Phi - \Phi \frac{\mathbb{1}_{N\times N}}{N}$;
+		\State The centered kernel matrix is $\tilde K = \tilde \Phi^T \tilde \Phi$
+		\State Compute the empirical Covariance matrix: $C = \frac{1}{N}\tilde \Phi \tilde \Phi^T\in \R^{h\times h}$
+		\State Compute the $k$ principal components $q$:
+		\begin{equation}
+			\tilde K \alpha_k = \lambda_k \alpha_k \qquad v_k = \frac{1}{\sqrt{\lambda_k}} \alpha_k 
+		\end{equation}
+		\State Project the data on the $k$ Principal components:
+		\begin{equation}
+			y_k = V_k^T y
+		\end{equation}
+	\end{algorithmic}
+\end{algorithm}
+\subsubsection{kPCA coordinates}
+Let $f=\phi(x)\in \mathcal{H}$ be any function embedding of some point $x\in \R^n$. We can express it as a linear combination of the $K\le N$ principal components $v_k\in \mathcal{H}$:
+\begin{equation}
+	f = \phi(x) = \sum_{k=1}^K \langle v_k, f\rangle_{\mathcal{H}} v_k
+\end{equation}
+And we can express the principal components in terms of the embedding and the $k$-th eigenvector of the kernel matrix:
+\begin{equation}
+	v_k = \sum_{i=1}^N (\alpha_k)_i \phi(x_i)
+\end{equation}
+From this, the inner product is $f$ is the projection of $f$ on $v_k$:
+\begin{equation}
+	\langle v_k,f\rangle_{\mathcal{H}} = \sum_{i=1}^N (\alpha_k)_i \langle \phi(x_i),\phi(x)\rangle_{\mathcal{H}} = \sum_{i=1}^N (\alpha_k)_i k(x,x_i)
+\end{equation}
+In the next algorithm, we use the index $i$ on the principal components to have clear notations.\\
+If we have the kernel function $k(\cdot, \cdot)$, the algorithm \ref{algo:kpca} becomes 
+\begin{algorithm}[H]
+	\caption{Kernel PCA with kernel function}
+	\begin{algorithmic}[1]
+		\State Choose a kernel $k(x,y)$ and compute the kernel matrix $K$: 
+		\begin{equation}
+			k(x,y) = \langle \phi(x),\phi(y)\rangle_{\mathcal{H}} \qquad K_{ij} = k(x_i, x_j)
+		\end{equation}
+		\State Compute the centered kernel $\tilde k(x,y)$ and the centered kernel matrix $\tilde K$:
+		\begin{equation}
+			\begin{aligned}
+				\tilde k(x,y) = k(x,y) - \frac{1}{N} \sum_{i=1}^N (k(x_i, x) + k(x_i,y)) + \frac{1}{N^2} \mathbb{1}_N^T K\mathbb{1}_N\\
+				\tilde K = K - \frac{\mathbb{1}_{N\times N}}{N}K-K \frac{\mathbb{1}_{N\times N}}{N} + \frac{\mathbb{1}_{N\times N}}{N}K\frac{\mathbb{1}_{N\times N}}{N}
+			\end{aligned}
+		\end{equation}
+		\State Compute $k$ scaled eigenvectors $\alpha_i$ and eigenvalues $\tilde \lambda_i$ of the kernel matrix:
+		\begin{equation}
+			\tilde K \alpha_i = \tilde \lambda_i\alpha_i  \qquad \alpha_i^T \alpha_i = \frac{1}{\tilde \lambda_i}
+		\end{equation}
+		\State Project the new data on the $i$ Principal components:
+		\begin{equation}
+			y_k = \tilde \phi(x)_k = \sum_{j=1}^N \alpha_{1:i, j}\tilde k(x_j, x)
+		\end{equation}
+	\end{algorithmic}
+\end{algorithm}
+kPCA is better than the classical PCA because it does not simply project the dataset; it completely transforms it and makes it linearly separable
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=0.8\textwidth]{img/kpca.png}
+	\caption{PCA vs kPCA}
+	\label{fig:kpca}
+\end{figure}
 \end{document}
