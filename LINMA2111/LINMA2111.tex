@@ -255,7 +255,7 @@ The result algorithm is called HeapSort and has complexity $\mathcal{O}(n\log(n)
         \text{Father}(T(i)) &= T(\lfloor i/2\rfloor)
     \end{aligned}
 \end{equation}
-\subsection{Searching for a better complexity}
+\section{Searching for a better complexity}
 Assume a comparison-based algorithm, i.e. the only query on the data is "Is $x\le y$?". Can we sort in $o(n\log(n))$, i.e. in a complexity strictly better than $n\log(n)$. 
 \begin{thm}
     A binary tree with at most 2 children for each node, wit $N$ leaves, has at least $\lfloor \log_2(N)\rfloor$ levels.
@@ -813,7 +813,7 @@ Since $\int_k ^n \frac{1}{x}dx \le \sum_{i=k}^{n-1} \frac{1}{i}\le \int_{k-1}^{n
 \end{equation}
 The lower bound is maximized for $k^* = n / e$ and has maximal value $1/e \approx 37\%$. 
 \section{Birthday paradox}
-The birthday paradox is not stricly speaking a paradox, but is called that way because it goes against the first intuition. What is the number of people that must be in a room so that the probability that two people have the same birthday is higher than 1/2, assuming that the birthdays are uniformly distributed? Let $r={1,\dots,n}$ and $Pr[b_i=r] = 1/n$. Then, for two people,
+The birthday paradox is not strictly speaking a paradox, but is called that way because it goes against the first intuition. What is the number of people that must be in a room so that the probability that two people have the same birthday is higher than 1/2, assuming that the birthdays are uniformly distributed? Let $r={1,\dots,n}$ and $Pr[b_i=r] = 1/n$. Then, for two people,
 \begin{equation}
 	Pr[b_i = b_j] = \sum_{r=1}^n Pr[b_i=r \text{ and }b_j = r] = \sum_{r=1}^n Pr[b_i=r]Pr[b_j=r] = \sum_{r=1}^n \frac{1}{n^2} = \frac{1}{n}
 \end{equation}
@@ -824,13 +824,13 @@ And for $k$ people, denoting $B_k$ the event that $k$ people have distinct birth
 		&\le e^{-1/n}e^{-2/n}\dots e^{-(k-1)/n} = e^{-k(k-1)/2n}
 	\end{aligned}
 \end{equation}
-Then, for $Pr[B_k]\ge 1/2$, we get 
+Then, for $Pr[B_k]\le 1/2$, we get 
 \begin{equation}
-	k(k-1) \le 2n \ln{2}\Longleftrightarrow k\le 23
+	k(k-1) \ge 2n \ln{2}\Longleftrightarrow k\ge 23
 \end{equation}
 We can also compute the expectation: let $X_{ij}$ be the 1 if the people $i$ and $j$ have the same birthday and 0 otherwise. Then $\E[X_{ij}] = 1/n$ and for $X = \sum_{i=1}^k\sum_{j=i+1}^k X_{ij}$, 
 \begin{equation}
-	\E[X] = \sum_{i=1}^k \sum_{j=i+1}^k X_{ij} = \frac{k(k-1)}{2n}
+	\E[X] = \sum_{i=1}^k \sum_{j=i+1}^k \E[X_{ij}] = \frac{k(k-1)}{2n}
 \end{equation}
 This means that for at least $\sqrt{2n}+1$ people in a room, we can EXPECT at least one collision. For $n=365$, this is $k=28$ people.
 \section{Hash table}
