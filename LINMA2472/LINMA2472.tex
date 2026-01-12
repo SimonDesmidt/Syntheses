@@ -291,7 +291,7 @@ Automatic Differentiation is also able to compute higher-order derivatives, such
 
 For any function $f:\R^n\to\R^m$, the Hessian, per output, is a matrix of dimensions $n\times n$. Its entries can be computed as
 \begin{equation}
-  (\nabla^2 f(x))_{ij} = \dfrac{\partial^2 f(x)}{\partial x_i \partial x_j}
+  (\nabla^2 f_k(x))_{ij} = \dfrac{\partial^2 f_k(x)}{\partial x_i \partial x_j}
 \end{equation}
 The Hessian can also be seen as the Jacobian of the function's gradient
 \begin{equation}
@@ -335,8 +335,7 @@ the final expression reads
 
 \subsubsection{\text{Dual} numbers}
 \emph{\text{Dual} numbers} are a concept borrowed from algebra. Initially introduced in 1873 to represent 
-the \hyperlink{https://en.wikipedia.org/wiki/\text{Dual}\_number\#History}{angle} between lines in space, it can also be applied to automatic differentiation.
-
+the \href{https://en.wikipedia.org/wiki/Dual\_number#History}{angle} between lines in space, it can also be applied to automatic differentiation.
 A \text{Dual} number is an expression of the form $a+b\varepsilon$ where $a$ and $b$ are real numbers and $\varepsilon$ is a symbol such that $\varepsilon^2=0$ 
 with $\varepsilon\ne0$. This allows defining the product of two \text{Dual} numbers as 
 \begin{equation}
@@ -344,10 +343,10 @@ with $\varepsilon\ne0$. This allows defining the product of two \text{Dual} numb
 \end{equation}
 One can readily see an application equivalent to the Taylor's first-order approximation, via the Taylor series expansion.
 \begin{equation}
-  f(a+b\varepsilon)=\sum^\infty_{n=0}\dfrac{f^{(n)}(a)b^n\varepsilon^n}{n!}
-  \overset{\footnote{Since every term involving $\varepsilon^2$ or greater power of $\varepsilon$ vanishes.}}=f(a)+bf'(a)\varepsilon
-\end{equation}  
-
+  f(a+b\varepsilon)
+  = \sum_{n=0}^{\infty}\frac{f^{(n)}(a)\,b^n\varepsilon^n}{n!}
+  \overset{\varepsilon^{\ge2}=0}{=} f(a)+bf'(a)\varepsilon
+\end{equation}
 Back to the automatic differentiation concept, $f(a)$ is the function's value evaluated at $a$, while $bf'(a)\varepsilon$ is the Jacobian-vector product 
 evaluated at $a$. 
 \begin{itemize}[noitemsep]
@@ -503,7 +502,7 @@ The reverse-on-forward strategy applies the reverse-mode to the reverse-mode com
 \subsubsection{Forward pass (values computation)}
 Let the primal variables 
 \begin{equation}
-  s_0 = x,\quad s_k = fk(s_{k-1}),\quad k=1,\dots K
+  s_0 = x,\quad s_k = f_k(s_{k-1}),\quad k=1,\dots K
 \end{equation}
 During the forward pass, the $K$ intermediary values are stored, as in standard reverse-mode AD.
 
@@ -553,7 +552,7 @@ The second-order reverse recurrence becomes
 \end{equation}
 with the initial condition $\dot r_K=0$ since $r_K=1$ is constant.
 
-After completing the second reverse pass, the Hesian column corresponding to direction $e_i$ is obtained as 
+After completing the second reverse pass, the Hessian column corresponding to direction $e_i$ is obtained as 
 \begin{equation}
   \nabla^2f(x)e_i=\dot r_0
 \end{equation}
@@ -712,10 +711,10 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
   \end{itemize}
 \end{thm}
 
-\begin{thm}[Implicit function theorem (IFT, univariate case)]
+\begin{thm}[Implicit function theorem (IFT)]
   Assume
   \begin{itemize}[noitemsep]
-    \item $F:\R \to \R$
+    \item $F:\mathcal{W}\times \Lambda \to \mathcal{W}$ ($w$ is the variable and $\lambda$ is a parameter)
     \item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\partial_1 F(w_0, \lambda_0) \neq 0$
     \item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$ 
   \end{itemize}
@@ -744,39 +743,23 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
   \begin{itemize}[noitemsep]
     \item if $y_0>0$ then IFT holds and $y^*(x)=y^+(x)$,
     \item if $y_0<0$ then IFT holds and $y^*(x)=y^-(x)$,
-    \item if $y_0=0$ then $\partial_1 F(y_0,x_0)=2y_0=0$ so IFT does not hold
+    \item if $y_0=0$ then $\partial_1 F(y_0,x_0)=2y_0=0$ so IFT does not hold.
   \end{itemize}
   This example shows that even a function such as $F(y,x)=x^2+y^2-1$ with 2 possible explicit functions does not violate the IFT.
 \end{exmp}
-\begin{thm}[Implicit function theorem (IFT, multivariate case)]
-  Assume
-  \begin{itemize}[noitemsep]
-	\item $F:\mathcal{W} \times \Lambda \to \mathcal{W}$
-	\item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\partial_1 F(w_0, \lambda_0) \neq 0$
-	\item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$ 
-  \end{itemize}
-  Then there exists a neighborhood $\mathcal{V} \subseteq \mathcal{U}$ where exists $w^*(\lambda)$ such that:
-  \begin{equation}
-	\begin{aligned}
-		w^*(\lambda_0) &= w_0 \\
-		F(w^*(\lambda), \lambda) &= 0, \quad \forall (w^*(\lambda),\lambda) \in \mathcal{V} \\
-		\partial w^*(\lambda) &= - \left(\partial_1 F(w^*(\lambda), \lambda)\right)^{-1}\partial_2 F(w^*(\lambda), \lambda)
-	\end{aligned}
-  \end{equation}
-\end{thm}
 \subsection{Implicit JVP and VJP}
 For implicit differentiation, derivatives must be propagated differently.
 
 Consider the implicit function defined by $F(w^*, \lambda) = 0$, from which one may want to compute the JVP and VJP.
 
 \subsubsection{JVP}
-Reminding that the forward tangent a step $k$, $t_k$, is computed using the known previous tangent $t_{k-1}$, and the function at the step,
+Reminding that the forward tangent at step $k$, $t_k$, is computed using the known previous tangent $t_{k-1}$, and the function at the step,
 assuming the IFT holds, the following equality may be derived.
 \begin{equation}
 	t_k = - \left( \partial_1 F(w^*, \lambda) \right)^{-1} \cdot \partial_2 F(w^*, \lambda) \cdot t_{k-1}
 \end{equation}
 where $t_k = \partial w^*(\lambda)/\partial s_0$ and $t_{k-1} = \partial \lambda / \partial s_0$. 
-Each JVP of the implicit function may be obtaine by solving a linear system. 
+Each JVP of the implicit function may be obtained by solving a linear system. 
 
 Setting $A = -\partial_1 F(w^*(\lambda), \lambda)$ and $B = \partial_2 F(w^*(\lambda), \lambda)$, 
 the system to solve becomes:
@@ -820,11 +803,11 @@ and its dual:
 \begin{equation}
   \max b^Ty \quad \text{s.t.} \quad A^Ty \leq c
 \end{equation}
-The KKT conditions gives the optimality conditions for this problem:
+The KKT conditions give the optimality conditions for this problem:
 \begin{equation}
   \begin{cases}
 	Ax = b \\
-	(A^Ty - c) \perp x \geq 0 
+	\left[A^Ty - c\right] \perp \left[x \geq 0 \right]
   \end{cases}
 \end{equation}
 The KKT conditions can be rewritten as an implicit function $F((x,y),(A,b,c))$:
@@ -909,7 +892,7 @@ Here is a visual example.
   \end{bmatrix}
 \end{equation}
 \begin{center}
-  \begin {tikzpicture}[-latex ,auto ,node distance = 2.5 cm and 2.5 cm ,on grid ,
+  \begin {tikzpicture}[auto ,node distance = 2.5 cm and 2.5 cm ,on grid ,
 	semithick ,
 	state1/.style ={ circle ,top color =white , bottom color = red ,
 	draw,red , text=black , minimum width =1 cm}, state2/.style ={ circle ,top color =white , bottom color = blue ,
@@ -925,17 +908,9 @@ Here is a visual example.
 	\path (D) edge (E);
   \end{tikzpicture}
 \end{center}
-In more complex sparsity patterns, somes nodes could be linked multiple times, and therefore a particular care must be taken to ensure no multipy linked nodes
-share an edge.
-\begin{equation}
-  J = \begin{bmatrix}
-	0 & 0 & * \\
-	* & * & 0 \\
-	* & * & 0
-  \end{bmatrix}
-\end{equation}
-Node 1 and 2 should be linked by two edges because they share two non-zero entries, hence the colors must be different.
-
+\begin{itemize}
+	\item [$\to$] Note: In more complex sparsity patterns, somes nodes could be linked multiple times.
+\end{itemize}
 The probem can also be modeled as a bipartite graph, where one set of nodes represents the columns and the other set represents the rows. 
 There will be an edge between a column node and a row node if the corresponding entry in the matrix is non-zero. 
 Considering the same instance
@@ -953,7 +928,7 @@ Considering the same instance
   \end{bmatrix} 
 \end{equation}
 \begin{center}
-  \begin {tikzpicture}[-latex ,auto ,node distance = 2 cm and 4 cm ,on grid ,
+  \begin {tikzpicture}[auto ,node distance = 2 cm and 4 cm ,on grid ,
 	semithick ,
 	state1/.style ={ circle ,top color =white , bottom color = red , draw,red , text=black , minimum width =1 cm}, state2/.style ={ circle ,top color =white , bottom color = blue , draw,blue , 
   text=black , minimum width =1 cm}, state3/.style ={ circle ,top color =white , bottom color = green , draw,green , text=black , minimum width =1 cm}, state4/.style ={ circle ,top color =white , 
@@ -978,7 +953,7 @@ Considering the same instance
   \end{tikzpicture}
 \end{center}
 With this modeling, the coloring problem is a distance-2 graph coloring problem. 
-Two column nodes being at distance 2 from each other can't share the same color because if they share a non-zero entry ar row $n$, 
+Two column nodes being at distance 2 from each other cannot share the same color because if they share a non-zero entry ar row $n$, 
 they will be connected to the same row node $n$.
 
 The same applies for the rows.
@@ -994,8 +969,8 @@ For instance, consider the following symmetric Jacobian matrix.
 	0 & a_5 & 0 & a_7
   \end{bmatrix}
 \end{equation}
-With the previous sparse AD techniques, 3 HVPs or 3 VHPs would be required, instead of 4 wit the standard AD. 
-Using the symmetry of the matrix, this computations can be reduced to 2 HVPs or 2 VHPs. Indeed, columns can colored as
+With the previous sparse AD techniques, 3 JVPs or 3 VJPs would be required, instead of 4 with the standard AD. 
+Using the symmetry of the matrix, this computations can be reduced to 2 JVPs or 2 VJPs. Indeed, columns can be colored as
 \begin{equation}\label{eq:sym_norm}
   J = \begin{bmatrix}
 	\textcolor{red}{a_1} & \textcolor{blue}{a_2} & \textcolor{blue}{a_3} & 0\\
@@ -1004,10 +979,10 @@ Using the symmetry of the matrix, this computations can be reduced to 2 HVPs or 
 	0 & \textcolor{blue}{a_5} & 0 & \textcolor{red}{a_7}
   \end{bmatrix}
 \end{equation}
-Using the symmetry property, the entry shared between columns 2 and 3 can be ignored since this value would be also computed by the HVP on the 
+Using the symmetry property, the entry shared between columns 2 and 3 can be ignored since this value would be also computed by the JVP on the 
 first column. Hence, it can be considered as 0 for now, and replaced back later.
  
-Computing the two HVPs and retrieving the full Hessian matrix shows
+Computing the two JVPs and retrieving the full Jacobian matrix shows
 \begin{equation}\label{eq:sym_norm_sol}
   J \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix} = \begin{bmatrix} a_1 & a_2+a_3 \\ a_2 +a_5 & a_4 \\ a_3 & a_6 \\ a_7 & a_5 \end{bmatrix}
 \end{equation}
@@ -1015,7 +990,10 @@ $a_2$ can be obtained by solving a small linear system.
 
 Using computed values and knowing the sparsity pattern, the full matrix can be reconstructed. 
 
-The same process can be developed for VHPs by grouping rows instead of columns.
+The same process can be developed for VJPs by grouping rows instead of columns.
+\begin{itemize}
+	\item [$\to$] Note: as the hessian matrix is symmetric, this property is very useful for sparse second-order AD.
+\end{itemize}
 
 \subsection{Star coloring}
 
@@ -1031,7 +1009,7 @@ For instance, considering the same symmetric Jacobian matrix as above
   \end{bmatrix}
 \end{equation}
 Coloring its associated graph with the classic distance-1 coloring would yield the same matrix as \eqref{eq:sym_norm}.
-Computing the HVPs, one would obtain the matrix \eqref{eq:sym_norm_sol} and solving a linear system would be required to retrieve $a_2$. 
+Computing the JVPs, one would obtain the matrix \eqref{eq:sym_norm_sol} and solving a linear system would be required to retrieve $a_2$. 
 
 Usings star coloring, one could retrieve explicitly all the element. 
 
@@ -1052,7 +1030,7 @@ Now, computing the 3 HVPs
 \end{equation}
 All the values can be immediately retrieved from the matrix without solving any linear equation system. 
 
-This proves its better efficiency compared to the usual distance-1 coloring (4 HVPs), and the symmetric distance-1 coloring (2 HVPs + linear system).
+This proves its better efficiency compared to the usual distance-1 coloring (4 JVPs), and the symmetric distance-1 coloring (2 JVPs + linear system).
 \subsection{Acyclic coloring}
 
 For any Hessian $H$ and vector $v$, computing 
@@ -1069,7 +1047,7 @@ where $\mathcal N(i)$ is the set of non-zero entry column indexes at row $i$.
 From here, assume $\phi: V \to \{1, \ldots, p\}$ is a proper coloring such that no two neighboring nodes have the same color.
 \subsubsection{Diagonal entries}
 Diagonal values are easy to extract. Assume node $i$ is colored in $c$. Then given the vector $v^{(c)}$ whose $j$-th component is $1$ iff $j$ is colored in $c$,
-the $i$-th component of the HVP yields²
+the $i$-th component of the HVP yields:
 \begin{equation*}
   (Hv^{(c)})_i = H_{ii}
 \end{equation*} 
@@ -1112,7 +1090,7 @@ It is, therefore, a \emph{tree} or a \emph{forest} where every connected compone
 
 The algorithm follows
 \begin{enumerate}[noitemsep]
-  \item Suppose node $i$ (colored $c_1$) is conneced to exactly one node $j$ (colored $c_2$). $i$ is a leaf.
+  \item Suppose node $i$ (colored $c_1$) is connected to exactly one node $j$ (colored $c_2$). $i$ is a leaf.
   \item From the HVP from color $c_2$, one obtains
         \begin{equation*}
           (Hv^{(c_2)})_i=H_{ij}
@@ -1131,7 +1109,7 @@ Mentally, this process can be seen as
 \begin{formal}
   \begin{itemize}[noitemsep]
     \item Each HVP gives blurred information
-    \item Acyclic coloring makes sure that blue can always be unblurred locally
+    \item Acyclic coloring makes sure that blur can always be unblurred locally
   \end{itemize}
 \end{formal}
 
@@ -1159,7 +1137,7 @@ First let's define some variables:
 \end{itemize} 
 A neural network can be seen as a composition of functions, the type of which was discussed in sections above.
 A neural network needs to be trained, or in other words its parameters have to be optimized. Optimization requires computing derivatives 
-and that's where automatic differentiation comes at play.
+and that's where automatic differentiation comes to play.
 
 The forward pass of a neural network can be described in two equivalent ways.
 \begin{equation}
@@ -1203,7 +1181,7 @@ the model aims to predict the next vector $x_0$ and maybe more ($x_1, x_2,\dots$
 For instance, one may want to predict $x_0$ and $x_1$ based on past data.
 \begin{equation}
   \begin{aligned}
-	p(x_0, x_1 | x_{-1}, \ldots, x_{-n_{ctx}}) &= p(x_0 | x_{-1}, \ldots, x_{-n_{ctx}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{ctx} + 1}, \color{red}{x_{-n_{ctx}}}) \\
+	p(x_0, x_1 | x_{-1}, \ldots, x_{-n_{ctx}}) &= p(x_0 | x_{-1}, \ldots, x_{-n_{ctx}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{ctx} + 1}, \color{red}x_{-n_{ctx}} \color{black}) \\
 	&\approx p(x_0 | x_{-1}, \ldots, x_{-n_{ctx}}) \cdot p(x_1 | x_0, x_{-1}, \ldots, x_{-n_{ctx} + 1})
   \end{aligned} 
 \end{equation}
@@ -1241,7 +1219,7 @@ which can be merged into new tokens \texttt X and \texttt Y respectively.
 \begin{equation}
   \texttt{abracadabra} \to \texttt{XYcadXY}
 \end{equation}
-This process can be repeated until the the desired vocabulary size is reached.
+This process can be repeated until the desired vocabulary size is reached.
 
 The next iteration could give:
 \begin{equation}
@@ -1317,22 +1295,22 @@ With this idea, the network reuses the same weights at every time step and thus 
 The equations of a simple RNN are:
 \begin{equation}
   \begin{cases}
-	h_{t+1} = \tanh(W h_{t} + U x_{t-1} + b) \\
+	h_{t+1} = \tanh(W h_{t} + U x_{t+1} + b) \\
 	\hat{y}_t = \softmax(V h_t + c)
   \end{cases}
 \end{equation}
 where $W, U, V$ are weight matrices and $b, c$ are bias vectors.
 
-This model presents some limitations. 
+This model presents some limitations:
 \begin{itemize}[noitemsep]
-  \item Long-term dependencies hard to learn due to vanishing/exploding gradient problem.
-  \item Hard to parallelize due to step-by-step sequence processing
-  \item Memory-intesive for long sequences due to hidden state storage at each time step
+  \item Long-term dependencies hard to learn due to vanishing/exploding gradient problem;
+  \item Hard to parallelize due to step-by-step sequence processing;
+  \item Memory-intensive for long sequences due to hidden state storage at each time step.
 \end{itemize}
 
 \section{Attention is all you need}
 \subsection{Attention}
-\subsubsection{Numerical Dictionnary}
+\subsubsection{Numerical Dictionary}
 Consider keys $k_i \in \R^{d_k}$, values $v_i \in \R^{d_v}$. 
 Given a query $q \in \R^{d_k}$, one may wants to retrieve the value $v_i$ corresponding to the key $k_i$ that is the most similar to the query $q$. 
 The adapated tool for this task is the dot-product. 
@@ -1344,14 +1322,14 @@ For each token, the query $q_i$, the key $k_i$, and the vaue $v_i$ may be seen a
   \item $v_i$: What information do I pass if I’m selected?
 \end{itemize}
 
-One key aspect of this numerical dictionnary is its \emph{differentiability}. This property will be useful when training the full model.
+One key aspect of this numerical dictionary is its \emph{differentiability}. This property will be useful when training the full model.
 
 \subsubsection{Attention definition}
-With a numerical dictionnary defined as above, \emph{attention head} is defined as
+With a numerical dictionary defined as above, \emph{attention head} is defined as
 \begin{equation}
   \text{Attention}(Q,K,V) = \sum_{i=1}^{n_{ctx}} \alpha_i v_i
 \end{equation}
-where $\alpha = \softmax(<q,k_1>, \cdots, <q,k_{n_{ctx}}>)$ is the attention weight for key $k_i$. 
+where $\alpha = \softmax(\langle q,k_1\rangle, \cdots, \langle q,k_{n_{ctx}}\rangle)$ is the attention weight for key $k_i$. 
 In practice, however, queries, keys, and values are vectors. They are respectively contained in matrices $Q, K, V$. 
 
 With the matrix definition, the \emph{attention head} may be rewritten.
@@ -1456,11 +1434,11 @@ The norm of the gradient increases exponentially with the number of layers. Mult
 
 Two normalization techniques are typically considered.
 \begin{enumerate}
-  \item Batch normalization computes the mean and average per \textbf{feature}, across all \emph{samples}. 
+  \item Batch normalization computes the mean and variance per \textbf{feature}, across all \emph{samples}. 
   It aims to normalize the importance of a feature for every sample. For a feature $j$, every sample will have the same mean and variance.  
 
   Due to its dependence on the number of samples, this techniques performs poorly for RNNs and autoregressive models, which are based on sequences.
-  \item Layer normalization computes the mean and average per \textbf{sample}, across all \emph{features}.
+  \item Layer normalization computes the mean and variance per \textbf{sample}, across all \emph{features}.
   It aims to normalize the importance of all features in a sample such that none is preponderant.
 
   Since it does not depend on the number of samples, layer normalization is usually preferred for transformers.
@@ -1480,7 +1458,7 @@ In the transformer architecture, the \emph{Layer Norm} always follows another la
   \text{LayerNorm}(\text{MultiHead}(CX + PE, CX + PE, CX + PE) + (CX + PE))
 \end{equation}
 \subsection{Feed-forward network (FFN)}
-A \emph{feed-forward layer}, also nown as \emph{dense layer}, simply\footnote{lovely} consists in a matrix product, a vector sum, 
+A \emph{feed-forward layer}, also known as \emph{dense layer}, simply\footnote{lovely} consists in a matrix product, a vector sum, 
 and an activation function (ReLU\footnote{ReLU, for Rectified Linear Unit, is defined as $\text{ReLU}(x)=max(0,x)$}), 
 applied to each token independently and identically,
 \begin{equation}
@@ -1607,7 +1585,7 @@ The training objective becomes
 	\mathbb{E}\left[ \| \varepsilon_\theta (X+ \sigma \varepsilon, \sigma) - \varepsilon \|^2 \right]
 \end{equation}
 \section{Deterministic Sampling}
-On the picture below, we can see how does denoising looks like with DDIM (Denoising Diffusion Implicit Models). 
+On the picture below, we can see what denoising looks like with DDIM (Denoising Diffusion Implicit Models). 
 The idea is to use a deterministic process to reverse the diffusion process. If we denoise in one step, for low noise levels, it works quite well. 
 
 For large noise levels, the score provides only a global direction, so multiple denoising steps are required to gradually approach the data manifold.
@@ -1624,11 +1602,11 @@ DDIM move from a variance $\sigma_t$ to a variance $\sigma_{t-1}$, like in figur
 		\E[X_{t-1} | X_t = x_t] &= \E[X_0 | X_t = x_t] + \sigma_{t-1} \E[\varepsilon | X_t = x_t] \\
 		&= \E[X_t | X_t = x_t] - \sigma_t \E[\varepsilon | X_t = x_t] + \sigma_{t-1} \E[\varepsilon | X_t = x_t] \\
 		&= x_t - (\sigma_t - \sigma_{t-1}) \E[\varepsilon | X_t = x_t] \\
-		&= x_t - (\sigma_t - \sigma_{t-1}) \epsilon_\theta(x_t)
+		&= x_t - (\sigma_t - \sigma_{t-1}) \varepsilon_\theta(x_t)
 	\end{aligned}
 \end{equation}
 \section{Denoising with randomness}
-Now we want to add some randomness to the denoising process, so we introduce DDPM (Denoising Diffusion Probabilistic Models). 
+Now we want to add some randomness to the denoising process. 
 The idea is to add some noise during the denoising process to ensure diversity in the generated samples. 
 
 Give $0 \leq \mu < 1$, pick $\sigma_{t'}$ such that $\sigma_{t-1} = \sigma_t^\mu \sigma_{t'}^{1-\mu}$ and we have the following sampler:
@@ -1636,8 +1614,8 @@ Give $0 \leq \mu < 1$, pick $\sigma_{t'}$ such that $\sigma_{t-1} = \sigma_t^\mu
 	x_{t-1} = x_t + (\sigma_{t'} - \sigma_t) \epsilon_\theta(x_t, \sigma_t) + \eta w_t 
 \end{equation}
 with $w_t \sim \mathcal{N}(0, 1)$. If we choose $\mu = 0$ and $\sigma_{t'} = \sigma_{t-1}$, we recover the DDIM sampler. 
-And if we choose $\mu = 1/2$, we have the DDPM sampler. We have by assumption $\sigma_{t-1} < \sigma_t$. 
-Then, because $\sigma_{t-1}$ is the geometric mean of $\sigma_t$ and $\sigma_{t'}$, it must be between so $\sigma_{t'} < \sigma_{t-1} < \sigma_t$. 
+And if we choose $\mu = 1/2$, we have what we call the DDPM sampler (Denoising Diffusion Probabilistic Models). We have by assumption $\sigma_{t-1} < \sigma_t$. 
+Then, because $\sigma_{t-1}$ is the geometric mean of $\sigma_t$ and $\sigma_{t'}$, it must be in between $\sigma_{t'} < \sigma_{t-1} < \sigma_t$. 
 To choose $\eta$, we know we want $\sigma^2_{t-1} = \mathbb{V}(\sigma_{t'}\varepsilon_\theta(x_t,\sigma_t))+\eta W_t$. 
 So we can choose $\eta = \sqrt{\sigma_{t-1}^2 - \sigma_{t'}^2}$.
 
@@ -1648,7 +1626,7 @@ We can thus define:
 	\bar{\epsilon}_t = \gamma \epsilon_\theta(x_t, \sigma_t) + (1-\gamma) \epsilon_\theta(x_{t+1}, \sigma_{t+1}) \qquad \gamma > 1
 \end{equation}
 \section{Auto-Encoder}
-We want to find an encoder $E$ and a decoder $D$ that minimizes the loss:
+We want to find an encoder $E$ and a decoder $D$ that minimize the loss:
 \begin{equation}
 	\E[\| X - D(E(X)) \|^2_2]
 \end{equation}
@@ -1656,17 +1634,17 @@ $E(X)$ typically reduces the dimension of $X$ to force the model to keep only es
 
 If $E$ and $D$ are linear, then the auto-encoder is $x \to DEx$ and so only the product $DE$ matters and the problem becomes:
 \begin{equation}
-	\min_{D,E} \E[\| X - DEX \|^2_F]
+	\min_{D,E} \E\left[\| X - DEX \|^2_F\right]
 \end{equation}
 Because we want to compress the data, we have the constraint $\text{rank}(DE) \leq r$. So the auto-encoder is searching for the best rank-$r$ approximation of X. 
 We can use the SVD of $X = U \Sigma V^T$ to find the best rank-$r$ approximation, and in our case it is working the same way as the PCA. 
 And thus to approximate $X$ we can choose $DE = U_r \Sigma_r U_r^T$. With all this, an Auto-Encoder can be thought of as a nonlinear generalization of PCA.
 
-\subsection{Variationnal Auto-Encoder}
+\subsection{Variational Auto-Encoder}
 We want to learn the distribution of our data represented by the random variable $X$. 
 To improve learning, we can add artificial noise to learn a more interesting distribution.
 \begin{equation}
-	\E [\| X - D(E_\mu(X) + \varepsilon \odot E_\sigma(X)) \|^2_2]
+	\E \left[\left\| X - D(E_\mu(X) + \varepsilon \odot E_\sigma(X)) \right\|^2_2\right]
 \end{equation}
 \subsection{Evidence Lower Bound (ELBO)}
 
@@ -1761,7 +1739,7 @@ The goal is to \textbf{infer} a variational posterior distribution $q(z\mid x)$ 
 This identity can be seen as a \emph{certificate of optimality}.
 
 \subsection{Gaussian ELBO}
-We can compute the ELBO in the case of Gaussian distributions, like with the variationnal Auto-Encoder. 
+We can compute the ELBO in the case of Gaussian distributions, like with the variational Auto-Encoder. 
 Suppose $X = D_\mu(Z) + \varepsilon_1 \odot D_\sigma(Z)$ and $Y = E_\mu(X) + \varepsilon_2 \odot E_\sigma(X)$, 
 with $\varepsilon_1, \varepsilon_2 \sim \mathcal{N}(0, 1)$. 
 
@@ -1787,7 +1765,7 @@ With the simple case where $D_\sigma(z) = 1$, we get this approximation ($L_2$ f
 \begin{equation}
 	\E \left[ \log(f_{X|Z}(x|Y))\right] \approx - \dfrac{\log(2\pi)}{2} + \dfrac{1}{L} \sum_{i=1}^{L} \| x - D_\mu(E_\mu(x) + \epsilon_i ) \|^2_2
 \end{equation}
-\subsection{Maximum Likelihood Estimator with variationnal Auto-Encoder}
+\subsection{Maximum Likelihood Estimator with variational Auto-Encoder}
 Reminder, the encoder $E$ maps a data point $x$ to a Gaussian distribution $Y \sim \mathcal{N}(E_\mu(x), E_\sigma(x))$. 
 The decoder $D$ maps a latent variable $z$ to the Gaussian distribution $\mathcal{N}(D_\mu)$. 
 
@@ -1797,29 +1775,29 @@ The maximum likelihood estimator, maximizes the following sum over our datapoint
 \end{equation}
 So it minimizes the loss i.e. the second term. And the KL divergence is acting as a regularizer to prevent overfitting.
 \subsection{Denoising Auto-Encoder}
-All of the previous subsections has been explained to get to this point: Denoising Auto-Encoder. 
-Reminder the goal of the diffusion model is to denoise data ($Y = X + \sigma \varepsilon$) and find the noise $\varepsilon$, 
+All of the previous subsections have been explained to get to this point: Denoising Auto-Encoder. 
+remember the goal of the diffusion model is to denoise data ($Y = X + \sigma \varepsilon$) and find the noise $\varepsilon$, 
 the denoising auto-encoder tries instead to find the original data $X$. 
 
 We have those following structures:
 \begin{itemize}[noitemsep]
 	\item Auto-Encoder $D(E(X))$
-	\item Variationnal Auto-Encoder $D(E(X) + \varepsilon)$
+	\item Variational Auto-Encoder $D(E(X) + \varepsilon)$
 	\item Denoising Auto-Encoder $D(E(X + \sigma \varepsilon))$
 \end{itemize}
 To train the denoising auto-encoder, we can use the Evidence Lower-Bound with $Y = X + \sigma \varepsilon$ and $Z$ such that $X = D(E(Z))$:
 \begin{equation}
 	-\log(f_X(x)) \leq D_{KL}((Y|X=x) \| Z) - \E[\log(f_{X|Z}(x|Y))]
 \end{equation}
-\section{Conditionned Diffusion Models}
+\section{Conditioned Diffusion Models}
 Conditioned diffusion generates data by denoising noise, but the denoising is guided by a conditioning signal (text, image, layout, etc.). 
-Where unconditionned diffusion learn $p(x)$, conditionned diffusion learn $p(x|c)$, with $c$ the conditionning signal. 
+Where unconditioned diffusion learn $p(x)$, conditioned diffusion learn $p(x|c)$, with $c$ the conditioning signal. 
 It is for example used to train text-to-image generation, where the model generates an image based on a text description. 
-This conditionned diffusion will need to learn the relationship between the text and the image so it will need cross-attention like in a transformers.
+This conditioned diffusion will need to learn the relationship between the text and the image so it will need cross-attention like in a transformer.
 \section{Classifier-Free Guidance}
-To improve the conditioned diffusion for multi-modal distributions, we can use a classifier but it need also training. 
+To improve the conditioned diffusion for multi-modal distributions, we can use a classifier but it also needs training. 
 So to overcome this, we can use classifier-free guidance. The idea is to train the model to handle both conditioned and unconditioned data. 
-During training, we train both conditionned (with condition $\tau$) and unconditionned diffusion model and combine them with:
+During training, we train both conditioned (with condition $\tau$) and unconditioned diffusion model and combine them with:
 \begin{equation}
 	\bar{\epsilon}_t = \lambda \epsilon_\theta(x_t, \sigma_t, \tau) + (1-\lambda) \epsilon_\theta(x_t, \sigma_t) \qquad \lambda > 1
 \end{equation}
@@ -1935,10 +1913,10 @@ The result is true for any rotation matrix $Q$.
 \end{itemize}
 \subsection{Advantages}
 Let us consider proteins. The alphabet is of size $20$ (number of existing amino-acids), and a protein is made of 4 of these. This means that our space is initially $H = \R^{20^4} = \R^{160.000}$. Consider $N=100$ proteins to classify. \\
-The embedding consists in storing $N$ vectors of size $h=160.000$, meaning 1.6M scalars. However, we only need the $K$ matrix of size $N^2=10.000$, and the entries are easy to compute. This means that, using the kernel trick, i.e. working with $K$ directly, we are much more efficient when $N<<h$. 
+The embedding consists in storing $N$ vectors of size $h=160.000$, meaning 16M scalars. However, we only need the $K$ matrix of size $N^2=10.000$, and the entries are easy to compute. This means that, using the kernel trick, i.e. working with $K$ directly, we are much more efficient when $N\ll h$. 
 \section{Kernels methods for continuous sets}
 \subsection{Reproducibility Kernel Hilbert Space}
-Consider richer sets than finite $X$, e.g. infinite or uncountable sets, with distances defined but not scalar product. Then, let $H$ be a vector space of conitnuous functions $X\to \R$. $H$ is a RKHS if it is a Hilbert space and 
+Consider richer sets than finite $X$, e.g. infinite or uncountable sets, with distances defined but not scalar product. Then, let $H$ be a vector space of continuous functions $X\to \R$. $H$ is a RKHS if it is a Hilbert space and 
 \begin{equation}
   \forall x\in X, \: \exists v\in H \text{ such that } \forall f\in H\:: \: \langle v,f\rangle_H = f(x)
 \end{equation}
@@ -2030,13 +2008,13 @@ The kernel trick is a way to implicitly work in a high dimensional feature space
 \begin{equation}
 	\forall x,y\in X , \qquad k(x,y) = \langle \phi(x),\phi(y)\rangle  \approx \langle z(x), z(y)\rangle 
 \end{equation}
-The kernel matrix of $z$ is $K'_{ij} = k'(x,y) = \langle z(x), z(y)\rangle$. Here, intead of computing this kernel matrix, we compute the embedding, i.e. the opposite of the kernel trick:
+The kernel matrix of $z$ is $K'_{ij} = k'(x,y) = \langle z(x), z(y)\rangle$. Here, instead of computing this kernel matrix, we compute the embedding, i.e. the opposite of the kernel trick:
 \begin{itemize}
 	\item Kernel trick: embed the points into high or infinite dimension space implicitly: $\mathcal{O}(N^2)$;
 	\item Kernel approximation: embed the points into a small (finite) space explicitly: $\mathcal{O}(Nd)$.
 \end{itemize}
 \subsection{Recognizing a kernel}
-Given a function $k:X\times X \to \R : (x,y) \to k(x,y)$, we can check that it is a kernel using the following methods:
+Given a function $k:X\times X \to \R : (x,y) \to k(x,y)$, we can check that it is a kernel using one of the following methods:
 \begin{itemize}
 	\item Check for every set $\{x_i\}_{i=1}^N$ that $K$ is symmetric definite-positive;
 	\item Find an embedding $\phi:X\to H$ such that $k(x,x') = \langle\phi(x),\phi(x')\rangle$ for all $x,x'\in X$;
@@ -2266,7 +2244,7 @@ The kernel PCA is almost the same, but it applies a kernel $\phi:\R^n\to \R^h$ o
 		\State Center the lifted data: $\tilde \Phi = \Phi - \Phi \frac{\mathbb{1}_{N\times N}}{N}$;
 		\State The centered kernel matrix is $\tilde K = \tilde \Phi^T \tilde \Phi$
 		\State Compute the empirical Covariance matrix: $C = \frac{1}{N}\tilde \Phi \tilde \Phi^T\in \R^{h\times h}$
-		\State Compute the $k$ principal components $q$:
+		\State Compute the $k$ principal components $v$:
 		\begin{equation}
 			\tilde K \alpha_k = \lambda_k \alpha_k \qquad v_k = \frac{1}{\sqrt{\lambda_k}} \alpha_k 
 		\end{equation}
@@ -2315,7 +2293,7 @@ If we have the kernel function $k(\cdot, \cdot)$, the algorithm \ref{algo:kpca} 
 		\end{equation}
 	\end{algorithmic}
 \end{algorithm}
-kPCA is better than the classical PCA because it does not simply project the dataset; it completely transforms it and makes it linearly separable
+kPCA is better than the classical PCA because it does not simply project the dataset; it completely transforms it and makes it linearly separable.
 \begin{figure}[H]
 	\centering 
 	\includegraphics[width=0.8\textwidth]{img/kpca.png}
