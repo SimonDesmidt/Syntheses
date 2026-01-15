@@ -264,9 +264,9 @@ Consider a function $f:\R^n \to \R^m$. Computing the full Jacobian requires $n$ 
 
 Therefore,
 \begin{itemize}[noitemsep]
-  \item If $n \ll m$, the forward mode is faster
-  \item If $n \gg m$, the backward mode is faster
-  \item If $n \approx m$, none prevail
+  \item If $n \ll m$, the forward mode is faster;
+  \item If $n \gg m$, the backward mode is faster;
+  \item If $n \approx m$, none prevails.
 \end{itemize}
 \section{Memory usage}
 The forward mode only needs to store the current value and the current derivative. The memory usage stays approximatively constant.\\
@@ -289,7 +289,7 @@ However, this aspect is, in general, less significant than the number of operati
 \section{Second order AD}
 Automatic Differentiation is also able to compute higher-order derivatives, such as the Hessian. 
 
-For any function $f:\R^n\to\R^m$, the Hessian, per output, is a matrix of dimensions $n\times n$. Its entries can be computed as
+For any function $f:\R^n\to\R^m$, the Hessian, per output, is a matrix of dimension $n\times n$. Its entries can be computed as
 \begin{equation}
   (\nabla^2 f_k(x))_{ij} = \dfrac{\partial^2 f_k(x)}{\partial x_i \partial x_j}
 \end{equation}
@@ -298,7 +298,7 @@ The Hessian can also be seen as the Jacobian of the function's gradient
   \nabla^2 f(x) = J_{\nabla f}(x)
 \end{equation}
 This last definition clearly shows that AD systems can be used to obtain the Hessian, by computing the gradient and the Jacobian of $f$ as already seen.
-Since, the Jacobian and the gradient can be both computed independently, different AD modes (forward / backward) can be used to compute each one of them. 
+Since the Jacobian and the gradient can both be computed independently, different AD modes (forward / backward) can be used to compute each one of them. 
 
 As a result, 4 Hessian's computation strategies can be defined
 \footnote{Since the Hessian per output is $n\times n$, the full Hessian is a 3D tensor of dimensions $m\times n\times n$.
@@ -347,10 +347,10 @@ One can readily see an application equivalent to the Taylor's first-order approx
   = \sum_{n=0}^{\infty}\frac{f^{(n)}(a)\,b^n\varepsilon^n}{n!}
   \overset{\varepsilon^{\ge2}=0}{=} f(a)+bf'(a)\varepsilon
 \end{equation}
-Back to the automatic differentiation concept, $f(a)$ is the function's value evaluated at $a$, while $bf'(a)\varepsilon$ is the Jacobian-vector product 
+Back to the automatic differentiation concept, $f(a)$ is the function evaluated at $a$, while $bf'(a)\varepsilon$ is the Jacobian-vector product 
 evaluated at $a$. 
 \begin{itemize}[noitemsep]
-  \item $b$ represents the tangent vector
+  \item $b$ represents the tangent vector;
   \item $f'(a)$ is the derivative (Jacobian) evaluated at $a$ in the scalar-output case
 \end{itemize}
 \text{Dual} numbers encode \emph{exactly} the derivative of a function.
@@ -358,7 +358,7 @@ evaluated at $a$.
 In the following sections, this process is extended to multivariate functions.
 \subsection{Forward on forward}
 \begin{formal}
-  "Directional derivative of a directional derivative"
+  "Directional derivative of a directional derivative."
 \end{formal}
 \subsubsection{Mathematically}
 The forward on forward strategy computes
@@ -366,7 +366,7 @@ The forward on forward strategy computes
   D(D(f)[v])[w]= w^THv
 \end{equation}
 where $v,w$ may be any arbitrary direction vectors.
-Usually, when computing the full Hessian, they are taken as the one-hot encodings of the variables the differentiation is made with respect to.
+Usually, when computing the full Hessian, they are taken as the one-hot encoding of the variables the differentiation is made with respect to.
 
 \subsubsection{Algorithmically}
 Defining $\text{Dual}(s_1\mid t_1)$, with $s_1 = \text{Dual}\left(f_1(x)\ \middle|\ \dfrac{\partial f_1}{\partial x_j}\right)$ and 
@@ -393,12 +393,10 @@ This process can be summarized as the following equations, with $g_k(x) = f_k \c
   \end{cases}
 \end{equation}
 
-\warning\ As one may see, the value of $w^THv$ is a scalar.
-The full process must be repeated for every pair of input variables, this strategy requires $n^2$ evaluations 
-and is therefore impractical except for very small $n$.
+\warning\ As one may see, the value of $w^THv$ is a scalar, and the full process must be repeated for every pair of input variables. This strategy requires $n^2$ evaluations and is therefore impractical except for very small $n$.
 \subsection{Forward on reverse}
 \begin{formal}
-  "Directional derivative of the gradient"
+  "Directional derivative of the gradient."
 \end{formal}
 
 \subsubsection{Mathematically}
@@ -412,7 +410,7 @@ The forward-on-reverse strategy consists in applying forward-mode AD
 to the reverse-mode computation of the gradient.
 Operationally, this results in:
 \begin{enumerate}[noitemsep]
-  \item a forward pass propagating both primal values and tangents,
+  \item a forward pass propagating both primal values and tangents;
   \item a backward pass in which adjoint variables are augmented with
         tangent components.
 \end{enumerate}
@@ -453,9 +451,9 @@ The last equation stands due to the symmetric nature of the Hessian matrix.
 The reverse-on-forward strategy starts with a forward pass.
 
 Defining $s_1\triangleq \text{Dual}\left(f_1(x)\ \middle|\ \dfrac{\partial f_1}{\partial x_i }\right)$
-\footnote{Note the difference with the previous modes ($j \to i$)}, the algorithm follows
+\footnote{Note the difference with the previous modes ($j \to i$).}, the algorithm follows
 \begin{enumerate}[noitemsep]
-  \item Compute $s_2 = f_2(s_1) = \text{Dual}\left(f_2(s_1)\ \middle|\ \J_2 \dfrac{\partial f_1}{\partial x_i}\right)$
+  \item Compute $s_2 = f_2(s_1) = \text{Dual}\left(f_2(s_1)\ \middle|\ \J_2 \dfrac{\partial f_1}{\partial x_i}\right)$;
   \item The reverse mode computes the local Jacobian.
 
   Since $s_1$ and $s_2$ are Dual-valued variables, the Jacobian $\partial s_2 / \partial s_1$ is taken with respect to the primal and tangent components.
@@ -492,11 +490,11 @@ The last equation stands due to the symmetric nature of the Hessian matrix.
 Repeating this process for every basis $w=e_i$ yields the full Hessian.
 
 \subsubsection{Order}
-The reverse-on-forward strategy applies the reverse-mode to the reverse-mode computation of the gradient.
+The reverse-on-reverse strategy applies the reverse-mode to the reverse-mode computation of the gradient.
 \begin{enumerate}[noitemsep]
-  \item A forward pass to obtain function's values
-  \item A first reverse pass to compute first-order adjoints
-  \item A second reverse pass to compute second-order adjoints
+  \item A forward pass to obtain function's values;
+  \item A first reverse pass to compute first-order adjoints;
+  \item A second reverse pass to compute second-order adjoints.
 \end{enumerate}
 
 \subsubsection{Forward pass (values computation)}
@@ -504,7 +502,7 @@ Let the primal variables
 \begin{equation}
   s_0 = x,\quad s_k = f_k(s_{k-1}),\quad k=1,\dots K
 \end{equation}
-During the forward pass, the $K$ intermediary values are stored, as in standard reverse-mode AD.
+During the forward pass, the $K$ intermediary values are stored, like in the standard reverse-mode AD.
 
 \subsubsection{First reverse pass (gradient computation)}
 Define the first-order adjoints 
@@ -524,7 +522,7 @@ At the end of the pass, $\nabla f(x)=r_0$ is obtained. All adjoints are stored, 
 
 \subsubsection{Second reverse pass (second-order adjoints)}
 
-The adjoint equations are differentiates w.r.t themselves.
+The adjoint equations are differentiated w.r.t themselves.
 
 Let $\dot{r}_k$ denote the \emph{second-order adjoint} defined by 
 \begin{equation}
@@ -674,7 +672,7 @@ RoR
 \caption{Cost of assembling the full Hessian matrix}
 \end{table}
 
-Among the four strategies, forward-on-reverse is, preferred in practice, as it provides Hessian-vector products 
+Among the four strategies, forward-on-reverse is preferred in practice, as it provides Hessian-vector products 
 at a computational cost comparable to that of a gradient evaluation, while avoiding the prohibitive memory requirements 
 of reverse-on-reverse differentiation.
 
@@ -683,7 +681,7 @@ Above sections considered \emph{explicit} functions where each intermediary step
 \emph{Implicit} functions differentiation is considered when the intermediary steps are hidden and only the output is known (e.g. Newton's method, Gradient Descent).
 
 Usual AD is inefficient for this type of functions due to the requirements of unrolling the implicit function behavior.
-Instead, one could use the fact that the derivatives depends on the solution and the path.
+Instead, one could use the fact that the derivatives depend on the solution and the path.
 
 For instance, one may consider the square root function $x=\sqrt a$ and extract its implicit formulation through a fixed-point equation.
 \begin{equation}
@@ -700,23 +698,22 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
 \begin{thm}[Inverse function theorem]
   Assume
   \begin{itemize}[noitemsep]
-    \item $f:\mathcal{W} \to \mathcal{W}$ is $C^2$
+    \item $f:\mathcal{W} \to \mathcal{W}$ is $C^2$;
     \item $\partial f (w_0)$ is invertible.
   \end{itemize}
   Then 
   \begin{itemize}[noitemsep]
-    \item $f$ is bijective from a neighborhood of $w_0$ to a neighborhood of $f(w_0)$
-    \item For $\omega$ in a neighborhood of $f(w_0)$, $f^{-1}$ is $C^2$ and $\partial f^{-1}(\omega)=(\partial f(f^{-1}(w)))^{-1}$
-    where the last equation has been obtained through the chain rule.
+    \item $f$ is bijective from a neighborhood of $w_0$ to a neighborhood of $f(w_0)$;
+    \item For $\omega$ in a neighborhood of $f(w_0)$, $f^{-1}$ is $C^2$ and $\partial f^{-1}(\omega)=(\partial f(f^{-1}(w)))^{-1}$ where the last equation has been obtained through the chain rule.
   \end{itemize}
 \end{thm}
 
 \begin{thm}[Implicit function theorem (IFT)]
   Assume
   \begin{itemize}[noitemsep]
-    \item $F:\mathcal{W}\times \Lambda \to \mathcal{W}$ ($w$ is the variable and $\lambda$ is a parameter)
-    \item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\partial_1 F(w_0, \lambda_0) \neq 0$
-    \item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$ 
+    \item $F:\mathcal{W}\times \Lambda \to \mathcal{W}$ ($w$ is the variable and $\lambda$ is a parameter);
+    \item $\exists (w_0, \lambda_0)$ such that $F(w_0, \lambda_0) = 0$ and $\partial_1 F(w_0, \lambda_0) \neq 0$;
+    \item $F(w,\lambda)$ is $C^2$ in a neighborhood $\mathcal{U}$ of $(w_0, \lambda_0)$.
   \end{itemize}
   Then there exists a neighborhood $\mathcal{V} \subseteq \mathcal{U}$ where exists $w^*(\lambda)$ such that:
   \begin{equation}
@@ -741,11 +738,11 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
   \end{equation*}
   Let $F(y,x)=x^2+y^2-1$. Given an initial point $(x_0,y_0)$ with $x^2_0+y^2_0=1$.
   \begin{itemize}[noitemsep]
-    \item if $y_0>0$ then IFT holds and $y^*(x)=y^+(x)$,
-    \item if $y_0<0$ then IFT holds and $y^*(x)=y^-(x)$,
+    \item if $y_0>0$ then IFT holds and $y^*(x)=y^+(x)$;
+    \item if $y_0<0$ then IFT holds and $y^*(x)=y^-(x)$;
     \item if $y_0=0$ then $\partial_1 F(y_0,x_0)=2y_0=0$ so IFT does not hold.
   \end{itemize}
-  This example shows that even a function such as $F(y,x)=x^2+y^2-1$ with 2 possible explicit functions does not violate the IFT.
+  This example shows that even a function such as $F(y,x)=x^2+y^2-1$, with 2 possible explicit functions, does not violate the IFT.
 \end{exmp}
 \subsection{Implicit JVP and VJP}
 For implicit differentiation, derivatives must be propagated differently.
@@ -753,8 +750,7 @@ For implicit differentiation, derivatives must be propagated differently.
 Consider the implicit function defined by $F(w^*, \lambda) = 0$, from which one may want to compute the JVP and VJP.
 
 \subsubsection{JVP}
-Reminding that the forward tangent at step $k$, $t_k$, is computed using the known previous tangent $t_{k-1}$, and the function at the step,
-assuming the IFT holds, the following equality may be derived.
+Reminding that the forward tangent at step $k$, $t_k$, is computed using the known previous tangent $t_{k-1}$, and assuming the IFT holds, the following equality may be derived.
 \begin{equation}
 	t_k = - \left( \partial_1 F(w^*, \lambda) \right)^{-1} \cdot \partial_2 F(w^*, \lambda) \cdot t_{k-1}
 \end{equation}
@@ -824,6 +820,7 @@ If the IFT holds for this function, then $\partial_1 F(w^*, \lambda)$ can be com
 	Diag(A^Ty - c) & Diag(x)A^T
   \end{bmatrix}
 \end{equation}
+$\partial_2 F(w^*, \lambda)$ can also be computed, and we can use the IFT to get the final sensitivity of the problem when the parameters change. 
 \section{Sparse AD}
 Often in practice, the Jacobian matrix is sparse, meaning that many of its entries are zero. In such cases, sparse AD techniques can be used 
 to exploit the sparsity pattern and reduce the computational cost of the Hessian. 
@@ -882,7 +879,7 @@ For instance, it could be a graph where each column is a node and where an edge 
 Once the problem is modeled, any graph coloring algorithm can be used to color the graph such that no two adjacent nodes have the same color. 
 As a result, each color represents a group of columns that can be combined together for the JVPs. The same can be done for the rows for the VJPs. 
 
-Here is a visual example.
+Here is a visual example:
 \begin{equation}
   J = \begin{bmatrix}
 	0 & \textcolor{red}{*} & 0 & \textcolor{blue}{*} & 0\\
@@ -892,11 +889,11 @@ Here is a visual example.
   \end{bmatrix}
 \end{equation}
 \begin{center}
-  \begin {tikzpicture}[auto ,node distance = 2.5 cm and 2.5 cm ,on grid ,
-	semithick ,
-	state1/.style ={ circle ,top color =white , bottom color = red ,
-	draw,red , text=black , minimum width =1 cm}, state2/.style ={ circle ,top color =white , bottom color = blue ,
-	draw,blue , text=black , minimum width =1 cm}]
+  \begin{tikzpicture}[auto, node distance=2.5 cm and 2.5cm, on grid,
+	semithick,
+	state1/.style ={circle, top color=white, bottom color=red,
+	draw, red, text=black, minimum width=1cm}, state2/.style={circle, top color=white, bottom color=blue,
+	draw, blue, text=black, minimum width=1cm}]
 	\node[state1] (E) {$5$};
 	\node[state2] (D) [above right=of E] {$4$};
 	\node[state2] (C) [above left=of E] {$3$};
@@ -909,7 +906,7 @@ Here is a visual example.
   \end{tikzpicture}
 \end{center}
 \begin{itemize}
-	\item [$\to$] Note: In more complex sparsity patterns, somes nodes could be linked multiple times.
+	\item [$\to$] Note: in more complex sparsity patterns, somes nodes could be linked multiple times.
 \end{itemize}
 The probem can also be modeled as a bipartite graph, where one set of nodes represents the columns and the other set represents the rows. 
 There will be an edge between a column node and a row node if the corresponding entry in the matrix is non-zero. 
@@ -1085,12 +1082,12 @@ Following eq.\ref{eq:sum_hvp}, equations for those components would be
 which are cycling equations. Solving this system requires additional HVPs.
 
 \subsubsection{Acyclic coloring}
-An \emph{acyclic coloring} ensures that for any two colors $c_1,c_2$, the induced subgraph has no cycles.
+An \emph{acyclic coloring} ensures that for any two colors $c_1,c_2$, the induced subgraph has no cycle.
 It is, therefore, a \emph{tree} or a \emph{forest} where every connected component has at least one leaf.
 
 The algorithm follows
 \begin{enumerate}[noitemsep]
-  \item Suppose node $i$ (colored $c_1$) is connected to exactly one node $j$ (colored $c_2$). $i$ is a leaf.
+  \item Suppose node $i$ (colored $c_1$) is connected to exactly one node $j$ (colored $c_2$): $i$ is a leaf.
   \item From the HVP from color $c_2$, one obtains
         \begin{equation*}
           (Hv^{(c_2)})_i=H_{ij}
@@ -1108,8 +1105,8 @@ This strategy only requires as much HVPs as there are colors required to form an
 Mentally, this process can be seen as 
 \begin{formal}
   \begin{itemize}[noitemsep]
-    \item Each HVP gives blurred information
-    \item Acyclic coloring makes sure that blur can always be unblurred locally
+    \item Each HVP gives blurred information;
+    \item Acyclic coloring makes sure that blur can always be unblurred locally.
   \end{itemize}
 \end{formal}
 
@@ -1126,14 +1123,14 @@ They are composed of layers of interconnected nodes (neurons) that process and t
 
 First let's define some variables:
 \begin{itemize}[noitemsep]
-  \item $X$: input data (matrix)
-  \item $y$: target data
-  \item $W_k$: weights matrix at layer $k$
-  \item $b_k$: bias vector at layer $k$
-  \item $\sigma$: activation function (ReLU, sigmoid, etc)
-  \item $\ell(.)$: loss function 
-  \item $H$: number of hidden layers
-  \item $S_i$: intermediate state  
+  \item $X$: input data (matrix);
+  \item $y$: target data;
+  \item $W_k$: weight matrix at layer $k$;
+  \item $b_k$: bias vector at layer $k$;
+  \item $\sigma$: activation function (ReLU, sigmoid, etc);
+  \item $\ell(.)$: loss function;
+  \item $H$: number of hidden layers;
+  \item $S_i$: intermediate state.
 \end{itemize} 
 A neural network can be seen as a composition of functions, the type of which was discussed in sections above.
 A neural network needs to be trained, or in other words its parameters have to be optimized. Optimization requires computing derivatives 
@@ -1150,7 +1147,7 @@ The forward pass of a neural network can be described in two equivalent ways.
 	&S_{2H+2} = \ell(S_{2H+1}, Y) \qquad &&S_{2H+2} = \ell(S_{2H+1}, Y)\\ 
   \end{aligned}
 \end{equation}
-The main differences resides in the fact that weights are applied on the left side or on the right side of the data.
+The main difference resides in the fact that weights are applied on the left side or on the right side of the data.
 It can be useful depending on whether the inputs are represented as rowvectors or columnvectors.
 
 Figures \ref{fig:nn_fd} and \ref{fig:nn_bd} shows the respective computational graphs.
@@ -1205,17 +1202,16 @@ Accordingly, the cross-entropy can be simplified
   First step of word vectorization is \emph{tokenization}.
 \end{formal}
 
-Considering one has $n_{ctx}$ characters of context and wants to predict the next characters. The one-hot encoding would lie in $\R^{26}$, thus $n_{voc} = 26$. 
+Consider one has $n_{ctx}$ characters of context and wants to predict the next characters. The one-hot encoding would lie in $\R^{26}$, thus $n_{voc} = 26$. 
 It imposes $n_{ctx}$ to be very large, which is not a good news because transormers have a quadratic complexity in $n_{ctx}$.
 
-Another strategy consists in one-hot encoding each word, but the vocabulary size is often very large (+200k words).
-While this strategy could lead to relative low $n_{ctx}$, $n_{voc}$ would be to big.
+Another strategy consists in one-hot-encoding each word, but the vocabulary size is often very large (+200k words).
+While this strategy could lead to relative low $n_{ctx}$, $n_{voc}$ would be too big.
 
 \subsection{Byte Pair Encoding (BPE)}
-An intermediate solution is to use a \emph{Byte Pair Encoding} algorithm which greedily merges the most frequent pairs of tokens into new tokens.
+An intermediate solution is to use a \emph{Byte Pair Encoding} algorithm, which greedily merges the most frequent pairs of tokens into new tokens.
 
-For instance, considering the word \texttt{abracadabra} at the character level, one may observe that it has two frequent pairs \texttt{ab} and \texttt{ra}, 
-which can be merged into new tokens \texttt X and \texttt Y respectively.
+For instance, considering the word \texttt{abracadabra} at the character level, one may observe that it has two frequent pairs \texttt{ab} and \texttt{ra}, that can be merged into new tokens \texttt X and \texttt Y respectively.
 \begin{equation}
   \texttt{abracadabra} \to \texttt{XYcadXY}
 \end{equation}
@@ -1227,25 +1223,24 @@ The next iteration could give:
 \end{equation}
 This tokenization method allows to have a good trade-off between the vocabulary size $n_{voc}$ and the context size $n_{ctx}$. 
 
-However, if the model isn't trained enough, it could return a sequence of tokens making no sense (a sequence of words not related to the previous token) 
+However, if the model is not trained enough, it could return a sequence of tokens making no sense (a sequence of words not related to the previous token) 
 if this sequence is the most common token present after the given input context (for instance, returning "is my daughter" after "During the month of April")
 in the training corpus.
 
 \subsection{Byte BPE}
 \emph{Byte BPE} (Byte Byte Pair Encoding) consists in replacing every character by its numerical value in an ASCII extended table 
-(for instance the \hyperlink{https://en.wikipedia.org/wiki/ISO_8859-1}{ISO 8859-1} table). This allows the model to be more flexible on word encodings and accept any language. 
+(for instance the \href{https://en.wikipedia.org/wiki/ISO_8859-1}{ISO 8859-1} table). This allows the model to be more flexible on word encodings and accept any language. 
 
 The greatest strength of the Byte BPE encoding consists in separating radicals from prefixes and suffixes by working at character level. 
 For instance, the words \textbf{optimiz}e, \textbf{optimiz}ing, \textbf{opimiz}ation, ..., all have the radical \textbf{optimiz} in common 
 and the Byte BPE encoder would be able to determine that \textbf{optimiz} is an enough repeating sequence of character to form a single token. 
-Instead of storing the 3 words separately, it will store the radical \textbf{optimiz}, and the suffixes \emph{e},\emph{ing}, and \emph{ation} 
-which are pretty common in other English words. 
+Instead of storing the 3 words separately, it will store the radical \textbf{optimiz}, and the suffixes \emph{e}, \emph{ing} and \emph{ation}, which are pretty common in other English words. 
 
 However, if the encoder is not trained enough, it could be affected by the same issue affecting the usual BPE described above.
 
 \section{Embedding}
 \begin{formal}
-  Second step of word vectorization is \emph{embedding}
+  Second step of word vectorization is \emph{embedding}.
 \end{formal}
 
 Consider a vocabulary of size $n_{voc}$, a bigram model and a network with $d$ layers. 
@@ -1256,7 +1251,7 @@ The model would be:
 \end{equation}
 The matrix $W_1$ has $n_{voc}$ columns and $W_d$ has $n_{voc}$ rows. When $n_{voc}$ is large, the model becomes problematically big.
 
-The main idea resides in using a pair of encoder / decoder to reduce the size. This techniques is called \emph{embedding} and it reduces the vocabulary size to 
+The main idea resides in using a pair of encoder/decoder to reduce the size. This technique is called \emph{embedding} and it reduces the vocabulary size to 
 the embedding size $d_{emb}$ with $d_{emb} \ll n_{voc}$. The encoder ($C \in \R^{d_{emb} \times n_{voc}}$) maps the one-hot encoding of size $n_{voc}$ to 
 a dense vector of size $d_{emb}$ and the decoder ($D \in \R^{n_{voc} \times d_{emb}}$) maps back the dense vector to a vector of size $n_{voc}$. 
 
@@ -1265,7 +1260,7 @@ The model becomes
   \hat{p}(x_0 | x_{-1}) = \softmax(D W_d \tanh(\dots \tanh(W_1 C x_{-1})\dots ))
 \end{equation}
 Choosing $d_{emb}$ wisely ($d_{emb}\ll n_{voc}$), it becomes faster to compute $W_1(C x_{-1})$ in the new embedding size. 
-Moreover, this forces $W_1C$ to be low-rank which can help to reduce overfitting but reduce the \emph{expressiveness} (capacity to capture a range of possible relation between 
+Moreover, this forces $W_1C$ to be low-rank which can help reduce overfitting but it reduces the \emph{expressiveness} (capacity to capture a range of possible relation between 
 input and output) of the model. When $n_{ctx} > 1$, it is possible to compute the embedding matrix once for every vector in the input context. 
 
 In experimentation, it appeared that forcing $D = C^T$ works well in practice.
@@ -1275,7 +1270,7 @@ When $n_{ctx} > 1$, the encoder C is shared by all tokens, and the model can be 
 \begin{equation}
   \hat{p}(x_0 | x_{-1}, \ldots, x_{-n_{ctx}}) = \softmax(D W_d \tanh(\dots \tanh(W_1 \begin{bmatrix} C x_{-1} \\ \vdots \\ C x_{-n_{ctx}} \end{bmatrix}) \dots ))
 \end{equation}
-$W_1$ is a matrix of dimensions $n_{voc}\times n_{ctx}d_{emb}$. Assuming $d_{emb} \ll n_{voc}$ and $n_{ctx} \gg 1$, this is much smaller than $n_{ctx}n_{voc}$ 
+$W_1$ is a matrix of dimension $n_{voc}\times n_{ctx}d_{emb}$. Assuming $d_{emb} \ll n_{voc}$ and $n_{ctx} \gg 1$, this is much smaller than $n_{ctx}n_{voc}$ 
 occurring before the embedding phase. The number of rows of $W_2$ is not affected by the embedding and remains $n_{voc}$.
 
 Figure \ref{fig:shared_embedding} depicts the model with shared embedding.
@@ -1312,14 +1307,14 @@ This model presents some limitations:
 \subsection{Attention}
 \subsubsection{Numerical Dictionary}
 Consider keys $k_i \in \R^{d_k}$, values $v_i \in \R^{d_v}$. 
-Given a query $q \in \R^{d_k}$, one may wants to retrieve the value $v_i$ corresponding to the key $k_i$ that is the most similar to the query $q$. 
-The adapated tool for this task is the dot-product. 
+Given a query $q \in \R^{d_k}$, one may want to retrieve the value $v_i$ corresponding to the key $k_i$ that is the most similar to the query $q$. 
+The adapted tool for this task is the dot-product. 
 
-For each token, the query $q_i$, the key $k_i$, and the vaue $v_i$ may be seen as answers to the following questions.
+For each token, the query $q_i$, the key $k_i$, and the vaue $v_i$ may be seen as answers to the following questions:
 \begin{itemize}[noitemsep]
   \item $q_i$: What am I looking for?
   \item $k_i$: What do I contain?
-  \item $v_i$: What information do I pass if I’m selected?
+  \item $v_i$: What information do I pass if I am selected?
 \end{itemize}
 
 One key aspect of this numerical dictionary is its \emph{differentiability}. This property will be useful when training the full model.
@@ -1330,7 +1325,7 @@ With a numerical dictionary defined as above, \emph{attention head} is defined a
   \text{Attention}(Q,K,V) = \sum_{i=1}^{n_{ctx}} \alpha_i v_i
 \end{equation}
 where $\alpha = \softmax(\langle q,k_1\rangle, \cdots, \langle q,k_{n_{ctx}}\rangle)$ is the attention weight for key $k_i$. 
-In practice, however, queries, keys, and values are vectors. They are respectively contained in matrices $Q, K, V$. 
+In practice, however, queries, keys and values are vectors. They are respectively contained in matrices $Q, K, V$. 
 
 With the matrix definition, the \emph{attention head} may be rewritten.
 \begin{equation}
@@ -1352,16 +1347,16 @@ It is the key characteristic that allows the transformer to capture the meaning 
 In particular, it helps the model understand that \emph{blue} and \emph{monster} are not two independant concepts, but rather form a single idea : \emph{a blue monster}. 
 
 The heatmap shown represents the attention weights of a transformer trained for translation. It clearly shows that although \emph{europ\'eenne} and 
-\emph{European} do not appear at the same position in the source and target sentences, the transformer is able to determinate they share a closely related meaning.
+\emph{European} do not appear at the same position in the source and target sentences, the transformer is able to determinate that they share a closely related meaning.
 \begin{figure}
   \centering
   \includegraphics[width=0.5\linewidth]{img/attention_heatmap.png}
-  \caption{Heatmap representation of the attention of a transformer trained for translation}
+  \caption{Heatmap representation of the attention of a transformer trained for translation.}
   \label{fig:attention_heatmap}
 \end{figure}
 
 \subsection{Masked attention}
-To ensure that the model only attends to previous tokens and not future tokens, a masked attention mechanism must bed. 
+To ensure that the model only attends to previous tokens and not future tokens, a masked attention mechanism must be used. 
 This is done by applying a mask to the attention weights before the softmax operation. 
 The mask is typically a lower triangular matrix that sets the weights corresponding to future tokens to negative infinity, 
 effectively preventing them from contributing to the attention output.
@@ -1406,7 +1401,7 @@ The positional encoding is essential in a transformer model because it provides 
 Since transformers do not have a built-in notion of sequence order like RNNs, positional encodings are added to the input embeddings 
 to give the model a sense of position.
 
-The one-hot encodings can't be used for the position because the dimension would be $n_{ctx}$ and not $d_{emb}$ as expected. 
+One-hot encoding cannot be used for the position because the dimension would be $n_{ctx}$ and not $d_{emb}$ as expected. 
 The classic approach uses sines and cosines with an angle depending on the position of the token and the embedding dimension. 
 
 The positional encoding of a token at position $pos$, with the embedding index $i$, and embedding dimension $d_{emb}$, could be defined as
@@ -1425,7 +1420,7 @@ The positional encoding is added to the input embedding before applying the atte
 
 \subsection{Residual connection}
 The principle of \emph{residual connection} is to add the input of a layer to its output before applying the layer normalization (see next section).
-\footnote{It corresponds to the \emph{Add} part of a \emph{Add\&Norm} layer}
+\footnote{It corresponds to the \emph{Add} part of a \emph{Add\&Norm} layer.}
 
 This mitigates the vanishing gradient problem and helps the network's learning by reminding it of the original input.
 
@@ -1437,7 +1432,7 @@ Two normalization techniques are typically considered.
   \item Batch normalization computes the mean and variance per \textbf{feature}, across all \emph{samples}. 
   It aims to normalize the importance of a feature for every sample. For a feature $j$, every sample will have the same mean and variance.  
 
-  Due to its dependence on the number of samples, this techniques performs poorly for RNNs and autoregressive models, which are based on sequences.
+  Due to its dependence on the number of samples, this technique performs poorly for RNNs and autoregressive models, which are based on sequences.
   \item Layer normalization computes the mean and variance per \textbf{sample}, across all \emph{features}.
   It aims to normalize the importance of all features in a sample such that none is preponderant.
 
@@ -1445,7 +1440,7 @@ Two normalization techniques are typically considered.
 \end{enumerate}
 
 A \emph{normalization layer} helps stabilize the training process and improve convergence by rescaling the data before the activation function. 
-It helps keeping data's mean and variance under control. 
+It helps keep data's mean and variance under control. 
 
 It can be formulated as
 \begin{equation}
@@ -1466,35 +1461,33 @@ applied to each token independently and identically,
 \end{equation}
 with
 \begin{itemize}
-  \item $W_1 \in \R^{d_{ff} \times d_{emb}}$ 
-  \item $W_2 \in \R^{d_{emb} \times d_{ff}}$
-  \item $d_{ff}$ the dimension of the feed-forward layer. Empirically, it appears that $d_{ff}=4d_{emb}$ works nicely
+  \item $W_1 \in \R^{d_{ff} \times d_{emb}}$;
+  \item $W_2 \in \R^{d_{emb} \times d_{ff}}$;
+  \item $d_{ff}$ the dimension of the feed-forward layer. Empirically, it appears that $d_{ff}=4d_{emb}$ works nicely.
 \end{itemize}
 The feed-forward network is used to introduce non-linearity and increase the model's capacity to learn complex patterns in the data. 
 
-It is used the remember more complex information in the weights\footnote{For instance, an FNN layer could be used to remember that Max Verstappen is an 
-F1 driver although it is not written explicitly in the input context.}, which helps the model to better understand the complex relationships between 
+It is used to remember more complex information in the weights\footnote{For instance, an FNN layer could be used to remember that Max Verstappen is an 
+F1 driver although it is not written explicitly in the input context.}, which helps the model better understand the complex relationships between 
 tokens in the sequence.
-
 \subsection{Transformers variation}
-
 \textcolor{red}{To investigate ?}
 \section{Performances of transformers}
-Before analyzing the complexity of a transformer, here is a quick reminder of the key dimensions used in a transformer
+Before analyzing the complexity of a transformer, here is a quick reminder of the key dimensions used in a transformer:
 \begin{itemize}[noitemsep]
-  \item $n_{ctx}$: context size (number of tokens in the input sequence)
-  \item $n_{voc}$: vocabulary size (number of unique tokens)
-  \item $d_{emb}$: embedding size (dimension of embeddings)
-  \item $d_k, d_v$: key and value dimension (per head)
-  \item $d_{ff}$: feed-forward network dimension
-  \item $N$: number of layers
+  \item $n_{ctx}$: context size (number of tokens in the input sequence);
+  \item $n_{voc}$: vocabulary size (number of unique tokens);
+  \item $d_{emb}$: embedding size (dimension of embeddings);
+  \item $d_k, d_v$: key and value dimension (per head);
+  \item $d_{ff}$: feed-forward network dimension;
+  \item $N$: number of layers;
 \end{itemize}
-The time complexity of a transformer can be analyzed step by step, ignoring the embedding step,
+The time complexity of a transformer can be analyzed step by step, ignoring the embedding step:
 \begin{enumerate}[noitemsep]
-  \item Linear projections for $Q, K, V$ (with $W_j^Q, W_j^K, W_j^V$): $\Oo\left(d_k d_{emb} n_{ctx}\right)$
-  \item Attention score computation ($K^TQ$): $\Oo\left((d_k+d_v)n_{ctx}^2\right)$
-  \item Output projection ($W^O$): $\Oo\left(d_v d_{emb} n_{ctx}\right)$
-  \item FFN: $\Oo\left(d_{emb} d_{ff} n_{ctx}\right)$
+  \item Linear projections for $Q, K, V$ (with $W_j^Q, W_j^K, W_j^V$): $\Oo\left(d_k d_{emb} n_{ctx}\right)$;
+  \item Attention score computation ($K^TQ$): $\Oo\left((d_k+d_v)n_{ctx}^2\right)$;
+  \item Output projection ($W^O$): $\Oo\left(d_v d_{emb} n_{ctx}\right)$;
+  \item FFN: $\Oo\left(d_{emb} d_{ff} n_{ctx}\right)$;
 \end{enumerate}
 This brings the total cost for a single layer to:
 \begin{equation}
@@ -1554,7 +1547,7 @@ The update rule for Langevin dynamics is given by:
 \end{equation}
 with $w_k \sim \mathcal{N}(0, 1)$ and $\delta_k$ is a small step size. 
 By repeating this process many times, the samples $y_k$ will converge to the target distribution $p(y)$. 
-Adding this noise is important because it helps the samples to explore the space more effectively and avoid getting stuck in local modes of the distribution. 
+Adding this noise is important because it helps the samples explore the space more effectively and avoid getting stuck in local modes of the distribution. 
 
 The Langevin dynamics is seen in diffusion models at each denoising step.
 
@@ -1589,7 +1582,7 @@ On the picture below, we can see what denoising looks like with DDIM (Denoising 
 The idea is to use a deterministic process to reverse the diffusion process. If we denoise in one step, for low noise levels, it works quite well. 
 
 For large noise levels, the score provides only a global direction, so multiple denoising steps are required to gradually approach the data manifold.
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth]{img/DDIM.png}
 	\caption{DDIM sampling example}
@@ -1628,7 +1621,7 @@ We can thus define:
 \section{Auto-Encoder}
 We want to find an encoder $E$ and a decoder $D$ that minimize the loss:
 \begin{equation}
-	\E[\| X - D(E(X)) \|^2_2]
+	\E\left[\| X - D(E(X)) \|^2_2\right]
 \end{equation}
 $E(X)$ typically reduces the dimension of $X$ to force the model to keep only essential features. 
 
@@ -1690,13 +1683,13 @@ and since the $\log$ function is concave, it respects $\log \E[f(x)]\ge \E[\log 
   \log p_\theta(x) \ge E_{q(z\mid x)}\left\lbrack\log\frac{p_\theta(x,z)}{q(z\mid x)}\right\rbrack = E_{q(z\mid x)}[\log p_\theta(x,z) - \log q(z\mid x)] \triangleq \mathcal L_\text{ELBO}(x)
 \end{equation}
 
-In diffusion model convention, the ELBO is usually decomposed over time steps
+In diffusion model convention, the ELBO is usually decomposed over time steps:
 \begin{equation}
   \mathcal L_\text{ELBO}(x)=\E_q\left\lbrack\log p_\theta(x_0\mid x_1)+\sum^T_{t=2}\log p_\theta(x_{t-1}\mid x_t)\right\rbrack + \log p(x_T)
 \end{equation}
 
 \subsection{KL Divergence}
-\emph{The KL divergence} is a meaningful tool to understand how maximizing the \emph{ELBO} leads to learn the right distribution.
+\emph{The KL divergence} is a meaningful tool to understand how maximizing the \emph{ELBO} leads to learning the right distribution.
 
 It is defined as 
 \begin{equation}
@@ -1766,7 +1759,7 @@ With the simple case where $D_\sigma(z) = 1$, we get this approximation ($L_2$ f
 	\E \left[ \log(f_{X|Z}(x|Y))\right] \approx - \dfrac{\log(2\pi)}{2} + \dfrac{1}{L} \sum_{i=1}^{L} \| x - D_\mu(E_\mu(x) + \epsilon_i ) \|^2_2
 \end{equation}
 \subsection{Maximum Likelihood Estimator with variational Auto-Encoder}
-Reminder, the encoder $E$ maps a data point $x$ to a Gaussian distribution $Y \sim \mathcal{N}(E_\mu(x), E_\sigma(x))$. 
+Remember that the encoder $E$ maps a data point $x$ to a Gaussian distribution $Y \sim \mathcal{N}(E_\mu(x), E_\sigma(x))$. 
 The decoder $D$ maps a latent variable $z$ to the Gaussian distribution $\mathcal{N}(D_\mu)$. 
 
 The maximum likelihood estimator, maximizes the following sum over our datapoints $x$ with its ELBO:
@@ -1776,14 +1769,12 @@ The maximum likelihood estimator, maximizes the following sum over our datapoint
 So it minimizes the loss i.e. the second term. And the KL divergence is acting as a regularizer to prevent overfitting.
 \subsection{Denoising Auto-Encoder}
 All of the previous subsections have been explained to get to this point: Denoising Auto-Encoder. 
-remember the goal of the diffusion model is to denoise data ($Y = X + \sigma \varepsilon$) and find the noise $\varepsilon$, 
-the denoising auto-encoder tries instead to find the original data $X$. 
-
+Remember that the goal of the diffusion model is to denoise data ($Y = X + \sigma \varepsilon$) and find the noise $\varepsilon$. The denoising auto-encoder tries instead to find the original data $X$. \\
 We have those following structures:
 \begin{itemize}[noitemsep]
-	\item Auto-Encoder $D(E(X))$
-	\item Variational Auto-Encoder $D(E(X) + \varepsilon)$
-	\item Denoising Auto-Encoder $D(E(X + \sigma \varepsilon))$
+	\item Auto-Encoder $D(E(X))$;
+	\item Variational Auto-Encoder $D(E(X) + \varepsilon)$;
+	\item Denoising Auto-Encoder $D(E(X + \sigma \varepsilon))$.
 \end{itemize}
 To train the denoising auto-encoder, we can use the Evidence Lower-Bound with $Y = X + \sigma \varepsilon$ and $Z$ such that $X = D(E(Z))$:
 \begin{equation}
@@ -1791,7 +1782,7 @@ To train the denoising auto-encoder, we can use the Evidence Lower-Bound with $Y
 \end{equation}
 \section{Conditioned Diffusion Models}
 Conditioned diffusion generates data by denoising noise, but the denoising is guided by a conditioning signal (text, image, layout, etc.). 
-Where unconditioned diffusion learn $p(x)$, conditioned diffusion learn $p(x|c)$, with $c$ the conditioning signal. 
+Where unconditioned diffusion learns $p(x)$, conditioned diffusion learns $p(x|c)$, with $c$ the conditioning signal. 
 It is for example used to train text-to-image generation, where the model generates an image based on a text description. 
 This conditioned diffusion will need to learn the relationship between the text and the image so it will need cross-attention like in a transformer.
 \section{Classifier-Free Guidance}
