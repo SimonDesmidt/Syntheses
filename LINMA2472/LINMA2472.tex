@@ -75,6 +75,11 @@
   \vspace{2pt}\end{adjustwidth}\endMakeFramed
 }
 
+% allows multiple places to referrence the same footnote by using \footnote{\label{x}...} and \footnoteref{x}
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
 \hbadness=100000
 \begin{document}
 \begin{titlepage}
@@ -1836,7 +1841,8 @@ The maximum likelihood estimator, maximizes the following sum over our datapoint
 So it minimizes the loss i.e. the second term. And the KL divergence is acting as a regularizer to prevent overfitting.
 \subsection{Denoising Auto-Encoder}
 All of the previous subsections have been explained to get to this point: Denoising Auto-Encoder. 
-Remember that the goal of the diffusion model is to denoise data ($Y = X + \sigma \varepsilon$) and find the noise $\varepsilon$. The denoising auto-encoder tries instead to find the original data $X$. \\
+Remember that the goal of the diffusion model is to denoise data ($Y = X + \sigma \varepsilon$) and find the noise $\varepsilon$. 
+The denoising auto-encoder tries instead to find the original data $X$. \\
 We have those following structures:
 \begin{itemize}[noitemsep]
 	\item Auto-Encoder $D(E(X))$;
@@ -1847,8 +1853,17 @@ To train the denoising auto-encoder, we can use the Evidence Lower-Bound with $Y
 \begin{equation}
 	-\log(f_X(x)) \leq D_{KL}((Y|X=x) \| Z) - \E[\log(f_{X|Z}(x|Y))]
 \end{equation}
+
 \section{Conditioned Diffusion Models}
-Conditioned diffusion generates data by denoising noise, but the denoising is guided by a conditioning signal (text, image, layout, etc.). 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{img/conditionned_diffusion.png}
+	\caption{Conditioned Diffusion trained with U-Net}
+	\label{fig:cond_diff}
+\end{figure}
+
+Conditioned diffusion, illustrated on fig \ref{fig:cond_diff}, generates data by denoising noise, but the denoising is guided by a conditioning signal (text, image, layout, etc.). 
 Where unconditioned diffusion learns $p(x)$, conditioned diffusion learns $p(x|c)$, with $c$ the conditioning signal. 
 It is for example used to train text-to-image generation, where the model generates an image based on a text description. 
 This conditioned diffusion will need to learn the relationship between the text and the image so it will need cross-attention like in a transformer.
@@ -1870,6 +1885,18 @@ The optimization problem can be formulated as:
 \end{equation}
 The fact that we try to retrieve the same image under different transformations creates conflicting objectives that lead to the generation of optical illusions.
 
+\section{Summary}
+
+In practice, the denoising auto-encoder is only a theoritical model that englobes the whole diffusion model concept. A diffusion model practically consists
+in 
+\begin{itemize}
+	\item an encoder\footnote{\label{vae_diff_sum} The encoder and the decoder are together trained using a Variational Auto Encoder (VAE), the variational (= stochastic) 
+	property of the auto encoder allows it to increase the spanned space.} to reduce the dimension of the latent space, which is used by the diffusion process;
+	\item a known noising schedule to obtain probabilistically known noised data (e.g. images) for training purpose;
+	\item a transformer trained to determine $\nabla_y\log_y f_Y(y)$, the log distribution of the denoising process, which, using Langevin's dynamics,
+	can be used to recover the noise distribution. The transformer can be optionnally conditionned on additional input data (e.g. text in models like Sora for instance);
+	\item a decoder\footnoteref{vae_diff_sum} to decode vectors (e.g. images) back from the latent space to the output space. 
+\end{itemize}
 
 
 
