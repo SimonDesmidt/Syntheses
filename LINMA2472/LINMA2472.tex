@@ -22,6 +22,7 @@
 \usepackage{textcomp}
 \usepackage{mathtools}
 \usepackage{caption}
+\usepackage{listings}
 \usepackage{tabularray}
 \usepackage{subcaption}
 \usepackage[bottom]{footmisc}
@@ -409,9 +410,9 @@ The forward-on-reverse strategy consists in applying forward-mode AD
 to the reverse-mode computation of the gradient.
 Operationally, this results in:
 \begin{enumerate}[noitemsep]
-  \item a forward pass propagating both primal values and tangents;
-  \item a backward pass in which adjoint variables are augmented with
-        tangent components.
+  \item a forward pass propagating the primal values;
+  \item a backward pass computing the adjoints of the primal values;
+  \item a forward pass computing the tangents the adjoint values.
 \end{enumerate}
 
 Defining $s_1 \triangleq \text{Dual}\left(f_1(x)\ \middle|\ \dfrac{\partial f_1}{\partial x_j}\right)$ 
@@ -437,6 +438,36 @@ reverse-mode AD, and each adjoint update is performed using Dual
 arithmetic.
 
 Here, the tangent component of each adjoint stores the mixed second derivative.
+
+\begin{lstlisting}
+function FoR(f, x, v):
+
+    # 1. Forward pass (primal only)
+    tape = []
+    y = forward_primal(f, x, tape)
+    # tape stores all ops and intermediate primal values
+
+    # 2. Reverse pass (gradient)
+    bar = zero_like(tape.primal_vars)
+    bar[y] = 1.0
+
+    for op in reverse(tape):
+        reverse_adjoint(op, bar)
+
+    grad = bar[x]                  # ∇f(x)
+
+    # 3. Forward pass over reverse
+    dot = zero_like(bar)
+    dot[x] = v                     # seed tangent
+
+    for op in reverse(tape):
+        forward_tangent_of_reverse(op, bar, dot)
+
+    Hv = dot[x]                    # Hessian–vector product
+
+    return grad, Hv
+
+\end{lstlisting}
 \subsection{Reverse on forward}
 
 \subsubsection{Mathematically}
@@ -447,7 +478,11 @@ The reverse-on-forward strategy computes the Vector-Hessian Product (VHP)
 The last equation stands due to the symmetric nature of the Hessian matrix.
 
 \subsubsection{Algorithmically}
-The reverse-on-forward strategy starts with a forward pass.
+The reverse-on-forward strategy reads
+\begin{itemize}
+	\item a forward pass propagating the primal values and their tangent;
+  	\item a backward pass computing the adjoints of both primal and tangent values;
+\end{itemize}
 
 Defining $s_1\triangleq \text{Dual}\left(f_1(x)\ \middle|\ \dfrac{\partial f_1}{\partial x_i }\right)$
 \footnote{Note the difference with the previous modes ($j \to i$).}, the algorithm follows
@@ -474,6 +509,37 @@ The solution of the recurrence equation is given by
 \begin{equation}
   r_k = \text{Dual}\left(\dfrac{\partial f}{\partial s_k}\ \middle|\ \dfrac{\partial^2 f}{\partial s_k \partial x_i}\right)
 \end{equation}
+
+\subsubsection{Pseudo-code}
+\begin{lstlisting}
+function RoF(f, x, v, w):
+
+    # 1. Forward pass (primal + tangent)
+    tape = []
+    dot = {}
+    dot[x] = v                     # seed tangent
+
+    y = forward_primal_tangent(f, x, dot, tape)
+
+    # y      : f(x)
+    # dot[y] : J(x) v
+
+    # 2. Reverse pass
+	# bar accumulates d/d(primal)
+	# bar_dot accumulates d/d(tangent)
+    bar = zero_like(tape.primal_vars)
+    bar_dot = zero_like(tape.tangent_vars)
+
+    bar_dot[y] = w                 # seed cotangent
+
+    for op in reverse(tape):
+        reverse_over_forward(op, bar, bar_dot)
+
+    grad = bar[x]                  # ∇⟨Jv, w⟩
+
+    return grad
+
+\end{lstlisting}
 
 \subsection{Reverse on reverse}
 \subsubsection{Mathematically}
