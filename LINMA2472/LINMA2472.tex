@@ -2000,7 +2000,7 @@ The result is true for any rotation matrix $Q$.
 Let us consider proteins. The alphabet is of size $20$ (number of existing amino-acids), and a protein is made of 4 of these. This means that our space is initially $H = \R^{20^4} = \R^{160.000}$. Consider $N=100$ proteins to classify. \\
 The embedding consists in storing $N$ vectors of size $h=160.000$, meaning 16M scalars. However, we only need the $K$ matrix of size $N^2=10.000$, and the entries are easy to compute. This means that, using the kernel trick, i.e. working with $K$ directly, we are much more efficient when $N\ll h$. 
 \section{Kernels methods for continuous sets}
-\subsection{Reproducibility Kernel Hilbert Space}
+\subsection{Reproducing Kernel Hilbert Space (RKHS)}
 Consider richer sets than finite $X$, e.g. infinite or uncountable sets, with distances defined but not scalar product. Then, let $H$ be a vector space of continuous functions $X\to \R$. $H$ is a RKHS if it is a Hilbert space and 
 \begin{equation}
   \forall x\in X, \: \exists v\in H \text{ such that } \forall f\in H\:: \: \langle v,f\rangle_H = f(x)
