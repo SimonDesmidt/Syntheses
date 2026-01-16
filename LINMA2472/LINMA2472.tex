@@ -723,6 +723,7 @@ The implicit equation is $F(x,a) = x - g(x,a)$ and its solution satisfies $F(x^*
 	\end{aligned}
   \end{equation}
 \end{thm}
+In the example of the square root above, $w$ corresponds to $a$ and $\lambda$ to $x$ (notations have been inversed, ask Benoît).
 \begin{exmp}
   Implicit relation between $x$ and $y$
   \begin{equation*}
@@ -749,11 +750,13 @@ For implicit differentiation, derivatives must be propagated differently.
 Consider the implicit function defined by $F(w^*, \lambda) = 0$, from which one may want to compute the JVP and VJP.
 
 \subsubsection{JVP}
+Let us consider that case where the function that we want to differentiate is the composition of explicit and implicit functions. This can happen in numerical methods such as the gradient descent. The implicit function is only one step in a chain rule, meaning that we can put it in the forward tangent recurrence relation.
+
 Reminding that the forward tangent at step $k$, $t_k$, is computed using the known previous tangent $t_{k-1}$, and assuming the IFT holds, the following equality may be derived.
 \begin{equation}
 	t_k = - \left( \partial_1 F(w^*, \lambda) \right)^{-1} \cdot \partial_2 F(w^*, \lambda) \cdot t_{k-1}
 \end{equation}
-where $t_k = \partial w^*(\lambda)/\partial s_0$ and $t_{k-1} = \partial \lambda / \partial s_0$. 
+where, for that specific step, $t_k = \partial w^*(\lambda)/\partial s_0$ and $t_{k-1} = \partial \lambda / \partial s_0$. 
 Each JVP of the implicit function may be obtained by solving a linear system. 
 
 Setting $A = -\partial_1 F(w^*(\lambda), \lambda)$ and $B = \partial_2 F(w^*(\lambda), \lambda)$, 
@@ -1019,7 +1022,7 @@ Consider the following coloring
   \end{bmatrix}
 \end{equation}
 Using the green color ensures the star coloring condition. 
-Now, computing the 3 HVPs
+Now, computing the 3 JVPs
 \begin{equation}
   J \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} = 
   \begin{bmatrix} a_1 & a_2 + a_3 & 0 \\ a_2 & a_4 & a_5 \\ a_3 & a_6 & 0\\ 0 & a_5 & a_7 \end{bmatrix}
@@ -1564,7 +1567,7 @@ If $\sigma$ is too large, then the noise dominates the signal, and the model may
 
 The loss function used is the Fisher divergence
 \begin{equation*}
-  \E[\|\varepsilon_\theta(y)+\sigma\nabla_y\log f_Y(y)\|^2]=\int_yf_Y(y)\|\varepsilon_\theta(y)+\sigma\nabla_y\log f_Y(y)\|^2\mathrm dy
+  \E\left[\left\|\varepsilon_\theta(Y)+\sigma\nabla_y\log f_Y(y)\right\|^2\right]=\int_yf_Y(y)\left\|\varepsilon_\theta(y)+\sigma\nabla_y\log f_Y(y)\right\|^2\mathrm dy
 \end{equation*}
 
 \subsection{Variance dependent score}
@@ -2134,7 +2137,7 @@ A classical linear classifier searches for parameters $w$ and $b$ to define a hy
 \end{figure}
 Then, the optimal parameters are 
 \begin{equation}
-	\arg\max_{w,b} -\frac{\max_i w^Tx_i^{(1)} + b}{\|w\|_2} + \frac{\min_{i} w^T x_i^{(-1)}+b}{\|w\|_2} \qquad \text{ s.t. }y_i (w^Tx_i + b)>0 \: \forall i \in \{1, \dots,N\}
+	\arg\max_{w,b} \frac{\min_{i} w^T x_i^{(-1)}+b}{\|w\|_2} -\frac{\max_i w^Tx_i^{(1)} + b}{\|w\|_2} \qquad \text{ s.t. }y_i (w^Tx_i + b)>0 \: \forall i \in \{1, \dots,N\}
 \end{equation}
 This formulation is invariant to the scaling of the parameters: reformulating the constraints as 
 \begin{equation}
