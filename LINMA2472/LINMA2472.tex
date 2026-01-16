@@ -454,7 +454,7 @@ function FoR(f, x, v):
     for op in reverse(tape):
         reverse_adjoint(op, bar)
 
-    grad = bar[x]                  # ∇f(x)
+    grad = bar[x]                  # grad f(x)
 
     # 3. Forward pass over reverse
     dot = zero_like(bar)
@@ -463,7 +463,7 @@ function FoR(f, x, v):
     for op in reverse(tape):
         forward_tangent_of_reverse(op, bar, dot)
 
-    Hv = dot[x]                    # Hessian–vector product
+    Hv = dot[x]                    # Hessian vector product
 
     return grad, Hv
 
@@ -535,7 +535,7 @@ function RoF(f, x, v, w):
     for op in reverse(tape):
         reverse_over_forward(op, bar, bar_dot)
 
-    grad = bar[x]                  # ∇⟨Jv, w⟩
+    grad = bar[x]                  # grad <Jv, w>
 
     return grad
 
