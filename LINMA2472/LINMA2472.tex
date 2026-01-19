@@ -1407,7 +1407,7 @@ where the division by $\sqrt{d_k}$ is used to prevent the dot-product from growi
 
 Figure \ref{fig:attention_heatmap} shows the heatmap of the matrix 
 \begin{equation*}
-  K^TQ=\begin{bmatrix}k_1&\dots&k_{n_{ctx}}\end{bmatrix}\begin{bmatrix}q_1\\\vdots\\q_{n_{ctx}}\end{bmatrix}=\begin{bmatrix}
+  K^TQ=\begin{bmatrix}k_1\\ \vdots \\ k_{n_{ctx}} \end{bmatrix}\begin{bmatrix}q_1&\dots&q_{n_{ctx}}\end{bmatrix}=\begin{bmatrix}
     \langle k_1,q_1\rangle&\dots&\langle k_1,q_{n_{ctx}}\rangle\\
     \vdots&\ddots&\vdots\\
     \langle k_{n_{ctx}},q_1\rangle&\dots&\langle k_{n_{ctx}},q_{n_{ctx}}\rangle
