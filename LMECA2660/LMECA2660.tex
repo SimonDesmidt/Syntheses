@@ -1,0 +1,111 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[english]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{pythonhighlight}
+\usepackage[]{titletoc}
+\usepackage{empheq}
+\usepackage{titlesec}
+\usepackage{mathpazo}
+\usepackage{xfrac}
+\usepackage{textcomp}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{tabularray}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage {tikz}
+\usetikzlibrary{positioning}
+\usepackage[strict]{changepage}
+\usepackage{framed}
+\usepackage{fourier}
+\usepackage{amsthm}
+\usepackage[skins]{tcolorbox}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Oo}{\mathcal{O}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\J}{\mathbf{J}}
+\newcommand{\He}{\mathbf{H}}
+\newcommand{\Lo}{\mathcal{L}}
+\newcommand{\softmax}{\text{softmax}}
+\theoremstyle{definition}
+\newtheorem{exmp}{Example}[chapter]
+\newtheorem{thm}{Theorem}[chapter]
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{lem}[thm]{Lemma}
+
+% environment derived from framed.sty: see leftbar environment definition
+\definecolor{formalshade}{rgb}{0.95,0.95,1}
+\definecolor{darkblue}{rgb}{0.0, 0.0, 0.55}
+
+\newenvironment{formal}{
+  \def\FrameCommand{
+    \hspace{1pt}
+    {\color{darkblue}\vrule width 2pt}
+    {\color{formalshade}\vrule width 4pt}
+    \colorbox{formalshade}
+  }
+  \MakeFramed{\advance\hsize-\width\FrameRestore}
+  \noindent\hspace{-4.55pt}% disable indenting first paragraph
+  \begin{adjustwidth}{}{7pt}
+  \vspace{2pt}\vspace{2pt}
+}
+{
+  \vspace{2pt}\end{adjustwidth}\endMakeFramed
+}
+
+% allows multiple places to referrence the same footnote by using \footnote{\label{x}...} and \footnoteref{x}
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
+\hbadness=100000
+\begin{document}
+\begin{titlepage}
+	\begin{sffamily}
+	\begin{center}
+		\includegraphics[scale=0.3]{img/page_de_garde.jpg} \\[1cm]
+		\HRule \\[0.4cm]
+		{ \huge \bfseries LMECA2660 - Numerical Methods in Fluid Mechanics \\[0.4cm] }
+	
+		\HRule \\[1.5cm]
+		\textsc{\LARGE Alexandre Or\'ekhoff \\ \LARGE Simon Desmidt}\\[3cm]
+		{This summary may not be up-to-date, the newer version is available at this address: \hyperlink{https://github.com/SimonDesmidt/Syntheses}{https://github.com/SimonDesmidt/Syntheses}}
+        \vfill
+		\vspace{2cm}
+		{\large Academic year 2025-2026 - Q2}
+		\vspace{0.4cm}
+		 
+		\includegraphics[width=0.15\textwidth]{img/epl.png}
+		
+		UCLouvain\\
+	
+	\end{center}
+	\end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\chapter{}
+\end{document}
