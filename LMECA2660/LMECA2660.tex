@@ -22,18 +22,11 @@
 \usepackage{textcomp}
 \usepackage{mathtools}
 \usepackage{caption}
-\usepackage{listings}
 \usepackage{tabularray}
 \usepackage{subcaption}
 \usepackage[bottom]{footmisc}
 \usepackage{pdfpages}
 \usepackage{tabularx}
-\usepackage{enumitem}
-\usepackage {tikz}
-\usetikzlibrary{positioning}
-\usepackage[strict]{changepage}
-\usepackage{framed}
-\usepackage{fourier}
 \usepackage{amsthm}
 \usepackage[skins]{tcolorbox}
 \titleformat{\chapter}[display]
@@ -43,14 +36,7 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
-\newcommand{\Oo}{\mathcal{O}}
-\newcommand{\E}{\mathbb{E}}
-\newcommand{\J}{\mathbf{J}}
-\newcommand{\He}{\mathbf{H}}
-\newcommand{\Lo}{\mathcal{L}}
-\newcommand{\softmax}{\text{softmax}}
 \theoremstyle{definition}
-\newtheorem{exmp}{Example}[chapter]
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
 \newtheorem{lem}[thm]{Lemma}
@@ -107,6 +93,87 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-\chapter{}
-First
+\chapter{Finite differences with uniform grid}
+\section{Classical finite differences}
+Let us define a function $u(\cdot)$ that depends on a variable $x$. Suppose that in the dimension $x$, we discretize the function uniformly with a step $h$ and the values at the nodes are written $u_i$. Then, by a Taylor development series,
+\begin{equation}
+	\begin{cases}
+		u_{i+1} = u_i + h\left(\frac{\partial u}{\partial x}\right)_i + \frac{h^2}{2!}\left(\frac{\partial^2 u}{\partial x^2}\right)_i + \frac{h^3}{3!}\left(\frac{\partial^3 u}{\partial x^3}\right)_i + \frac{h^4}{4!} \left(\frac{\partial^4 u}{\partial x^4}\right)_i + \dots \\
+		u_{i-1} = u_i - h\left(\frac{\partial u}{\partial x}\right)_i + \frac{h^2}{2!}\left(\frac{\partial^2 u}{\partial x^2}\right)_i - \frac{h^3}{3!}\left(\frac{\partial^3 u}{\partial x^3}\right)_i + \frac{h^4}{4!} \left(\frac{\partial^4 u}{\partial x^4}\right)_i - \dots \\
+	\end{cases}
+\end{equation}
+This gives three possible finite-difference approximations:
+\begin{equation}
+	\begin{aligned}
+		\left(\frac{\partial u}{\partial x}\right)_i = \frac{u_{i+1}-u_i}{h} + \mathcal{O}(h) & \qquad \text{(Forward differences)}\\
+		\left(\frac{\partial u}{\partial x}\right)_i = \frac{u_{i}-u_{i-1}}{h} + \mathcal{O}(h) & \qquad \text{(Backward differences)}\\
+		\left(\frac{\partial u}{\partial x}\right)_i = \frac{u_{i+1}-u_{i-1}}{2h} + \mathcal{O}(h^2) & \qquad \text{(Centered differences)}\\
+	\end{aligned}
+\end{equation}
+This also gives, for the second order, 
+\begin{equation}
+	\left(\frac{\partial^2 u}{\partial x^2}\right)_i = \frac{u_{i+1}-2u_i+u_{i-1}}{h^2} - \frac{h^2}{12} \left(\frac{\partial^4u}{\partial x^4}\right)_i + \dots 
+\end{equation}
+\begin{itemize}
+	\item [$\to$] Note: in general, discentered differences are only used for stability reasons.
+\end{itemize}
+\section{Richardson extrapolation}
+Richardson extrapolation combines centered finite differences at different scales to get a better error:
+\begin{equation}
+	\begin{aligned}
+		\textcolor{red}{\frac{4}{3}\Big [}&\left(\frac{\partial u}{\partial x}\right)_i = \frac{u_{i+1}-u_{i-1}}{2h} - \frac{h^2}{6}\left(\frac{\partial^3 u }{\partial x^3}\right)_i - \frac{h^4}{120}\left(\frac{\partial^5 u}{\partial x^5}\right)_i - \dots\textcolor{red}{\Big]}\\
+		\textcolor{red}{\frac{-1}{3}\Big [}&\left(\frac{\partial u}{\partial x}\right)_i = \frac{u_{i+2}-u_{i-2}}{2(2h)} - \frac{(2h)^2}{6}\left(\frac{\partial^3 u }{\partial x^3}\right)_i - \frac{(2h)^4}{120}\left(\frac{\partial^5 u}{\partial x^5}\right)_i - \dots\textcolor{red}{\Big]}\\
+		\Longrightarrow &\left(\frac{\partial u}{\partial x}\right)_i = \frac{8(u_{i+1}-u_{i-1})-(u_{i+2}-u_{i-2})}{12h} + \frac{h^4}{30}\left(\frac{\partial^5 u}{\partial x^5}\right)_i - \dots
+	\end{aligned}
+\end{equation}
+With this method, the truncation error is of order $\mathcal{O}(h^4)$. In the same way, for second order,
+\begin{equation}
+	\left(\frac{\partial^2u}{\partial x^2}\right)_i = \frac{4}{3}\frac{u_{i+1}-2u_i+u_{i-1}}{h^2} - \frac{1}{3}\frac{u_{i+2}-2u_i+u_{i-2}}{(2h)^2} + \mathcal{O}(h^4)
+\end{equation}
+\section{Operators}
+Let us define the following operators:
+\begin{itemize}
+	\item Forward difference: $\Delta u_i = u_{i+1} - u_i$;
+	\item Backward difference: $\nabla u_i = u_{i}-u_{i-1}$;
+	\item Centered difference: $\delta u_i = u_{i+1/2}-u_{i-1/2}$;
+	\item Mean: $\mu u_i = \frac{1}{2}(u_{i+1/2}+u_{i-1/2})$;
+	\item [$\to$] Note: $u_{i+1/2}$ and $u_{i-1/2}$ are not computable because they are not grid values, but can be used for derivations of other formulae.
+	\item Identity operator: $Iu_i = u_i$;
+	\item Forward operator: $Eu_i = u_{i+1}$;
+	\item Backward operator: $E^{-1}u_i = u_{i-1}$;
+	\item [$\to$] Note: $E^{-1} E = I$.
+\end{itemize}
+Those operators have the following properties:
+\begin{itemize}
+	\item $\mu \delta = \frac{1}{2}(E-E^{-1})$;
+	\item $\mu^2 = I+\delta^2/4$;
+\end{itemize}
+The forward operator can be re-expressed using a Taylor development series:
+\begin{equation}
+	\begin{aligned}
+		Eu_i &= u_{i+1} = u_i + h\frac{\partial }{\partial x} u_i + \frac{h^2}{2!} \frac{\partial^2}{\partial x^2} u_i + \frac{h^3}{3!} \frac{\partial^3}{\partial x^3}_i + \dots \\
+		&= \left(I+hD+\frac{(hD)^2}{2!} + \frac{(hD)^3}{3!} + \dots\right)u_i = \exp(hD)u_i
+	\end{aligned}
+\end{equation}
+From this, using a second Taylor development series,
+\begin{equation}
+	hD = \log(I+\Delta) = \Delta - \frac{\Delta^2}{2} + \frac{\Delta^3}{3} - \frac{\Delta^4}{4} + \dots 
+\end{equation}
+And, in the same way, 
+\begin{equation}
+	hD = -\log (I-\nabla) = \nabla + \frac{\nabla^2}{2} + \frac{\nabla^3}{3} + \frac{\nabla^4}{4} + \dots 
+\end{equation}
+We can do the same for another operator:
+\begin{equation}
+	\mu \delta = \frac{1}{2}(E-E^{-1}) = \frac{1}{2}\left(\exp(hD)-\exp(-hD)\right) = \sinh(hD)
+\end{equation}
+and we can use the Taylor series for $arc\sinh(x)$ but it is not very useful. By the property that $\mu^2 = I+\delta^2/4$, we get another form:
+\begin{equation}
+	hD = \mu\delta \left(I-\frac{1}{6}\delta^2 + \frac{1}{30}\delta^4 - \frac{140}{\delta^6} + \dots\right)
+\end{equation}
+If we keep only the first order term, we find the centered-difference scheme, and the terms up to second order give the Richardson extrapolation. 
+\begin{itemize}
+	\item [$\to$] Note: in any scheme, using more information (more values, e.g. $u_{i+2}, u_{i+3}, \dots$) gives a more accurate solution and the order of the truncation error increases (e.g. to $\mathcal{O}(h^3)$). 
+\end{itemize}
+page 8.
 \end{document}
