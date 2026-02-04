@@ -134,4 +134,58 @@ Those structures can be discretes, continuous, enumerable data, etc. Those struc
     Unstructured data have no predefined structure or organization. For example: text documents, images, audio files, videos.
 \end{definition}
 Those requires advanced techniques to extract patterns, like deep learning or domain-specific methods.
+We can also categorize data based on the way they are generated:
+\begin{itemize}
+    \item \textbf{Stored data}: Data is collected and stored in a finite set.
+    \item \textbf{Streamed data}: Data is continuously generated and updated over time. Example: video surveillance, etc.
+\end{itemize}
+\subsection{Types of data mining}
+Techniques and algorithms may vary depending on the data but also on way we will use mined patterns. We can categorize data mining tasks into two main types:
+\begin{itemize}
+    \item \textbf{Descriptive data mining}: finds patterns that characterize the properties of the data. 
+    \item \textbf{Predictive data mining}: finds patterns that can be used to make predictions by induction.
+\end{itemize}
+We can identify patterns by multiples ways:
+\begin{itemize}
+    \item \textbf{Frequent patterns}: patterns that identify a recurring structure in the data.
+    \item \textbf{Associations patterns}: patterns that show rules of implications between different attributes
+    \item \textbf{Correlations}: patterns that has positive or negative correlation between different attributes.
+\end{itemize}
+We can uses patterns for predictions:
+\begin{itemize}
+    \item \textbf{Classification}: assign new data to classes based on similarities with historic data.
+    \item \textbf{Regression}: predict numerical values based on the new data and the historic data.
+    \item \textbf{Feature selection}: identify the most relevant features.
+\end{itemize}
+\chapter{Mining}
+\section{Itemset mining}
+\begin{definition}
+    An itemset is a set of items and an itemset containing $k$ items is called a k-itemset.
+\end{definition}
+Frequent itemset mining finds associations and correlations between items in large transactional or relational datasets. It is widely used in market basket analysis for example. It is the analysis of the buying habits of customers by finding associations between the different items that customers place in their shopping basket.
+\begin{definition}
+    A transactionnal dataset is a collection of transactions, where each transaction is a set of items.
+\end{definition}
+With $\mathcal{L}$ the set of  possible items, $\mathcal{T}$ the set of possible transactions, a transactional dataset $\mathcal{D}$ can be seen as the function $\mathcal{D}:\mathcal{T} \rightarrow 2^{\mathcal{L}}$. It can also be represented as a binary matrix, where rows represent transactions and columns represent items, mathematically it is like the function $\mathcal{D}:\mathcal{T} \times \mathcal{L} \rightarrow \{0,1\}$. 
+\begin{definition}
+    An itemset $l \subset \mathcal{L}$ covers (or matches) a transaction $t \subset \mathcal{T}$ if every item from $l$ is in $t$. Consider the match function, with $D(t,l)$ the function representing the transactional dataset:
+    \begin{equation}
+        \texttt{match}(l,t) = \begin{cases}
+        1 & \text{if } \forall i \in l, D(t,i) = 1 \\
+        0 & \text{otherwise}
+        \end{cases}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The occurence frequency of an itemset (also called frequency, support count, count or absolute support) is the number of transactions that contain the itemset (i.e., the size of the cover)
+    \begin{equation}
+        \texttt{support}_\texttt{count}(l) = \sum_{t \in \mathcal{T}} \texttt{match}(l,t)
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The relative support of an itemset $l$ in a database $\mathcal{D}$ is the percentage of transactions containing the itemset:
+    \begin{equation}
+        \texttt{support}_{\mathcal{D}}(l) = \frac{\texttt{support}_\texttt{count}(l)}{|\mathcal{T}|}
+    \end{equation}
+\end{definition}
 \end{document}
