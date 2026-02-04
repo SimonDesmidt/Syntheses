@@ -157,8 +157,8 @@ We can uses patterns for predictions:
     \item \textbf{Regression}: predict numerical values based on the new data and the historic data.
     \item \textbf{Feature selection}: identify the most relevant features.
 \end{itemize}
-\chapter{Mining}
-\section{Itemset mining}
+\chapter{Itemset mining}
+\section{Definitions}
 \begin{definition}
     An itemset is a set of items and an itemset containing $k$ items is called a k-itemset.
 \end{definition}
@@ -188,4 +188,59 @@ With $\mathcal{L}$ the set of  possible items, $\mathcal{T}$ the set of possible
         \texttt{support}_{\mathcal{D}}(l) = \frac{\texttt{support}_\texttt{count}(l)}{|\mathcal{T}|}
     \end{equation}
 \end{definition}
+\begin{definition}
+    An association rule represents an implication of the form $X \Rightarrow Y$, where $X$ and $Y$ are itemsets.
+\end{definition}
+\begin{definition}
+    The rule support is the support of the itemset containing all the elements of the rule $\texttt{support}_\texttt{count}(X \Rightarrow Y) = \texttt{support}_\texttt{count}(X \cup Y)$.
+\end{definition}
+We consider an association rule or an itemset as frequent if its support is greater than a user-defined minimum support threshold $\theta$.
+\begin{definition}
+    The rule confidence is the percentage of transactions containing $X$ that contains $Y$ too
+    \begin{equation}
+        \texttt{confidence}(X \Rightarrow Y) = P(Y|X) = \frac{\texttt{support}_\texttt{count}(X \cup Y)}{\texttt{support}_\texttt{count}(X)}
+    \end{equation}
+\end{definition}
+\section{Apriori algorithm}
+The key idea behind the Apriori algorithm is that all nonempty subsets of a frequent itemset must also be frequent. 
+\begin{algorithm}[H]
+    \caption{Apriori algorithm}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Transactional dataset $\mathcal{D}$, minimum support threshold $\theta$
+        \State \textbf{Output:} Set $F$ of frequent itemsets
+        \State $F = \emptyset$
+        \State $C_1 = \{\{i\}: i \in \mathcal{L}\}$
+        \State $L_1 = \{c \in C_1: \texttt{support}_\texttt{count}(c) \geq \theta\}$
+        \State $F = F \cup L_1$
+        \State $k = 2$
+        \While{$L_k$ is not empty}
+            \State $C_{k} = $ generate candidate (k+1)-itemsets from $L_{k-1}$ by joining them
+            \State $L_k = \{c \in C_k: \texttt{support}_\texttt{count}(c) \geq \theta\}$
+            \State $F = F \cup L_k$
+            \State $k = k + 1$
+        \EndWhile
+        \State \textbf{return} $F$
+
+
+
+        % \State \textbf{Input:} Transactional dataset $\mathcal{D}$, minimum support threshold $\theta$
+        % \State \textbf{Output:} Set of frequent itemsets
+        % \State $k \gets 1$
+        % \State $F_k \gets$ all frequent 1-itemsets in $\mathcal{D}$
+        % \While{$F_k$ is not empty}
+        %     \State $C_{k+1} \gets$ generate candidate (k+1)-itemsets from $F_k$
+        %     \For{each transaction $t$ in $\mathcal{D}$}
+        %         \For{each candidate itemset $c$ in $C_{k+1}$}
+        %             \If{$c$ covers $t$}
+        %                 \State increment the count of $c$
+        %             \EndIf
+        %         \EndFor
+        %     \EndFor
+        %     \State $F_{k+1} \gets$ itemsets in $C_{k+1}$ with support count $\geq \theta$
+        %     \State $k \gets k + 1$
+        % \EndWhile
+        % \State \textbf{return} $\bigcup_{i=1}^{k} F_i$
+    \end{algorithmic}
+\end{algorithm}
+The joining 
 \end{document}
