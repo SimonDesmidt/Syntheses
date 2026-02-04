@@ -1,0 +1,137 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[english]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{pythonhighlight}
+\usepackage[]{titletoc}
+\usepackage{empheq}
+\usepackage{titlesec}
+\usepackage{mathpazo}
+\usepackage{xfrac}
+\usepackage{textcomp}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{tabularray}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage[skins]{tcolorbox}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}[chapter]
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{lem}[thm]{Lemma}
+
+
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+\definecolor{light-gray}{gray}{0.95}
+\newcommand{\code}[1]{\colorbox{light-gray}{\texttt{#1}}}
+
+\lstdefinestyle{CppStyle}{
+    backgroundcolor=\color{backgroundColour},   
+    commentstyle=\color{mGreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{mGray},
+    stringstyle=\color{mPurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=C
+}
+
+\hbadness=100000
+\begin{document}
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=1]{img/page_de_garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LINFO2364 Mining Patterns in Data \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Issambre L'Hermite Dumont}\\[3cm]
+        {This summary may not be up-to-date, the newer version is available at this address: \hyperlink{https://github.com/SimonDesmidt/Syntheses}{https://github.com/SimonDesmidt/Syntheses}}
+        \vfill
+        \vspace{2cm}
+        {\large Academic year 2025-2026 - Q2}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\chapter{Introduction}
+In our data-driven world, the ability to extract meaningful information from vast datasets is crucial. Understanding all the aspect of this discipline is essential to derive those meaningful information, and this is the goal of this course. First, we need to define some key concepts.
+\section{Definitions}
+\begin{definition}
+    A pattern is a recurring structure in a dataset.
+\end{definition}
+Patterns can be simple or complex, relevant or irrelevant. Their advantages is that they are interpretable. When found, relevant patterns can be used to make predictions, to understand the underlying structure of the data, and to make informed decisions.  
+\begin{definition}
+	Data mining is the process of discovering interesting patterns, models, and other kinds of knowledge in large data sets.
+\end{definition}
+\subsection{Type of data}
+We can mine data out of various types of structure of data:
+\begin{itemize}
+    \item \textbf{Tabular data}: Data is organized in rows and columns. Example: spreadsheets, databases.
+    \item \textbf{Sequences}: Data points are ordered in a sequence. Example: DNA sequences, text data.
+    \item \textbf{Graphs, trees, networks}: Data is represented as nodes and edges. Example: social networks, web graphs.
+    % \item \textbf{Transactional data}: Each record is a transaction, which is a set of items. Example: market basket data.
+    % \item \textbf{Relational data}: Data is organized in tables with relationships between them. Example: customer databases.
+    % \item \textbf{Time-series data}: Data points are collected over time. Example: stock prices, sensor data.    
+    % \item \textbf{Spatial data}: Data with geographical or spatial components. Example: maps, satellite images.
+\end{itemize}
+Those structures can be discretes, continuous, enumerable data, etc. Those structures, can be combined to form more complex data types. And they can be highly structured, semi-structured, or unstructured.
+\begin{definition}
+    Highly structured data are relational databases, with uniform record or table-like structures, with a fixed set of well-defined attributes. This is rarely the case in real-world data.
+\end{definition}
+\begin{definition}
+    Semi-structured data are not as structured as in relational databases, but presents some structure with clearly defined semantic meaning. For example:
+    \begin{itemize}
+        \item Transactional dataset: structured into transactions, but each transaction is an unstructured set of values
+        \item Sequence data set: unstructured collection of ordered sequences of values
+        \item Graphs: set of nodes connected by a set of edges, with edges labelled given some semantic
+    \end{itemize}
+\end{definition}
+\begin{definition}
+    Unstructured data have no predefined structure or organization. For example: text documents, images, audio files, videos.
+\end{definition}
+Those requires advanced techniques to extract patterns, like deep learning or domain-specific methods.
+\end{document}
