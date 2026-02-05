@@ -36,6 +36,7 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
@@ -175,5 +176,62 @@ If we keep only the first order term, we find the centered-difference scheme, an
 \begin{itemize}
 	\item [$\to$] Note: in any scheme, using more information (more values, e.g. $u_{i+2}, u_{i+3}, \dots$) gives a more accurate solution and the order of the truncation error increases (e.g. to $\mathcal{O}(h^3)$). 
 \end{itemize}
-page 8.
+\section{2D Laplacian}
+For finite differences in 2D, we can define several types of stencils. For a second-order error, there is the cross operator, which is simply the sum of classical centered finite differences on both axes, and the box operator. This operator is a linear combination of the cross operator using the medians of the square, and the one that uses the diagonals of the square (see \ref{fig:cross-op}).
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.7\textwidth]{img/cross_op.png}
+	\caption{Cross operator and box operator.}
+	\label{fig:cross-op}
+\end{figure}
+The box operator expresses the following quantity:
+\begin{equation}
+	h^2 \nabla^2 \left(u+\frac{h^2}{12}\nabla^2 u  + \dots \right) = h^2 \left(\nabla^2 u + \frac{h^2}{12}\nabla^2 (\nabla^2 u)\right)
+\end{equation}
+Those stencils can be generalized to higher orders using more points (bigger cross and bigger square). 
+\begin{itemize}
+	\item [$\to$] Note: the coefficients are found using the constraint that the truncation error is independent of orientation of the stencil. 
+\end{itemize}
+\section{Convection equation}
+The convection equation is 
+\begin{equation}
+	\frac{\partial u}{\partial t} + c \frac{\partial u}{\partial x}=0
+\end{equation}
+The analytic solution of this equation on an infinite domain, for a speed $c$ constant, is 
+\begin{equation}
+	u(x,t) = A(t)e^{ikx} = A(0)e^{ik(x-ct)}
+\end{equation}
+On a periodic domain of length $L$, the solution is 
+\begin{equation}
+	\begin{aligned}
+		u(x,t) = \sum_{k=-\infty}^\infty A_k(t)e^{ikx}\qquad k=\frac{2\pi}{L}p \qquad p\in \Z\\
+		\Longrightarrow u(x,t) = \sum_{p=-\infty}^\infty A_p(t) e^{i\frac{2\pi x}{L}}
+	\end{aligned}
+\end{equation}
+where the coefficients verify the condition $A_k = A_{-k}^*$ for all $k$, since the solution must be real. In the exact solution, all the modes have the same speed $c$. However, it is not the case when we use explicit finite differences. Let us show it in the case of an infinite domain (same thing happens for a periodic domain, adding the sum on $p$):\\
+Let $u_i(t) = A(t) e^{j kx_i}$. Then,
+\begin{equation}
+	\begin{aligned}
+		\left. \frac{\partial u}{\partial x}\right|_i = A j k^* \exp(jkx_i) \Longrightarrow \frac{dA}{dt} + j k^* c A = 0 \\ \Longrightarrow u_i(t) = A(0) e^{j(kx_i - k^* ct)} = A(0) e^{ik\left(x_i - \frac{k^*h}{kh}ct\right)}
+	\end{aligned}
+\end{equation}
+we call $k^*$ the modified wave number. It is different from $k$ because all the modes do not move at the same speed. For example, for the E2 stencil, its expression is derived in the following way:
+\begin{equation}
+	\begin{aligned}
+		\left. \frac{\partial u}{\partial x}\right|_i = \frac{u_{i+1}-u_i}{2h} = \frac{A}{h} \frac{1}{2}(e^{jkh}-e^{-jkh})e^{jkx_i} = \frac{A}{h} j \sin(kh)e^{ikx_i} = A j k^* e^{jkx_i}\\
+		\Longrightarrow k^*h = \sin(kh)
+	\end{aligned}
+\end{equation}
+By a Taylor development, 
+\begin{equation}
+	\frac{k^*h}{kh} = 1 - \frac{(kh)^2}{6} + \mathcal{O}((kh)^4)
+\end{equation}
+and although $k$ is not constant for all modes, the error of the stencil is still of the same order: $\mathcal{O}((kh)^2)$. Moreover, the speed of the modes is $c^* = \frac{k^*h}{kh}c$.
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.5\textwidth]{img/new_k.png}
+	\caption{Evolution of the exact wave number and the modified wave number.}
+	\label{fig:kh/kh}
+\end{figure}
+As the error increases when $k$ increases, it is important to use a very refined grid so that all points whose amplitude is non negligible have $k^* h \approx kh$. 
 \end{document}
