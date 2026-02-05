@@ -157,6 +157,33 @@ We can uses patterns for predictions:
     \item \textbf{Regression}: predict numerical values based on the new data and the historic data.
     \item \textbf{Feature selection}: identify the most relevant features.
 \end{itemize}
+\chapter{Preprocessing}
+To analyse data, and retrieve meaningful patterns, data often needs to be preprocessed. This step is crucial as raw data is often incomplete, inconsistent, and noisy. Preprocessing improves the quality of the data and the efficiency of the mining algorithms.
+\section{Useful statistical values}
+\begin{definition}
+    The mean (or average) of a dataset is the sum of all values divided by the number of values.
+    \begin{equation}
+        \bar{x} = \frac{1}{N} \sum_{i=1}^{N} x_i
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The midrange is the average of the largest and smallest values in the set.
+\end{definition}
+\begin{definition}
+    The variance of a dataset measures is defined like this:
+    \begin{equation}
+        \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \bar{x})^2
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The standard deviation of a dataset is the square root of the variance:
+    \begin{equation}
+        \sigma = \sqrt{\sigma^2} = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (x_i - \bar{x})^2}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The mode for a set of data is the value that occurs most frequently. When there are multiple values with the same highest frequency, the dataset can be unimodal, bimodal, trimodal or multimodal.
+\end{definition}
 \chapter{Itemset mining}
 \section{Definitions}
 \begin{definition}
@@ -214,7 +241,8 @@ The key idea behind the Apriori algorithm is that all nonempty subsets of a freq
         \State $F = F \cup L_1$
         \State $k = 2$
         \While{$L_k$ is not empty}
-            \State $C_{k} = $ generate candidate (k+1)-itemsets from $L_{k-1}$ by joining them
+            % \State $C_{k} = $ generate candidate (k+1)-itemsets from $L_{k-1}$ by joining them
+            \State $C_k = \texttt{apriori\_gen}(L_{k-1})$
             \State $L_k = \{c \in C_k: \texttt{support}_\texttt{count}(c) \geq \theta\}$
             \State $F = F \cup L_k$
             \State $k = k + 1$
@@ -242,5 +270,37 @@ The key idea behind the Apriori algorithm is that all nonempty subsets of a freq
         % \State \textbf{return} $\bigcup_{i=1}^{k} F_i$
     \end{algorithmic}
 \end{algorithm}
-The joining 
+The $\texttt{apriori\_gen}(L_{k-1})$ function generates candidate k-itemsets from the frequent (k-1)-itemsets $L_{k-1}$ by joining them and pruning those that have infrequent subsets.
+\begin{algorithm}[H]
+    \caption{apriori\_gen($L_{k-1}$)}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Set $L_{k-1}$ of frequent (k-1)-itemsets
+        \State \textbf{Output:} Set $C_k$ of candidate k-itemsets
+        \State $C_k = \emptyset$
+        \For{each $l_1 \in L_{k-1}$}
+            \For{each $l_2 \in L_{k-1}$}
+                \If{$l_1[:k-2] = l_2[:k-2]$ and $l_1[k-1] < l_2[k-1]$}
+                    \State $c = l_1 \cup l_2$
+                    \If{all (k-1)-subsets of $c$ are in $L_{k-1}$}
+                        \State $C_k = C_k \cup \{c\}$
+                    \EndIf
+                \EndIf
+            \EndFor
+        \EndFor
+        \State \textbf{return} $C_k$
+    \end{algorithmic}
+\end{algorithm}
+The number of candidate itemsets is bounded by $\mathcal{O}\left(\begin{pmatrix}|\mathcal{L}| \\ k \end{pmatrix}\right)$.\\
+The two mains weaknesses of the Apriori algorithm are:
+\begin{itemize}
+    \item Potential generation of huge candidate sets
+    \item Repeated scan of the database and checks for pattern matching to the transactions
+\end{itemize}
+The Apriori algorithm can be improved using:
+\begin{itemize}
+    \item \textbf{Hash-based techniques}: Instead of building $L_2$ from the join operation, build it similarly to $L_1$. When scanning the transactions, generate the 2-itemset subset of the transaction, hash them and map them to corresponding buckets containings counters to be increased. $L_2$ is the set of the 2-itemsets associated to buckets of a count higher than $\theta$
+    \item \textbf{Transaction reduction}: A transaction that does not contains any frequent $k$-itemsets cannot contain any frequent $(k+1)$-itemsets. They can be flagged and avoided at next steps.
+    \item \textbf{Partitioning}: The dataset can be partitioned in $N$ non-overlapping sub-database. Given $\theta$, the minimum support count threshold for the whole database, $\theta' = \lfloor \frac{\theta}{N} \rfloor$ is the threshold for each partition. The candidate set $C_k$ is the union of all local frequent $k$-itemset of each partition as any itemset that is potentially frequent with respect to $D$ must occur as a frequent itemset in at least one of the partitions.
+    \item \textbf{Sampling}: The frequent itemsets of a sample of the database are computed to serve as $C_k$. Some degree of accuracy is traded for eciency, thus a lower value than $\theta'$ is used to counterbalanced the effect.
+\end{itemize}
 \end{document}
