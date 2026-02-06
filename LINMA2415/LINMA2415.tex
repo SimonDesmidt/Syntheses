@@ -97,5 +97,47 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-\chapter{Introduction}
+\chapter{Reminder about optimization}
+\section{Formulations}
+\begin{definition}
+    The primal problem is the original optimization problem that we want to solve. It is formulated as:
+    \begin{equation}
+        \begin{aligned}
+            \max_{x} \quad & c^T x \\
+            \text{s.t.} \quad & A x \leq b \\
+            & x \geq 0
+        \end{aligned}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The dual problem is derived from the primal problem. It is formulated as:
+    \begin{equation}
+        \begin{aligned}
+            \min_{y} \quad & b^T y \\
+            \text{s.t.} \quad & A^T y \geq c \\
+            & y \geq 0
+        \end{aligned}
+    \end{equation}
+\end{definition}
+Another way to look at the dual problem is by using the Lagrangian function. Consider now the primal under the form:
+\begin{equation}
+    \begin{aligned}
+        \min \quad & f_0(x)\\
+        \text{s.t.} \quad &f_i(x) \leq 0, \quad i = 1, \ldots, m \\
+        & h_j(x) = 0, \quad  j = 1, \ldots, p
+    \end{aligned}
+\end{equation}
+\begin{definition}
+    The Lagrangian function is defined as:
+    \begin{equation}
+        L(x,\lambda, \nu) = f_0(x) + \sum_{i=1}^m \lambda_i f_i(x) + \sum_{j=1}^p \nu_j h_j(x)
+    \end{equation}
+\end{definition}
+And its dual function is the Lagrange dual function.
+\begin{definition}
+    The Lagrange dual function is defined as:
+    \begin{equation}
+        g(\lambda, \nu) = \inf_x L(x, \lambda, \nu)
+    \end{equation}
+\end{definition}
 \end{document}
