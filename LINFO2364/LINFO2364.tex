@@ -184,6 +184,84 @@ To analyse data, and retrieve meaningful patterns, data often needs to be prepro
 \begin{definition}
     The mode for a set of data is the value that occurs most frequently. When there are multiple values with the same highest frequency, the dataset can be unimodal, bimodal, trimodal or multimodal.
 \end{definition}
+\begin{definition}
+    Quantiles are points taken at regular intervals of a data distribution, dividing it into essentially equal-sized consecutive sets. The $k$th $q$-quantile for a given data distribution is the value $x$ such that at most $\frac{k}{q}$ of the data values are less than $x$ and at most $\frac{q-k}{q}$ of the data values are more than $x$, where $k$ is an integer such that $0 < k < q$. There are $q-1$ $q$-quantiles.
+\end{definition}
+Usually we use quartiles ($q=4$), where $Q_2$ is the median, or percentiles ($q=100$).
+\section{Data plot}
+Plotting the data can be useful to observe some characteristics of the dataset. we can represent the data under multiples forms:
+\begin{itemize}
+    \item \textbf{Scatter plot}, each pair of values is treated as a pair of coordinates in an algebraic sense and plotted as points in the plane. It helps visually determine whether there is a relationship, pattern, or trend between the two numeric attributes.
+    \item \textbf{Histogram} is a bar chart representing the count of values present in each bucket. The buckets can be defined for each values, for ranges of values (equal-width) or for buckets containing the same number of values (equal-frequency).
+    \item \textbf{Boxplots} are a popular way of visualizing a distribution. Typically, the ends of the box are at the quartiles so that the box length is the interquartile range. The median is marked by a line within the box. Two lines (called whiskers) outside the box extend to the smallest (minimum) and largest (maximum) observations. To highlight outliers, the whiskers are usually extended to extreme low and high observations only if these values are less than 1.5 times the interquartile range beyond the quartiles. Otherwise, the whiskers terminate at the most extreme observations occurring within 1.5 times the interquartile range.
+    \item \textbf{Quantile-quantile plot}, or q-q plots are graphs that plot the quantiles of one univariate distribution against the corresponding quantiles of another.
+\end{itemize}
+
+\section{Distances and similarities}
+To obtain relation between data, we can use distance and similarity measures. Distance measures the dissimilarity between two data points, while similarity measures the closeness between them. The choice of distance or similarity measure depends on the type of data and the specific problem at hand.
+\begin{definition}
+    The norm of a vector $x$ is:
+    \begin{equation}
+        ||x|| = \sqrt{\sum_{i=1}^{n} x_i^2}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The Minkowski distance between two vectors $x$ and $y$ is:
+    \begin{equation}
+        d(x,y) = \sqrt[p]{\sum_{i=1}^{n} |x_i - y_i|^p}
+    \end{equation}
+\end{definition}
+It is a generalization of the Euclidean distance ($p=2$) and the Manhattan distance ($p=1$).
+\begin{definition}
+    The supremum distance (Minkowski when $p \rightarrow \infty$) between two vectors $x$ and $y$ is:
+    \begin{equation}
+        d(x,y) = \max_{i} |x_i - y_i|
+    \end{equation}
+\end{definition}
+So two vectors are similar if their distances is close to 0.
+\begin{definition}
+    The cosine similarity between two vectors $x$ and $y$ is:
+    \begin{equation}
+        s(x,y) = \frac{x \cdot y}{||x|| \cdot ||y||} = \frac{\sum_{i=1}^{n} x_i y_i}{\sqrt{\sum_{i=1}^{n} x_i^2} \cdot \sqrt{\sum_{i=1}^{n} y_i^2}}
+    \end{equation}
+\end{definition}
+Here two vectors are similar if their cosine similarity is close to 1, and dissimilar if it is close to 0.
+\section{Preprocessing techniques}
+First we can smooth data using binning methods. Binning methods smooth a sorted data value by consulting its neighborhood. We can smooth using bins by partitioning the sorted data into a number of equal-frequency or equal-width bins, and then replacing each data value in a bin by the mean, median, or boundary values of the bin. Another type of method to manipulate data is to use normalization. There exists multiple normalization techniques:
+\begin{itemize}
+    \item \textbf{Vector normalization}: scales a vector $x$ by it's norm to have a unit norm vector:
+    \begin{equation}
+        x' = \frac{x}{||x||}
+    \end{equation}
+    \item \textbf{Min-max normalization:} scales the vector linearly to fit in a specific range $[new\_min, new\_max]$:
+    \begin{equation}
+        x' = \frac{(x - min(x))(new\_max - new\_min)}{max(x) - min(x)} + new\_min 
+    \end{equation}
+    \item \textbf{Z-score normalization:} (or standardization) rescales the data to have a mean of 0 and a standard deviation of 1:
+    \begin{equation}
+        x' = \frac{x - \bar{x}}{\sigma}
+    \end{equation}
+    \item \textbf{Normalization by decimal scaling}:
+    \begin{equation}
+        x' = \frac{x}{10^j} \quad \text{where } j \text{ is the smallest integer such that } \max(|x'|) < 1
+    \end{equation}
+    $j$ can be computed as $j = \lceil \log_{10}(max(|x|)) + \epsilon \rceil$ with $\epsilon$ a small value to assure $\max(|x'|) < 1$.
+\end{itemize}
+For missing values, we can (last 3 methods introduce bias in the data): 
+\begin{itemize}
+    \item Ignore the tuple: usually done when the class label is missing or when multiple values are missing in the same tuple.
+    \item Fill the missing value manually: time-consuming if lots of missing data
+    \item Use a global constant (Unknown or $-\infty$): mining algorithms might mistakenly think that they form an interesting concept by having this "missing" value in common
+    \item Use a measure of the central tendency of the attribute (e.g., mean or median)
+    \item Use the measure of the central tendency for all samples belonging to the same class
+    \item Use the most probable value to fill: using regression, inference-based tools, or decision tree induction.
+\end{itemize}
+We can also reduce the size of the data using sampling:
+\begin{itemize}
+    \item \textbf{SRSWOR} (Simple random sample without replacement of size s): this sampling is created by drawing samples from D, and every time a sample is drawn, it is not to be placed back into the data set D.
+    \item \textbf{SRSWR} (Simple random sample with replacement of size s): this sampling is similar to SRSWOR, except that when a sample is drawn, it can be redrawn again, potentially.
+    \item \textbf{Stratified sampling}: If D is divided into mutually disjoint parts called strata, a stratified sample of D is generated by obtaining a sample at each stratum. This helps ensure a representative sample, each stratum need to be defined manually.
+\end{itemize} 
 \chapter{Itemset mining}
 \section{Definitions}
 \begin{definition}
