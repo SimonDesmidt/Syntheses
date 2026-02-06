@@ -191,12 +191,17 @@ Usually we use quartiles ($q=4$), where $Q_2$ is the median, or percentiles ($q=
 \section{Data plot}
 Plotting the data can be useful to observe some characteristics of the dataset. we can represent the data under multiples forms:
 \begin{itemize}
-    \item \textbf{Scatter plot}, each pair of values is treated as a pair of coordinates in an algebraic sense and plotted as points in the plane. It helps visually determine whether there is a relationship, pattern, or trend between the two numeric attributes.
     \item \textbf{Histogram} is a bar chart representing the count of values present in each bucket. The buckets can be defined for each values, for ranges of values (equal-width) or for buckets containing the same number of values (equal-frequency).
     \item \textbf{Boxplots} are a popular way of visualizing a distribution. Typically, the ends of the box are at the quartiles so that the box length is the interquartile range. The median is marked by a line within the box. Two lines (called whiskers) outside the box extend to the smallest (minimum) and largest (maximum) observations. To highlight outliers, the whiskers are usually extended to extreme low and high observations only if these values are less than 1.5 times the interquartile range beyond the quartiles. Otherwise, the whiskers terminate at the most extreme observations occurring within 1.5 times the interquartile range.
+    \item \textbf{Scatter plot}, each pair of values is treated as a pair of coordinates in an algebraic sense and plotted as points in the plane. It helps visually determine whether there is a relationship, pattern, or trend between the two numeric attributes.
     \item \textbf{Quantile-quantile plot}, or q-q plots are graphs that plot the quantiles of one univariate distribution against the corresponding quantiles of another.
 \end{itemize}
-
+Here is an example of the four plots for the same dataset:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.55]{img/preprocess_plot.pdf}
+    % \caption{Boxplot example}
+\end{figure}
 \section{Distances and similarities}
 To obtain relation between data, we can use distance and similarity measures. Distance measures the dissimilarity between two data points, while similarity measures the closeness between them. The choice of distance or similarity measure depends on the type of data and the specific problem at hand.
 \begin{definition}
@@ -348,6 +353,7 @@ The key idea behind the Apriori algorithm is that all nonempty subsets of a freq
         % \State \textbf{return} $\bigcup_{i=1}^{k} F_i$
     \end{algorithmic}
 \end{algorithm}
+\newpage
 The $\texttt{apriori\_gen}(L_{k-1})$ function generates candidate k-itemsets from the frequent (k-1)-itemsets $L_{k-1}$ by joining them and pruning those that have infrequent subsets.
 \begin{algorithm}[H]
     \caption{apriori\_gen($L_{k-1}$)}
