@@ -122,7 +122,7 @@
 Another way to look at the dual problem is by using the Lagrangian function. Consider now the primal under the form:
 \begin{equation}
     \begin{aligned}
-        \min \quad & f_0(x)\\
+        p^* = \min \quad & f_0(x)\\
         \text{s.t.} \quad &f_i(x) \leq 0, \quad i = 1, \ldots, m \\
         & h_j(x) = 0, \quad  j = 1, \ldots, p
     \end{aligned}
@@ -133,11 +133,56 @@ Another way to look at the dual problem is by using the Lagrangian function. Con
         L(x,\lambda, \nu) = f_0(x) + \sum_{i=1}^m \lambda_i f_i(x) + \sum_{j=1}^p \nu_j h_j(x)
     \end{equation}
 \end{definition}
-And its dual function is the Lagrange dual function.
 \begin{definition}
     The Lagrange dual function is defined as:
     \begin{equation}
         g(\lambda, \nu) = \inf_x L(x, \lambda, \nu)
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The Lagrange dual problem is defined as:
+    \begin{equation}
+        \begin{aligned}
+            d^* = \max \quad & g(\lambda, \nu) \\
+            \text{s.t.} \quad & \lambda \geq 0
+        \end{aligned}
+    \end{equation}
+\end{definition}
+\section{Optimality conditions}
+\begin{definition}
+    Weak duality is when $d^* \leq p^*$, it always holds and can be used to find bounds on the optimal value of the primal problem.
+\end{definition}
+\begin{definition}
+    Strong duality is when $d^* = p^*$, does not holds in general, but usually holds for convex problems.
+\end{definition}
+\begin{definition}
+    Complementary slackness is a condition that holds at optimality, it states that for each constraint, either the constraint is active (i.e. $f_i(x) = 0$) or the corresponding dual variable is zero (i.e. $\lambda_i = 0$).
+    \begin{equation}
+        0 \leq \lambda_i^* \perp f_i(x^*) \leq 0
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The KKT conditions are a set of necessary conditions for optimality. Consider this problem:
+    \begin{equation}
+        \begin{aligned}
+            \max &f(x,y) \\
+            \text{s.t.} & Ax + By \leq b \qquad (\lambda) \\
+            & Cx + Dy = d \qquad (\mu) \\
+            & x \geq 0 \qquad (\lambda_2)
+        \end{aligned}
+    \end{equation}
+    The KKT conditions are:
+    \begin{equation}
+        \begin{aligned}
+            Cx + & Dy - d = 0 \\
+            0 \leq \lambda \perp & Ax + By -b \leq 0 \\
+            0 \leq x \perp & \lambda^T A + \mu^T C - \nabla_x f(x,y)^T \geq 0 \\
+            \lambda^T B + &  \mu^T D - \nabla_y f(x,y)^T = 0
+        \end{aligned}
+    \end{equation}
+    And the Lagrangian function can be written as:
+    \begin{equation}
+        L(x,y,\lambda, \mu) = f(x,y) + \lambda^T (b - Ax - By) + \mu^T (d - Cx - Dy) + \lambda_2^Tx
     \end{equation}
 \end{definition}
 \end{document}
