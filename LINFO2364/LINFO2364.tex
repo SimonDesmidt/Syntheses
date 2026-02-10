@@ -387,4 +387,18 @@ The Apriori algorithm can be improved using:
     \item \textbf{Partitioning}: The dataset can be partitioned in $N$ non-overlapping sub-database. Given $\theta$, the minimum support count threshold for the whole database, $\theta' = \lfloor \frac{\theta}{N} \rfloor$ is the threshold for each partition. The candidate set $C_k$ is the union of all local frequent $k$-itemset of each partition as any itemset that is potentially frequent with respect to $D$ must occur as a frequent itemset in at least one of the partitions.
     \item \textbf{Sampling}: The frequent itemsets of a sample of the database are computed to serve as $C_k$. Some degree of accuracy is traded for eciency, thus a lower value than $\theta'$ is used to counterbalanced the effect.
 \end{itemize}
+\section{FP-growth algorithm}
+For the FP-growth algorithm, we first need to create the FP-tree, which is a tree structure that represents all of the transactions in the database.
+\begin{algorithm}[H]
+    \caption{\texttt{fp\_growth}($\mathcal{D}$, $\theta$)}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Transactional dataset $\mathcal{D}$, minimum support threshold $\theta$
+        \State \textbf{Output:} Set $F$ of frequent itemsets
+        \State tree = \texttt{fp\_tree}($\mathcal{D}$)
+        \State F = \texttt{fp\_growth}(tree, $\theta$)
+        \State \textbf{return} F
+    \end{algorithmic}
+\end{algorithm}
+\section{Eclat algorithm}
+\chapter{Association rule mining}
 \end{document}
