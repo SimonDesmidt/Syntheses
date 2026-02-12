@@ -274,7 +274,13 @@ We can also reduce the size of the data using sampling:
 \end{definition}
 Frequent itemset mining finds associations and correlations between items in large transactional or relational datasets. It is widely used in market basket analysis for example. It is the analysis of the buying habits of customers by finding associations between the different items that customers place in their shopping basket.
 \begin{definition}
-    A transactionnal dataset is a collection of transactions, where each transaction is a set of items.
+    Itemset $Y$ is called a \textbf{superitemset} of $X$ if $X$ is a \textbf{subitemset} of $Y$, i.e. if $X \subset Y$. Every items of $X$ is in $Y$ but at least one item in $Y$ does not appear in $X$.
+\end{definition}
+\begin{definition}
+    An itemset $X$ is \textbf{closed} in $\mathcal{D}$ if there exists no proper superitemset $Y$ such that $Y$ has the same support count as $X$ in $\mathcal{D}$.
+\end{definition}
+\begin{definition}
+    A transactional dataset is a collection of transactions, where each transaction is a set of items.
 \end{definition}
 With $\mathcal{L}$ the set of  possible items, $\mathcal{T}$ the set of possible transactions, a transactional dataset $\mathcal{D}$ can be seen as the function $\mathcal{D}:\mathcal{T} \rightarrow 2^{\mathcal{L}}$. It can also be represented as a binary matrix, where rows represent transactions and columns represent items, mathematically it is like the function $\mathcal{D}:\mathcal{T} \times \mathcal{L} \rightarrow \{0,1\}$. 
 \begin{definition}
@@ -287,16 +293,20 @@ With $\mathcal{L}$ the set of  possible items, $\mathcal{T}$ the set of possible
     \end{equation}
 \end{definition}
 \begin{definition}
-    The occurence frequency of an itemset (also called frequency, support count, count or absolute support) is the number of transactions that contain the itemset (i.e., the size of the cover)
+    The occurrence frequency of an itemset (also called frequency, support count, count or absolute support) is the number of transactions that contain the itemset (i.e., the size of the cover)
     \begin{equation}
         \texttt{support}_\texttt{count}(l) = \sum_{t \in \mathcal{T}} \texttt{match}(l,t)
     \end{equation}
 \end{definition}
+An itemset is called frequent if its support count is greater than a minimum support count threshold $\theta$. If an itemset is frequent then all of its subsets are also frequent.
 \begin{definition}
     The relative support of an itemset $l$ in a database $\mathcal{D}$ is the percentage of transactions containing the itemset:
     \begin{equation}
         \texttt{support}_{\mathcal{D}}(l) = \frac{\texttt{support}_\texttt{count}(l)}{|\mathcal{T}|}
     \end{equation}
+\end{definition}
+\begin{definition}
+    An itemset $X$ is a \textbf{maximal frequent itemset} in $\mathcal{D}$ if $X$ is frequent, and there exists no superitemset $Y$ such that $Y$ is frequent in $\mathcal{D}$.
 \end{definition}
 \begin{definition}
     An association rule represents an implication of the form $X \Rightarrow Y$, where $X$ and $Y$ are itemsets.
@@ -399,6 +409,89 @@ For the FP-growth algorithm, we first need to create the FP-tree, which is a tre
         \State \textbf{return} F
     \end{algorithmic}
 \end{algorithm}
+First we need to build the FP-tree, which is done like this:
+\begin{algorithm}[H]
+    \caption{\texttt{fp\_tree}($\mathcal{D}$, $\theta$)}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Transactional dataset $\mathcal{D}$, minimum support threshold $\theta$
+        \State \textbf{Output:} A FP-tree
+        \State Scan D and compute the support count of each item, and keep only those with support count $\geq \theta$ in F
+        \State Sort F in descending order of support count, creating L the list of frequent items
+        \State Create the root of the tree
+        \For{each transaction $\tau \in \mathcal{D}$}
+            \State Sort the items of $\tau$ following L
+            \State Add the transaction $\tau$ to the tree, by incrementing counters along the way and creating new nodes is the path is not present
+        \EndFor
+        \State \textbf{return} Tree
+    \end{algorithmic}
+\end{algorithm}
+Then we can mine the FP-tree to find all the frequent itemsets. The mining algorithm, works like this:
+\begin{algorithm}[H]
+    \caption{\texttt{fp\_growth\_mining}(Tree, $\alpha$)}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} The FP-tree and a suffix $\alpha$ (initially empty)
+        \State \textbf{Output:} Set $F$ of frequent itemsets
+        \If{Tree contains a single path P}
+            \For{each combination (denoted as $\beta$) of the nodes in the path $P$}
+                \State generate pattern $\beta \cup \alpha$ with $\texttt{support}_{\texttt{count}} = \min(\texttt{support}_{\texttt{count}}$ of nodes $\in \beta)$ 
+            \EndFor
+        \Else
+            \For {each $a_i$ in the header of Tree}
+                \State generate pattern $\beta = a_i \cup \alpha$ with $\texttt{support}_{\texttt{count}} = \texttt{support}_{\texttt{count}}(a_i)$
+                \State construct $\beta$'s conditional pattern base and then $\beta$'s conditional FP-tree $Tree_\beta$
+                \If{$Tree_\beta \neq \emptyset$}
+                    \State \texttt{fp\_growth\_mining}($Tree_\beta$, $\beta$)
+                \EndIf
+            \EndFor
+        \EndIf
+    \end{algorithmic}
+\end{algorithm}
+And after mining the FP-tree, we will get all the frequent itemsets.
 \section{Eclat algorithm}
-\chapter{Association rule mining}
+This algorithm works with a vertical data format, it means that we works with sets of transactions for each item, instead of sets of items for each transaction. The key idea is to use the intersection of transaction sets to compute the support count of itemsets. We can write the algorithm like this:
+\begin{algorithm}[H]
+    \caption{\texttt{eclat\_algo}($\mathcal{D}$, $\theta$)}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Transactional dataset $\mathcal{D}$, minimum support threshold $\theta$
+        \State \textbf{Output:} Set $F$ of frequent itemsets
+        \State Transform $\mathcal{D}$ into a vertical data format
+        \State $F = \emptyset$
+        \State $F \cup \{i: \text{if size}(t(i)) \geq \theta\}$ for all item transaction sets $t(i)$ of item $i$
+        \State $C = F$
+        \While {C is not empty}
+            \State $new\_C = \emptyset$
+            \For {each pair of transaction sets $A$ and $B$ in $C$}
+                \State c = $A \cap B$
+                \If {$\text{size}(c) \geq \theta$} 
+                    \State $new\_C \cup c$
+                \EndIf
+            \EndFor
+            \State $F = F \cup new\_C$
+            \State $C = new\_C$
+        \EndWhile
+        \State \textbf{return} F
+    \end{algorithmic}
+\end{algorithm}
+\section{Association rule mining}
+\begin{algorithm}[H]
+    \caption{\texttt{Association\_rule\_mining\_algo}($\mathcal{D}$, $\theta$, $\epsilon$)}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Transactional dataset $\mathcal{D}$, minimum support threshold $\theta$, minimum confidence threshold $\epsilon$
+        \State \textbf{Output:} Set $FC$ of frequent and confident itemsets
+        \State $F = \texttt{apriori\_algo}(\mathcal{D}, \theta)$ (OR other frequent itemset mining algorithm)
+        \State $FC = \emptyset$
+        \State Generate set $S$ the powerset ($\backslash \{\emptyset\} $) of $F$ (i.e., all non empty subsets of $F$)
+        \For {each itemset $s \in S$}
+            \State Compute confidence of the rule $s \rightarrow (F \backslash s)$ using the support counts of $s$ and $F$:
+            \begin{equation}
+                \texttt{confidence}(s \rightarrow (F \backslash s)) = \frac{\texttt{support}_\texttt{count}(F)}{\texttt{support}_\texttt{count}(s)}
+            \end{equation}  
+            \If {confidence $\geq \epsilon$}
+                \State $FC = FC \cup \{s\}$
+            \EndIf
+        \EndFor
+        \State \textbf{return} FC
+    \end{algorithmic}
+\end{algorithm}
+        
 \end{document}
