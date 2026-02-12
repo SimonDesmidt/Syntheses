@@ -148,4 +148,66 @@ This helps define the Stiefel manifold:
 \begin{itemize}
 	\item [$\to$] Note: the cost function is invariant by rotation: $f(UQ) = f(U)$. 
 \end{itemize} 
+\section{Definitions}
+\begin{definition}[\textbf{Optimisation on manifolds}] 
+	To minimize a function $f$ on a manifold $\mathcal{M}$, we need several objects:
+	\begin{itemize}
+		\item A local defining function $h:\R^d\to \R$ such that $h^{-1}(0) = \mathcal{M}$;
+		\item The tangent space of $\mathcal{M}$ at some point $x$ is the local linearization of $\mathcal{M}$ at $x\in \mathcal{M}$: $u\in $tangent space of $\mathcal{M}$ at $x$ iff $u\in Ker(Dh(x))$;
+		\item An inner product on the tangent spaces to define a new notion of gradient: $Df(x)[v] = \langle \nabla f(x), v\rangle$;
+		\item A retraction function, i.e. a tool that allows to make a step on a manifold in a given tangent direction. 
+	\end{itemize}
+\end{definition}
+\begin{definition}[\textbf{Smoothness}]
+	$F:\mathcal{U}\subseteq \mathcal{E}\to \mathcal{V}\subseteq \mathcal{E}'$, with $\mathcal{U}, \mathcal{V}$ open, is said to be smooth if it is $\mathcal{C}^{\infty}$ on its domain.
+\end{definition}
+\begin{definition}[\textbf{Embedded submanifold}]
+	Let $\mathcal{E}$ be a linear space of dimension $d$. A non-empty subset $\mathcal{M}$ of $\mathcal{E}$ is a smooth embedded submanifold of $\mathcal{E}$ of dimension $n$ if either:
+	\begin{itemize}
+		\item $n=d$ and $\mathcal{M}$ is open in $\mathcal{E}$ (open submanifold);
+		\item $n=d-k$ for some $k\ge 1$ and, for each $x\in \mathcal{M}$, there exists a neighbourhood $\mathcal{U}$ of $x$ in $\mathcal{E}$ and a smooth function $h:\mathcal{U}\to \R^k$. In that case, 
+		\begin{itemize}
+			\item $\mathcal{M}\cap \mathcal{U}=h^{-1}(0) = \{y\in \mathcal{U}:h(y)=0\}$ and 
+			\item $rank(Dh(x)) = k$.
+		\end{itemize}
+	\end{itemize}
+	Such a function $h$ is called a local defining function for $\mathcal{M}$ at $x$.
+\end{definition}
+\begin{definition}[\textbf{Tangent space}]
+	Let $\mathcal{M}$ be a subset of $\mathcal{E}$. For all $x\in \mathcal{M}$, define 
+	\begin{equation}
+		\mathcal{T}_x\mathcal{M} = \{c'(0)\: | \: c:\mathcal{I}\to \mathcal{M}\text{ is smooth and }c(0)=x\}
+	\end{equation}
+	where $\mathcal{I}$ is any open interval containing $t=0$. That means that $v$ is in $\mathcal{T}_x\mathcal{M}$ iff there exists a smooth curve on $\mathcal{M}$ passing through $x$ with velocity $v$.
+\end{definition}
+Consider $\mathcal{M}$ an embedded submanifold of $\mathcal{E}$, $x\in \mathcal{M}$ and the set $\mathcal{T}_x\mathcal{M}$. 
+\begin{itemize}
+	\item If $\mathcal{M}$ is an open submanifold of $\mathcal{E}$, then $\mathcal{T}_x\mathcal{M}=\mathcal{E}$;
+	\item Otherwise, $\mathcal{T}_x\mathcal{M}=Ker(Dh(x))$ with $h$ any local defining function at $x$. 
+\end{itemize}
+\begin{definition}[\textbf{Tangent bundle}]
+	The tangent bundle is the set of all tangent spaces: $\mathcal{T}\mathcal{M} = \{(x,v):v\in \mathcal{T}_x\mathcal{M}\}$.
+\end{definition}
+\begin{definition}[\textbf{Map between manifolds}]
+	Let $\mathcal{M}$ and $\mathcal{M}'$ be embedded submanifolds of $\mathcal{E}$ and $\mathcal{E}'$. A map $F:\mathcal{M}\to \mathcal{M}'$ is smooth iff $F=\bar F|_\mathcal{M}$ where $\bar F$ is some smooth map from a neighbourhood of $\mathcal{M}$ in $\mathcal{E}$ to $\mathcal{E}'$.
+\end{definition}
+\begin{definition}[\textbf{Differential of a map between manifolds}]
+	The differential of $F:\mathcal{M}\to \mathcal{M}'$ at the point $x\in \mathcal{M}$ is the linear map $DF(x):\mathcal{T}_x\mathcal{M}\to \mathcal{T}_{F(x)}\mathcal{M}'$ defined by 
+	\begin{equation}
+		DF(x)[v]=\frac{d}{dt}F(c(t))|_{t=0} = (F\circ c)'(0)
+	\end{equation}
+	where $c$ is some smooth curve on $\mathcal{M}$ passing through $x$ at $t=0$ with velocity $v\in \mathcal{T}_x\mathcal{M}$.
+	\begin{itemize}
+		\item [$\to$] Note: the definition does not depend on the choice of the curve $c$: $DF(x) = D\bar F(x)|_{\mathcal{T}_x\mathcal{M}}$. 
+	\end{itemize}
+\end{definition}
+\begin{definition}[\textbf{Retraction function}]
+	A retraction on a manifold $\mathcal{M}$ is a smooth map $R:\mathcal{TM}\to \mathcal{M}:(x,v)\to R_x(v)$ such that each curve $c(t)=T_x(tv)$ satisfies $c(0)=x$ and $c'(0)=v$.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=.5\textwidth]{img/retraction.png}
+		\caption{Retraction on a sphere.}
+		\label{fig:retraction}
+	\end{figure}
+\end{definition}
 \end{document}
