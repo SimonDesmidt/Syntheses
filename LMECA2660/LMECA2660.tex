@@ -222,6 +222,7 @@ we call $k^*$ the modified wave number. It is different from $k$ because all the
 		\Longrightarrow k^*h = \sin(kh)
 	\end{aligned}
 \end{equation}
+This is a \textbf{phase} error, as the modes do not \textbf{move} with the right \textbf{velocity}.\\
 By a Taylor development, 
 \begin{equation}
 	\frac{k^*h}{kh} = 1 - \frac{(kh)^2}{6} + \mathcal{O}((kh)^4)
@@ -229,9 +230,87 @@ By a Taylor development,
 and although $k$ is not constant for all modes, the error of the stencil is still of the same order: $\mathcal{O}((kh)^2)$. Moreover, the speed of the modes is $c^* = \frac{k^*h}{kh}c$.
 \begin{figure}[H]
 	\centering 
-	\includegraphics[width=.5\textwidth]{img/new_k.png}
+	\includegraphics[width=.5\textwidth]{img/convection-kmod.png}
 	\caption{Evolution of the exact wave number and the modified wave number.}
 	\label{fig:kh/kh}
 \end{figure}
 As the error increases when $k$ increases, it is important to use a very refined grid so that all points whose amplitude is non negligible have $k^* h \approx kh$. 
+\section{Implicit finite differences}
+The general scheme of implicit finite differences is the following:
+\begin{equation}\label{eq:I-order1}
+	\begin{aligned}	
+		\frac{\partial u}{\partial x}_i + \alpha\frac{1}{2}\left(\left.\frac{\partial u}{\partial x}\right|_{i+1}+\left.\frac{\partial u}{\partial x}\right|_{i-1}\right) + \beta \frac{1}{2}\left(\left.\frac{\partial u}{\partial x}\right|_{i+2} + \left.\frac{\partial u}{\partial x}\right|_{i-2}\right) \\
+		= a \frac{u_{i+1}-u_{i-1}}{2h} + b\frac{u_{i+2}+u_{i-2}}{4h} + c \frac{u_{i+3}-u_{i-3}}{6h}
+	\end{aligned}
+\end{equation}
+Usually, we use $\beta=c=0$ to keep only the nearest grid points to $i$. Those schemes are called compact. \\
+We can use $\left.\frac{\partial u}{\partial x}\right|_{i} = A j k^* e^{jkx_i}$ and $\frac{u_{i+1}-u_{i-1}}{2h} = \sin(kh)$ to show that 
+\begin{equation}
+	k^*h = \frac{a\sin(kh) + \frac{b}{2}\sin(2kh) + \frac{c}{3}\sin(3kh)}{1+\alpha \cos(kh)+\beta \cos(2kh)}
+\end{equation}
+We can do a Taylor development of this quantity to get different schemes:
+\begin{equation}
+	\begin{aligned}
+		\text{Taylor of order 1:}\qquad  1+\alpha+\beta =& a+b+c \Longrightarrow \text{Error of order 2}\\
+		\text{Taylor of order 2:}\qquad  3(\alpha+2^2\beta) =& a+2^2b+3^2c \Longrightarrow \text{Error of order 4}\\
+		\text{Taylor of order 3:}\qquad  5(\alpha+2^4\beta) =& a+2^4b+3^4c \Longrightarrow \text{Error of order 6}\\
+		\text{Taylor of order 4:}\qquad  7(\alpha+2^6\beta) =& a+2^6b+3^6c \Longrightarrow \text{Error of order 8}\\
+		\text{Taylor of order 5:}\qquad  9(\alpha+2^8\beta) =& a+2^8b+3^8c \Longrightarrow \text{Error of order 10}\\
+	\end{aligned}
+\end{equation}
+For example, in the case where $\beta= 0$ and $\alpha \neq 0$, the system is tridiagonal and the solver has a time complexity of $\mathcal{O}(N)$. For $\beta=0$ and $\alpha=0$, we find the explicit scheme. 
+\begin{itemize}
+	\item [$\to$] Note: The I4o scheme is the scheme with the smallest constant before the $(kh)^4$ using all parameters. For this one, the sign of that constant is positive, meaning that it goes above the correct velocity. This behaviour is not present on the other scheme. 
+\end{itemize}
+\section{Diffusion equation}
+The diffusion equation is 
+\begin{equation}\label{eq:diffusion}
+	\frac{\partial u}{\partial t} = \alpha \frac{\partial^2 u}{\partial x^2}
+\end{equation}
+This equation is not reversible because it represents a loss of information: the high-wave-number terms decay fast and have no impact after a small time.\\
+The exact solution is $u(x,t) = A_k(t)e^{jkx}$ with $A_k(t) = A_k(0)e^{\alpha k^2 t}$. 
+\subsection{Explicit scheme}
+The explicit finite differences scheme is 
+\begin{equation}
+	\left.\frac{\partial^2 u}{\partial x^2}\right|_i = a\frac{u_{i+1}-2u_i+u_{i-1}}{h^2} + b\frac{u_{i+2}-2u_i+u_{i-2}}{4h^2} + c\frac{u_{i+3}-2u_i+u_{i-3}}{9h^2}
+\end{equation}
+Let $u_i(t) = A(t) e^{jkx_i}$. Then, 
+\begin{equation}
+	\frac{dA}{dt} = -\alpha (k^2)^* A \Longrightarrow A(t) = A(0)e^{-\alpha (k^2)^* t} e^{jkx_i} \Longrightarrow u_i(t) = A(0)e^{-\alpha k^2 \left(\frac{\left(k^2\right)^*h^2}{k^2 h^2}\right)}e^{jkx_i}
+\end{equation}
+This is a \textbf{amplitude} error, as the mode do not decay with the proper \textbf{rate}. \\
+For example, for the explicit scheme of order 2 ($a=1$, $b=c=0$), the modified $k^2$ is given by
+\begin{equation}
+	(k^1)^*h^2 = 4\sin^2 \left(\frac{kh}{2}\right) \Longleftrightarrow \frac{(k^2)^* h^2}{k^2 h^2} = \frac{\sin^2 \left(\frac{kh}{2}\right)}{\left(\frac{kh}{2}\right)^2}
+\end{equation}
+\subsection{Implicit schemes}
+The general form of the implicit scheme follows the same reasoning as for \eqref{eq:I-order1}.
+\begin{equation}
+	\begin{aligned}
+		\left.\frac{\partial^2 u}{\partial x^2}\right|_i + \alpha \frac{1}{2}\left(\left.\frac{\partial^2 u}{\partial x^2}\right|_{i+1} + \left.\frac{\partial^2 u}{\partial x^2}\right|_{i-1}\right) + \beta \frac{1}{2}\left(\left.\frac{\partial^2 u}{\partial x^2}\right|_{i+2} + \left.\frac{\partial^2 u}{\partial x^2}\right|_{i-2}\right) \\
+		= a \frac{u_{i+1}-2u_i+u_{i-1}}{h^2} + b \frac{u_{i+2}-2u_i+u_{i-2}}{4h^2} + c \frac{u_{i+3}-2u_i+u_{i-3}}{9h^2}
+	\end{aligned}
+\end{equation}
+By using $\left.\frac{\partial^2 u}{\partial x^2}\right|_i = -A(t) (k^2)^*e^{jkx_i}$, we can show that 
+\begin{equation}
+	(k^2)^*h^2 = \frac{4\left[a\sin^2\left(\frac{kh}{2}\right) + \frac{b}{4}\sin^2 \left(\frac{2kh}{2}\right) + \frac{c}{9}\sin^2 \left(\frac{3kh}{2}\right)\right]}{1+\alpha \cos(kh)+\beta\cos(2kh)}
+\end{equation}
+As previously, we can do the Taylor development series of this expression to get different schemes:
+\begin{equation}
+	\begin{aligned}
+		\text{Taylor of order 1:}\qquad  1+\alpha+\beta =& a+b+c \Longrightarrow \text{Error of order 2}\\
+		\text{Taylor of order 2:}\qquad  2\cdot3(\alpha+2^2\beta) =& a+2^2b+2^2c \Longrightarrow \text{Error of order 4}\\
+		\text{Taylor of order 3:}\qquad  3\cdot5(\alpha+2^4\beta) =& a+2^4b+2^4c \Longrightarrow \text{Error of order 6}\\
+		\text{Taylor of order 4:}\qquad  4\cdot7(\alpha+2^6\beta) =& a+2^6b+2^6c \Longrightarrow \text{Error of order 8}\\
+		\text{Taylor of order 5:}\qquad  5\cdot9(\alpha+2^8\beta) =& a+2^8b+2^8c \Longrightarrow \text{Error of order 10}\\
+	\end{aligned}
+\end{equation}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.5\textwidth]{img/diffusion-kmod.png}
+	\caption{Evolution of the modified $k^2$ with $k^2$.}
+	\label{fig:diffusion-kmod}
+\end{figure}
+
+\chapter{Fourier document}
 \end{document}
