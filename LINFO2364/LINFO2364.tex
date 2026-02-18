@@ -558,9 +558,33 @@ And here is an example of the $\chi^2$, for different confidence values of the p
 \end{equation}
 For all thoses measures, from the all confidence to the cosine measure, the measures are in the range $[0,1]$ and they can be interpreted as:
 \begin{itemize}
-    \item If $< 0.5$, $A$ and $B$ are negatively correlated
-    \item If $= 0.5$, $A$ and $B$ are independant
-    \item If $> 0.5$, $A$ and $B$ are positively correlated
+    \item If $\texttt{cosine}(A,B) < 0.5$, $A$ and $B$ are negatively correlated
+    \item If $\texttt{cosine}(A,B) = 0.5$, $A$ and $B$ are independant
+    \item If $\texttt{cosine}(A,B)> 0.5$, $A$ and $B$ are positively correlated
 \end{itemize}
+To decide whether two items are correlated or not, we can use all the previous mesures. We can also check the relation between two items by testing their conditional probabilities (i.e. $P(A|B)$ and $P(B|A)$). And with that, we can introduce the imbalance ratio.
+\subsection{Imbalance ratio}
+\textbf{The imbalance ratio} measures the difference between the two conditional probabilities and return a value near 0 if the two probabilities are close and otherwise the closer it is to 1, the more imbalanced the two probabilities are. It is defined as:
+\begin{equation}
+    \texttt{IR(A,B)} = \frac{|\texttt{support}_\texttt{count}(A) - \texttt{support}_\texttt{count} (B) |}{\texttt{support}_\texttt{count}(A) + \texttt{support}_\texttt{count}(B) - \texttt{support}_\texttt{count}(A \cup B)}
+\end{equation}
+Usually it is advised to use kulc and the imbalance ratio together to decide.
 \section{Multilevel associations and mining rare patterns}
+Items can have multiple level of abstraction. For example, a store can sell different type of goods (fruits, vegetables, drinks, etc) and in those categories, there can be different subcategories (for drink: alcool, softs, milks, etc) and in those subcategories, we can have different items. Patterns can be mined at each level of abstraction, and usually patterns at more detailled levels are the most interesting. From the levels of abstraction, we can draw a tree (which is not unique), to show a way of categorizing the items. For example, we can have this concept hierarchy: 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.33]{img/hierarchy.png}
+    \caption{Example of a concept hierarchy}
+\end{figure}
+We can mine multilevel association rules by using 3 differents types of support thresholds:
+\begin{definition} 
+    \textbf{Uniform support} mining uses the same minimum support threshold for all the levels of the hierarchy. With this type of support, we do not consider an itemset without a frequent ancestor.
+    % If itemset i is frequent at level k, itemsets composed of subconsept are candidate for layer k + 1
+\end{definition}
+\begin{definition}
+    \textbf{Reduced support} mining uses a lower minimum support threshold for the lower levels of the hierarchy. And so with this, each level as it's own minimum support threshold, and an item might be frequent even though its ancestor is not frequent.
+\end{definition}
+\begin{definition}
+    
+\end{definition}
 \end{document}
