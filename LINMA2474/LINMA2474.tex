@@ -38,10 +38,12 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathcal{C}}
 \newcommand{\N}{\mathbb{N}}
+\newcommand{\M}{\mathcal{M}}
 \renewcommand{\O}{\mathcal{O}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
+\newtheorem{proposition}[thm]{Proposition}
 \newtheorem{lem}[thm]{Lemma}
 
 \hbadness=100000
@@ -71,11 +73,11 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-\chapter{Introduction to optimization on manifolds}
+\chapter{Optimization on manifolds}
 \section{Introduction}
 Classical optimization methods like the gradient descent solve problems of the form 
 \begin{equation}\label{eq:opt}
-	\min_{x\in \mathcal{M}} f(x)
+	\min_{x\in \M} f(x)
 \end{equation}
 for a set $M$. The methods rely on two key properties:
 \begin{itemize}
@@ -86,123 +88,124 @@ for a set $M$. The methods rely on two key properties:
 	\end{equation}
 	where $Df(x)[v] = \lim_{t\to 0} \frac{f(x+tv) - f(x)}{t}$ is the directional derivative of $f$ at $x$ in the direction $v$.
 \end{itemize}
-There are two ways to see \ref{eq:opt}: as a constrained optimization problem, or as an unconstrained optimization problem assuming that nothing else exists outside the set $\mathcal{M}$. Optimization on manifolds extends the classical unconstrained optimization algorithms to problems whose search space is a manifold. \\
-We define a manifold as a set that can be locally approximated linearly (and therefore smooth).
-\section{Examples}
-\subsection{The sphere}
-The sphere is a manifold: let $\mathcal{S}^{d-1} \eqqcolon \{x\in \R^d :\: \|x\|_2^2 = 1\} = \{x\in \R^d : \: x^T x = 1\}$. This set is thus defined by the constraint $h(x)\eqqcolon x^Tx-1 = 0$. We call this function $h:\R^d \to \R$ a defining function. \\
-Let us use a Taylor approximation to derive the local linearization of $\mathcal{S}^{d-1}$ around any point $x\in \mathcal{S}^{d-1}$. Let $v\in \R^d$ be an arbitrary vector.
-\begin{equation}
-	h(x+tv) = h(x) + tDh(x)[v] + \mathcal{O}(t^2)
-\end{equation}
-Therefore, at first order, $x+tv\in \mathcal{S}^{d-1}$ iff 
-\begin{equation}
-	Dh(x)[v] = 2x^T v = 0 \Longleftrightarrow v^Tx = 0
-\end{equation}
-This means that around any point $x\in \mathcal{S}^{d-1}$, the sphere can be locally approximated by the set $\{v\in \R^d : \: x^Tv = 0\}$, called the tangent space. \\
-While the standard gradient descent defines the relation
-\begin{equation}
-	x_{k+1} = x_k - \eta \nabla f(x_k)
-\end{equation}
-we rather define the retraction operator for optimization on manifolds:
-\begin{equation}
-	x_{k+1} = \mathcal{R}_{x_k}(-\eta \text{grad}f(x_k))
-\end{equation}
-which will be explained later.
-\begin{itemize}
-	\item A cube is not a Riemannian manifold because of the edges: they are not smooth;
-	\item The set of matrices of rank $r$ is a manifold, but the set of matrices of rank $\le r$ is not, because going from rank $i$ to $i+1$ is not smooth. 
-\end{itemize}
-\section{Applications}
-\subsection{The Netflix problem}
-Let us consider that we know some ratings of users for movies, and we want to predict their rating for films based on their previous experiences. As people have hardly seen any movies in the catalogue, the rating matrix is very sparse. \\
-Let us define $M\in \R^{m\times n}$ as the rating matrix, and $\Omega \subseteq \{1,\dots,m\}\times \{1,\dots,n\}$ as the set of indices of the known ratings. The problem is to find $X\in \R^{m\times n}$ that solves
-\begin{equation}
-	\min_{X\in \R^{m\times n}} \sum_{(i,j)\in \Omega} (M_{ij}-X_{ij})^2
-\end{equation}
-We want to express $X$ as the product of two low-rank matrices $U\in \R^{m\times r}$ and $V\in \R^{n\times r}$, such that $X = UV^T$. Those matrices contain how much the users enjoy some features (long movies vs series, action vs romance, etc.) and how much those features are present in the movies. \\
-The problem then becomes
-\begin{equation}
-	\min_{X\in \R^{m\times n}_k} \sum_{(i,j)\in \Omega} (M_{ij}-X_{ij})^2
-\end{equation}
-where the set $\R^{m\times n}_k$ is the set of matrices of size $m\times n$ and of rank $k$. This set is a manifold, as will be proved later.
-\subsection{Dictionary learning}
-Let $x_1,\dots,x_m$ be a collection of datapoints. The goal is to learn $k$ atoms $b_1,\dots,b_k$ ($k\ll m$) such that each datapoint $x_i$ can be represented by a small number of properly chosen atoms: we want $X\approx BC$ for $B\in \R^{d\times k}$ and $C\in \R^{k\times m}$. \\
-The problem writes
-\begin{equation}
-	\min_{B,C} \|X-BC\|^2 + \lambda \|C\|_0 \qquad \text{   s.t.   } \qquad \|b_i\|=1 \qquad \forall i=1,\dots,k
-\end{equation}
-where the $\|\cdot \|_0$ norm is the number of non-zero entries in the matrix. The constraint is added to reduce the number of solutions and to be able to use a manifold. It defines the oblique manifold:
-\begin{equation}
-	\mathcal{OB}(d,k) \eqqcolon \{X\in \R^{d\times k} : \: \|X_{:,i}\|^2_2 = 1, \: \forall i\}
-\end{equation}
-\subsection{PCA}
-Let $x_1,\dots,x_n$ be a centered dataset in $\R^d$. We aim to find a collection of $k$ orthogonal unit-norm vectors $u_1,\dots,u_k$ such that the subspace spanned by these vectors captures the most of the variance of the initial dataset. It can be expressed as an optimization problem:
-\begin{equation}
-	\max_{U\in \R^{d\times k}} tr(U^TXX^TU) \qquad \text{   s.t.   } \qquad U^TU = I_k
-\end{equation}
-This helps define the Stiefel manifold:
-\begin{equation}
-	\mathcal{St}(d,k) \eqqcolon \{X\in \R^{d\times k} : \: X^TX = I_k\}	
-\end{equation}
-\begin{itemize}
-	\item [$\to$] Note: the cost function is invariant by rotation: $f(UQ) = f(U)$. 
-\end{itemize} 
+There are two ways to see the problem \ref{eq:opt}: as a constrained optimization problem, or as an unconstrained optimization problem assuming that nothing else exists outside the set $\M$. Optimization on manifolds extends the classical unconstrained optimization algorithms to problems whose search space is a manifold (will be defined later).
+% \section{Examples}
+% \subsection{The sphere}
+% The sphere is a manifold: let $\mathcal{S}^{d-1} \eqqcolon \{x\in \R^d :\: \|x\|_2^2 = 1\} = \{x\in \R^d : \: x^T x = 1\}$. This set is thus defined by the constraint $h(x)\eqqcolon x^Tx-1 = 0$. We call this function $h:\R^d \to \R$ a defining function. \\
+% Let us use a Taylor approximation to derive the local linearization of $\mathcal{S}^{d-1}$ around any point $x\in \mathcal{S}^{d-1}$. Let $v\in \R^d$ be an arbitrary vector.
+% \begin{equation}
+% 	h(x+tv) = h(x) + tDh(x)[v] + \mathcal{O}(t^2)
+% \end{equation}
+% Therefore, at first order, $x+tv\in \mathcal{S}^{d-1}$ iff 
+% \begin{equation}
+% 	Dh(x)[v] = 2x^T v = 0 \Longleftrightarrow v^Tx = 0
+% \end{equation}
+% This means that around any point $x\in \mathcal{S}^{d-1}$, the sphere can be locally approximated by the set $\{v\in \R^d : \: x^Tv = 0\}$, called the tangent space. \\
+% While the standard gradient descent defines the relation
+% \begin{equation}
+% 	x_{k+1} = x_k - \eta \nabla f(x_k)
+% \end{equation}
+% we rather define the retraction operator for optimization on manifolds:
+% \begin{equation}
+% 	x_{k+1} = \mathcal{R}_{x_k}(-\eta \text{grad}f(x_k))
+% \end{equation}
+% which will be explained later.
+% \begin{itemize}
+% 	\item A cube is not a Riemannian manifold because of the edges: they are not smooth;
+% 	\item The set of matrices of rank $r$ is a manifold, but the set of matrices of rank $\le r$ is not, because going from rank $i$ to $i+1$ is not smooth. 
+% \end{itemize}
+% \section{Applications}
+% \subsection{The Netflix problem}
+% Let us consider that we know some ratings of users for movies, and we want to predict their rating for films based on their previous experiences. As people have hardly seen any movies in the catalogue, the rating matrix is very sparse. \\
+% Let us define $M\in \R^{m\times n}$ as the rating matrix, and $\Omega \subseteq \{1,\dots,m\}\times \{1,\dots,n\}$ as the set of indices of the known ratings. The problem is to find $X\in \R^{m\times n}$ that solves
+% \begin{equation}
+% 	\min_{X\in \R^{m\times n}} \sum_{(i,j)\in \Omega} (M_{ij}-X_{ij})^2
+% \end{equation}
+% We want to express $X$ as the product of two low-rank matrices $U\in \R^{m\times r}$ and $V\in \R^{n\times r}$, such that $X = UV^T$. Those matrices contain how much the users enjoy some features (long movies vs series, action vs romance, etc.) and how much those features are present in the movies. \\
+% The problem then becomes
+% \begin{equation}
+% 	\min_{X\in \R^{m\times n}_k} \sum_{(i,j)\in \Omega} (M_{ij}-X_{ij})^2
+% \end{equation}
+% where the set $\R^{m\times n}_k$ is the set of matrices of size $m\times n$ and of rank $k$. This set is a manifold, as will be proved later.
+% \subsection{Dictionary learning}
+% Let $x_1,\dots,x_m$ be a collection of datapoints. The goal is to learn $k$ atoms $b_1,\dots,b_k$ ($k\ll m$) such that each datapoint $x_i$ can be represented by a small number of properly chosen atoms: we want $X\approx BC$ for $B\in \R^{d\times k}$ and $C\in \R^{k\times m}$. \\
+% The problem writes
+% \begin{equation}
+% 	\min_{B,C} \|X-BC\|^2 + \lambda \|C\|_0 \qquad \text{   s.t.   } \qquad \|b_i\|=1 \qquad \forall i=1,\dots,k
+% \end{equation}
+% where the $\|\cdot \|_0$ norm is the number of non-zero entries in the matrix. The constraint is added to reduce the number of solutions and to be able to use a manifold. It defines the oblique manifold:
+% \begin{equation}
+% 	\mathcal{OB}(d,k) \eqqcolon \{X\in \R^{d\times k} : \: \|X_{:,i}\|^2_2 = 1, \: \forall i\}
+% \end{equation}
+% \subsection{PCA}
+% Let $x_1,\dots,x_n$ be a centered dataset in $\R^d$. We aim to find a collection of $k$ orthogonal unit-norm vectors $u_1,\dots,u_k$ such that the subspace spanned by these vectors captures the most of the variance of the initial dataset. It can be expressed as an optimization problem:
+% \begin{equation}
+% 	\max_{U\in \R^{d\times k}} tr(U^TXX^TU) \qquad \text{   s.t.   } \qquad U^TU = I_k
+% \end{equation}
+% This helps define the Stiefel manifold:
+% \begin{equation}
+% 	\mathcal{St}(d,k) \eqqcolon \{X\in \R^{d\times k} : \: X^TX = I_k\}	
+% \end{equation}
+% \begin{itemize}
+% 	\item [$\to$] Note: the cost function is invariant by rotation: $f(UQ) = f(U)$. 
+% \end{itemize} 
 \section{Definitions}
+\subsection{Definition and properties of a manifold}
 \begin{definition}[\textbf{Optimisation on manifolds}] 
-	To minimize a function $f$ on a manifold $\mathcal{M}$, we need several objects:
+	To minimize a function $f$ on a manifold $\M$, we need several objects:
 	\begin{itemize}
-		\item A local defining function $h:\R^d\to \R$ such that $h^{-1}(0) = \mathcal{M}$;
-		\item The tangent space of $\mathcal{M}$ at some point $x$ is the local linearization of $\mathcal{M}$ at $x\in \mathcal{M}$: $u\in $tangent space of $\mathcal{M}$ at $x$ iff $u\in Ker(Dh(x))$;
-		\item An inner product on the tangent spaces to define a new notion of gradient: $Df(x)[v] = \langle \nabla f(x), v\rangle$;
-		\item A retraction function, i.e. a tool that allows to make a step on a manifold in a given tangent direction. 
+		\item A \textcolor{orange}{local defining function} $h:\R^d\to \R$ such that $h^{-1}(0) = \M$;
+		\item The \textcolor{green}{tangent space of $\M$} at some point $x$ is the local linearization of $\M$ at $x\in \M$: $u\in $tangent space of $\M$ at $x$ iff $u\in Ker(Dh(x))$;
+		\item An inner product on the tangent spaces to define a new notion of gradient: \[Df(x)[v] = \langle \nabla f(x), v\rangle\]
+		\item A \textcolor{purple}{retraction function}, i.e. a tool that allows to make a step on a manifold in a given tangent direction. 
 	\end{itemize}
 \end{definition}
 \begin{definition}[\textbf{Smoothness}]
 	$F:\mathcal{U}\subseteq \mathcal{E}\to \mathcal{V}\subseteq \mathcal{E}'$, with $\mathcal{U}, \mathcal{V}$ open, is said to be smooth if it is $\mathcal{C}^{\infty}$ on its domain.
 \end{definition}
-\begin{definition}[\textbf{Embedded submanifold}]
-	Let $\mathcal{E}$ be a linear space of dimension $d$. A non-empty subset $\mathcal{M}$ of $\mathcal{E}$ is a smooth embedded submanifold of $\mathcal{E}$ of dimension $n$ if either:
+Let us explain the concepts needed for our optimization: 
+\begin{definition}[\textbf{Embedded submanifold and \textcolor{orange}{local defining function}}]
+	Let $\mathcal{E}$ be a linear space of dimension $d$. A non-empty subset $\M$ of $\mathcal{E}$ is a smooth embedded submanifold of $\mathcal{E}$ of dimension $n$ if either:
 	\begin{itemize}
-		\item $n=d$ and $\mathcal{M}$ is open in $\mathcal{E}$ (open submanifold);
-		\item $n=d-k$ for some $k\ge 1$ and, for each $x\in \mathcal{M}$, there exists a neighbourhood $\mathcal{U}$ of $x$ in $\mathcal{E}$ and a smooth function $h:\mathcal{U}\to \R^k$. In that case, 
+		\item $n=d$ and $\M$ is open in $\mathcal{E}$ (open submanifold);
+		\item $n=d-k$ for some $k\ge 1$ and, for each $x\in \M$, there exists a neighbourhood $\mathcal{U}$ of $x$ in $\mathcal{E}$ and a smooth function $h:\mathcal{U}\to \R^k$. In that case, 
 		\begin{itemize}
-			\item $\mathcal{M}\cap \mathcal{U}=h^{-1}(0) = \{y\in \mathcal{U}:h(y)=0\}$ and 
+			\item $\M\cap \mathcal{U}=h^{-1}(0) = \{y\in \mathcal{U}:h(y)=0\}$ and 
 			\item $rank(Dh(x)) = k$.
 		\end{itemize}
 	\end{itemize}
-	Such a function $h$ is called a local defining function for $\mathcal{M}$ at $x$.
+	Such a function $h$ is called a local defining function for $\M$ at $x$.
 \end{definition}
-\begin{definition}[\textbf{Tangent space}]
-	Let $\mathcal{M}$ be a subset of $\mathcal{E}$. For all $x\in \mathcal{M}$, define 
+\begin{definition}[\textbf{\textcolor{green}{Tangent space}}]
+	Let $\M$ be a subset of $\mathcal{E}$. For all $x\in \M$, define 
 	\begin{equation}
-		\mathcal{T}_x\mathcal{M} = \{c'(0)\: | \: c:\mathcal{I}\to \mathcal{M}\text{ is smooth and }c(0)=x\}
+		\mathcal{T}_x\M = \{c'(0)\: | \: c:\mathcal{I}\to \M\text{ is smooth and }c(0)=x\}
 	\end{equation}
-	where $\mathcal{I}$ is any open interval containing $t=0$. That means that $v$ is in $\mathcal{T}_x\mathcal{M}$ iff there exists a smooth curve on $\mathcal{M}$ passing through $x$ with velocity $v$.
+	where $\mathcal{I}$ is any open interval containing $t=0$. That means that $v$ is in $\mathcal{T}_x\M$ iff there exists a smooth curve on $\M$ passing through $x$ with velocity $v$.
 \end{definition}
-Consider $\mathcal{M}$ an embedded submanifold of $\mathcal{E}$, $x\in \mathcal{M}$ and the set $\mathcal{T}_x\mathcal{M}$. 
+Consider $\M$ an embedded submanifold of $\mathcal{E}$, $x\in \M$ and the set $\mathcal{T}_x\M$. 
 \begin{itemize}
-	\item If $\mathcal{M}$ is an open submanifold of $\mathcal{E}$, then $\mathcal{T}_x\mathcal{M}=\mathcal{E}$;
-	\item Otherwise, $\mathcal{T}_x\mathcal{M}=Ker(Dh(x))$ with $h$ any local defining function at $x$. 
+	\item If $\M$ is an open submanifold of $\mathcal{E}$, then $\mathcal{T}_x\M=\mathcal{E}$;
+	\item Otherwise, $\mathcal{T}_x\M=Ker(Dh(x))$ with $h$ any local defining function at $x$. 
 \end{itemize}
 \begin{definition}[\textbf{Tangent bundle}]
-	The tangent bundle is the set of all tangent spaces: $\mathcal{T}\mathcal{M} = \{(x,v):v\in \mathcal{T}_x\mathcal{M}\}$.
+	The tangent bundle is the set of all tangent spaces: $\mathcal{T}\M = \{(x,v):v\in \mathcal{T}_x\M\}$.
 \end{definition}
 \begin{definition}[\textbf{Map between manifolds}]
-	Let $\mathcal{M}$ and $\mathcal{M}'$ be embedded submanifolds of $\mathcal{E}$ and $\mathcal{E}'$. A map $F:\mathcal{M}\to \mathcal{M}'$ is smooth iff $F=\bar F|_\mathcal{M}$ where $\bar F$ is some smooth map from a neighbourhood of $\mathcal{M}$ in $\mathcal{E}$ to $\mathcal{E}'$.
+	Let $\M$ and $\M'$ be embedded submanifolds of $\mathcal{E}$ and $\mathcal{E}'$. A map $F:\M\to \M'$ is smooth iff $F=\bar F|_\M$ where $\bar F$ is some smooth map from a neighbourhood of $\M$ in $\mathcal{E}$ to $\mathcal{E}'$.
 \end{definition}
 \begin{definition}[\textbf{Differential of a map between manifolds}]
-	The differential of $F:\mathcal{M}\to \mathcal{M}'$ at the point $x\in \mathcal{M}$ is the linear map $DF(x):\mathcal{T}_x\mathcal{M}\to \mathcal{T}_{F(x)}\mathcal{M}'$ defined by 
+	The differential of $F:\M\to \M'$ at the point $x\in \M$ is the linear map $DF(x):\mathcal{T}_x\M\to \mathcal{T}_{F(x)}\M'$ defined by 
 	\begin{equation}
 		DF(x)[v]=\frac{d}{dt}F(c(t))|_{t=0} = (F\circ c)'(0)
 	\end{equation}
-	where $c$ is some smooth curve on $\mathcal{M}$ passing through $x$ at $t=0$ with velocity $v\in \mathcal{T}_x\mathcal{M}$.
+	where $c$ is some smooth curve on $\M$ passing through $x$ at $t=0$ with velocity $v\in \mathcal{T}_x\M$.
 	\begin{itemize}
-		\item [$\to$] Note: the definition does not depend on the choice of the curve $c$: $DF(x) = D\bar F(x)|_{\mathcal{T}_x\mathcal{M}}$. 
+		\item [$\to$] Note: the definition does not depend on the choice of the curve $c$: $DF(x) = D\bar F(x)|_{\mathcal{T}_x\M}$. 
 	\end{itemize}
 \end{definition}
-\begin{definition}[\textbf{Retraction function}]
-	A retraction on a manifold $\mathcal{M}$ is a smooth map $R:\mathcal{TM}\to \mathcal{M}:(x,v)\to R_x(v)$ such that each curve $c(t)=T_x(tv)$ satisfies $c(0)=x$ and $c'(0)=v$.
+\begin{definition}[\textbf{\textcolor{purple}{Retraction function}}]
+	A retraction on a manifold $\M$ is a smooth map $R:\mathcal{TM}\to \M:(x,v)\to R_x(v)$ such that each curve $c(t)=R_x(tv)$ satisfies $c(0)=x$ and $c'(0)=v$.
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=.5\textwidth]{img/retraction.png}
@@ -210,4 +213,93 @@ Consider $\mathcal{M}$ an embedded submanifold of $\mathcal{E}$, $x\in \mathcal{
 		\label{fig:retraction}
 	\end{figure}
 \end{definition}
+\subsection{Riemannian manifolds and metrics}
+\begin{definition}[\textbf{Inner product}]
+	As seen in previous courses, an inner product on $\mathcal{T}_x\M$ is a bilinear, symmetric, positive definite function $\langle \cdot, \cdot \rangle_x :\mathcal{T}_x\M \times \mathcal{T}_x\M\to \R$. Note that the inner product depends on the point of linearization. It induces some norm for tangent vectors: $\| u\|_x = \sqrt{\langle u,u\rangle_x}$. A metric on $\M$ is a choice of inner product $\langle \cdot,\cdot \rangle_x$ for each $\M$.
+\end{definition}
+\begin{definition}[\textbf{Metric}]
+	A metric $x\to \langle \cdot,\cdot\rangle_x$ on $\M$ is a Riemannian metric if it varies smoothly with $x$, i.e. for all smooth vector fields $V,W$ on $\M$, the function $x\to \langle V(x), W(x)\rangle_x$ is smooth from $\M$ to $\R$. 
+\end{definition}
+\begin{definition}[\textbf{Riemannian manifold}]
+	A Riemannian manifold is a manifold with a Riemannian metric. 
+\end{definition}
+\begin{definition}[\textbf{Riemannian distance}]
+	Let $\M$ be a Riemannian manifold. Given a smooth curve $c:[a,b]\to \M$, we define the length of $c$ as 
+	\begin{equation}
+		L(c) = \int_a^b \| c'(t)\|_{c(t)}dt
+	\end{equation}
+	The Riemannian distance is then defined as $dist(x,y) = \inf_c L(c)$. 
+\end{definition}
+\begin{definition}[\textbf{Riemannian submanifolds}]
+	Let $\M$ be an embedded submanifold of a Euclidean space $\mathcal{E}$. Equipped with the Riemannian metric obtained by restriction of the metric of $\mathcal{E}$, we call $\M$ a Riemannian submanifold of $\mathcal{E}$. 
+\end{definition}
+\subsection{Gradient on manifolds}
+\begin{definition}[\textbf{Riemannian gradient}]
+	Let $f:\M\to \R$ be smooth on a Riemannian manifold $\M$. The Riemannian gradient of $f$ is the vector field $\text{grad} f$ on $\M$ uniquely defined by the following identities:
+	\begin{equation}
+		\forall (x,v)\in \mathcal{T}\M, \qquad Df(x)[v] = \langle v, \text{grad}f(x)\rangle_x 
+	\end{equation}
+	where $Df(x)$ is the differential of $f$ and $\langle \cdot, \cdot \rangle_x$ is the Riemannian metric. 
+\end{definition}
+\begin{thm}
+	Let $\M$ be a Riemannian submanifold of $\mathcal{E}$ endowed with the metric $\langle\cdot, \cdot\rangle$ and let $f:\M\to \R$ be a smooth function. The Riemannian gradient of $f$ is given by 
+	\begin{equation}
+		\text{grad}f(x) = \text{Proj}_x(\nabla \bar f(x))
+	\end{equation}
+	where $\bar f$ is any smooth extension of $f$ to a neighborhood of $\M$ in $\mathcal{E}$, and $\nabla \bar f(x)$ is the Euclidean gradient of $\bar f$ at $x$.
+\end{thm}
+\begin{itemize}
+	\item [$\to$] Note: for $\mathcal{E} =\R^d$ and using the usual metric $\langle u,v\rangle = u^T v$, the projection operator is 
+	\begin{equation}
+		\text{Proj}_x(v) = v - (x^T v)x
+	\end{equation}
+\end{itemize}
+\begin{proposition}
+	Let $f:\M_1\to \M_2$ and $G:\M_2\to \M_3$ be smooth, where $\M_1, \M_2, \M_3$ are embedded submanifolds of $\mathcal{E}_1, \mathcal{E}_2, \mathcal{E}_3$ respectively. Then
+	\begin{equation}
+		G\circ F : \M_1\to \M_3:x\to G(F(x))
+	\end{equation}
+	is smooth and the chain rule applies:
+	\begin{equation}
+		D(G\circ F)(x)[v] = DG(F(x))[DF(x)[v]]
+	\end{equation}
+\end{proposition}
+\subsection{Taylor development of functions defined on manifolds}
+Let $f:\M\to \R$ be smooth and $c:\mathcal{I}\to \mathcal{M}$ be a smooth curve with $c(0)=x$ and $c'(0)=v$, with $\mathcal{I}\subseteq \R$ an open interval around $t=0$ and $\|v\|_x = 1$. Let us define $g:\mathcal{I}\to \R:t\to g(t) = f(c(t))$. Since $g=f\circ c$ is smooth and maps real numbers to real numbers, it admits a Taylor expansion:
+\begin{equation}
+	g(t) = g(0) + tg'(0) + \mathcal{O}(t^2)
+\end{equation}
+By the chain rule, 
+\begin{equation}
+	g'(t) = Df(c(t))[c'(t)] = \langle \text{grad}f(c(t)), c'(t)\rangle_{c(t)}
+\end{equation}
+and for $t=0$, 
+\begin{equation}
+	g(0) = f(x)\qquad g'(0) = \langle \text{grad}f(x), v\rangle_x
+\end{equation}
+Therefore, 
+\begin{equation}
+	\begin{aligned}
+		f(c(t)) = f(x) + t\langle \text{grad}f(x), v\rangle_x + \mathcal{O}(t^2)\\
+		f(R_x(tv)) = f(x) + \langle \text{grad}f(x), tv\rangle_x + \mathcal{O}(t^2)
+	\end{aligned}
+\end{equation}
+And defining $s\coloneqq tv \in \mathcal{T}_x\M$, 
+\begin{equation}
+	f(R_x(s)) = f(x) + \langle \text{grad}f(x),s\rangle_x + \O(\|s\|_x^2)
+\end{equation}
+This allows to define the Riemannian gradient descent:
+\begin{algorithm}[H]
+	\label{algo:RGD}
+	\caption{Riemannian gradient descent}
+	\begin{algorithmic}[1]
+		\State \textbf{Input:} $x_0\in \M$;
+		\For{$k=0,1,2,\dots$}
+			\State Pick a step size $\alpha_k >0$;
+			\State \begin{equation}
+				x_{k+1} = R_{x_k}\left(-\alpha_k \text{grad} f(x_k)\right)
+			\end{equation}
+		\EndFor	
+	\end{algorithmic}
+\end{algorithm}
 \end{document}
