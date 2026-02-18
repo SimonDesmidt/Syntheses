@@ -474,30 +474,32 @@ This algorithm works with a vertical data format, it means that we works with se
 \end{algorithm}
 \section{Correlation measures}
 Even when we observe strong associations rules between items, they might not be interesting. To decide that, we can either manually chose if the pattern is interesting or not, it is called \textbf{Subjective assessement}. Or we can use \textbf{Objective assessment} which is based on statistics. For that, we can introduces the following measures:
-\subsection{Lift}
-The lift of a pair of item analyses the dependence and the correlation between them. It is defined as:
-\begin{equation}
-    \texttt{lift}(A,B) = \frac{P(A \cup B)}{P(A) P(B)} = \frac{P(B|A)}{P(B)} = \frac{conf(A \Rightarrow B)}{P(B)}
-\end{equation}
+\begin{definition}
+    \textbf{The lift} of a pair of item analyses the dependence and the correlation between them. It is defined as:
+    \begin{equation}
+        \texttt{lift}(A,B) = \frac{P(A \cup B)}{P(A) P(B)} = \frac{P(B|A)}{P(B)} = \frac{conf(A \Rightarrow B)}{P(B)}
+    \end{equation}
+\end{definition}
 \begin{itemize}
     \item If $\texttt{lift}(A,B) < 1$, A and B are negatively correlated, i.e., the occurence of one likely leads to the absence of the other
     \item If $\texttt{lift}(A,B) = 1$, A and B are independant
     \item If $\texttt{lift}(A,B) > 1$, A and B are positively correlated, i.e., the occurence of one implies the occurence of the other
 \end{itemize}
-\subsection{chi-squared ($\chi^2$)}
-Based on the contingency table of the two items, we can compute the $\chi^2$ statistics that tests the independence of the two items. The test is based on statistics table, and degrees of freedom. The degrees of freedom can be computed with:
-\begin{equation}
-    DF = (r-1)(c-1)
-\end{equation}
-And the $\chi^2$ metrics is computed with:
-\begin{equation}
-    \chi^2 = \sum_{i=1}^{r} \sum_{j=1}^{c} \frac{(o_{ij} - e_{ij})^2}{e_{ij}}
-\end{equation}
-with $o_{ij}$ the observed frequency of the event $(A_i,B_j)$ and $e_{ij}$ the expected frequency of the event $(A_i,B_j)$. $e_{ij}$ is computed as:
-\begin{equation}
-    e_{i,j} = \frac{\texttt{count}(A=a_i) \times \texttt{count}(B=b_j)}{Total}
-\end{equation}
-with $n$ the number of data tuples.
+\begin{definition}
+    Based on the contingency table of the two items, we can compute the \textbf{$\chi^2$ (chi-square)} statistics that tests the independence of the two items. The test is based on statistics table, and degrees of freedom. The degrees of freedom can be computed with:
+    \begin{equation}
+        DF = (r-1)(c-1)
+    \end{equation}
+    And the $\chi^2$ metrics is computed with:
+    \begin{equation}
+        \chi^2 = \sum_{i=1}^{r} \sum_{j=1}^{c} \frac{(o_{ij} - e_{ij})^2}{e_{ij}}
+    \end{equation}
+    with $o_{ij}$ the observed frequency of the event $(A_i,B_j)$ and $e_{ij}$ the expected frequency of the event $(A_i,B_j)$. $e_{ij}$ is computed as:
+    \begin{equation}
+        e_{i,j} = \frac{\texttt{count}(A=a_i) \times \texttt{count}(B=b_j)}{Total}
+    \end{equation}
+    with $n$ the number of data tuples.
+\end{definition}
 Example of a contingency table for two items $A$ and $B$:
 \begin{center}
     \begin{tabular}{|c|c|c|c|}
@@ -530,32 +532,36 @@ And here is an example of the $\chi^2$, for different confidence values of the p
     \includegraphics[scale=0.33]{img/chi_sq.png}
     \caption{Example of $\chi^2$ table}
 \end{figure}
-\subsection{All confidence measure}
-\textbf{All confidence measure} is the minimum confidence of the two association rules related to $A$ and $B$ ($A \Rightarrow B$ and $B \Rightarrow A$). And it is defined as:
-\begin{equation}
-    \begin{aligned}
-        \texttt{all\_conf}(A,B) &= \frac{\texttt{support}_\texttt{count}(A \cup B)}{\max \{\texttt{support}_\texttt{count}(A), \texttt{support}_\texttt{count}(B) \}}\\
-        & = \min\{P(B|A), P(A|B)\}
-    \end{aligned}
-\end{equation}
-\subsection{Max confidence measure}
-\textbf{Max confidence measure} is also the maximum confidence of the two association rules related to $A$ and $B$ ($A \Rightarrow B$ and $B \Rightarrow A$). And it is defined as:
-\begin{equation}
-    \texttt{max\_conf}(A,B) = \max\{P(B|A), P(A|B)\}
-\end{equation}
-\subsection{Kulczynski measure}
-\textbf{Kulczynski measure} can be view as an average confidence of the two association rules related to $A$ and $B$ ($A \Rightarrow B$ and $B \Rightarrow A$). And it is defined as:
-\begin{equation}
-    \texttt{kulc}(A,B) = \frac{1}{2} \left( P(A|B) + P(B|A) \right)
-\end{equation}
-\subsection{Cosine measure}
-\textbf{Cosine measure} can be view as a harmonized lift measure and is defined as:
-\begin{equation}
-    \begin{aligned}
-        \texttt{cosine}(A,B) &= \frac{\texttt{support}_\texttt{count}(A \cup B)}{\sqrt{\texttt{support}_\texttt{count}(A) \texttt{support}_\texttt{count}(B) }}\\
-        &= \frac{P(A \cup B)}{\sqrt{P(A) P(B)}} = \sqrt{P(A|B)p(B|A)} 
-    \end{aligned}
-\end{equation}
+\begin{definition}
+    \textbf{All confidence measure} is the minimum confidence of the two association rules related to $A$ and $B$ ($A \Rightarrow B$ and $B \Rightarrow A$). And it is defined as:
+    \begin{equation}
+        \begin{aligned}
+            \texttt{all\_conf}(A,B) &= \frac{\texttt{support}_\texttt{count}(A \cup B)}{\max \{\texttt{support}_\texttt{count}(A), \texttt{support}_\texttt{count}(B) \}}\\
+            & = \min\{P(B|A), P(A|B)\}
+        \end{aligned}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    \textbf{Max confidence measure} is also the maximum confidence of the two association rules related to $A$ and $B$ ($A \Rightarrow B$ and $B \Rightarrow A$). And it is defined as:
+    \begin{equation}
+        \texttt{max\_conf}(A,B) = \max\{P(B|A), P(A|B)\}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    \textbf{Kulczynski measure} can be view as an average confidence of the two association rules related to $A$ and $B$ ($A \Rightarrow B$ and $B \Rightarrow A$). And it is defined as:
+    \begin{equation}
+        \texttt{kulc}(A,B) = \frac{1}{2} \left( P(A|B) + P(B|A) \right)
+    \end{equation}
+\end{definition}
+\begin{definition}
+    \textbf{Cosine measure} can be view as a harmonized lift measure and is defined as:
+    \begin{equation}
+        \begin{aligned}
+            \texttt{cosine}(A,B) &= \frac{\texttt{support}_\texttt{count}(A \cup B)}{\sqrt{\texttt{support}_\texttt{count}(A) \texttt{support}_\texttt{count}(B) }}\\
+            &= \frac{P(A \cup B)}{\sqrt{P(A) P(B)}} = \sqrt{P(A|B)p(B|A)} 
+        \end{aligned}
+    \end{equation}
+\end{definition}
 For all thoses measures, from the all confidence to the cosine measure, the measures are in the range $[0,1]$ and they can be interpreted as:
 \begin{itemize}
     \item If $\texttt{cosine}(A,B) < 0.5$, $A$ and $B$ are negatively correlated
@@ -563,13 +569,15 @@ For all thoses measures, from the all confidence to the cosine measure, the meas
     \item If $\texttt{cosine}(A,B)> 0.5$, $A$ and $B$ are positively correlated
 \end{itemize}
 To decide whether two items are correlated or not, we can use all the previous mesures. We can also check the relation between two items by testing their conditional probabilities (i.e. $P(A|B)$ and $P(B|A)$). And with that, we can introduce the imbalance ratio.
-\subsection{Imbalance ratio}
-\textbf{The imbalance ratio} measures the difference between the two conditional probabilities and return a value near 0 if the two probabilities are close and otherwise the closer it is to 1, the more imbalanced the two probabilities are. It is defined as:
-\begin{equation}
-    \texttt{IR(A,B)} = \frac{|\texttt{support}_\texttt{count}(A) - \texttt{support}_\texttt{count} (B) |}{\texttt{support}_\texttt{count}(A) + \texttt{support}_\texttt{count}(B) - \texttt{support}_\texttt{count}(A \cup B)}
-\end{equation}
+\begin{definition}
+    \textbf{The imbalance ratio} measures the difference between the two conditional probabilities and return a value near 0 if the two probabilities are close and otherwise the closer it is to 1, the more imbalanced the two probabilities are. It is defined as:
+    \begin{equation}
+        \texttt{IR(A,B)} = \frac{|\texttt{support}_\texttt{count}(A) - \texttt{support}_\texttt{count} (B) |}{\texttt{support}_\texttt{count}(A) + \texttt{support}_\texttt{count}(B) - \texttt{support}_\texttt{count}(A \cup B)}
+    \end{equation}
+\end{definition}
 Usually it is advised to use kulc and the imbalance ratio together to decide.
 \section{Multilevel associations and mining rare patterns}
+\subsection{Multilevel associations mining}
 Items can have multiple level of abstraction. For example, a store can sell different type of goods (fruits, vegetables, drinks, etc) and in those categories, there can be different subcategories (for drink: alcool, softs, milks, etc) and in those subcategories, we can have different items. Patterns can be mined at each level of abstraction, and usually patterns at more detailled levels are the most interesting. From the levels of abstraction, we can draw a tree (which is not unique), to show a way of categorizing the items. For example, we can have this concept hierarchy: 
 \begin{figure}[H]
     \centering
@@ -585,6 +593,33 @@ We can mine multilevel association rules by using 3 differents types of support 
     \textbf{Reduced support} mining uses a lower minimum support threshold for the lower levels of the hierarchy. And so with this, each level as it's own minimum support threshold, and an item might be frequent even though its ancestor is not frequent.
 \end{definition}
 \begin{definition}
-    
+    \textbf{Group-based support} mining uses specialized threshold for each group of items. For example, low price value items have a higher threshold, high price value items have a lower threshold. Usually, the mining is done with the lower support, followed by post-processing step to remove itemset that do not meet their own categories threshold
 \end{definition}
+\subsection{Mining rare patterns}
+Rare patterns or patterns that reflect a negative correlation between items are sometimes interesting to find.
+\begin{definition}
+    A \textbf{negatively correlated pattern} is a pattern $A \cup B$, such that $A$ and $B$ are frequent but they rarely occur together, which means that:
+    \begin{equation}
+        \texttt{support}_\texttt{count}(A \cup B) < \texttt{support}_\texttt{count}(A) \texttt{support}_\texttt{count}(B)
+    \end{equation}
+    And thus, $A$ and $B$ are negatively correlated.
+\end{definition}
+\begin{definition}
+    A \textbf{strongly negatively correlated pattern} is a pattern $A \cup B$, such that $A$ and $B$ are frequent but they rarely occur together, which means that:
+    \begin{equation}
+        \texttt{support}_\texttt{count}(A \cup B) \ll \texttt{support}_\texttt{count}(A) \texttt{support}_\texttt{count}(B)
+    \end{equation}
+    And thus, $A$ and $B$ are strongly negatively correlated.
+\end{definition}
+But the formula is not null invariant, another way to check if two items are strongly negatively correlated is:
+\begin{equation}
+    \begin{aligned}
+        \texttt{support}_\texttt{count}(A \cup \neg B) \texttt{support}_\texttt{count}(\neg A \cup B) \gg \\ \texttt{support}_\texttt{count}(A \cup B) \texttt{support}_\texttt{count}(\neg A \cup \neg B)    
+    \end{aligned}
+\end{equation}
+But is also not null invariant. To really have a null invariant measure, we can use the Kulczynski measure:
+\begin{equation}
+    \frac{1}{2} (P(A|B) + P(B|A)) < \delta 
+\end{equation}
+with $\delta$ a user-defined negative pattern threshold.
 \end{document}
