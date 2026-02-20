@@ -94,7 +94,7 @@
 
 \setcounter{tocdepth}{1}
 \tableofcontents
-\chapter{Finite differences with uniform grid}
+\chapter{Introduction - Finite differences with uniform grid}
 \section{Classical finite differences}
 Let us define a function $u(\cdot)$ that depends on a variable $x$. Suppose that in the dimension $x$, we discretize the function uniformly with a step $h$ and the values at the nodes are written $u_i$. Then, by a Taylor development series,
 \begin{equation}
@@ -192,6 +192,7 @@ Those stencils can be generalized to higher orders using more points (bigger cro
 \begin{itemize}
 	\item [$\to$] Note: the coefficients are found using the constraint that the truncation error is independent of orientation of the stencil. 
 \end{itemize}
+\chapter{Space integration}
 \section{Convection equation}
 The convection equation is 
 \begin{equation}
@@ -208,7 +209,9 @@ On a periodic domain of length $L$, the solution is
 		\Longrightarrow u(x,t) = \sum_{p=-\infty}^\infty A_p(t) e^{i\frac{2\pi x}{L}}
 	\end{aligned}
 \end{equation}
-where the coefficients verify the condition $A_k = A_{-k}^*$ for all $k$, since the solution must be real. In the exact solution, all the modes have the same speed $c$. However, it is not the case when we use explicit finite differences. Let us show it in the case of an infinite domain (same thing happens for a periodic domain, adding the sum on $p$):\\
+where the coefficients verify the condition $A_k = A_{-k}^*$ for all $k$, since the solution must be real. In the exact solution, all the modes have the same speed $c$. 
+\subsection{Explicit schemes}
+However, all modes do not have the same velocity when we use explicit finite differences. Let us show it in the case of an infinite domain (same thing happens for a periodic domain, adding the sum on $p$):\\
 Let $u_i(t) = A(t) e^{j kx_i}$. Then,
 \begin{equation}
 	\begin{aligned}
@@ -235,7 +238,7 @@ and although $k$ is not constant for all modes, the error of the stencil is stil
 	\label{fig:kh/kh}
 \end{figure}
 As the error increases when $k$ increases, it is important to use a very refined grid so that all points whose amplitude is non negligible have $k^* h \approx kh$. 
-\section{Implicit finite differences}
+\subsection{Implicit schemes}
 The general scheme of implicit finite differences is the following:
 \begin{equation}\label{eq:I-order1}
 	\begin{aligned}	
@@ -269,7 +272,7 @@ The diffusion equation is
 \end{equation}
 This equation is not reversible because it represents a loss of information: the high-wave-number terms decay fast and have no impact after a small time.\\
 The exact solution is $u(x,t) = A_k(t)e^{jkx}$ with $A_k(t) = A_k(0)e^{\alpha k^2 t}$. 
-\subsection{Explicit scheme}
+\subsection{Explicit schemes}
 The explicit finite differences scheme is 
 \begin{equation}
 	\left.\frac{\partial^2 u}{\partial x^2}\right|_i = a\frac{u_{i+1}-2u_i+u_{i-1}}{h^2} + b\frac{u_{i+2}-2u_i+u_{i-2}}{4h^2} + c\frac{u_{i+3}-2u_i+u_{i-3}}{9h^2}
@@ -311,6 +314,200 @@ As previously, we can do the Taylor development series of this expression to get
 	\caption{Evolution of the modified $k^2$ with $k^2$.}
 	\label{fig:diffusion-kmod}
 \end{figure}
+\section{One-sided finite differences}
+Let us consider the backward differences for the convection equation:
+\begin{equation}\label{eq:upwind}
+	\frac{d}{dt} u_i = - c \frac{u_i-u_{i-1}}{h}\Longrightarrow \frac{d}{dt} A_k = -\frac{c}{h} (1-e^{jkh})
+\end{equation}
+Then, $\lambda_k = -\frac{c}{h} (1-e^{-jkh})$ is no longer purely imaginary. Its real part gives an amplitude error (numerical diffusion) and its imaginary part gives a (numerical) dispersion error. 
+\begin{itemize}
+	\item [$\to$] Note: for $c<0$, we need to use forward differences instead because otherwise the real part of $\lambda_k$ becomes positive and thus unstable. 
+\end{itemize}
+Let us compute the term of numerical diffusion:
+\begin{equation}
+	\frac{d}{dt}u_i = -c\frac{u_i-u_{i-1}}{h} = -c \frac{u_{i+1}-u_{i-1}}{2h} + c \frac{u_{i+1}-2u_i+u_{i-1}}{2h} = -c \frac{u_{i+1}-u_{i-1}}{2h} + \frac{ch}{2}\frac{u_{i+1}-2u_i+u_{i-1}}{h^2}
+\end{equation}
+The modified equation becomes
+\begin{equation}
+	\frac{\partial u}{\partial t} + c\frac{\partial u}{\partial x} = \frac{ch}{2} \frac{\partial^2 u}{\partial x^2} + \dots 
+\end{equation}
+and so the diffusivity parameter is thus $\epsilon = \frac{ch}{2}$. \\
+For this scheme, from \eqref{eq:upwind}, $\lambda_k \Delta t = -\frac{c\Delta t}{h} \left((1-\cos(kh)) + i\sin(kh)\right)$ and the region of stability of the method is a circle centered in $(-1,0)$ in the complex plane of $\lambda_k \Delta t$. 
+\subsection{One-sided finite differences of higher order}
+This type of scheme of higher order would give for example 
+\begin{equation}
+	\begin{aligned}
+		\frac{d}{dt} u_i &= \frac{3u_i -4u_{i-1}+u_{i-2}}{2h}\\
+		& = \frac{11u_i-18u_{i-1}+9u_{i-2}-2u_{i-3}}{6h}
+	\end{aligned}
+\end{equation}
+and all those expressions give different stability regions. The general form for the spatial derivative is 
+\begin{equation}
+	\left.\frac{\partial u}{\partial x}\right|_i = a_1 \frac{u_i-u_{i-1}}{h} + a_2 \frac{u_i-u_{i-2}}{2h} + a_3 \frac{u_i-u_{i-3}}{3h}
+\end{equation}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.6\textwidth]{img/decentered_convection.png}
+	\caption{Stability regions for one-sided schemes.}
+	\label{fig:decentered-convection}
+\end{figure}
+This means that if our system has a high eigenvalue $\lambda$, we need to decrease the time step to have convergence properties. This means that those one-sided schemes are not much helpful, because they are very costly. Moreover, at order 3, we can see low wave numbers with positive real part, meaning that they blow up (positive exponent in the exponential). 
+\section{Convection-diffusion equation}
+The convection-diffusion equation is 
+\begin{equation}
+	\frac{\partial u}{\partial t} + c \frac{\partial u}{\partial x} = \epsilon \frac{\partial^2 u}{\partial x^2}
+\end{equation}
+\begin{itemize}
+	\item [$\to$] Note: numerical diffusion can appear and pollute the physical diffusion. This is not a problem if we have $\epsilon_{num} \ll \epsilon_{phys}$. 
+\end{itemize}
+\subsection{Centered finite differences}
+The scheme here is 
+\begin{equation}
+	\frac{d}{dt}u_i = -c \frac{u_{i+1}-u_{i-1}}{2h} + \epsilon \frac{u_{i+1}-2u_i+u_{i-1}}{h^2}
+\end{equation}
+This gives 
+\begin{equation}
+	\lambda_k = -\frac{2\epsilon}{h^2} (1-\cos(kh)) - j \frac{c}{h}\sin(kh)
+\end{equation}
+This expression in the complex plane of $\lambda_k\Delta t$ is an ellipse with vertical axis $b=\beta$ and horizontal axis $a=2r$, $\beta=c\Delta t/h$ being the CFL number, and $r=\epsilon \Delta t/h^2$ being the Fourier number. We also define the mesh Peclet number $R= |c|h/\epsilon$, giving the identity $\beta = rR$. \\
+This scheme, using a Euler scheme for integration, is stable if the ellipse is fully contained in the circle centered in $(-1,0)$. 
+\begin{itemize}
+	\item If $b\le a$, the scheme is stable if $a\le 1$, or equivalently, if $R\le 2$, the scheme is stable if $r\le 1/2$;
+	\item If $b>a$, the scheme is stable if the largest radius of curvature of the ellipse is $\le 1$\footnote{This value is the radius of curvature of the circle.}, i.e. $b^2/a \le 1 \Longleftrightarrow c^2\Delta t/\epsilon \le 2$, or equivalently, if $R>2$, this scheme is stable for $r\le 2/R^2$. 
+\end{itemize}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.5\textwidth]{img/ellipse.png}
+	\caption{Stability region for the parameters of the convection-diffusion equation.}
+	\label{fig:ellipse}
+\end{figure}
+If using backward finite differences, i.e. $c>0$, the scheme is 
+\begin{equation}
+	\frac{d}{dt} u_i = -c\frac{u_i-u_{i-1}}{h} + \epsilon \frac{u_{i+1}-2u_i+u_{i-1}}{h^2} = -c \frac{u_{i+1}-u_{i-1}}{2h} + \left(\epsilon + \frac{ch}{2}\right) \frac{u_{i+1}-2u_i+u_{i-1}}{h^2}
+\end{equation}
+Then, 
+\begin{equation}
+	\lambda_k = -\left(\frac{c}{h} +\frac{2\epsilon}{h^2}\right)(1-\cos(kh)) - j\frac{c}{h} \sin(kh)
+\end{equation}
+This is also an ellipse, with axes $a = \beta + 2r$ and $b = \beta$. Here, $b\le a$ becaue $r>0$ always, and thus 
+\begin{equation}
+	r \le \frac{1}{1+R}
+\end{equation}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.6\textwidth]{img/conv_diff_stability.png}
+	\caption{Stability region of the convection-diffusion equation.}
+	\label{fig:conv-diff}
+\end{figure}
+\section{Convection equation in 2D}
+The convection equation in 2D has two different velocity values:
+\begin{equation}
+	\frac{\partial u}{\partial t} + u_0 \frac{\partial u}{\partial x} + v_0 \frac{\partial u}{\partial y} = 0
+\end{equation}
+We consider here a periodic problem to be able to do a modal analysis. 
+The E2 scheme gives 
+\begin{equation}
+	\frac{du_{ij}(t)}{dt} = -\left(u_0\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta x} + v_0 \frac{u_{i,j+1}-u_{i,j-1}}{2\Delta y}\right)
+\end{equation}
+Which gives a system of ODEs for the $u_{i,j}(t)$. \\
+In the continuous problem, the solution is 
+\begin{equation}
+	u(x,y,t) = \sum_{k,\ell} A_{k\ell}(t) e^{j(kx+\ell y)}
+\end{equation}
+Our ODE gives 
+\begin{equation}
+	A_{k\ell }(t) = A_{k\ell}(0) e^{-j(u_0k+v_0\ell)t}
+\end{equation}
+For the discrete problem (in space but continuous time), the ODE for $A_{k\ell}$ is 
+\begin{equation}
+	\frac{dA_{k\ell}}{dt} = -j\left(\frac{u_0}{\Delta x} \sin(k\Delta x) + \frac{v_0}{\Delta y}\sin(l\Delta y)\right) A_{k\ell}
+\end{equation}
+and so the eigenvalues $\lambda_{k\ell}$ are purely imaginary, with $\lambda_{k\ell} = \lambda_k + \lambda_\ell$. We can also define the global CFL number 
+\begin{equation}
+	\beta = \beta_x + \beta_y = \frac{|u_0|\Delta t}{\Delta x} + \frac{|v_0|\Delta t}{\Delta y}
+\end{equation}
+and 
+\begin{equation}
+	|\lambda_{k\ell}|_{\max} \Delta t = \beta 
+\end{equation}
+\section{Convection-diffusion equation in 2D}
+\begin{equation}
+	\frac{\partial u}{\partial t} + u_0 \frac{\partial u}{\partial x} + v_0 \frac{\partial u}{\partial y} = \epsilon \left(\frac{\partial^2u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}\right) 
+\end{equation}
+We can compute the eigenvalues by using a scheme, e.g. E2, to get 
+\begin{equation}
+	\frac{dA_{k\ell}}{dt} = \lambda_{k\ell} A_{k\ell}
+\end{equation}
+The parameters of the scheme are 
+\begin{equation}
+	\begin{cases}
+		r_x = \frac{\epsilon \Delta t}{(\Delta x)^2} \qquad R_x = \frac{|u_0| \Delta x}{\epsilon} \Longrightarrow \beta_x = r_xR_x\\
+		r_y = \frac{\epsilon \Delta t}{(\Delta y)^2} \qquad R_y = \frac{|v_0| \Delta y}{\epsilon} \Longrightarrow \beta_y = r_yR_y\\
+	\end{cases}
+\end{equation}
+In the case $\Delta x=  Delta y = h$, $r_x=r_y=r=\epsilon \Delta t/ h^2$ and 
+\begin{equation}
+	\begin{cases}
+		\beta_x = \frac{|u_0| \Delta t}{h}\\
+		\beta_Y = \frac{|v_0| \Delta t}{h}
+	\end{cases} \Longrightarrow \begin{cases}
+		\beta = \beta_x + \beta_y = \frac{(|u_0|+|v_0|)\Delta t}{h}\\
+		R = R_x+R_y = \frac{(|u_0| + |v_0|)h}{\epsilon}
+	\end{cases}
+\end{equation}
+\chapter{Numerical time-integration schemes for ODEs}
+The general formulation of first order ODEs is 
+\begin{equation}
+	\frac{du}{dt} = f(u,t)
+\end{equation}
+Until now, we have only had a simple system with $f(u,t) = \lambda u$. \\
+We can do a Taylor development of $f(\cdot)$ to analyze the local behaviour of the system:
+\begin{equation}
+	\frac{du}{dt} = f(u,t) = \underbrace{f(u_0,t_0)}_{\coloneqq\beta} + (u-u_0)\underbrace{\frac{\partial f}{\partial u}}_{=\eqqcolon \lambda} + (t-t_0) \underbrace{\frac{\partial f}{\partial t}(u_0,t_0)}_{\eqqcolon \gamma} + \dots 
+\end{equation}
+and defining $u' = u-u_0$ and $t'=t-t_0$. The solution of this is 
+\begin{equation}
+	u'(t) = u_p' + u_g' = -\frac{1}{\lambda}\left(\gamma t' + \left(\frac{\gamma}{\lambda}+ \beta\right)\right) + A e^{\lambda t'} = \frac{1}{\lambda}\left[\left(\frac{\gamma}{\lambda} + \beta\right)\left(e^{\lambda t'} -1\right) - \gamma t'\right]
+\end{equation}
+The stability of the scheme used to integrate that ODE is governed by the homogeneous part of the equation, as it is the only one that can blow up (exponential term). \\
 
+For our special case $\frac{du}{dt} = \lambda u$, the solution is $u(t) = u(0)e^{\lambda t}$. As we use a discretized space, let $t=t^n = n\Delta t$. Then, $u^n = u(t^n) = (e^{\lambda \Delta t})^n u^0 = (\rho_e)^nu^0$, where we call $\rho_e$ the amplification factor of the exact solution. The ODE is (physically) stable if $|\rho_e| \le 1$. In the $\lambda \Delta t$ complex plane, it represents the left half-plane. 
+\section{Explicit Euler scheme}
+\begin{equation}
+	\frac{u^{n+1}-u^n}{\Delta t} = \lambda u^n
+\end{equation}
+Then, 
+\begin{equation}
+	u^{n+1} = (1+\lambda \Delta t)u^n = \rho u^n \Longrightarrow u^n = (\rho)^n u^0
+\end{equation}
+The scheme is stable if 
+\begin{equation}
+	|\rho|^2 = (1+\lambda_r \Delta t)^2 + (\lambda_i\Delta t)^2 \le 1
+\end{equation}
+This is a circle centered in $(-1,0)$. \\
+
+At each time stpe, the Euler scheme produces an $\mathcal{O}((\Delta t)^2)$ error. To arrive at $t=T$, it takes $N=T/\Delta t$ time steps. The error at $t=T$ is thus $\mathcal{O}((\Delta t)^2/\Delta t) = \mathcal{O}(\Delta t)$. The Euler scheme if a first-order scheme.
+\begin{itemize}
+	\item [$\to$] Note: always check the order of a scheme using a fixed time interval, and not a single time step, as we want a global estimation. 
+\end{itemize}
+\section{Implicit Euler scheme}
+\begin{equation}
+	\frac{u^{n+1}-u^n}{\Delta t} = \lambda u^{n+1}
+\end{equation}
+Then, 
+\begin{equation}
+	u^{n+1} = \frac{1}{1-\lambda \Delta t} u^n = \rho u^n 
+\end{equation}
+This scheme is unconditionnally stable, as it is stable for all problems with $\lambda_r \le 0$ and we do not consider the problems that are not physically stable. 
+\section{Trapezoid rule}
+\begin{equation}
+	\frac{u^{n+1}-u^n }{\Delta t} = \lambda \frac{u^{n+1}-u^n}{2}
+\end{equation}
+Then, 
+\begin{equation}
+	u^{n+1} = \frac{1+\frac{\lambda \Delta t}{2}}{1-\frac{\lambda \Delta t}{2}} u^n = \rho u^n
+\end{equation}
+This scheme is also unconditionnally stable for physically stable problems. Moreover, it is of second order, because it is centered around $t^{n+1/2}$. 
 \chapter{Fourier document}
+\textcolor{red}{TODO.}
 \end{document}
