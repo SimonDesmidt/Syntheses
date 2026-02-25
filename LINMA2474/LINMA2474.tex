@@ -36,9 +36,11 @@
 \newcommand{\hsp}{\hspace{20pt}}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
 \newcommand{\C}{\mathcal{C}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\M}{\mathcal{M}}
+\newcommand{\E}{\mathcal{E}}
 \renewcommand{\O}{\mathcal{O}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
@@ -288,7 +290,43 @@ And defining $s\coloneqq tv \in \mathcal{T}_x\M$,
 \begin{equation}
 	f(R_x(s)) = f(x) + \langle \text{grad}f(x),s\rangle_x + \O(\|s\|_x^2)
 \end{equation}
-This allows to define the Riemannian gradient descent:
+This allows to define the Riemannian gradient descent in the next chapter.
+\chapter{Riemannian gradient descent}
+\section{Topology tools}
+\subsection{General topology}
+\begin{definition}[\textbf{Topology}]
+	A topology on a set $X$ is a collection $T$ of subsets of $X$, called open sets, such that 
+	\begin{itemize}
+		\item $X$ and $\emptyset$ belong to $X$;
+		\item the union of the elements of any subcollection of $T$ is in $T$;
+		\item the intersection of the elements of any finite subcollection of $T$ is in $T$.
+	\end{itemize}
+\end{definition}
+\begin{definition}[\textbf{Hausdorff topological space.}]
+	A topological space is a couple $(X,T)$ where $X$ is a set and $T$ is a topology on $X$. The topological space $(X,T)$ is Hausdorff if any two distinct points of $X$ have disjoint neighborhoods. If $X$ is Hausdorff, then eveery sequence of points of $X$ converges to at most one point in $X$. 
+\end{definition}
+\subsection{Topology for embedded submanifolds}
+\begin{definition}[\textbf{Open set.}]
+	A subset $\mathcal{U}$ of $\mathcal{M}$ is open (respectively closed) if it is the intersection of $\M$ with an open (respectively closed) set of $\E$.
+\end{definition}
+\begin{definition}[\textbf{Neighborhood.}]
+	A neighborhood of $x$ in $\M$ is an open subset of $\M$ that contains $x$. \\
+	A neighborhood of a subset of $\M$ is an open subset of $\M$ that contains that subset.
+\end{definition}
+\begin{definition}[\textbf{Limit.}]
+	Consider a sequence $s$ of points $x_0,x_1,x_2,\dots$ on a manifold $\M$. 
+	\begin{itemize}
+		\item We way that a point $x$ in $\M$ is a limit of $s$ if, for all neighborhood $\mathcal{U}$ of $x$, there exists some $K\in \Z$ such that $x_k$ is in $\mathcal{U}$ for all $k\ge K$. \\
+		The topology of a manifold is Hausdorff, hence a sequence has at most one limit. If $x$ is the limit, we write 
+		\begin{equation}
+			\lim_{k\to \infty} x_k = x \qquad \text{ or }\qquad x_k\to x
+		\end{equation}
+		and we say that the sequence converges to $x$.
+		\item A point $x\in \M$ is an accumulation point of $s$ if it is the limit of a subsequence of $s$. 
+	\end{itemize}
+\end{definition}
+\section{Riemannian gradient descent algorithm}
+The basic algorithm is the following:
 \begin{algorithm}[H]
 	\label{algo:RGD}
 	\caption{Riemannian gradient descent}
@@ -302,4 +340,82 @@ This allows to define the Riemannian gradient descent:
 		\EndFor	
 	\end{algorithmic}
 \end{algorithm}
+There are several ways to choose the step size $\alpha_k$:
+\begin{itemize}
+	\item a fixed step size: $\alpha_k = \alpha$ for all $k$;
+	\item optimal step size: compute $\alpha_k$ that minimizes exactly the function 
+	\begin{equation}
+		g(\alpha) = f\left(R_{x_k}(-\alpha \text{grad} f(x_k))\right)
+	\end{equation}
+	\item Backtracking: starting with a guess $\alpha_0>0$, iteratively reduce it by a factor $\tau \in (0,1)$ until it is deemed acceptable. 
+\end{itemize}
+\subsection{Global convergence}
+Let $f:\M\to \R$ be a smooth function on a Riemannian manifold $\M$, and assume that 
+\begin{itemize}
+	\item there exists a lower bound $f_{low}\in \R$ such that $f(x)\ge f_{low}$ for all $x\in \M$;
+	\item there exists a constant $c>0$ such that, for all $k\in \Z$, 
+\end{itemize}
+\begin{equation}\label{eq:decrease}
+	f(x_k) - f(x_{k+1}) \ge c\| \text{grad} f(x_k)\|_{x_k}^2
+\end{equation}
+Then,
+\begin{equation}
+	\lim_{k\to \infty} \| \text{grad} f(x_k)\|_{x_k}^2 = 0 
+\end{equation}
+Furthermore, for all $K\ge1$, there exists $k\in \{0,\dots,K-1\}$ such that 
+\begin{equation}
+	\| \text{grad} f(x_k)\|_{x_k} \le \sqrt{\frac{f(x_0)-f_{low}}{cK}}
+\end{equation}
+This means that if a precision $\epsilon$ is required on the solution, the number of iterations that we will need has a complexity $\O(\epsilon^{-2})$. \\
+
+The proof of these results is the same as done in the courses LINMA2471 or LINMA2460. \\
+
+\subsection{Ensuring the assumptions}
+In classical optimisation, the Lipschitz-smoothness assumption is that there exists a constant $L>0$ such that 
+\begin{equation}
+	\|\nabla f(x+s)-\nabla f(x)\| \le L\|s\| \qquad \forall x,s\in \R^d 
+\end{equation}
+implied by the expression 
+\begin{equation}
+	f(x+s) \le f(x) + \langle \nabla f(x),s\rangle  + \frac{L}{2}\|s\|^2 \qquad \forall x,s\in \R^d
+\end{equation}
+However, on manifolds, the gradient is defined differently and with a different support. We need to modify this condition. \\
+On a manifold $\M$, for a given subset $S$ of the tangent bundle $\mathcal{TM}$, there exists a constant $L>0$ such that, forall $(x,s)\in S$, 
+\begin{equation}
+	f(R_x(s)) \le f(x) + \langle \text{grad} f(x),s\rangle + \frac{L}{2}\|s\|_x^2
+\end{equation}
+From this, we can ensure the assumption of equation \eqref{eq:decrease}: define $x\eqqcolon x_k$, $s\eqqcolon -\alpha_k \text{grad}f(x_k)$ and $R_x(s) \eqqcolon R_x(s)$. Then,
+\begin{equation}
+	f(x_{k+1}) \le f(x_k) - \alpha_k\left(1-\frac{L\alpha_k}{2}\right) \| \text{grad}f(x_k)\|_{x_k}^2
+\end{equation}
+and this gives 
+\begin{equation}
+	f(x_k) - f(x_{k+1}) \ge \alpha_k \left(1-\frac{L\alpha_k}{2}\right) \| \text{grad} f(x_k)\|_{x_k}^2 
+\end{equation}
+Therefore, the assumption is true taking $c = \alpha_k \left(1-\frac{L\alpha_k}{2}\right)$.
+\subsection{Optimal step size}
+From the previous proof, we know that the decrease of the iterate is best when the constant $c$ is maximized. We can thus define the function 
+\begin{equation}
+	g:\R\to \R : \alpha \to \alpha \left(1-\frac{L\alpha}{2}\right)
+\end{equation}
+which is maximized for $\alpha^* = 1/L$, the same value seen for optimization in $\R^d$. For that value, the constant is $c=1/2L$.
+\subsection{Backtracking}
+If the Lipschitz constant $L$ is unknown, a possible algorithm for the optimal step size if backtracking line-search using the Armijo-Goldstein condition. This condition is 
+\begin{equation}
+	f(x) - f(R_x(-\alpha \text{grad}f(x))) \ge r\alpha \|\text{grad}f(x)\|_x^2
+\end{equation}
+and the algorithm is 
+\begin{algorithm}[H]
+	\caption{Backtracking line-search}
+	\begin{algorithmic}[1]
+		\State \textbf{Parameters:} $\tau,r\in (0,1)$, e.g. $\tau=1/2$ and $r=10^{-4}$;
+		\State \textbf{Input:} $x\in \M$ and $\bar \alpha >0$;
+		\State Set $\alpha \leftarrow \bar \alpha$;
+		\While{$f(x) - f(R_x(-\alpha \text{grad}f(x))) < r\alpha \|\text{grad}f(x)\|^2$}
+		\State $\alpha \leftarrow \tau \alpha$
+		\EndWhile \\
+		\Return $\alpha$
+	\end{algorithmic}
+\end{algorithm}
+Under an assumption similar to the Lipschitz condition on the gradient, a convergence rate of $\O(1/\epsilon^2)$ can still be guaranteed. \\
 \end{document}
