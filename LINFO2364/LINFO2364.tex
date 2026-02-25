@@ -622,4 +622,110 @@ But is also not null invariant. To really have a null invariant measure, we can 
     \frac{1}{2} (P(A|B) + P(B|A)) < \delta 
 \end{equation}
 with $\delta$ a user-defined negative pattern threshold.
+\section{Constraint-based pattern mining}
+In addition to the suppport, it can be interesting to find patterns that satisfies some constraints. For example, we can be interested in finding patterns that contains a specific item, or patterns with a total value under a specific budget (for a supermarket for example). There exists different types of constraints:
+\begin{itemize}
+    \item \textbf{Knowledge} type constraints: specify the type of knowledge to be mined (e.g., association, correlation, classification, clustering,...)
+    \item \textbf{Data} constraints: set of task-relevant data (e.g., sequence mining, graph mining,...)
+    \item \textbf{Dimension/level} constraints: specify the desired dimensions of the data, the abstraction levels, the level of the concept hierarchies
+    \item \textbf{Interestingness} constraints: specify the thresholds on statistical measures (e.g., support, confidence, correlation)
+    \item \textbf{Rule/pattern} constraints: specify the form of, or conditions on, the rules/patterns to be mined (e.g., max/min number of items, templates, relations between attributes)
+\end{itemize}
+Thoses different types of constraints can be categorized in 3 different categories with different properties.
+\begin{definition}
+    A constraint C is \textbf{pattern antimonotonic}, if an itemset does not satisfy constraint C, none of its supersets will satisfy C (e.g., the support constraint)
+\end{definition}
+When a constraint is pattern antimonotonic, we can prune the search space by not considering the supersets of an itemset that does not satisfy the constraint.
+\begin{definition}
+    A constraint C is \textbf{pattern monotonic} if an itemset satisfy constraint C, all of its supersets will satisfy C.
+\end{definition}
+In opposition to pattern antimonotonic constraints, when a constraint is pattern monotonic, we cannot prune the search space, it is only a constraint that is useful to filter the results at the end of the mining process. It can also help to reduces the number of querries done to check if a superset satisfies the constraint because we only need to check if the superset contains an accepted set.
+\begin{definition}
+    \textbf{Convertible constraint} is a constraint that can be transformed into a pattern monotonic or pattern antimonotonic constraint by reordering the items in the itemsets.
+\end{definition}
+\begin{definition}
+    A constraint c is \textbf{succinct} if it can be enforced by directly pruning some data objects from the database (\textbf{data succinct}) or by directly enumerating all and only those sets that are guaranteed to satisfy the constraint (\textbf{pattern succinct}).
+\end{definition}
+\subsection{Common constraints and their categories}
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        Constraints & Antimonotonic & Monotonic & Succinct \\
+        \hline  
+        \hline
+        $v \in S$ &  & $\surd$ & $\surd$ \\
+        \hline
+        $ S \supseteq V$ &  & $\surd$ & $\surd$ \\
+        \hline
+        $ S \subseteq V$ & $\surd$ &  & $\surd$ \\
+        \hline
+        $ \min(S) \leq v$ &  &  $\surd$ & $\surd$  \\
+        \hline
+        $ \min(S) \geq v$  &  $\surd$ &  & $\surd$ \\
+        \hline
+        $ \max(S) \leq v$  &  $\surd$ &  & $\surd$ \\
+        \hline
+        $ \max(S) \geq v$  &  &  $\surd$ & $\surd$ \\
+        \hline
+        $\texttt{count}(S) \leq v$ & $\surd$ &  & \\
+        \hline
+        $\texttt{count}(S) \geq v$ &  & $\surd$ &  \\
+        \hline
+        $\texttt{sum}(S) \leq v (\forall a \in S, a \geq 0)$ & $\surd$ &  &  \\
+        \hline
+        $\texttt{sum}(S) \geq v (\forall a \in S, a \geq 0)$ &  & $\surd$ &  \\
+        \hline
+        $\texttt{range}(S) \leq v$ & $\surd$ &  &  \\
+        \hline
+        $\texttt{range}(S) \geq v$  &  & $\surd$ &  \\
+        \hline
+        $\texttt{avg}(S) \leq v$ & convertible & convertible &  \\
+        \hline
+        $\texttt{avg}(S) \geq v$ & convertible & convertible &  \\
+        \hline
+        $\texttt{support}(S) \leq \theta$  & $\surd$ &  &  \\
+        \hline
+        $\texttt{support}(S) \geq \theta$  &  & $\surd$ &  \\
+        \hline
+        $\texttt{range}(S) \leq \epsilon$  & $\surd$ &  &  \\
+        \hline
+        $\texttt{range}(S) \geq \epsilon$  &  & $\surd$ &  \\
+        \hline
+    \end{tabular}
+\end{center}
+\subsection{constraint programming approach}
+Constraint programming is a powerful paradigm for solving combinatorial problems, including constraint-based pattern mining. It allows us to express complex constraints and search for solutions that satisfy those constraints efficiently. In the context of constraint-based pattern mining, we are going to use 1 boolean variables for each item and transaction. And then we are going to link those variables with constraints. And we can find all the patterns that satisfy the constraints by exploring the search space of the variables and checking the constraints.\\
+So we are going to define the variables for the items as $X_i$ and for the transactions as $Y_i$. Let's define the basic constraints:
+\begin{itemize}
+    \item \textbf{Cover constraint}: if we select a transaction then we need at least to select all items in that transaction. 
+    \begin{equation}
+        Y_m = 1 \Leftrightarrow \sum_k X_k \times \mathcal{D}_{\tau_m,i_k} = \sum_k X_k
+    \end{equation}
+    \item \textbf{Minimum support constraint}: we need to select at least $\theta$ transactions.
+    \begin{equation}
+        \sum_m Y_m \geq \theta
+    \end{equation}
+\end{itemize}
+With those, we can find all the frequent itemsets. But we can also add other constraints to find more specific patterns:
+\begin{itemize}
+    \item \textbf{Sum of values constraint}: we want that the sum of the values of the items  selected respects a budget. (works also with minimum value of the sum)
+    \begin{equation}
+        \sum_k X_k \times v_k \leq P
+    \end{equation}
+    \item \textbf{Maximum values constraint}: we want that the maximum value of the items selected is under a specific threshold.
+    \begin{equation}
+        \max_k X_k \times v_k \leq P
+    \end{equation}
+\end{itemize}
+And finally, if we want to find patterns that are not only frequent but also maximal or closed, we can use the following constraints:
+\begin{itemize}
+    \item \textbf{Maximal patterns constraint}:
+    \begin{equation}
+        X_k = 1 \Leftrightarrow \sum_m Y_m \times \mathcal{D}_{\tau_m,i_k} \geq \theta 
+    \end{equation}
+    \item \textbf{Closed patterns constraint}:
+    \begin{equation}
+        X_k = 1 \Leftrightarrow \sum_m Y_m \times \mathcal{D}_{\tau_m,i_k} = \sum_m Y_m 
+    \end{equation}
+\end{itemize}
 \end{document}
