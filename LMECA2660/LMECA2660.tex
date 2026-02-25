@@ -37,6 +37,7 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\Z}{\mathbb{Z}}
+\renewcommand{\O}{\mathcal{O}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}[chapter]
 \newtheorem{definition}[thm]{Definition}
@@ -508,6 +509,134 @@ Then,
 	u^{n+1} = \frac{1+\frac{\lambda \Delta t}{2}}{1-\frac{\lambda \Delta t}{2}} u^n = \rho u^n
 \end{equation}
 This scheme is also unconditionnally stable for physically stable problems. Moreover, it is of second order, because it is centered around $t^{n+1/2}$. 
+\section{Explicit Runge-Kutta schemes}
+We will work here on the integration of ODEs of the form 
+\begin{equation}
+	\frac{du}{dt} = f(u,t)
+\end{equation}
+The notation is $f^n = f(u^n,t^n)$ for the value of the function at the $n$-th time step. \\ 
+The general form of a Runge-Kutta scheme of order $m$ is the following:
+\begin{equation}
+	u^{n+1} = u^n + \sum_{i=1}^m \gamma_ik_i \qquad \text{ s.t. }\qquad \begin{cases}
+		k_1 = \Delta t f(u^n, t^n)\\
+		k_i = \Delta t f(u^n + \sum_{j=1}^{i-1}\beta_{ji} k_j, t^n + \sum_{j=1}^{i-1} \alpha_j \Delta t) \qquad \forall i \ge 2
+	\end{cases}
+\end{equation}
+\subsection{RK2}
+The formulation of order two is 
+\begin{equation}
+	u^{n+1} = u^n + \gamma_1 k_1 + \gamma_2 k_2 \qquad \text{ s.t. }\qquad \begin{cases}
+		k_1 = \Delta t f(u^n, t^n)\\
+		k_2 = \Delta t f(u^n + \beta k_1, t^n +\alpha \Delta t)
+	\end{cases}
+\end{equation}
+The explicit Runge-Kutta schemes work with Taylor series:
+\begin{equation}
+	u^{n+1} = u^n + \Delta t \left(\frac{du}{dt}\right)^n + \frac{(\Delta t)^2}{2} \left(\frac{d^2u}{dt^2}\right)^n + \O((\Delta t)^3)
+\end{equation}
+and
+\begin{equation}
+	\begin{aligned}
+		k_2 &= \Delta t \left[f^n + \beta k_1\left(\frac{\partial f}{\partial u}\right)^n + \alpha \Delta t \left(\frac{\partial f}{\partial t}\right)^n + \dots \right]\\
+		\Longrightarrow u^{n+1} &= u^n + \gamma_1 \Delta tf^n + \gamma_2 \Delta t\left[f^n + \beta \Delta tf^n \left(\frac{\partial f}{\partial u}\right)^n + \alpha \Delta t\left(\frac{\partial f}{\partial t}\right)^n + \dots \right]
+	\end{aligned}
+\end{equation}
+By comparing those developments, we find a system of 3 equations:
+\begin{equation}
+	\begin{aligned}
+		&\gamma_1 + \gamma_2 = 1 \\
+		&\gamma_2 \beta = 1/2\\
+		&\gamma_2 \alpha = 1/2 
+	\end{aligned}
+\end{equation}
+There remains one degree of freedom, meaning we get a family of schemes. The usual methods are 
+\begin{itemize}
+	\item RK2 classic: Heun's method
+	\begin{equation}
+		\begin{aligned}
+			\gamma_1 = \gamma_2 = 1/2 \\
+			\alpha = \beta = 1\\
+		\end{aligned}
+	\end{equation}
+	\begin{equation}
+		\begin{cases}
+			k_1 = \Delta t f(u^n,t^n)\\
+			k_2 = \Delta t f(u^n + k_1, t^n + \Delta t)\\
+		\end{cases} \Longrightarrow u^{n+1} = u^n + \frac{1}{2}k_1 + \frac{1}{2}k_2
+	\end{equation}
+	\item RK2 classic: midoint method
+	\begin{equation}
+		\begin{aligned}
+			\gamma_1 = 0 \quad \gamma_2 = 1\\
+			\alpha = \beta = 1/2
+		\end{aligned}
+	\end{equation}
+	\begin{equation}
+		\begin{cases}
+			k_1 = \Delta t f(u^n,t^n)\\
+			k_2 = \Delta t f(u^n + \frac{1}{2}k_1, t^n + \frac{1}{2}\Delta t)
+		\end{cases} \Longrightarrow u^{n+1} = u^n + k_2 
+	\end{equation}
+\end{itemize}
+\subsection{RK3-4}
+Runge-Kutta 3 and 4 are to be derived in the same way. They both have two degrees of freedom and thus it is possible to have many different approaches to get the coefficients. The most common way is to do a diagonal scheme, i.e. $k_{j}$ only depends on the value of $k_{j-1}$. This gives the usual RK4 method 
+\begin{equation}
+	\begin{aligned}
+		\begin{cases}
+			k_1 = \Delta t f(u^n, t^n)\\
+			k_2 = \Delta t f(u^n + \frac{1}{2}k_1, t^n + \frac{1}{2}\Delta t)\\
+			k_3 = \Delta t f(u^n + \frac{1}{2}k_2, t^n + \frac{1}{2}\Delta t)\\
+			k_4 = \Delta t f(u^n + k_3, t^n + \Delta t)
+		\end{cases}\\
+		u^{n+1} = u^n + \frac{1}{6}\left(k_1 + 2k_2+2k_3+k_4\right)
+	\end{aligned}
+\end{equation}
+\subsection{Runge Kutta schemes in stability analysis}
+The analysis of stability is for the equation 
+\begin{equation}
+	\frac{du}{dt} = \lambda u
+\end{equation}
+Stability only considers the linearized equation, because it analyses the local behaviour. \\
+In the case of this equation, we can express $u^{n+1}$ as a function of $u^n$:
+\begin{equation}
+	u^{n+1} = \rho u^n 
+\end{equation}
+where $\rho = \sum_{i=1}^m \frac{(\lambda \Delta t)^m}{m!}$ for a Runge-Kutta scheme of order $m$. \\
+The method is stable if $|\rho|\le 1$. 
+\begin{itemize}
+	\item [$\to$] Note: the intersection of the marginal stability curve ($|\rho|=1$) with the imaginary axis is particularly relevant, as it is necessary to determine the maximum value of the CFL for simple spatial-integration schemes such as Euler explicit, because the $\lambda$ values of those schemes are purely imaginary. In short, the stability region of the spatial scheme must be inside the stability region of the stability region of the time scheme to be fully stable. 
+\end{itemize}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\textwidth]{img/rk.png}
+	\caption{Stability regions of Runge-Kutta schemes.}
+	\label{fig:rk-stability}
+\end{figure}
+\subsection{General Explicit Runge-Kutta schemes}
+A Butcher tableau is a representation of the RK coefficients meant for them to be easy to read.\\
+\begin{center}
+	\begin{tabular}{|c|ccc|c|}
+		\hline 
+		& & & & $\gamma_1$\\
+		$\alpha_2$ & $\beta_{21}$ & & & $\gamma_2$\\
+		$\alpha_3$ & $\beta_{31}$ & $\beta_{32}$ & & $\gamma_3$\\
+		$\alpha_4$ & $\beta_{41}$ & $\beta_{42}$ & $\beta_{43}$ & $\gamma_4$ \\ \hline  
+	\end{tabular}\\
+\end{center}
+The first column contains the time weights, the $\beta$ are the space weights, and the $\gamma$ are the weights in the linear combination of $k_i$. \\
+We can check that we always have $\alpha_i = \sum_{j}\beta_{ji}$ and that $\sum_{i}\gamma_i = 1$. 
+\begin{itemize}
+	\item [$\to$] Note: the diagonal schemes mentioned earlier give a diagonal matrix for the parameters $\beta$.
+\end{itemize}
+
+In an Explicit Runge-Kutta scheme (ERK), the number of substeps (number of coefficients $k$) is not necessarily the order of the scheme: it is possible to do ERK54, which has 5 substeps, but only an order 4. This is because the expression of the amplification paramater $\rho$ changes, and does not correspond exactly to the Taylor development terms. 
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.5\textwidth]{img/rk54.png}
+	\caption{Stability regions for Explicit Runge-Kutta schemes.}
+	\label{fig:rk54}
+\end{figure}
+You can see on \ref{fig:rk54} that the scheme RK54 goes to the right on the imaginary axis. This is a bad behaviour for stability, as there is a small physically stable zone that is not numerically stable. 
 \chapter{Fourier document}
 \textcolor{red}{TODO.}
 \end{document}
