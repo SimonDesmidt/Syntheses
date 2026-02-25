@@ -693,13 +693,17 @@ In opposition to pattern antimonotonic constraints, when a constraint is pattern
         \hline
     \end{tabular}
 \end{center}
-\subsection{constraint programming approach}
+\subsection{Constraint programming approach}
 Constraint programming is a powerful paradigm for solving combinatorial problems, including constraint-based pattern mining. It allows us to express complex constraints and search for solutions that satisfy those constraints efficiently. In the context of constraint-based pattern mining, we are going to use 1 boolean variables for each item and transaction. And then we are going to link those variables with constraints. And we can find all the patterns that satisfy the constraints by exploring the search space of the variables and checking the constraints.\\
 So we are going to define the variables for the items as $X_i$ and for the transactions as $Y_i$. Let's define the basic constraints:
 \begin{itemize}
     \item \textbf{Cover constraint}: if we select a transaction then we need at least to select all items in that transaction. 
     \begin{equation}
         Y_m = 1 \Leftrightarrow \sum_k X_k \times \mathcal{D}_{\tau_m,i_k} = \sum_k X_k
+    \end{equation}
+    But we can also write it as:
+    \begin{equation}        
+        Y_m = 1 \Leftrightarrow \sum_k X_k \times (1-\mathcal{D}_{\tau_m,i_k}) = 0
     \end{equation}
     \item \textbf{Minimum support constraint}: we need to select at least $\theta$ transactions.
     \begin{equation}
@@ -727,5 +731,17 @@ And finally, if we want to find patterns that are not only frequent but also max
     \begin{equation}
         X_k = 1 \Leftrightarrow \sum_m Y_m \times \mathcal{D}_{\tau_m,i_k} = \sum_m Y_m 
     \end{equation}
+    But it can also be written as:
+    \begin{equation}
+        X_k = 1 \Leftrightarrow \sum_m Y_m \times (1-\mathcal{D}_{\tau_m,i_k}) = 0
+    \end{equation}
 \end{itemize}
+After defining the variables and the constraints, we can use a constraint solver to find all the patterns that satisfy the constraints. The solver will explore the search space of the variables and check the constraints to find all the solutions that satisfy them. We can do it by hand by exploring the tree of possible assignments values of the variables and checking the constraints at each node of the tree. Here is an example of a search tree for a simple dataset with 4 items.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.33]{img/search_tree.png}
+    \caption{Example of a search tree}
+\end{figure}
+\subsection{CoverSize}
+TODO
 \end{document}
