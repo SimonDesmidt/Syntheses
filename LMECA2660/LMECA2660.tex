@@ -637,6 +637,68 @@ In an Explicit Runge-Kutta scheme (ERK), the number of substeps (number of coeff
 	\label{fig:rk54}
 \end{figure}
 You can see on \ref{fig:rk54} that the scheme RK54 goes to the right on the imaginary axis. This is a bad behaviour for stability, as there is a small physically stable zone that is not numerically stable. 
+\subsection{RK4 pseudocode}
+\begin{algorithm}[H]
+	\caption{RK4 pseudocode}
+	\begin{algorithmic}[1]
+		\State $(t,u)$ = time $t^n$ and solution $u(t^n)=u^n$;
+		\State Save to avoid overwriting: $u_{safe} = u$, $t_{safe} = t$;
+		\For {$k=1,2,3,4$}
+		\State $u_{\ell} = u_{safe} + \alpha_k \Delta u$
+		\State $t_{\ell} = t_{safe} + \alpha_k \Delta t$
+		\State Evaluate: $\Delta u = \Delta t f(u_{\ell}, t_\ell)$
+		\State And update: $\begin{cases}
+			u = u + \gamma_k \Delta u \\
+			t = t + \gamma_k \Delta t
+		\end{cases}$
+		\EndFor\\
+		\Return $(t,u)$
+	\end{algorithmic}
+\end{algorithm}
+At the end of the loop, $(t,u)$ are the time $t^{n+1} = t^n + \Delta t$ and the solution $u(t^{n+1}) = u^{n+1}$. This algorithm needs 4 arrays to be stored. For big simulations, this is a lot of data, and this is why there exists some low-storage RK methods that only require 3 arrays. They use different paramater values, e.g. for RK3:\\
+\begin{center}
+	\begin{tabular}{|c|cc|c|}
+		\hline 
+		& & & 5/30\\
+		1/3 & 1/3 & & 9/30\\
+		3/4 & -3/16 & 15/16 & 16/30\\ \hline 
+	\end{tabular}
+\end{center}
+\section{Multistep time schemes}
+Multisteps time schemes use more than one previous step to compute the value $t^{n}$. They are generally cheap, but not self starting: $t^1$ cannot be computed through it, as it would need to know $t^{-1}$. Moreover, they produce multiple solutions even though only one is physically correct. 
+\subsection{Leap-frog}
+The scheme is 
+\begin{equation}
+	\frac{u^{n+1}-u^{n-1}}{2\Delta t} = f(u^n, t^n)\Longleftrightarrow u^{n+1} = u^{n-1} + 2\Delta t f(u^n, t^n)
+\end{equation}
+The scheme is centered around $t^n$, meaning it is of order 2.\\
+To analyse its stability region, we have 
+\begin{equation}
+	\frac{du}{dt} = \lambda u \Longrightarrow \begin{cases}
+		u^n = \rho u^{n-1}\\u^{n+1} = \rho^2 u^{n-1}
+	\end{cases}
+\end{equation}
+Then, 
+\begin{equation}
+	\rho^2 = 1+2\lambda \Delta t \rho \Longleftrightarrow \begin{cases}
+		\rho_1 + \rho_2 = 2\lambda \Delta t \\
+		\rho_1 \rho_2 = -1 
+	\end{cases}\Longrightarrow \rho = \lambda \Delta t \pm \sqrt{1+(\lambda \Delta t)^2}
+\end{equation}
+By Taylor series, 
+\begin{equation}
+	\begin{cases}
+		\rho_1 = 1+\lambda \Delta t + \frac{(\lambda \Delta t)^2}{2} - \frac{(\lambda \Delta t)^4}{8} + \dots \approx e^{\lambda \Delta t}\\
+		\rho_2 = -1+\lambda \Delta t - \frac{(\lambda \Delta t)^2}{2} + \frac{(\lambda \Delta t)^4}{8} + \dots \approx e^{-\lambda \Delta t}\\
+	\end{cases}
+\end{equation}
+$\rho_1$ is the physical root and $\rho_2$ is called the parasitic root. Because of the condition $\rho_1\rho_2=-1$ and the stability condition $|\rho_1|,|\rho_2|\le 1$, we need $|\rho_1| = |\rho_2| = 1$.\\
+
+Then, the solution of the scheme is 
+\begin{equation}
+	\rho = c_1\rho_1 + c_2\rho_2 \Longrightarrow u^n = (c_1\rho_1 + c_2\rho_2)u^{n-1}
+\end{equation}
+where $u^1$ must be computed using another scheme with less steps, e.g. RK2. 
 \chapter{Fourier document}
 \textcolor{red}{TODO.}
 \end{document}
