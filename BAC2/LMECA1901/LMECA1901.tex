@@ -1,0 +1,1128 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\renewcommand{\contentsname}{Table des matières}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=1]{img/Page de garde.jpeg} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LMECA1901 Mécanique des Milieux Continus \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2022-2023 - Q2}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+\chapter{Introduction}
+\section{Base orthonormée}
+Une base orthonormée (B.O.N) \((e_1,e_2,e_3)\) est telle que, \(\forall i,j\), \(e_i\cdot e_j = \delta_{ij}\), avec \(\delta_{ij}\) le symbole de Kronecker : \(\delta_{ij} = 1 \text{ si } i=j;\delta_{ij} = 0 \text{ sinon}\).\\
+
+On note les bases \((e_i) \equiv (e_1,e_2,e_3)\). 
+
+\section{Matrice de transformation}
+Une matrice de transformation \([P]\) d'une B.O.N. \((e_i)\) vers une autre \((e_i')\) est une matrice \(3\times 3\) telle que la ligne \(i\) contient les composantes du vecteur \(e_i'\) dans la base \((e_i)\). 
+\subsection{Propriétés}
+\begin{itemize}
+    \item \([P][P]^T = [P]^T[P] = [I_d]\)
+    \item \(\det[P] = \pm 1\). Il vaut 1 si la B.O.N. est directe (B.O.N.D.).
+\end{itemize}
+\subsection{Notation d'Einstein}
+Einstein a introduit une nouvelle notation pour les sommes afin de rendre les équations plus lisibles : on enlève le symbole sommme et, par convention, on sous-entend que la somme se fait sur l'indice qui revient deux fois. \\
+Exemple : \(sum_{j=1}^{3}{P_{ij}e_j} \equiv P_{ij}e_j\)\\
+
+\section{Vecteurs}
+Tout vecteur \(\textbf{v}\)peut être représenté par des composantes dans une base quelconque \((e_i)\) : \(\textbf{v} = \sum_{i=1}^{3}{\textbf{v}_ie_i} \equiv \textbf{v}_ie_i\).
+
+Le vecteur \(\textbf{v}\) se note \(\textbf{v} = (v_i) \text{ dans } (e_i)\) ou \(\textbf{v} = \{v\} \text{ dans } (e_i)\).
+\subsection{Produit scalaire}
+Soit les vecteurs quelconques \(\textbf{u},\textbf{v}\). Leur produit scalaire est 
+\begin{equation}
+    \textbf{u}\cdot \textbf{v} = u_iv_i = \{u\}^T\{v\} = \{v\}^T\{u\}
+\end{equation}
+\subsection{Norme d'un vecteur}
+\begin{equation}
+    \lVert \textbf{v}\rVert = \sqrt{v_iv_i} = \sqrt{\{v\}^T\{v\}}
+\end{equation}
+\subsection{Vecteur dans différentes bases}
+\begin{equation}
+    \begin{cases}
+        \textbf{v} = v_ie_i = v_j'e_j'\\
+        v_i = \textbf{v}\cdot \textbf{e}_i\\
+        v_j' = \textbf{v} \cdot \textbf{e}_j'\\
+    \end{cases}
+\end{equation}
+Si la matrice \([P]\) est la matrice de changement de base de \((e_i)\) vers \((e_i')\), alors l'équivalence entre les composantes du vecteur \(\textbf{v}\) dans les deux bases est 
+\begin{equation}
+    \{\textbf{v}'\} = [P]\{\textbf{v}\}; \text{  } \{\textbf{v}\} = [P]^T\{\textbf{v}'\}
+\end{equation}
+Sous forme indicielle : 
+\begin{equation}
+    \textbf{v}_i' = P_{ij}\textbf{v}_j; \text{  }  \textbf{v}_i = P_{ji}\textbf{v}_j'
+\end{equation}
+\subsection{Produit vectoriel}
+Le produit vectoriel entre les vecteurs \(\textbf{u}, \text{ }\textbf{v}\) est 
+\begin{equation}
+    \textbf{w} = \textbf{u} \times \textbf{v} \equiv \textbf{u} ^ \textbf{v}
+\end{equation}
+Dans une B.O.N.D., 
+\(
+\begin{cases}
+    \textbf{e}_1 \times \textbf{e}_2 = \textbf{e}_3\\
+    \textbf{e}_2 \times \textbf{e}_3 = \textbf{e}_1\\
+    \textbf{e}_3 \times \textbf{e}_1 = \textbf{e}_2\\
+\end{cases}
+\)\\
+
+Produit mixte : \(\textbf{u} \cdot (\textbf{v} \times \textbf{w}) \equiv (\textbf{u},\textbf{v}, \textbf{w}) = (\textbf{v}, \textbf{w}, \textbf{u}) = (\textbf{w}, \textbf{u}, \textbf{v})\)
+
+\section{Tenseurs}
+Un tenseur est un objet mathématique, qui peut être représentée par des composantes dans une base donnée, sachant que ces composantes sont régies par des lois de transformation précises.\\
+
+Un scalaire est un tenseur d'ordre 0, un vecteur un tenseur d'ordre 1, et les tenseurs d'ordre  peuvent être représentés sous forme de matrices. \\
+\subsection{Tenseurs d'ordre 2}
+Soit \(E^3\) l'espace euclidien vectoriel associé à \(\mathbb{R}\), et soit \textbf{a} une transformation linéaire sur \(E^3\) : \(\textbf{a} : E^3 \rightarrow E^3 : \textbf{u} \rightarrow \textbf{a}(\textbf{u})\). \textbf{a} est appelée un tenseur d'ordre 2.\\
+
+Si \(\textbf{v} = \textbf{a}(\textbf{u})\), alors dans la B.O.N. \((e_i)\), on a \(\textbf{v}_i = \textbf{a}_{ij}\textbf{u}_j\), avec \(\textbf{a}_{ij} \equiv \textbf{e}_i \cdot (\textbf{a}(\textbf{e}_j))\).
+
+Le tenseur \(\textbf{a}\), comme un vecteur, s'écrire sous forme indicielle : \(\textbf{a} = (a_{ij})\) dans \((\textbf{e}_i)\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les tenseurs d'ordre 2 se comportant comme des matrices, ils possèdent également un inverse si leur déterminant est non nul.
+\end{itemize}
+\subsection{Changement de base}
+La règle de transformation des vecteurs existe aussi pour les tenseurs d'ordre 2 :
+\begin{equation}
+    \begin{cases}
+        \textbf{a}_{ij}' = P_{ik}P_{jl}\textbf{a}_{kl}\\
+        \textbf{a}_{ij} = P_{ki}P_{lj}\textbf{a}_{kl}'\\
+    \end{cases}
+\end{equation}
+On a dans ce cas-ci une double somme sur \(k\) et \(l\).\\
+
+Sous forme matricielle, on a alors 
+\begin{equation}
+    [a'] = [P][a][P]^T \qquad [a] = [P]^T[a'][P]
+\end{equation}
+\subsection{Produit tensoriel}
+\begin{equation}
+    \textbf{a} = \textbf{u} \otimes \textbf{v}
+\end{equation}
+\begin{equation}
+    \textbf{a}_{ij} = \textbf{u}_i\textbf{v}_j \text{ dans } (\textbf{e}_i)
+\end{equation}
+Le produit scalaire est \(\textbf{u} \cdot \textbf{v} = \textbf{u}^T \textbf{v}\), tandis que le produit tensoriel est \(\textbf{u} \otimes \textbf{v} = \textbf{u}\textbf{v}^T\).\\
+
+Il est possible de décomposer tout tenseur \(\textbf{a}\) : \(\textbf{a} = \textbf{a}_{ij} \textbf{e}_i\otimes \textbf{e}_j\). \\
+
+\subsection{Trace d'un tenseur}
+\begin{equation}
+    tr(\textbf{a}) = \textbf{a}_{ii} = \textbf{a}_{11} + \textbf{a}_{22} = \textbf{a}_{33} 
+\end{equation}
+\subsection{Carré d'un tenseur}
+\begin{equation}
+    \textbf{a}^2 = \textbf{a} \cdot \textbf{a} \Longrightarrow (\textbf{a}^2)_{ij} = a_{ik}a_{kj}
+\end{equation}
+\subsection{Produit contracté}
+\begin{equation}
+    a:b = a_{ij}b_{ji} = tr(a\cdot b)
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(tr(a) = a : 1\)
+\end{itemize}
+\subsection{Tenseurs symétriques}
+Tout tenseur \(\textbf{a}\) peut être décomposé de la manière suivante : \(\textbf{a} = \frac{1}{2}\left(\textbf{a}+\textbf{a}^T\right) + \frac{1}{2}\left(\textbf{a} - \textbf{a}^T)\right)\). Le premier terme est symétrique et le second anti-symétrique.\\
+
+Un tenseur \(a\) est symétrique s'il vérifie \(\textbf{a}_{ij} = \textbf{a}_{ji} \Longleftrightarrow \textbf{a} = \textbf{a}^T\). Il peut être décomposé tel que 
+\begin{equation}
+    \textbf{a} = \textbf{a} - \frac{1}{3}(tr \textbf{a})\textbf{1} + \frac{1}{3}(tr \textbf{a})\textbf{1}
+\end{equation}
+Le tiers négatif est le terme déviatorique, i.e. lié au changement de forme, et le tiers positif le terme sphérique, i.e. lié au changement de volume.\\
+
+\begin{equation}
+    \begin{cases}
+        \textbf{a}^{dev} \equiv \textbf{a} - \frac{1}{3}(tr \textbf{a})\textbf{1}\\
+        \textbf{a}^{sph} \equiv \frac{1}{3}(tr \textbf{a})\textbf{1}\\
+    \end{cases}
+\end{equation}
+\subsubsection{Propriétés}
+\begin{itemize}
+    \item \(tr \textbf{a}^{dev} = 0\)
+    \item \(tr \textbf{a}^{sph} = tr \textbf{a}\)
+\end{itemize}
+\subsection{Principes invariants}
+\begin{itemize}
+    \item \(I_1(\textbf{a}) = tr \textbf{a}\)
+    \item \(I_2(\textbf{a}) = \frac{1}{2}\left ((tr \textbf{a})^2 - tr(\textbf{a}^2)\right)\)
+    \item \(I_3(\textbf{a} = \det(\textbf{a})\)
+\end{itemize}
+Cela signifie que ces trois valeurs ne changent pas pour un tenseur donné, quelle que soit la base dans laquelle il est exprimé.\\
+
+\subsection{Tenseurs d'ordre supérieur}
+Pour un tenseur d'ordre \(n\), le changement de base nécessite une \(n\)-uple somme contenant \(n\) termes de la matrice de changement de base et le terme du tenseur. \\
+
+Les produits tensoriels et contractés vus précédemment fonctionnent de la même manière pour les tenseurs d'ordre supérieur à \(2\).
+
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : une base est directe uniquement si son déterminant vaut 1.
+\end{itemize}
+\section{Analyse tensorielle}
+\subsection{Analyse tensorielle d'un champ scalaire}
+Soit \(f\left(\Bar{x}_i\right)\) un champ scalaire. \\
+
+Considérons deux particules matérielles infiniment proches dont les positions sont \(x\) et \(x+dx\). Le gradient \(\nabla f\) du champ \(f(\Bar{x}_i)\) est un champ vectoriel défini par 
+\begin{equation} \label{eq:1}
+    \begin{cases}
+        df = \Vec{\nabla f}\cdot \Vec{dx}\\
+        df \equiv f(\Bar{x}_i+d\Bar{x}_i) - f(\Bar{x}_i)
+    \end{cases}
+\end{equation}
+\subsubsection{Trouver le gradient de \(f\) dans un système de coordonnées B.O.N. quelconque}
+\begin{itemize}
+    \item Déterminer \(df\).
+    \item Déterminer \(\Vec{dx}\).
+    \item A partir de l'équation \ref{eq:1} écrite sous forme vectorielle, déterminer les composantes du vecteur \(\Vec{\nabla f}\).
+\end{itemize}
+En coordonnées cartésiennes, cela donne 
+\begin{equation}
+    \Vec{\nabla f} = \frac{\partial f}{\partial x_i} (x_1,x_2,x_3)e_i
+\end{equation}
+Et coordonnées cylindriques :
+\begin{equation}
+    \Vec{\nabla f} = \frac{\partial f}{\partial r}(r,\theta,z)e_r + \frac{1}{r}\frac{\partial f}{\partial \theta}(r,\theta,z)e_{\theta} + \frac{\partial f}{\partial z}(r,\theta,z)e_z
+\end{equation}
+\subsection{Analyse tensorielle d'un champ vectoriel}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : la manière de faire ne change pas entre les champs scalaires et vectoriels.
+\end{itemize}
+Soit \(\textbf{v}\left(\Bar{x}_i\right)\) un champ vectoriel. \\
+
+Considérons deux particules matérielles infiniment proches dont les positions sont \(\textbf{x}\) et \(\textbf{x+dx}\). Le gradient \(\nabla \textbf{v}\) du champ \(\textbf{v}(\Bar{x}_i)\) est un tenseur d'ordre 2 défini par 
+\begin{equation} \label{eq:2}
+    \begin{cases}
+        d\textbf{v} = \left(\nabla \textbf{v}\right) \cdot d\textbf{x}\\
+        d\textbf{v} \equiv \textbf{v}\left(\Bar{x}_i + d\Bar{x}_i\right) - \textbf{v}\left(\Bar{x}_i\right)
+    \end{cases}
+\end{equation}
+\subsubsection{Trouver le gradient de \(\textbf{v}\) dans un système de coordonnées B.O.N. quelconque}
+\begin{itemize}
+    \item Déterminer \(d\textbf{v}\).
+    \item Déterminer \(\Vec{d\textbf{x}}\).
+    \item A partir de l'équation \ref{eq:2} écrite sous forme matricielle, déterminer les composantes de la matrice \(\Vec{\nabla \textbf{v}}\)
+\end{itemize}
+En coordonnées cartésiennes, cela donne 
+\begin{equation}
+    \Vec{\nabla \textbf{v}}_{ij} = \frac{\partial \textbf{v}_i}{\partial x_j} (x_1,x_2,x_3)
+\end{equation}
+Et en coordonnées cylindriques, pour un champ vectoriel \(\textbf{v}(r,\theta,z) = F\Vec{e}_r + G\Vec{e}_{\theta} + H \Vec{e}_z\), avec \(F,G,H\) des fonctions de \((r,\theta,z)\)
+\begin{equation}
+    \nabla \textbf{v} = 
+    \begin{pmatrix}
+        \frac{\partial F}{\partial r} & \frac{1}{r}\left(\frac{\partial F}{\partial\theta} - G\right) & \frac{\partial F}{\partial z}\\
+        \frac{\partial G}{\partial r} & \frac{1}{r}\left(\frac{\partial G}{\partial\theta} + F\right) & \frac{\partial G}{\partial z}\\
+        \frac{\partial H}{\partial r} & \frac{1}{r}\frac{\partial H}{\partial\theta} & \frac{\partial H}{\partial z}\\
+    \end{pmatrix}
+\end{equation}
+\subsubsection{Divergence}
+La divergence d'un champ vectoriel sous forme intrinsèque (ou tensorielle) est
+\begin{equation}
+    \color{red}\boxed{\color{black}div\left(\textbf{v}\right) = tr\left(\nabla \textbf{v}\right)}\color{black}
+\end{equation}
+Pour les systèmes de coordonnées cartésiennes, on peut la noter
+\begin{equation}
+    div\left(\textbf{v}\right) = \frac{\partial \textbf{v}_i}{\partial x_i}
+\end{equation}
+Et en coordonnées cylindriques, 
+\begin{equation}
+    div (\textbf{v}) \equiv tr(\nabla\textbf{v}) = \frac{\partial F}{\partial r} + \frac{1}{r}\left(\frac{\partial G}{\partial \theta} + F\right) + \frac{\partial H}{\partial z}
+\end{equation}
+\subsubsection{Laplacien}
+Pour rappel, 
+\begin{equation}
+    dg = \left(\nabla g\right) \cdot \left(d\textbf{x}\right)
+\end{equation}
+On peut donc calculer la divergence de la divergence du champ scalaire \(g\) : \(\nabla \nabla g\).
+Le laplacien d'un champ scalaire \(g\) sous forme intrinsèque est 
+\begin{equation}
+    \color{red}\boxed{\color{black}\Delta g= tr\left(\nabla \nabla g\right)}\color{black}
+\end{equation}
+Pour les systèmes de coordonnées cartésiennes, il vaut 
+\begin{equation}
+    \Delta g = \frac{\partial^2 g}{\partial x_i^2}
+\end{equation}
+Et en coordonnées cylindriques,
+\begin{equation}
+    \frac{1}{r}\frac{\partial}{\partial r}\left(r\frac{\partial g}{\partial r}\right) + \frac{1}{r^2}\frac{\partial^2 g}{\partial\theta^2} + \frac{\partial ^2g}{\partial z^2}
+\end{equation}
+\subsection{Analyse tensorielle d'un champ tensoriel symétrique d'ordre 2}
+Soit \(\textbf{a}\) un champ tensoriel symétrique d'ordre 2, et \(\textbf{u}\) un champ vectoriel quelconque.\\
+Sous forme intrinsèque, on a 
+\begin{equation}
+    \color{red}\boxed{\color{black}div(\textbf{a}\cdot \textbf{u}) = (div \textbf{a}) \cdot \textbf{u} + \textbf{a} : (\nabla \textbf{u})}\color{black}
+\end{equation}
+En coordonnées cartésiennes, on a donc
+\begin{equation}
+    \frac{\partial}{\partial x_i}\left(a_{ij}u_j\right) = \left(\frac{\partial a_{ij}}{\partial x_j}\right)u_i + a_{ji}\frac{\partial u_i}{\partial x_j}
+\end{equation}
+Si on remplace le champ vectoriel \(\textbf{u}\) par les vecteurs de la base de coordonnées cylindriques, on a\\
+\begin{equation}
+    \begin{cases}
+        (div\text{ } \textbf{a}) \cdot e_r = div(a\cdot e_r) - a : (\nabla e_r) = \frac{\partial a_{rr}}{\partial r} + \frac{1}{r}\left(\frac{\partial a_{\theta r}}{\partial \theta}+a_{rr}\right) + \frac{\partial a_{zr}}{\partial z} - \frac{1}{r}a_{\theta\theta}\\
+        (div \text{ }\textbf{a}) \cdot e_{\theta} = div(a\cdot e_{\theta}) - a : (\nabla e_{\theta}) = \frac{\partial a_{r\theta}}{\partial r} + \frac{1}{r}\left(\frac{\partial a_{\theta\theta}}{\partial \theta}+a_{r\theta}\right) + \frac{\partial a_{z\theta}}{\partial z} + \frac{1}{r}a_{r\theta}\\
+        (div \text{ }\textbf{a}) \cdot e_z = div(a\cdot e_z) - a : (\nabla e_z) = \frac{\partial a_{rz}}{\partial r} + \frac{1}{r}\left(\frac{\partial a_{\theta z}}{\partial \theta}+a_{rz}\right) + \frac{\partial a_{zz}}{\partial z}\\
+    \end{cases}
+\end{equation}
+\chapter{Cinématique des milieux continus}
+\section{Configurations}
+Considérons un milieu continu. Il occupe une configuration de référence \(\Omega_0\subset \mathbb{R}^3\) au temps \(t=0\) et une configuration actuelle \(\Omega_t \subset \mathbb{R}^3\) au temps \(t>0\). 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : lorsque le milieu est un solide, on considère la configuration de référence comme étant sa forme lorsqu'il n'est pass déformé. Lorsque le milieu est fluide, la configuration de référence est arbitraire.
+\end{itemize}
+
+\subsection{Description du mouvement}
+Le mouvement du milieu continu est décrit par la transformation \(\Phi(\textbf{X},t)\) telle que 
+\begin{equation}
+    \Phi : \Omega_0 \rightarrow \Omega_t : \textbf{X} \rightarrow \textbf{x} = \Phi(\textbf{X},t)
+\end{equation}
+La relation réciproque à \(\Phi\) est \(\textbf{X} = \phi(\textbf{x},t)\) et est bijective.\\
+
+Convention : On utilise des indces majuscules pour les configurations de référence et des indices minuscules pour les configruations actuelles : \(\textbf{X} = (X_A)\) et \(\textbf{x} = (x_i)\).
+
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : en cartésiennes, \(\textbf{X}\) est aussi le vecteur position d'une particule matérielle dans \(\Omega_0\) \(\textbf{X} = \Vec{OM}_0\) et \(\textbf{x}\) est aussi le vecteur posisition d'une particule matérielle dans \(\Omega_t\) : \(\textbf{x} = \Vec{OM}_t\).
+\end{itemize}
+\subsection{Descriptions lagrangienne et eulérienne}
+Soit un champ donné exprimé par \(\textbf{K}(\textbf{X},t) = \textbf{k}(\textbf{x},t)\). Sa description lagragienne est \(\textbf{K}(\textbf{X},t)\) et sa description eulérienne est \(\textbf{k}(\textbf{x},t)\).
+\subsubsection{Exemple du vecteur vitesse}
+Soit le champ vectoriel de vitesse \(\textbf{V}(\textbf{X},t)\). 
+Sa description lagragienne est 
+\begin{equation}
+    \textbf{V}(\textbf{X},t) = \frac{\partial}{\partial t} \Phi(\textbf{X},t)
+\end{equation}
+et l'eulérienne est 
+\begin{equation}
+    \textbf{V}(\textbf{X},t) = \textbf{v}(\textbf{x},t)
+\end{equation}
+\subsection{Dérivée matérielle par rapport au temps}
+Si le champ \(\textbf{K}(\textbf{X},t) = \textbf{k}(\textbf{x},t)\), alors
+\begin{equation}
+    \Dot{\textbf{K}} \equiv \frac{\partial }{\partial t}\textbf{K}(\textbf{X},t) = \frac{\partial \textbf{k}}{\partial t}+\frac{\partial\textbf{k}}{\partial x}\cdot \textbf{v} \equiv \Dot{\textbf{k}} \equiv \frac{dk}{dt}
+\end{equation}
+\subsubsection{Exemple de l'accélération}
+Soit le champ vectoriel de la vitesse \(\textbf{V}(\textbf{X},t) = \textbf{v}(\textbf{x},t)\).
+\begin{equation}
+    \Dot{\textbf{V}} \equiv \frac{\partial}{\partial t}\textbf{V}(\textbf{X},t) = \frac{\partial \textbf{v}}{\partial t} + \nabla \textbf{v} \cdot \textbf{v} \equiv \Dot{\textbf{v}}
+\end{equation}
+L'accélération se définit donc comme étant
+\begin{equation}
+    \textbf{A}(\textbf{X},t) \equiv \Dot{\textbf{V}} = \Dot{\textbf{v}}\equiv \textbf{a}(\textbf{x},t)
+\end{equation}
+\section{Courbes caractéristiques}
+\subsection{Trajectoire}
+Une trajectoire est une courbe dans l'espace définie comme étant l'ensemble des positions \(x\) prises aux temps \(t\ge 0\) par une particule matérielle donnée qui était à la position \(\Hat{X}\) au temps \(t=0\). 
+\begin{equation}
+    dx = \textbf{V}(\Hat{\textbf{X}}, t)dt = \textbf{v}(\textbf{x},t)dt
+\end{equation}
+avec la condition initiale \(\textbf{x}(t=0) = \Hat{\textbf{X}}\)
+\subsection{Ligne de courant}
+Une ligne de courant au temps \(\Hat{t}\) est une courbe dans l'espace tangente en tout point au vecteur vitesse de chacun de ces points. Soit le paramètre \(s\).
+\begin{equation}
+    dx(s) = v\left(x(s),\Hat{t}\right)ds
+\end{equation}
+Il s'agit en quelque sorte d'une image en instantané.
+\subsection{Ligne d'émission}
+Une ligne d'émission à une position \(\Hat{x}\) dans l'espace et au temps \(\Hat{t}\) est une courbe créée par toutes les particules matérielles \(\textbf{X}\) qui ont occupé la position \(\Hat{x}\) en tout temps \(t\in [0,\Hat{t}]\).
+\begin{equation}
+    x=x(\phi(\Hat{x},t),\Hat{t})
+\end{equation}
+\section{Gradient de transformation}
+Considérons deux particules infiniment proches dont les vecteurs positions sont \(\textbf{X}\) et \((\textbf{X}+d\textbf{X})\) dans la configuration de référence, et \(\textbf{x}\) et \((\textbf{x}+d\textbf{x})\) dans la configuration actuelle. Le gradient de transformation \(\textbf{F}(\textbf{X},t)\) est défini par 
+\begin{equation} \label{eq:3}
+    d\textbf{x} = \textbf{F} \cdot d\textbf{X}
+\end{equation}
+En coordonnées cartésiennes, les éléments du gradient sont 
+\begin{equation}
+    F_{iA} = \frac{\partial x_i}{\partial X_A}
+\end{equation}
+et le vecteur déplacement \(u\) est défini par
+\begin{equation}
+    \textbf{x} = \textbf{X} + \textbf{u}
+\end{equation}
+\subsection{Changement de volume}
+Soit dans une B.O.N. les éléments infinitésimaux de volume \(dV_0 \coloneqq d\Vec{\textbf{X}}_1 \cdot (d\Vec{\textbf{X}}_2\times d\Vec{\textbf{X}}_3)\) et \(dV \coloneqq d\Vec{\textbf{x}}_1\cdot (d\Vec{\textbf{x}}_2\times d\Vec{\textbf{x}}_3)\).\\
+
+Par l'équation \ref{eq:3}, 
+\begin{equation}
+    dV = det(\textbf{F}) dV_0
+\end{equation}
+et on définit 
+\begin{equation}
+    \color{red}\boxed{\color{black} J(\textbf{X},t) \equiv \det\textbf{F}(\textbf{X},t) > 0}\color{black}
+\end{equation}
+Par conséquent, \(\textbf{F}\) est inversible et \(d\textbf{X} = \textbf{F}^{-1}\cdot d\textbf{x}\)
+\subsection{Changement de surface}
+Considérons un élément de surface infinitésimal de surface \(dA\) et de vecteur normal sortant \(\textbf{N}\) dans la configuration de référence qui se transform en l'élément de surface \(da\) dont le vecteur normal sortant est \(\textbf{n}\) dans la configuration actuelle. 
+\begin{equation}
+    \textbf{n}da = J\textbf{F}^{-T} \cdot \textbf{N}dA
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(F^{-T} = (F^{-1})^T = (F^T)^{-1}\)
+\end{itemize}
+\subsection{Propriétés}
+\begin{itemize}
+    \item Dans une base donnée, \(F\) peut être représenté par une matrice \([F]_{3\times 3}\) inversible, mais pas symétrique en général.
+    \item Si \(J=1\), alors la déformation n'induit pas de changement de volume et on dit qu'elle est isochore. Un matériau est dit incompressible si toutes ses transformations possibles sont isochores.
+\end{itemize}
+\subsection{Décomposition polaire}
+\(F\) peut être décomposé de manière unique de la manière suivante :
+\begin{equation}
+    \textbf{F} = \textbf{R} \cdot \textbf{U} = \textbf{V}\cdot \textbf{R}
+\end{equation}
+avec la rotation \(\textbf{R}\) tel que \([R][R]^T = [I_d]\), et \(\textbf{U}\) et \(\textbf{V}\) des tenseurs d'ordre 2, symétriques et définis positifs. \\
+
+
+\subsection{Tenseurs de Cauchy-Green à droite}
+\(\textbf{C}\) est appelé Tenseur de Cauchy-Green à droite et est défini selon la configuration de référence : 
+\begin{equation}
+    \textbf{C} \equiv \textbf{F}^T\textbf{F} \Longrightarrow C_{AB} = F_{Ai} F_{iB}
+\end{equation} 
+On voit que les indices sont des majuscules et on est donc bien dans la configuration de référence. De plus,
+\begin{equation}
+    \textbf{C} = \textbf{U}^2
+\end{equation}
+Appelons les valeurs propres de \(U\) \(\lambda_1,\lambda_2,\lambda_3 > 0\) et ses vecteurs propres associés \(\left(E^{(1)}, E^{(2)},E^{(3)}\right)\) formant une B.O.N.
+
+On peut montrer (voir cours) que \(\textbf{C}\) et \(\textbf{U}\) ont les mêmes vecteurs propres, et les valeurs propres de \(\textbf{C}\) sont le carré de celles de \(\textbf{U}\). 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : cela se généralise pour toutes les puissances de \(\textbf{U}\).
+\end{itemize}
+Les vecteurs propres de \(\textbf{C}\) et donc de \(\textbf{U}\) forment une B.O.N.\\
+
+Soit les vecteurs \(\textbf{e}^{(I)}\) tels que
+\begin{equation}
+    \textbf{e}^{(I)} = \frac{1}{\lambda_I} \textbf{F} \cdot\Vec{E}^{(I)}
+\end{equation}
+Ils forment une B.O.N., et la décomposition polaire de \(\textbf{F}\) peut alors se réécrire 
+\begin{equation}
+    \textbf{F} = \sum_J \lambda_J \textbf{e}^{(J)}\otimes \Vec{E}^{(J)}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(\textbf{C}\) est symétrique, défini positif et \(\det \textbf{C} = J^2\).
+\end{itemize}
+\subsection{Tenseur de Cauchy-Green à gauche}
+Soit le tenseur de Cauchy-Green à gauche défini par
+\begin{equation}
+    \textbf{b} \equiv \textbf{F}\cdot \textbf{F}^T = \textbf{V}^2
+\end{equation}
+Le tenseur de CG à gauche est défini par rapport à la configuration actuelle. Il est symétrique, défini positif et \(\det \textbf{b} = J^2\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(\textbf{b}^T \neq \textbf{C}\).
+\end{itemize}
+\(\textbf{b}\) sous décomposition spectrale s'écrit 
+\begin{equation}
+    \sum_I \lambda_I^2\{e^{(I)}\}\{e^{(I)}\}
+\end{equation}
+Les valeurs propres de \(\textbf{b}\) sont les mêmes que \(\textbf{C}\), mais ils n'ont pas les mêmes vecteurs propres : les vecteurs propres de \(\textbf{b}\) sont les \(\{e^{(I)}\}\).
+
+\subsection{En résumé}
+\begin{center}
+\begin{tabular}{c|c|c|c|c}
+                   & \(\textbf{b}\) & \(\textbf{C}\) & \(\textbf{U}\) & \(\textbf{V}\) \\
+    \hline
+    \(\textbf{b}\) & - & Mêmes valeurs propres &                & Mêmes vecteurs propres \\
+    \hline
+    \(\textbf{C}\) & Mêmes valeurs propres & - & Mêmes vecteurs propres\\ + \(vap(\textbf{C}) = vap(\textbf{U})^2\) & \\
+    \hline
+    \(\textbf{U}\) &  & Mêmes vecteurs propres\\ + \(vap(\textbf{C}) = vap(\textbf{U})^2\) & - & Mêmes valeurs propres \\
+    \hline
+    \(\textbf{V}\) & Mêmes vecteurs propres &  & Mêmes valeurs propres & - \\ 
+\end{tabular}
+\end{center}
+\subsection{Rotation \(\textbf{R}\)}
+A partir de \(\textbf{F} = \textbf{R} \cdot \textbf{U}\), on peut trouver \(\textbf{R}\), car nous avons déterminé \(\textbf{F}\) et \(\textbf{U}\) précédemment :
+\begin{equation}
+    R = \sum_I \{e^{(I)}\}\{E^{(I)}\}^T
+\end{equation}
+\subsection{Décomposition spectrale}
+La décomposition spectrale de la matrice identité est
+\begin{equation}
+    [I_d] = \sum_I \{E^{(I)}\}\{E^{(I)}\}^T
+\end{equation}
+et celle du vecteur \(d\textbf{X}\) est 
+\begin{equation}
+    d\textbf{X} = \sum_I \alpha_I\textbf{E}^{(I)}
+\end{equation}
+Pär le calcul de \(\frac{dl}{dL} \coloneqq \frac{\lVert d\textbf{x}\rVert}{\lVert d\textbf{X}\rVert}\), on trouve \(\frac{dl}{dL} = \lambda_i\) si \(d\textbf{X}\) est parallèle à \(\Vec{E}^{(i)}\). Les \(\lambda_i\) sont donc les rapports de longueur d'un segment matériel infinitésimal qui, dans la configuration principale, était parallèle à \(\Vec{E}^{(I)}\). 
+\begin{equation}
+    \begin{cases}
+        \text{Si }\lambda_i > 1\text{, on parle d'élongation.}\\
+        \text{Si }\lambda_i = 1\text{, on parle d'inextensibilité.}\\
+        \text{Si }\lambda_i < 1\text{, on parle de retrécissement.}\\
+    \end{cases}
+\end{equation}
+\section{Mesures de déformation}
+\subsection{En une dimension}
+La mesure de déforomation peut être définie de différentes manières :
+\begin{itemize}
+    \item Mesure nominale : \(\varepsilon^B(\lambda) = \lambda -1\). Elle est utilisée pour les petites déformations.
+    \item Mesure de Green-Lagrange : \(\varepsilon^G(\lambda) = \frac{1}{2}(\lambda^2-1)\)
+    \item Mesure d'Almansi-Euler : \(\varepsilon^A(\lambda) = \frac{1}{2}\left(1-\frac{1}{\lambda^2}\right)\)
+    \item Mesure logarithmique : \(\varepsilon^{Log}(\lambda) = \ln{\lambda}\)
+    \item Mesure de Seth-Hill : \(\varepsilon^{(m)}(\lambda) = \frac{1}{m}(\lambda^m-1)\) avec \(m \in \mathbb{Z}_0\). Elle généralise les précédentes.
+    \item [\(\rightarrow\)] Remarque : lorsque la déformation est petite, la mesure nominale approxime correctement toutes les autres.
+\end{itemize}
+D'autres mesures peuvent être définie, mais elles doivent respecter les conditions suivantes :
+\begin{itemize}
+    \item \(f(1) = 0\)
+    \item \(\frac{df}{d\lambda} (1)=1\)
+    \item \(\frac{df}{d\lambda}(\lambda) > 0\) \(\forall \lambda > 0\), i.e. \(f(\lambda)\) est monotone croissante.
+\end{itemize}
+\subsection{En plusieurs dimensions}
+Soit \(f(\lambda)\) la mesure de déformation en 1D. Elle peut être généralisée au cas multidimensionnel :
+\begin{itemize}
+    \item Dans la configuration de référence : \(\varepsilon^r = \sum_{I=1}^3f(\lambda_I) E^{(I)} \otimes E^{(I)}\)
+    \item Dans la configuration actuelle : \(\varepsilon^c = \sum_{I=1}^3f(\lambda_I) e^{(I)} \otimes e^{(I)}\)
+\end{itemize}
+Dans le cas multidimensionnel, les mesures définies précédemment existent également : 
+\begin{itemize}
+    \item Mesure nominale : \(\varepsilon^B = \textbf{U} -\textbf{1}\)
+    \item Mesure de Green-Lagrange, liée à la configuration de référence : \(\varepsilon^G = \frac{1}{2}(\textbf{C} - \textbf{1})\)
+    \item Mesure d'Almansi-Euler, liée à la configuration actuelle : \(\varepsilon^A = \frac{1}{2}(\textbf{1} - \textbf{b}^{-1})\)
+    \item Mesure logarithmique : \(\varepsilon^{Log} = \sum_{I=1}^3(\ln{\lambda_I})e^{(I)} \otimes e^{(I)} \equiv \ln{V}\)
+    \item Mesure de Seth-Hill dans la configuration de référence : \(\varepsilon^{(m)r} = \frac{1}{m}( \textbf{U}^m - \textbf{1})\) avec \(m>0,\in \mathbb{Z}\)
+    \item Mesure de Seth-Hill dans la configuration actuelle : \(\varepsilon^{(m)c} = \frac{1}{m}(\textbf{V}^m-\textbf{1})\) avec \(m<0, \in \mathbb{Z}\)
+\end{itemize}
+\subsection{Tenseur de déformation de Green-Lagrange}
+Considérons deux particules matérielles infiniment proches dont les vecteurs positions sont \(\textbf{X}\) et \((\textbf{X}+d\textbf{X})\) dans la configuration de référence, et \(\textbf{x}\) et \((\textbf{x}+d\textbf{x})\) dans la configuration actuelle.
+\begin{equation}
+    \frac{1}{2}\frac{\lVert d\textbf{x}\rVert^2 - \lVert d\textbf{X}\rVert^2}{\lVert d\textbf{X}\rVert^2} = \frac{d\textbf{X}}{\lVert d\textbf{X}\rVert} \cdot \varepsilon^G\cdot \frac{d\textbf{X}}{\lVert d\textbf{X}\rVert}
+\end{equation}
+où \(\varepsilon^G\) a été défini précédemment.\\
+
+Considérons maintenant deux segments matériels infiniment petits dont l'origine est le même point matériel : \(d\textbf{X}^{(1)}\) et \(d\textbf{X}^{(2)}\) dans la configuration de référence, et \(d\textbf{x}^{(1)}\) et \(d\textbf{x}^{(2)}\) dans la configuration actuelle. Nous pouvons prouver que
+\begin{equation}
+    \frac{1}{2}\left(d\textbf{x}^{(1)}\cdot d\textbf{x}^{(2)} - d\textbf{X}^{(1)}\cdot d\textbf{X}^{(2)}\right) = d\textbf{X}^{(1)} \cdot \varepsilon^G \cdot d\textbf{X}^{(2)}
+\end{equation}
+Si ces segments sont perpendiculaires, \(\varepsilon^G_{ii}\) donne une variation relative de longueur, tandis que \(\varepsilon^G_{ij} = \cos{dx^{(i)}, dx^{(j)}}\), \(\forall i\neq j\) et donne une variation relative d'angle.\\
+Dans un repère cartésien, avec le vecteur déplacement \(\textbf{u} = \textbf{x} - \textbf{X}\), 
+\begin{equation}
+    \varepsilon^G = \frac{1}{2}\left[\frac{\partial u}{\partial \textbf{X}} + \left(\frac{\partial u}{\partial \textbf{X}}\right)\right] + \frac{1}{2}\left(\frac{\partial u}{\partial \textbf{X}}\right)^T\cdot \left(\frac{\partial u}{\partial \textbf{X}}\right)
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : on peut négliger le terme non linéaire lorsque les déformations sont petites.
+\end{itemize}
+\subsection{Hypothèse des petites déformations}
+Dans un système de coordonnées cartésiennes où les déformations sont petites, on peut négliger le terme non linéaire du gradient de déformation, et il n'y a donc plus besoin de distinguer les indices majuscules des minuscules. On peut alors faire les approximations suivantes :
+\begin{equation}
+    \begin{cases}
+        \textbf{C} \approx \textbf{1} + 2\varepsilon \approx b\\
+        \textbf{U} \approx \textbf{1} + \varepsilon \approx \textbf{V}\\
+        \textbf{R} \approx \textbf{1} + \frac{1}{2}\left(\nabla \textbf{u} - (\nabla \textbf{u})^T\right)\\
+        \frac{\lVert d\textbf{x}\rVert}{\lVert d\textbf{X}\rVert} \approx \textbf{1} + \frac{d\textbf{X}}{\lVert d\textbf{X}\rVert} \cdot \varepsilon \cdot \frac{d\textbf{X}}{\lVert d\textbf{X}\rVert}\\
+    \end{cases}
+\end{equation}
+Dès lors, si un segment \(d\textbf{X}^{(i)}\) est aligné avec le vecteur \(\textbf{e}_i\) avant la déformation, alors après la déformation il est transformé en \(d\textbf{x}^{(i)}\) tel que :
+\begin{equation}
+    \frac{\lVert d\textbf{x}^{(i)}\rVert^2 - \lVert d\textbf{X}^{(i)}\rVert^2}{\lVert d\textbf{X}^{(i)}\rVert^2} \approx \varepsilon_{ii}
+\end{equation}
+Sans somme sur les indices.\\
+
+Si deux petits segments matériels \(d\textbf{X}^{(i)}\), \(d\textbf{X}^{(j)}\) alignés respectivement aevc \(e_i\) et \(e_j\) avant la déformation, avec \(i \neq j\), alors ils sont transformés après déformation en \(d\textbf{x}^{(i)}\), \(d\textbf{x}^{(j)}\) tels que :
+\begin{equation}
+    \frac{1}{2}\frac{d\textbf{x}^{(i)}}{\lVert d\textbf{x}^{(i)}\rVert} \cdot \frac{d\textbf{x}^{(j)}}{\lVert d\textbf{x}^{(j)}\rVert} \approx \varepsilon_{ij}
+\end{equation}
+Sans somme sur les indices.\\
+
+Si un élément de volume inifiniment petit a une valeur \(dV_0\) avant déformation et \(dV\) après, alors
+\begin{equation}
+    J = \det{\textbf{F}} \approx 1 + \varepsilon\text{    } tr \varepsilon \approx \frac{dV - dv_0}{dV_0}
+\end{equation}
+\subsection{Tenseur de déformation d'Almansi-Euler}
+Soient deux particules matérielles inifiniment proches dont les vecteurs positions sont \(\textbf{X}\) et \(\left(\textbf{X}+d\textbf{X}\right)\) dans la configuration de référence et \(\textbf{x}\) et \(\left(\textbf{x}+d\textbf{x}\right)\) dans la configuration actuelle. 
+\begin{equation}
+    \frac{1}{2}\frac{\lVert d\textbf{x}\rVert^2 - \lVert d\textbf{X}\rVert^2}{\lVert d\textbf{x}\rVert^2} = \frac{d\textbf{x}}{\lVert d\textbf{x}\rVert} \cdot \varepsilon^A\cdot \frac{d\textbf{x}}{\lVert d\textbf{x}\rVert}
+\end{equation}
+où \(\varepsilon^A\) a été défini précédemment.
+\section{Gradient de vitesse}
+Soient deux particules matérielles inifiniment proches dont les vecteurs positions sont \(\textbf{X}\) et \(\left(\textbf{X}+d\textbf{X}\right)\) dans la configuration de référence et \(\textbf{x}\) et \(\left(\textbf{x}+d\textbf{x}\right)\) dans la configuration actuelle. Le gradient de vitesse \(L\) est le tenseur d'ordre 2 défini comme suit : 
+\begin{equation}
+    d\textbf{v} = \textbf{L}\cdot d\textbf{x}
+\end{equation}
+Dans un repère cartésien, \(L_{ij} = \frac{\partial v_i}{\partial x_j}\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : :\(L\) est défini par rapport à la configuration actuelle et n'est pas symétrique en général.
+\end{itemize}
+Par la définition du gradient de déformation \(F\), on peut trouver 
+\begin{equation}
+    \Dot{\textbf{F}} = \textbf{L}\cdot \textbf{F} \Longleftrightarrow \textbf{L} = \Dot{\textbf{F}} \cdot \textbf{F}^{-1}
+\end{equation}
+Le gradient de vitesse peut être décomposé en deux parties, symétrique et anti-symétrique, comme tout tenseur d'ordre 2:
+\begin{equation}
+    \textbf{L} = \frac{1}{2}\left(\textbf{L}+\textbf{L}^T\right) + \frac{1}{2}\left(\textbf{L} - \textbf{L}^T\right)
+\end{equation}
+Et on appelle le terme symétrique le tenseur du taux de déformation \(D\), et le terme anti-symétrique le tenseur tourbillon \(\Omega\).
+\subsection{Tenseur du taux de déformation}
+\begin{equation}
+    D_{ij} = \frac{1}{2}(L_{ij} + L_{ji}) = D_{ji}
+\end{equation}
+\begin{equation}
+    div{\textbf{v}} = tr{\textbf{L}} = tr{\textbf{D}} = \frac{\Dot{\textbf{J}}}{\textbf{J}}
+\end{equation}
+\begin{equation}
+    \frac{D}{Dt}\left(\ln{\frac{\lVert d\textbf{x}\rVert}{\lVert d\textbf{X}\rVert}}\right) = \frac{\lVert d\textbf{x}\rVert}{\lVert d\textbf{x}\rVert} \cdot \textbf{D}\cdot \frac{\lVert d\textbf{x}\rVert}{\lVert d\textbf{x}\rVert} 
+\end{equation}
+Cela signifie que \(D\) mesure la dérivée matérielle temporelle de l'élongation \(\frac{\lVert d\textbf{x}\rVert}{\lVert d\textbf{X}\rVert}\).\\
+
+De plus, 
+\begin{equation}
+    \Dot{\varepsilon}^G = \frac{1}{2}\Dot{\textbf{C}} = \textbf{F}^T\cdot \textbf{D} \cdot \textbf{F}
+\end{equation}
+\begin{equation}
+    \Dot{\varepsilon}^A = \frac{1}{2}\left(\textbf{b}^{-1}\cdot \textbf{L} + \textbf{L}^T\cdot \textbf{b}^{-1}\right)
+\end{equation}
+\section{Tenseur tourbillon (spin tensor)}
+\begin{equation}
+    \Omega_{ij} = \frac{1}{2}\left(L_{ij} - L_{ji}\right) = -\Omega_{ji}
+\end{equation}
+Et \(\Omega_{ii} = 0\) \(\forall i\).\\
+
+Soit le vecteur spin \(\omega\) défini comme suit : 
+\begin{equation}
+    \{\omega\} \equiv \begin{pmatrix}
+        -\Omega_{23}\\
+        \Omega_{13}\\
+        -\Omega_{12}\\
+    \end{pmatrix}
+\end{equation}
+\begin{equation}
+    \Omega \cdot \textbf{u} = \omega \times \textbf{u} \qquad \forall \textbf{u}
+\end{equation}
+\section{Conditions de compatibilité}
+Soit \(\varepsilon_{ij}(x) = \varepsilon_{ji}(x)\) un champ de tenseur d'ordre 2. Il est possible de trouve le champ de déplacement tel que
+\begin{equation}
+    \varepsilon_{ij} = \frac{1}{2}\left(\frac{\partial u_i}{\partial x_j} + \frac{\partial u_j}{\partial x_i}\right)
+\end{equation}
+si les conditions de compatibilité (CC) sont satisfaites. Ces conditions sont dans le formulaire et ne sont pas reprises ici.
+
+\begin{itemize}
+    \item Pour un domaine simplement connexe, les CC sont nécessaires et suffisantes.
+    \item Un domaine simplement connexe est tel que toute courbe fermée dans le domaine peut être rétrécie continument jusqu'à un point sans sortir du domaine.
+    \item Pour un domaine multi-connexe, les CC sont nécessaires mais pas suffisantes.
+\end{itemize}
+\chapter{Mesures de contraintes}
+\section{Tenseur de contraintes de Cauchy}
+\subsection{Définition}
+\begin{itemize}
+    \item Le tenseur de contraintes de Cauchy s'appliquant sur un milieu continu est noté \(\sigma\). 
+    \item Définition de Cauchy : la force (de contact) surfacique sur une surface dont le vecteur normal unitaire sortant est \(n\) est le vecteur \(\textbf{t}\) tel que \(\textbf{t} = [\sigma]^T\cdot \textbf{n}\), et ce dans toute base. On le note :
+\end{itemize}
+\begin{equation}
+    \textbf{t}^{(i)} = \sigma_{ij}\textbf{e}_j
+\end{equation}
+\begin{itemize}
+    \item Une contrainte de cisaillement est une contrainte dont la direction est perpendiculaire au vecteur normal unitaire sortant de la surface.
+\end{itemize}
+\subsection{Propriétés}
+\begin{itemize}
+    \item Etant donné qu'un équilibre est requis à l'interface de deux parallélépipèdes infinitésimaux du milieu continu, \(\textbf{t}\) doit satisfaire \(\textbf{t}(\textbf{x}, -\textbf{n},t) = -\textbf{t}(\textbf{x},\textbf{n},t)\).
+    \item Le tenseur de Cauchy est symétrique. 
+    \item La règle de changement de base vue précédemment pour les tenseurs généraux s'applique et plus largement toutes les propriétés des tenseurs.
+\end{itemize}
+\subsection{Contraintes tangentielle et normale}
+Lorsque l'adhésion entre les faces de deux parallélépipèdes infinitésimaux du milieu continu n'est plus parfaite (= décollement), on a un phénomène de décohésion (ou fissure pour les solides).\\
+
+On peut décomposer le vecteur de contraintes en une partie normale et une partie tangentielle : 
+\begin{equation}
+    \textbf{t} = (//\textbf{n})\textbf{n} + (\perp \textbf{n}) = \sigma_n\textbf{n} + \Vec{\tau}
+\end{equation}
+La contrainte normale s'écrit \(//\textbf{n} = \Vec{n}\cdot \Vec{t} = \Vec{n} \cdot \sigma^T \cdot \Vec{n} = n_i \sigma_{ji} n_j \equiv \sigma_n\) et est un scalaire.\\
+On l'appelle traction si elle est positive et compression dans le cas contraire.\\
+
+La contrainte tangentielle s'écrit \(\perp \Vec{n} = \sigma^T \cdot \Vec{n} - \sigma_n \Vec{n} \equiv \Vec{\sigma}\). Sa norme \(\sigma_s = \lVert\Vec{\tau}\rVert\) s'appelle contrainte de cisaillement.
+\subsection{Cercles de Mohr}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Mohr.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Soient les \(\sigma_i\) les contraintes normales s'appliquant. Les seuls couples \(\sigma_n,\sigma_s\) mathématiquement possibles sont ceux faisant partie de la surface hachurée. Cela signifie que le \(\sigma_s\) maximal est le rayon du plus grand cercle de Mohr.
+\end{minipage}
+\subsection{Pression hydrostatique}
+La pression hydrostatique est une pression s'appliquant uniformément de manière normale sur tout le milieu continu.
+\begin{equation}
+    p \equiv \frac{-1}{3}tr(\sigma)
+\end{equation}
+\section{Stress test uniaxial sur un matériau solide}
+Pour les matériaux solides isotropes, l'évolution de la contrainte selon l'élongation est la suivante, pour \(\varepsilon_{xx} = \frac{l-l_0}{l_0}\) :
+\begin{center}
+    \includegraphics[width = .3\textwidth]{img/Stress test.png}
+\end{center}
+La courbe partant de l'origine jusqu'en \(A\) est linéaire. Ici, le comportement du solide est élastique et les déformations sont réversibles. Après \(A\), la courbe est non linéaire et les transformations sont irréversibles (i.e. on ne peut pas retourner avant \(A\)). Le solide a un comportment plastique. Lorsqu'on arrive au point \(B\) et que la contrainte diminue, l'élongation suit la seconde droite et on arrive en \(C\) si la contrainte devient nulle. Après la déformation irréversible, le comportement linéaire et réversible a lieu sur la droite \(CB\). 
+\section{Critères de contrainte}
+\subsection{Critère de von Mises}
+Si \(\sigma_{eq} < \sigma_Y\), le matériau reste élastique. Avec \(\sigma_Y\) le "initial yield stress", et \(\sigma_{eq}\) le stress de von Mises équivalent : 
+\begin{equation}
+    \sigma_{eq} \equiv \left(\frac{3}{2}\sigma^{dev} : \sigma^{dev}\right)^{1/2} = \left(\frac{3}{2}\sigma_{ij}^{dev}\sigma_{ji}^{dev}\right)^{1/2}
+\end{equation}
+avec \(\sigma^{dev}\) la partie déviatorique de \(\sigma\).
+\subsection{Critère de Tresca}
+Si \(2\tau_{max} < \sigma_Y\), le matériau reste élastique. Avec \(\tau_{max}\) la contrainte de cisaillement maximale.
+\begin{equation}
+    \tau_{max} = \frac{1}{2}\sup{|\sigma_1-\sigma_2|,|\sigma_3-\sigma_2|,|\sigma_1-\sigma_3|}
+\end{equation}
+\subsection{Comparaison entre Tresca et von Mises}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Tresca.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Pour un état de contrainte biaxial, l'équation du critère de von Mises donne une ellipse, tandis que le critère de Tresca donne un hexagone. Chacun des triangles de l'hexagone est déterminé à partir des cercles de Mohr. \\
+
+    A l'intérieur de ces formes, le comportement du matériau est élastique, et plastique à l'extérieur.
+    \begin{itemize}
+        \item [\(\rightarrow\)] Remarque : par convention, on note les contraintes \(\sigma_i\) dans l'ordre décroissant.
+    \end{itemize}
+\end{minipage}
+\subsection{Critère de cèdement général}
+Le critère de cèdement général se note à partir des principes invariants de la contrainte de Cauchy : 
+\begin{equation}
+    f(I_1(\sigma), I_2(\sigma), I_3(\sigma)) < \sigma_Y
+\end{equation}
+ou à partir des valeurs principales de la contrainte de Cauchy : 
+\begin{equation}
+    f(\sigma_1,\sigma_2, \sigma_3)<\sigma_Y
+\end{equation}
+où \(f\) est une fonction symétrique de ses arguments dans le second cas.\\
+
+Si le critère est vérifié, le matériau reste élastique.
+\subsection{Critère de rupture}
+Soit \(\sigma_T (\sigma) = \sup(\sigma_1, \sigma_2,\sigma_3,0)\) la contrainte principale maximale. Si \(\sigma_T < \sigma_F\), alors le matériau reste élastique. Si \(\sigma_T \ge \sigma_F\), alors une fissure apparait dans un plan perpendiculaire à la direction de \(\sigma_T\). \(\sigma_F > 0\) est la contrainte de rupture.
+\subsection{Autres mesures de contrainte}
+\begin{itemize}
+    \item Tenseur de contrainte de Kirchhoff : \(\tau = J\sigma\); \(\tau_{ij} = J\sigma_{ij}\). Il est symétrique dans la configuration actuelle.
+    \item Second tenseur de contrainte de Piola-Kirchhoff : \(S = \textbf{F}^{-1}\cdot\tau\cdot\textbf{F}^{-T}\); \(S_{AB} = (F^{-1})_{Ai}\tau_{ij}(F^{-1})_{Bj}\). Il est symétrique dans la configuration de référence.
+\end{itemize}
+\subsection{Contrainte uniaxiale}
+Soit un objet cylindrique d'axe \(e_1\), de longueur \(l_0\) et de surface de section \(A_0\) en \(t=0\). En tout temps \(t>0\), l'objet est sujet à ses extrémités à une force axiale \(F(t)e_1\) et \(-F(t)e_1\). Sa longueur est \(l(t)\) et sa surface de section est \(A(t)\). Définissons la contrainte nominale : 
+\begin{equation}
+    P_{11}^n(t) = \frac{F(t)}{A_0} = \sigma_{11}(t) \frac{A(t)}{A_0}
+\end{equation}
+Si le matériau est incompressible, alors \(A(t)l(t) = A_0l_0\)
+\subsection{Changement de surface}
+Considérons un élément de surface infinitésimal d'aire \(dA\) et de vecteur normal sortant \(N\) dans la configuration de référence. Dans la configuration actuelle, il a une aire \(da\) et un vecteur normal sortant \(n\). 
+\begin{equation}
+    \textbf{n}da = J\textbf{F}^{-T}\cdot \textbf{N}dA
+\end{equation}
+\subsection{Contrainte conjuguée}
+Pour tout tenseur de mesure de déformation \(\varepsilon^{mes}\), on peut définir son tenseur de mesure de contrainte conjugué \(\sigma^{mes}\) tel que
+\begin{equation}
+    \tau : \textbf{D} = \sigma^{mes} : \Dot{\varepsilon}^{mes}
+\end{equation}
+\chapter{Lois de conservation}
+\section{Conservation}
+Ce chapitre considère maintenant un volume matériel \(\Omega(t)\), et plus seulement un point.
+\begin{equation}
+    \Omega(t) = \{\textbf{x}(\textbf{X},t)|\textbf{X}\in \Omega_0\}
+\end{equation}
+La masse est conservée au cours du temps
+\begin{equation}
+    M(t) = \int_{\Omega(t)}\rho(\textbf{x},t)dv \Longrightarrow \frac{d}{dt}M(t) = 0
+\end{equation}
+avec \(dv\) un élément de volume.
+\subsection{Notations}
+\begin{itemize}
+    \item un exposant \((l)\) (resp. \((e)\)) signifie par rapport aux coordonnées lagrangiennes (resp. eulériennes).
+    \item \(dv\) est un élément de volume, tandis que \(\textbf{v}\) est le vecteur vitesse.
+\end{itemize}
+\subsection{Théorème du transport de Reynolds}
+Soit une quantité physique quelconque  \(\mathcal{I}(t)\) et soit un champ générique \(\phi(\textbf{x},t)\).
+\begin{equation}
+    \mathcal{I}(t) = \int_{\Omega(t)}\phi^{(e)}(\textbf{x},t)dv
+\end{equation}
+\begin{equation}
+    \frac{d}{dt}\mathcal{I}(t) = \int_{\Omega(t)} \left(\frac{D\phi}{Dt} + \phi \left(\nabla\cdot \textbf{v}\right)\right)dv
+\end{equation}
+Cette expression (\(\approx\) lagragienne) est la somme de la variation en suivant le point matériel et de la déformation du volume associé à ce point matériel.
+\begin{equation}
+     = \int_{\Omega(t)} \left(\frac{\partial \phi^{(e)}}{dt} + \nabla \cdot (\phi^{(e)}\textbf{v})\right)dv
+\end{equation}
+\begin{equation}
+    =\int_{\Omega(t)} \frac{\partial \phi^{(e)}}{dt}dv  + \oint_{\partial \Omega(t)} \phi^{(e)} \textbf{v}\cdot \textbf{n}ds
+\end{equation}
+avec \(ds\) un élément de surface et \(\textbf{n}\) le vecteur unitaire normal sortant de cette surface.\\
+
+Cette expression (\(\approx\) eulérienne) est la somme de la variation à position fixée et du flux à travers la surface de \(\Omega(t)\).
+\section{Conservation de la masse}
+Par le théorème de Reynolds, on obtient l'équation 
+\begin{equation}
+    \int_{\Omega(t)}\left(\frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \textbf{v})\right)dv = 0
+\end{equation}
+Or, elle est valable pour tout \(\Omega(t)\), l'intégrant est donc nul. On obtient l'équation de continuinité :
+\begin{equation}
+    \color{red}\boxed{\color{black}\frac{D\rho}{Dt} + \rho \nabla \cdot \textbf{v} = 0}\color{black}
+\end{equation}
+\subsection{Cas particuliers}
+\begin{itemize}
+    \item Problème stationnaire : \(\nabla \cdot (\rho \textbf{v}) = 0\)
+    \item Masse volumique constante (milieu homogène) : \(\nabla \cdot \textbf{v} = 0\)
+    \item Masse volumique constante par rapport à \(\textbf{X}\) : \(\nabla \cdot \textbf{v} = 0\)
+\end{itemize}
+\subsection{Volume de contrôle}
+Soit \(\Omega_c(t)\) un volume de contrôle arbitraire et soit \(\textbf{v}_s\) sa vitesse de déformation. Par le TTR : 
+\begin{equation}
+    \frac{d}{dt}\int_{\Omega(t)} \phi dv = \frac{d}{dt}\int_{\Omega(t)}\phi dv + \oint_{\partial \Omega(t)} \phi (\textbf{v}_s - \textbf{v})\cdot \Hat{n}ds
+\end{equation}
+Le premier terme est une intégrale sur un volume que l'on peut mesurer et contrôler, le second ce que la physique nous dit, et le troisème le flux de la grandeur qui sort du volume de contrôle.
+\subsection{Volume de contrôle immobile}
+Dans ce cas, \(\textbf{v}_s = 0\). Par conservation de la masse, 
+\begin{equation}
+    \frac{d}{dt}\int_{\Omega_c}\rho dv = -\oint_{\partial \Omega_c} \rho \textbf{v}\cdot \Hat{\textbf{n}} ds
+\end{equation}
+Si la masse volumique est indépendante du temps, on tombe sur la formule de Bernoulli de la conservation du débit massique :
+\begin{equation}
+    \rho_1v_1A_1 - \rho_2v_2A_2 = 0
+\end{equation}
+\subsection{Remarques sur le TTR}
+Le TTR en une seule dimension est la formule de Leibniz : 
+\begin{equation}
+    \frac{d}{dt}\int_{a(t)}^{b(t)} f(x,t)dx = \int_{a(t)}^{b(t)} \frac{\partial f}{\partial t}dx + f(b(t),t)\frac{db}{dt} - f(a(t),t)\frac{da}{dt}
+\end{equation}
+Si on considère une grandeur massique \(\phi = \rho Q = [x/kg]\), on a, par le TTR,
+\begin{equation}
+    \frac{d}{dt}\int_{\Omega(t)}\rho Qdv = \int_{\Omega(t)}\rho \frac{DQ}{Dt}dv
+\end{equation}
+\section{Conservation de la quantité de mouvement}
+Dans un milieu continu, la quantité de mouvement \(\textbf{P}(t)\) est 
+\begin{equation}
+    \textbf{P}(t) = \int_{\Omega(t)}\rho \textbf{v}dv
+\end{equation}
+et sa dérivée est 
+\begin{equation}
+    \frac{d}{dt}\textbf{P}(t) = \textbf{F} = \textbf{F}^d + \textbf{F}^c
+\end{equation}
+avec \(\textbf{F}^d\) les forces agissant à distance et \(\textbf{F}^c\) les forces de contact.\\
+
+De cela, on déduit, par le TTR et le théorème de la divergence, que 
+\begin{equation}
+    \int_{\Omega(t)}\left(\rho \frac{D\textbf{v}}{Dt} - \rho \textbf{f} - \nabla \cdot \sigma\right) dv = 0
+\end{equation}
+avec \(\textbf{f}\) la force volumique. Puisque cela est vrai pour un \(\Omega(t)\) arbitraire, l'intégrant est nul et 
+\begin{equation}
+    \rho \frac{D\textbf{v}}{Dt} = \rho \textbf{f} + \nabla \cdot \sigma
+\end{equation}
+\underline{Cas particuliers :}
+\begin{itemize}
+    \item Etat stationnaire : \(\rho \textbf{v} \cdot \nabla \textbf{v} = \rho \textbf{f} + \nabla \cdot \sigma\)
+    \item Déformations infinitésimales (\(\textbf{x} \approx \textbf{X}\)) : \(\nabla \cdot \sigma + \rho \textbf{f} = 0\)
+\end{itemize}
+\subsection{Volume de contrôle fixe}
+Ici, \(\textbf{v}_s = 0\) et \(\partial \Omega_c(t) = \partial \Omega_c\)
+\begin{equation}
+    \textbf{F} = \frac{d}{dt} \int_{\Omega_c} \rho \textbf{v}dv + \oint_{\partial \Omega_c} \rho \textbf{vv}\cdot \Hat{\textbf{n}} ds
+\end{equation}
+\section{Moment de la quantité de mouvement}
+\subsection{Moment}
+En toute généralité, le moment d'une quantité \(\omega(\textbf{x},t)\) est 
+\begin{equation}
+    \textbf{x} \wedge \omega(\textbf{x},t)
+\end{equation}
+Le moment de la quantité de mouvement est donc 
+\begin{equation}
+    \textbf{L} = \rho \textbf{x} \wedge \textbf{v}
+\end{equation}
+
+\subsection{Conservation}
+La conservation du moment de la quantité de mouvement s'écrit
+\begin{equation}
+    \frac{d\textbf{L}}{dt} = \frac{d}{dt}\int_{\Omega(t)} \rho \textbf{x} \wedge \textbf{v}dv = \textbf{M}^d + \textbf{M}^c
+\end{equation}
+avec \(\textbf{M}^d\) les moments de force à distance et \(\textbf{M}^c\) les moments des forces de contact.\\
+
+Pour un volume de contrôle fixe, on a 
+\begin{equation}
+    \textbf{M} = \frac{d}{dt}\int_{\Omega_c} \textbf{x} \wedge \rho \textbf{v}dx + \oint_{\partial \Omega_c} (\textbf{x} \wedge \rho \textbf{v})\textbf{v}\cdot \Hat{\textbf{n}} ds
+\end{equation}
+\subsection{Forme locale}
+Par le TTR, 
+\begin{equation}
+    \frac{d\textbf{L}}{dt} = \int_{\Omega(t)} \left(\rho \textbf{x} \wedge \frac{D\textbf{v}}{Dt}\right)dv
+\end{equation}
+Par le théorème de la divergence, la forme indicielle et la conservation de la quantité de mouvement, trouver 
+\begin{equation}
+    \epsilon_{ijk}\sigma_{jk} = 0
+\end{equation}
+ce qui prouve la propriété de symétrie du tenseur des contraintes, sous l'hypothèse que les couples volumiques sont nuls.
+\section{Théorème de l'énergie cinétique}
+Par produit scalaire de la forme locale de la conservation de la quantité de mouvement avec le champ de vitesse, on obtient 
+\begin{equation}
+    \rho \frac{D\textbf{v}}{Dt} \cdot \textbf{v} = \rho \frac{1}{2} \frac{D(\textbf{v} \cdot \textbf{v})}{Dt} = \rho \textbf{f} \cdot \textbf{v} + (\nabla \cdot \sigma) \cdot \textbf{v}
+\end{equation}
+et on y identifie l'énergie cinétique massique et la puissance des forces volumiques.\\
+Par une intégration sur un volume matériel, puis par décomposition et par le théorème de la divergence, on trouve : 
+\begin{equation}
+    \int_{\Omega(t)} (\nabla \cdot \sigma) \cdot \textbf{v} dv = \oint_{\partial \Omega(t)} \textbf{t} \cdot \textbf{v}ds
+\end{equation}
+Sous l'hypothèse que les couples volumiques sont nuls\footnote{Nécessaire pour que \(\sigma\) soit symétrique} et par le TTR, on obtient finalement le théorème de l'énergie cinétique suivant : 
+\begin{equation}
+    \frac{d}{dt}\int_{\Omega(t)} \rho \frac{\textbf{v}\cdot \textbf{v}}{2}dv = \int_{\Omega(t)} \rho \textbf{f}\cdot \textbf{v}dv + \oint_{\partial \Omega(t)} \textbf{t} \cdot \textbf{v}ds - \int_{\Omega(t)}\sigma : \textbf{D} dv
+\end{equation}
+qui est équivalent à 
+\begin{equation}
+    \frac{d}{dt} K = W^d + W^c - W^{i}
+\end{equation}
+avec \(\textbf{t}\) le vecteur de contraintes, \(\textbf{D}\) le tenseur de taux de déformation, \(K\) l'énergie cinétique, \(W^d\) la puissance des forces volumiques, \(W^c\) la puissance des forces de contact et \(W^{i}\) la puissance des efforts internes.
+\section{Premier principe de la thermodynamique}
+\begin{equation}
+    \color{red}\boxed{\color{black}\frac{d}{dt}(K+U) = W+H}\color{black}
+\end{equation}
+où \(U = \int_{\Omega(t)} \rho e dv\) est l'énergie interne, \(W = W^d + W^c\) la puissance mécanique fournie et \(H = H^d + H^c\) la puissance calorifique fournie. Les exposants \(c\) signifient par conduction et \(d\) par production dans le volume.\\
+
+Le principe se réécrit 
+\begin{equation}
+    \frac{d}{dt} \int_{\Omega(t)} \rho \left(\frac{\textbf{v} \cdot \textbf{v}}{2} + e\right) dv = \int_{\Omega(t)}\rho \textbf{f} \cdot \textbf{v} dv + \oint_{\partial \Omega(t)} \textbf{t} \cdot \textbf{v} ds + \oint_{\partial \Omega(t)} h(\Hat{\textbf{n}})ds + \int_{\Omega(t)} \rho \varepsilon dv
+\end{equation}
+avec \(h(\Hat{\textbf{n}}\) le flux de chaleur entrant dans la surface de normale sortante \(\Hat{\textbf{n}}\). \\
+
+Cette équation comprend
+\begin{itemize}
+    \item l'énergie cinétique du mouvement microscopique des molécules (effets de température)
+    \item l'énergie des degrés de liberté vibratoires (effets de chaleur spécifique)
+    \item potentiel chimique des composants,...
+\end{itemize}
+La puissance calorifique \(\rho \varepsilon\) est dûe à un rayonnement ou à l'effet Joule.\\
+
+Si l'on soustrait le théorème de l'énergie cinétique à l'équation du premier principe, on obtient l'équation de conservation de l'énergie cinétique :
+\begin{equation}
+    \color{red}\boxed{\color{black}\frac{d}{dt}\int_{\Omega(t)} \rho e dv = \oint_{\partial \Omega(t)} h(\Hat{\textbf{n}}) ds + \int_{\Omega(t)} \rho \varepsilon dv + \int_{\Omega(t)} \sigma : \textbf{D} dv}\color{black}
+\end{equation}
+Sous forme locale, avec \(\textbf{q}\) le vecteur flux de chaleur tel que \(q_i = h(\Hat{\textbf{e}}_i)\), 
+\begin{equation}
+    \rho \frac{De}{Dt} = -\nabla \cdot \textbf{q} + \rho \varepsilon + \sigma : \textbf{D}
+\end{equation}
+ou encore
+\begin{equation}
+    \rho \frac{D}{Dt} \left(\frac{\textbf{v} \cdot \textbf{v}}{2} + e\right) = \rho \textbf{f} \cdot \textbf{v} + \nabla \cdot (\sigma \cdot \textbf{v}) - \nabla \cdot \textbf{q} + \rho \varepsilon
+\end{equation}
+\subsection{Invariance et conséquences}
+\subsubsection{Mouvement rigide - Translation simple}
+Un mouvement rigide est un mouvement sans déformation.\\
+
+Soit le repère relatif \(\textbf{x}^r = \textbf{Q}(t) \textbf{x} + \textbf{c}(t)\), avec \(\textbf{Q}\) la matrice de rotation et \textbf{c} le vecteur de translation. Les variables transformées sont \\
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+    \begin{cases}
+        \textbf{t}^r = \textbf{Qt}\\
+        \rho^r = \rho \\
+        \textbf{f}^r = \textbf{Qf} + \frac{D\textbf{v}^r}{Dt} - \textbf{Q}\frac{D\textbf{v}}{Dt}\\
+    \end{cases}
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \begin{cases}
+            \sigma^r = \textbf{Q} \sigma \textbf{Q}^T\\
+            \textbf{q}^r = \textbf{Qq}\\
+        \end{cases}
+    \end{equation}
+\end{minipage}
+Dans le cas de la translation simple, \(\textbf{Q} = \textbf{I}\) et \(\textbf{c} = \textbf{c}_0t\). De plus, \(\textbf{v}^r = \textbf{v} + c_0, \text{ }\frac{d}{dt} \textbf{Q} = 0\) et \(\textbf{f}^r = \textbf{f}\).\\
+Si on remplace dans l'équation du premier principe, par le principe d'invariance, on obtient :
+\begin{equation}
+    \textbf{c}_0 \cdot \left[\frac{d}{dt} \int_{\Omega(t)} \rho \textbf{v} dv - \int_{\Omega(t)} \rho \textbf{f} dv + \oint_{\partial \Omega(t)} \textbf{t} ds\right] + \frac{1}{2} (\textbf{c}_0 \cdot \textbf{c}_0) \left[\frac{d}{dt} \int_{\Omega(t)} \rho dv\right] = 0
+\end{equation}
+Il nous faut donc annuler les deux termes entre crochets et on retrouve les équations de conservation de la quantité de mouvement et de la conservation de la masse.\\
+\subsubsection{Mouvement rigide - Rotation simple}
+Ce mouvement est caractérisé par les matrices suivantes : \\
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \begin{cases}
+            \textbf{Q} = \textbf{I}\\
+            \frac{d}{dt} \textbf{Q} = \Omega_0\\
+            \textbf{c} = 0\\
+        \end{cases}
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \begin{cases}
+            \frac{D\textbf{v}^T}{Dt} = \frac{D\textbf{v}}{Dt} + \omega_0 \wedge (2\textbf{v} + \omega \wedge \textbf{x})\\
+            \textbf{f}^r = \textbf{f} + \omega_0 \wedge (2\textbf{v} + \omega_0 \wedge \textbf{x})
+        \end{cases}
+    \end{equation}
+\end{minipage}
+Par le même raisonnement qu'au point précédent, on retrouve l'équation de conservation du moment de la quantité de mouvement.
+\section{Théorème de Green-Naghdi-Rivlin}
+L'équation de conservation de l'énergie interne couplée au principe d'invariance des lois sous des mouvements rigides permettent de retrouver les lois de conservations démontrées précédemment.
+\section{Volume de contrôle}
+Réécrivons la loi de conservation de l'énergie :
+\begin{equation}
+    W^d + W^c + H^d + H^c = \frac{d}{dt} \int_{\Omega_c} \rho \left(\frac{\textbf{v} \cdot \textbf{v}}{2} + e\right) dv + \oint_{\partial \Omega_c} \rho \left(\frac{\textbf{v} \cdot \textbf{v}}{2} + e\right) (\textbf{v} - \textbf{v}_s) \cdot \Hat{\textbf{n}} ds
+\end{equation}
+Soit le cas particuliers des fluides. Le tenseur de contraintes se décompose \(\sigma = \tau - p\textbf{I}\) avec \(\tau\) les contraintes visqueuses, \(p\) la pression et \(\textbf{I}\) la matrice identité. Par décomposition des puissances,
+\begin{equation}
+    W^c = \oint_{\partial \Omega_c} (\Hat{n} \cdot \sigma)\cdot v ds = \oint_{\partial \Omega_c}(\Hat{\textbf{n}} \cdot (\tau - p \textbf{I})) \cdot \textbf{v} ds = W^{c, visc} - \oint_{\partial \Omega_c} p\Hat{\textbf{n}} \cdot \textbf{v} ds
+\end{equation}
+En réorganisant tout, on trouve
+\begin{equation}
+    W^d + W^{c, visc} - \oint_{\partial \Omega_c} p\Hat{\textbf{n}} \cdot \textbf{v}_s ds + H^d + H^c = \frac{d}{dt} \int_{\Omega_c}\rho \left(\frac{\textbf{v} \cdot \textbf{v}}{2} + e\right) dv
+\end{equation}
+\begin{equation*}
+    + \oint_{\partial \Omega_c} \rho \left(\frac{\textbf{v} \cdot \textbf{v}}{2} +\color{blue}\boxed{\color{black}e + \frac{p}{\rho}}\color{black}\right) (\textbf{v} - \textbf{v}_s) \cdot \Hat{\textbf{n}}ds
+\end{equation*}
+avec \(\color{blue}\boxed{\color{black}h}\color{black}\) l'enthalpie spécifique.
+\section{Second principe de la thermodynamique}
+L'entropie \(\mathcal{S}\) est une fonction d'état thermodynamique définie telle que 
+\begin{equation}
+    \mathcal{S} = \int_{\Omega(t)}\rho Sdv \qquad \mathcal{R}^d = \int_{\Omega(t)} \rho \frac{\varepsilon}{T}dv \qquad \mathcal{R}^c = -\oint_{\partial \Omega(t)} \frac{(\textbf{q} \cdot \Hat{\textbf{n}}}{T}ds
+\end{equation}
+avec \(\mathcal{R}^d\) son flux par production dans le volume et \(\mathcal{R}^c\) son flux par conduction.
+\begin{equation}
+    \color{red}\boxed{\color{black}\frac{d\mathcal{S}}{dt} \ge \mathcal{R}^c + \mathcal{R}^d}\color{black}
+\end{equation}
+Il y a égalité stricte pour des transformations réversibles de \(\Omega(t)\).
+\subsection{Forme locale}
+Par le TTR et le théorème de Green, puis par soustraction de l'équation de l'énergie interne, on obtient l'inégalité de Clausius-Duhem suivante :
+\begin{equation}
+    \color{red}\boxed{\color{black}\rho T \frac{DS}{Dt} - \rho \frac{De}{Dt} \ge \frac{1}{T}\textbf{q} \cdot \nabla T - \sigma : \textbf{D}}\color{black}
+\end{equation}
+Cette inégalité constitue la condition d'admissiblité sur les équations de constitution.
+\chapter{Equations constitutives}
+Les champs à déterminer sont \\
+\begin{minipage}{.5\textwidth}
+    \begin{itemize}
+        \item \(\rho\) (1)
+        \item \(\textbf{u}\) (3)
+        \item \(\sigma\) (6)
+        \item \(\textbf{q}\) (3)
+    \end{itemize}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{itemize}
+        \item \(e\) (1)
+        \item \(S\) (1)
+        \item \(T\) (1)
+    \end{itemize}
+\end{minipage}
+Cela nous fait 16 inconnues.\\
+
+Les champs donnés sont 
+\begin{itemize}
+    \item \(\textbf{f}\)
+    \item \(\varepsilon\)
+\end{itemize}
+Les équations nous permettant de les déterminer sont :
+\begin{itemize}
+    \item Les équations de conservation (5)
+    \item Les équations constitutives de 
+    \begin{itemize}
+        \item [\(\bullet\)] \(\sigma\), les contraintes 
+        \item [\(\bullet\)] \(\textbf{q}\), le flux de chaleur
+        \item [\(\bullet\)] \(e\), l'énergie interne
+        \item [\(\bullet\)] \(S\), l'entropie
+    \end{itemize}
+\end{itemize}
+\section{Axiomes}
+\subsection{Causalité}
+Il existe deux variables indépendantes : 
+\begin{itemize}
+    \item La position dans le milieu continu : \(\textbf{x} = \textbf{x}(\textbf{X},t)\)
+    \item La température : \(T = T(\textbf{X},t)\)
+\end{itemize}
+Les autres variables\footnote{Variables dépendantes : \(F, \sigma, \textbf{q},e,S\)} en dépendent (ainsi que de leurs dérivées).
+\subsection{Déterminisme}
+Les variables dépendantes dépendent de l'histoire passée des variables indépendantes dans tout le système.
+\subsection{Equiprésence}
+Principe de précaution : si une loi de comportement fait intervenir une variable indépendante, alors on supposera que toutes les lois la font intervenir jusqu'à preuve du contraire.
+\subsection{Action locale}
+Le comportement du milieu en \(\textbf{x}\) n'est pas trop influencé par les variables indépendantes en un \(\textbf{x'}\) loin de ce point.\\
+
+- \underline{Hypothèses :}\\
+Les variables indépendantes sont continues et peuvent être développées en série de Taylor. On définit alors des classes de milieux dont les lois constitutives dépendent des premiers coefficients de la série.\\
+
+Dans un milieu dit matériellement simple, ou de Cauchy, les variables dépendantes ne dépendent que des variables indépendantes et de leur gradient.
+\subsection{Mémoire}
+Le comportement n'est pas trop influencé par les variables indépendantes dans le passé lointain.\\
+Contre-exemple : alliage à mémoire de forme.
+\subsection{Objectivité}
+La forme de la loi de comportement est invariante par rapport à un changement de repère spatial en mouvement rigide. Les variables dépendantes ne dépendent donc pas des déplacements \(\textbf{x}\), mais plutôt de leur gradient. Puisque le tenseur de Green-Lagrange est insensible aux mouvements rigides :
+\begin{equation}
+    \textbf{E} = \frac{1}{2}\left(\textbf{F}^T\cdot \textbf{F} - \textbf{I}\right)
+\end{equation}
+\subsection{Invariance matérielle}
+Les invariances des propriétés du matériau sont respectées : 
+\begin{itemize}
+    \item Invariance dans les orientations : symétries.
+    \begin{itemize}
+        \item [\(\bullet\)] Milieu isotrope : invariance sous rotations et réflexions.
+        \item [\(\bullet\)] Milieu anisotrope : loi dépend de l'orientation.
+    \end{itemize}
+    \item Invariance dans les translations : milieu homogène ou hétérogène.
+\end{itemize}
+\subsection{Admissibilité}
+La loi de constitution doit respecter les lois de conservations et le second principe de la thermodynamique (\(\equiv\) principe d'entropie).
+\section{Petits déplacements}
+Les problèmes de petits déplacements sont une large classe de problèmes caractérisés par des déformations infinitésimales : \(\textbf{u} = \textbf{x} - \textbf{X} <<< L\), avec \(L\) la longueur caractéristique du milieu. Donc \(\textbf{u}/L \approx \varepsilon <<< 1\).\\
+
+Cela implique que les représentations lagrangienne (tilde) et eulérienne (sans tilde) des champs (\(s\) un champ quelconque) sont confondues : 
+\begin{equation}
+    \Tilde{s}(\textbf{X},t) \approx s(X,t) \qquad s(\textbf{x},t) \approx \Tilde{s}(\textbf{x},t)
+\end{equation}
+et les dérivéesp artielles lagrangienne et eulérienne sont confondues également : 
+\begin{equation}
+    \begin{cases}
+        \frac{\partial \Tilde{s}}{\partial \textbf{X}} \approx \frac{\partial s}{\partial \textbf{x}}\\
+        \frac{Ds}{Dt} \approx \frac{\partial s}{\partial t}
+    \end{cases}
+\end{equation}
+\subsection{Solide thermoélastique}
+Soient deux lames métalliques constituées de métaux ayant une élongation thermique différente. Si elles sont attachées aux deux extrémités, le solide va plier lorsque la température augmente, à cause de cette différence d'élongation thermique.\\
+
+- \underline{Hypothèses :}\\
+
+Les variables dépendantes (sauf \(\textbf{q}\)) ne dépendent pas du gradient de température. En petites déformations, \(\textbf{E} \rightarrow \epsilon\).\\
+
+Si on introduit l'énergie libre \(f = e - TS\), on obtient à partir de Clausius-Duhem la loi de comportement suivante : 
+\begin{equation}
+    S = -\frac{\partial F}{\partial t} \qquad \color{red}\boxed{\color{black}\sigma = \rho_0 \frac{\partial F}{\partial \epsilon}}\color{black}\qquad \frac{1}{T} \textbf{q} \cdot \nabla T \le 0
+\end{equation}
+
+\end{document}

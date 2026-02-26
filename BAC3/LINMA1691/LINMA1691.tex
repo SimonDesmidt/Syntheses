@@ -1,0 +1,563 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{xfrac}
+\usepackage{libertine}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{dsfont}
+\usepackage[]{titletoc}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\titleformat{\chapter}[display] 
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\renewcommand{\contentsname}{Table des matières}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.5]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LINMA1691 Théorie des graphes \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2023-2024 - Q1}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\chapter{Graphes connexes, eulériens et bipartis}
+\section{Rappels}
+\begin{itemize}
+    \item Un graphe est un triplet \((V,E,\phi)\), où 
+    \begin{itemize}
+        \item [\(\bullet\)] \(V\) est un ensemble fini dont les éléments sont appelés sommets/noeuds.
+        \item [\(\bullet\)] \(E\) est un ensemble fini dont les éléments sont appelés arêtes.
+        \item [\(\bullet\)] \(\phi\) est une fonction d'incidence qui associe à chaque arête un sommet ou une paire de sommets.
+    \end{itemize}
+    \item Un sous-graphe du graphe \((V,E,\phi)\) est un graphe \((V',E',\phi')\), avec \(V'\subseteq V,E'\subseteq E\) et \(\phi'\) est la restriction de \(\phi\) à \(E'\).
+    \item Deux graphes \((V,E,\phi)\) et \((V',E',\phi')\) sont dits isomorphes s'il existe des bijections \(f:V\rightarrow V'\) et \(g:E\rightarrow E'\) telles que \(\phi(e) = \{u,v\}\) ssi \(\phi(g(e)) = \{f(u),f(v)\}\). 
+    \item Un parcours est une suite \(v_0e_1v_1e_2...e_nv_n\) où les \(v_i\) sont des sommets et les \(e_i\) sont des arêtes. La longueur du parcours est son nombre d'arêtes \(n\). Le sommet d'origine est \(v_0\) et son sommet de destination est \(v_n\). Les autres sommets sont dits intérieurs. Un parcours est fermé si \(v_0=v_n\).
+    \item Un chemin est un parcours dont les sommets et arêtes sont tous distincts.
+    \item Un cycle est un chemin fermé.
+    \item Un graphe est connexe si, pour chaque paire de points, il existe un parcours les reliant.
+    \item Les composantes connexes d'un graphe sont les sous-graphes connexes maximaux.
+    \item Un parcours est eulérien s'il visite chaque arête une et une seule fois. Un graphe est eulérien s'il existe un parcours eulérien fermé.
+    \item Soient les sommets \(v_i\). La matrice d'adjacence est une matrice carrée \(n\times n\) dont l'élément \(ij\) est le nombre d'arêtes entre le sommet \(v_i\) et le sommet \(v_j\).
+    \item Soient les arêtes \(e_j\). La matrice d'incidence est une matrice rectangulaire \(n\times m\) dont l'élément \(ij\) est le nombre de fois (\(\in \{0,1,2\}\)) que le sommet \(v_i\) est incident à l'arête \(e_j\). 
+    \item Le vecteur des degrés est donné par le produit matriciel \(M\mathds{1}\), avec \(M\) la matrice d'adjacence et \(\mathds{1}\) le vecteur ne contenant que des 1. De plus, \(\mathds{1}^TM = 2 \mathds{1}\) et \(\mathds{1}^TM\mathds{1} = 2|E|\).
+    \item La distance \(d(u,v)\) entre les noeuds \(u\) et \(v\) d'un graphe est le nombre d'arêrtes minimal d'un parcours entre ces noeuds. Si un tel parcours n'existe pas, alors la distance est infinie.
+    \item Un graphe est biparti s'il existe une partition en deux ensembles \(V_1,V_2\) tels que les sommets de \(V_1\) ne sont adjacents qu'a des sommets de \(V_2\) et vice versa. La bipartition est \((V_1,V_2)\).
+\end{itemize}
+\section{Théorèmes}
+\begin{itemize}
+    \item Un graphe connexe est eulérien ssi tous les sommets sont de degré pair. La relation \(\Leftarrow\) est prouvée par l'algorithme de Hierholzer (complexité \(\mathcal{O}(|E|)\)). 
+    \item Un graphe connexe possède un parcours eulérien ssi le nombre de noeuds de degré impair est zéro ou deux.
+    \item Théorème des poignées de mains : La somme des degrés des noeuds d'un graphe est deux fois le nombre d'arêtes.
+    \item Soit \(A\) la matrice d'adjacence d'un graphe. Alors l'élément \(ij\) de \(A^k\), \(k\ge 0\), est le nombre de parcours de longueur \(k\) de \(v_i\) vers \(v_j\).
+    \item Si \(u...u'...v'...v\) est un parcours de longueur minimale de \(u\) vers \(v\), alors le sous-parcours \(u'...v'\) est un parcours de longueur minimale de \(u'\) vers \(v'\). 
+    \item Un graphe est biparti ssi tous ses cycles sont de longueur paire. 
+\end{itemize}
+\chapter{Arbres et connectivité}
+\section{Définitions}
+\begin{itemize}
+	\item Un arbre est un graphe connexe et sans cycle.
+	\item Une forêt est un graphe sans cycle.
+	\item Un sous-graphe sous-tendant d'un graphe \(G\) est un sous-graphe qui contient tous les sommets de \(G\), i.e. les noeuds ne changent pas, mais on enlève certaines arêtes. 
+	\item [\(\rightarrow\)] Remarque : tout graphe connexe contient un arbre sous-tendant.
+	\item Le graphe complet contenant \(n\) noeuds est noté \(K_n\).
+\end{itemize}
+
+Soit \(G\) un graphe à \(n\) sommets et \(m\) arêtes. Alors les conditions suivantes sont équivalentes : 
+\begin{itemize}
+	\item \(G\) est connexe et sans cycle.
+	\item \(G\) est sans cycle et \(m = n-1\).
+	\item \(G\) est connexe et \(m = n-1\).
+	\item \(G\) est connexe et supprimer une arête quelconque déconnecte \(G\).
+	\item \(G\) est sans cycle et ajouter une arête quelconque crée un et un seul cycle.
+	\item Deux noeuds de \(G\) sont toujours reliés par un seul chemin.
+\end{itemize}
+\section{Nombre d'arbres sous-tendants}
+Pour un graphe \(G\) et une arête \(e\), on note \(G-e\) le graphe obtenu en supprimant \(e\), et \(G.e\) me graphe obtenu en contractant \(e\), i.e. en supprimant \(e\) et en fusionnant les deux extrémités de \(e\).\\
+
+Soit \(T(G\) le nombre d'arbres sous-tendants de \(G\), et \(e\) une arête quelconque de \(G\) (qui n'est pas une boucle). Alors \(T(G) = T(G-e)+T(G.e)\).
+\begin{itemize}
+	\item [\(\rightarrow\)] Remarque : Le nombre d'arbres sous-tendants de \(K_n\) est \(n^{n-2}\).
+\end{itemize}
+\section{Problème de l'arbre sous-tendant de poids minimum}
+Soit un graphe connexe pondéré. Le problème est de trouver un arbre sous-tendant de poids minimum.
+\subsection{Algorithme de Kruskal}
+Soit un graphe pondéré à \(n\) noeuds. 
+\begin{itemize}
+\item Trier les arêtes par poids croissants;
+\item Tant que \(|T|<n-1\),
+\begin{itemize}
+\item Parmi les arêtes pas encore considérées, choisir celle de moindre poids, qu'on appellera \(e\);
+\item Si \(T\cup\{e\}\) est sans cycle, alors \(T\coloneqq T\cup \{e\}\).
+\end{itemize}
+\end{itemize}
+Le graphe formé des arêtes \(T\) est un arbre sous-tendant de poids minimum.\\
+
+Cet algorithme est correct et requiert un temps de calcul de l'ordre de \(m\log m\) sur un graphe à \(m\) arêtes.
+
+\subsection{Algorithme de Prim}
+Soit un graphe pondéré à \(n\) noeuds.
+\begin{itemize}
+\item Initialiser l'arbre \(T\) à un noeud de départ arbitraire;
+\item Tant que \(|T|<n-1\),
+\begin{itemize}
+\item Parmi les arêtes incidentes à exactement un noeud de \(T\), choisir celle de moindre poids, qu'on appellera \(e\);
+\item \(T \coloneqq T\cup \{e\}\).
+\end{itemize}
+\end{itemize}
+Le graphe formé des arêtes de \(T\) est un arbre sous-tendant de poids minimum.\\
+
+Cet algorithme est correct et requiert un temps de calcul de l'ordre de \(m+n\log n\) pour un graphe à \(n\) noeuds et \(m\) arêtes.
+\begin{itemize}
+\item [\(\rightarrow\)] Remarque : Prim est meilleur que Kruskal car \(n\) est, le plus souvent, inférieur à \(m\).
+\end{itemize}
+\section{Connectivité}
+\subsection{Définitions}
+\begin{itemize}
+    \item Pour un graphe connexe, une coupe de sommets est un ensemble de sommets qui déconnecte le graphe quand on l'en retire.
+    \item Pour un graphe connexe, une coupe d'arêtes est un ensemble d'arêtes qui déconnecte le graphe quand on l'en retire.
+    \item Un graphe est dit \(k\)-connexe si retirer \(k-1\) noeuds quelconques laisse le graphe connexe. Autrement dit, si toutes les coupes de sommets sont de taille au moins \(k\).
+    \item La connectivité d'un graphe est la taille de la plus petite coupe de sommets. Par convention, si tous les \(n\) noeuds sont voisins, la connectivité est définie comme \(n-1\).
+    \item Un graphe est dit \(k\)-arête-connexe si retirer \(k-1\) arêtes quelconques laisse le graphe connexe. Autrement dit, si toutes les coupes d'arêtes sont de taille au moins \(k\).
+    \item L'arête-connectivité d'un graphe est la taille de la plus petite coupe d'arêtes.
+    \item Un graphe est dit connexe ssi il est 1-arête-connexe ssi il est 1-connexe.
+\end{itemize}
+\subsection{Théorèmes}
+\begin{itemize}
+    \item connectivité \(\ge\) arête-connectivité \(\ge\) degré minimum.
+    \item Théorème de Whitney : Un graphe à au moins trois noeuds est 2-connexe ssi toute paire de noeuds distincts est reliée par au moins deux chemins dont les noeuds internes sont distincts.\footnote{Donc, dans un graphe 2-connexe, deux noeuds distincts sont toujours sur un même cycle (l'union des deux chemins).}
+    \item Théorème de Menger, généralisation du théorème de Whitney : Un graphe à au moins \(k+1\) noeuds est \(k\)-connexe ssi toute paire de noeuds distincts est reliée par au moins \(k\) chemins dont les noeuds internes sont distincts.
+    \item Tout graphe \(k\)-connexe à \(n\) noeuds possède \(kn/2\) arêtes au minimum, et on peut construire des graphes \(k\)-connexes avec exactement \(\ceil{kn/2}\), les graphes de Harary\footnote{Le graphe de Harary \(H_{k,n}\) par \(k\) pair : les noeuds sont \(v_1,\dots,v_j\), et on relie \(v_i\) à \(v_{i\pm 1},\dots,v_{i\pm k/2}\) (modulo \(n\)).}.
+    \item Le graphe de Harary \(H_{k,n}\) possède \(kn/2\) arêtes et est \(k\)-connexe. 
+\end{itemize}
+\chapter{Les plus courts chemins}
+\section{Définitions}
+\begin{itemize}
+	\item Une fonction de poids sur un graphe \((V,E,\varphi)\) est une fonction \(E\rightarrow \mathbb{R}\). Un graphe pondéré est un graphe muni d'une fonction de poids.
+	\item Le poids (ou longueur) d'un parcours est la somme des poids des arêtes qui le compose.
+	\item La distance \(d(u,v)\) est la longueur du plus court chemin de \(u\) vers \(v\).
+	\item Un algorithme qui prend comme donnée un graphe à \(n\) noeuds et \(m\) arêtes est dit efficace s'il s'arête en un temps polynomial.
+	\item Un graphe dirigé est un triplet \((E,V,\varphi)\) où
+	\begin{itemize}
+		\item \(V\) est un ensemble dont les éléments sont appelés sommets ou noeuds;
+		\item \(E\) est un ensemble dont les éléments sont appelés arêtes;
+		\item \(\varphi\) est une fonction, dite fonction d'incidence, qui associe à chaque arête un couple de sommets.
+	\end{itemize}
+\end{itemize}
+
+\section{Théorèmes}
+\begin{itemize}
+	\item Pour un graphe avec une fonction de poids \(\ge 0\), si le plus court parcours entre \(u\) et \(v\) est de longueur \(d\), alors le plus court chemin entre \(u\) et \(v\) est aussi de longueur \(d\).
+\end{itemize}
+
+\section{Problème du plus court chemin}
+Etant donnés un graphe et deux sommets \(u,v\), le problème du plus court chemin consiste à trouver le chemin le plus court entre \(u\) et \(v\).\\
+
+L'algorithme de Dijkstra résout ce problème efficacement : 
+
+Etant donné un graphe avec une fonction de poids \(w\ge 0\), on veut trouver la longueur du plus court chemin entre \(u_0\) et \(t\). Par convention, \(w(ab) = \infty\) si les sommets \(a\) et \(b\) ne sont pas adjacents. On peut supposer le graphe simple.
+
+\begin{itemize}
+	\item Initialisation : \(l(u_0) = 0, l(v) = \infty\) \(\forall v\neq u_0,S \coloneqq u_0, u' = u_0\). 
+	\item Tant qu'il reste des sommets hors de S :
+	\begin{itemize}
+		\item Pour tout \(v\notin S\), \(l(v) = \min{l(v),l(u')+w(u'v)} \);
+		\item Trouver \(v_min\notin S\) tel que \(l(v_min)\le l(v)\) pour tout \(v\notin S\);
+		\item \(u'\coloneqq v_min\);
+		\item \(S \coloneqq S\cup \{u'\}\).
+	\end{itemize}
+\end{itemize}
+
+Après chaque mise à jour de \(l\) dans l'algorithme, les deux propriétés suivantes (appelées invariants de boucle) sont vérifiées : 
+\begin{itemize}
+	\item Pour \(v\in S,\text{  } l(v) = d(u_0,v)\) et le chemin le plus court de \(u_0\) à \(v\) reste dans \(S\).
+	\item Pour \(v\notin S,\text{  } l(v) \ge d(u_0,v)\) et \(l(v)\) est la longueur du plus court chemin de \(u_0\) vers \(v\) dont tous les noeuds internes sont dans \(S\).
+	\item [\(\rightarrow\)] Remarque : si on n'est intéressé que par le plus court chemin de \(u_0\) vers un certain noeud \(v_0\), alors on peut arrêter l'algorithme quand \(v_0\in S\).
+\end{itemize}
+
+L'algorithme de Dijkstra sur un graphe se termine en un temps de l'ordre \(n^2\). 
+
+\section{A l'aide des matrices}
+Pour définir un produit matriciel, il suffit de deux opérations (\(+,\times\)) sur les éléments scalaires, avec propriétés de 'semi-anneau' sur les scalaires. On obtient les opérations \(+,\times\) sur les matrices. \\
+
+\begin{itemize}
+	\item La matrice des plus courts parcours de longueur \(k\) est \(A^k\) pour le semi-anneau \((\min,+)\) sur les réels positifs.
+	\item La matrice des plus courts parcours de longueur \(\le k\) est \((I + A)^k\).	
+	\item La matrice des plus courts chemins est \((I+A)^n\), dont le calcul a une complexité en \(n^3\log_2n\). 
+\end{itemize}
+\subsection{Semi-anneau du nombre de parcours}
+Le semi-anneau du nombre de parcours est simple : il s'agit du semi-anneau muni des opérations habituelles \((+,\cdot)\).
+\subsection{Semi-anneau des plus cours parcours}
+Soient \(A,B\in (\mathbb{R}^+\cup \{\infty\})^{n\times n}\). On définit l'élément \(AB)_{ij} = \sum_{k=1}^n(A_{ik}\times B_{kj}) = \min_k{A_{ik}+B_{kj}}\). Le neutre de la multiplication est donc la matice identité. \\
+
+Le neutre additif est par contre \(I\) tel que sa diagonale est nulle et tous les autres termes valent \(\infty\). 
+\subsection{Semi-anneau du parcours de plus grande capacité}
+Ce semi-anneau calcule le chemin entre deux noeuds dans lequel le débit global est le plus élevé. Il s'agit du semi-anneau \((\max,\min)\).
+\chapter{Mariages, couplages et couvertures}
+\section{Définitions}
+\begin{itemize}
+    \item Un couplage dans un graphe est un ensemble \(M\) d'arêtes tel que \(M\) ne contient par de boucles et deux arêtes de \(M\) n'ont jamais d'extrémité en commun.
+    \item Un couplage maximum est tel que son nombre d'arêtes est maximal.
+    \item Un couple parfait est tel qu'il est incident à tous les noeuds. S'il existe, il est maximum.
+    \item Pour un couplage \(M\), un chemin \(M\)-alterné est un chemin qui passe alternativement par une arête de \(M\) et par une arête hors de \(M\).
+    \item Un chemin \(M\)-augmenté est un chemin \(M\)-alterné dont les noeuds d'origine et de destination sont distincts et aucun des deux n'est incident à une arête de \(M\).
+    \item L'opération de différence symétrique entre des ensembles \(A\) et \(B\) se note \(C = A\Delta B\), et est l'ensemble des éléments qui sont dans \(A\) ou dans \(B\) mais pas dans les deux. \(A\Delta B = (A\setminus B) \cup (B\setminus A) = (A\cup B) \setminus (A\cap B)\).
+    \item Un graphe est \(k\)-régulier si tous les noeuds sont de degré \(k\).
+    \item Une couverture de sommets d'un graphe est un ensemble de sommets incident à toutes les arêtes. La couverture est minimum si elle contient un nombre minimal de sommets.
+    \item [\(\rightarrow\)] Remarque : Si \(K\) est une couvertue de sommets et \(M\) un couplage, alors \(|M|\le |K|\). 
+    \item Si \(K^*\) est une couverture de sommets minimum et \(M^*\) un couplage maximum, alors \(|M^*|\le |K^*|\).
+\end{itemize}
+\section{Théorèmes}
+\begin{itemize}
+    \item Un couple \(M\) est maximum ssi il n'y a pas de chemin \(M\)-augmenté.
+    \item Théorème du mariage : Un graphe biparti avec partition \((X,Y)\) epossède un couplage incident à tous les noeuds de \(X\) ssi pour tout ensemble \(S\subseteq X\), le nombre de voisins de \(S\) est au moins \(|S|\). 
+    \begin{itemize}
+        \item Corollaire : Tout graphe biparti \(k\)-régulier (\(k>0\)) possède un couplage parfait.
+    \end{itemize}
+    \item Si \(K\) est une couvertue de sommets et \(M\) un couplage, et si \(|M| = |K|\), alors \(K\) est mninimum et \(M\) est maximum.
+    \item Dans un graphe biparti, si \(K^*\) est une couverture de sommets minimum et \(M^*\) un couplage maximum, alros \(|M^*| = |K^*|\). De plus, dans un graphe biparti, \(K^*\) et \(M^*\) existent toujours.
+\end{itemize}
+\section{L'algorithme hongrois}
+Soit un graphe biparti de bipartition \((X,Y)\) avec \(|X|\le |Y|\).
+\begin{itemize}
+    \item Soit un couplage \(M_0\) quelconque.
+    \item \(M \coloneqq M_0\).
+    \item While (\(M\) pas maximum) :
+    \begin{itemize}
+        \item Si \(M\) incident à tout \(X\), alors \(M\) maximum.
+        \item Sinon, trouver \(U = \{u\in X\) non incident à \(M\}\).
+        \item Construire tous les chemins \(M\)-alternés à partir de \(U\).
+        \item Si pas de chemin \(M\)-augmenté, alors \(M\) maximum.
+        \item Sinon, choisir un chemin \(M\)-augmenté \(C\).
+        \item \(M \coloneqq (M\setminus C)\cup (C\setminus M) (= M\Delta C)\).
+    \end{itemize}
+\end{itemize}
+De plus, pour un problème de poids maximum dans un graphe biparti dans lequel on a donné un poids aux arêtes, l'algorithme hongrois général permet de trouver un couplage de poids maximum.
+\chapter{Coloriage de graphes}
+\section{Introduction}
+\begin{itemize}
+    \item Soit le graphe \(G=(V,E)\). Une k-coloration de \(G\) est une fonction \(f:V\rightarrow \{1,2,\ldots,k\}\) telle que \(f(i)\neq f(j)\) lorsque \((i,j)\in E\). 
+    \item Le nombre chromatique d'un graphe \(G\) est \(\chi(G) = \min\{k:\exists \text{k-coloration de G}\}\). 
+    \item Le nombre chromatique d'un graphe \(G\) est \(2\) ssi \(G\) est biparti : \(\chi(G) = 2 \longleftrightarrow G\) biparti.
+    \item Le nombre chromatique d'un cycle \(C_n\) est 2 si le cycle est de longueur paire (car biparti) et 3 s'il est de longueur impaire.
+    \item Le nombre chromatique d'un graphe complet \(K_n\) est \(n\). 
+\end{itemize}
+\section{Théorèmes}
+\begin{itemize}
+    \item Le calcul du nombre chromatique d'un graphe est NP-complet.
+    \item Soit \(\Delta\) le degré maximum des sommets d'un graphe. Alors \(\chi(G) \le \Delta+ 1\).
+    \item Théorème de Brooks : Dans un graphe connexe, autre que \(K_n\) et autre qu'un circuit impair, \(\chi(G) \le \Delta\).
+\end{itemize}
+\begin{minipage}{.7\textwidth}
+\begin{itemize}
+    \item Soit un graphe \(G\) à \(m\) arêtes. Alors \(\chi(G) \le \sfrac{1}{2} + \sqrt{2m+\sfrac{1}{4}}\). 
+    \item Soit la séquence des degrés \(d_1\ge d_2\ge\ldots\ge d_n\). Alors \(\chi(G)  \le 1+\max_i{\left(\min\{d_i,i-1\}\right)}\).
+    \item Théorème des 4 couleurs : Tout graphe planaire est 4-colorable.
+    \item Le graphe de Petersen est tel que \(\chi(G)= 3\).
+\end{itemize}
+\end{minipage}
+\begin{minipage}{.3\textwidth}
+    \includegraphics[width = .8\textwidth]{img/Petersen.png}
+\end{minipage}
+\section{Algorithme}
+L'algorithme glouton consiste de manière général à optimiser de manière locale à chaque étape. Cela ne permet toutefois pas toujours d'arriver à un optimum global. L'algorithme glouton suivant permet de déterminer \(\chi(G)\) :
+\begin{itemize}
+    \item Choisir un ordre sur les sommets;
+    \item Considérer les sommets dans l'ordre et leur donaner la couleur la plus petite possibel qui n'est pas déjà utilisée par les voisins.
+    \item !Le résultat de l'algorithme glouton dépend de l'ordre de parcours des sommets.
+\end{itemize}
+\section{Polynômes chromatiques}
+Le nombre de manières avec lesquelles un graphe peut être colorié avec  \(k\) couleurs est un polynôme \(\Pi_G(k)\).\\
+
+Soit \(G\) un graphe. Alors \(\Pi_G(k)\) est un polynôme de degré \(n\), avec \(n\) le nombre de sommets, à coefficients entiers de signes alternants. Il s'écrit sous la forme 
+\begin{equation}
+    \Pi_G(k) = k^n - a_{n-1}k^{n-1} + a_{n-2}k^{n-2} - \ldots
+\end{equation}
+et \(a_{n-1}\) est le nombre d'arêtes du graphe \(G\). 
+\subsection{Propriétés}
+\begin{itemize}
+    \item Le terme indépendant est toujours nul car il n'existe aucune manière de colorier un graphe avec 0 couleur.
+    \item \(\forall k<\chi(G)\), \(\Pi_G(k) = 0\)
+    \item \(\forall k\ge\chi(G)\), \(\Pi_G(k) > 0\)
+    \item Si \(G = \{n\text{ noeuds isolés}\}\), alors \(\Pi_G(k) = k^n\).
+    \item Si \(G = K_n\), alors \(\Pi_G(k) = \prod_{i=0}^{n-1} (k-i)\).
+    \item Si \(G\) est un arbre à \(n\) noeuds, \(\Pi_G(k) = k(k-1)^{n-1}\).
+    \item \(\Pi_G(k) = \Pi_{G-e}(k) - \Pi_{G\cdot e}(k)\).
+\end{itemize}
+\section{Coloriage d'arêtes}
+\subsection{Définitions}
+\begin{itemize}
+    \item Un coloriage des arêtes d'un graphe en \(k\) couleurs est l'assignation à chaque arête d'une couleur \(1,2,\dots,\) ou \(k\).
+    \item Un coloriage est dit propre si deux arêtes adjacentes sont toujours de couleurs différentes.
+    \item [\(\rightarrow\)] Remarque : trouver un coloriage propre en \(k\) couleurs consiste à séparer les arêtes en \(k\) couplages distincts.
+    \item L'indice chromatique d'un graphe \(G\), noté \(\chi'(G)\), est le nombre minimal de couleurs nécessaire pour obtenir un coloriage propre des arêtes de \(G\).
+\end{itemize}
+\subsection{Théorèmes et propriétés}
+\begin{itemize}
+    \item \(chi'(G)\ge\) degré maximum de \(G\).
+    \item Pour un graphe \(G\) biparti, \(\chi'(G) = \) degré max.
+    \item Pour un graphe simple, \(\chi'(G) = \) degré max ou \(\chi'(G) = \) degré max \(+1\).
+    \item S'il y a au plus \(m\) arêtes entre deux noeuds, alors degré max \(\ge \chi'(G) \ge \) degré max \(+m\).
+\end{itemize}
+\chapter{Cliques, ensembles indépendants et l'impossible désordre}
+\section{Ensembles indépendants}
+\subsection{Définitions}
+\begin{itemize}
+    \item Un ensemble indépendant (stable) d'un graphe est un ensemble de noeuds deux à deux non adjacents.
+    \item Un ensemble indépendant maximum est un ensemble indépendant dont le nombre de noeuds est maximal.
+\end{itemize}
+\subsection{Théorèmes}
+\begin{itemize}
+    \item Un ensemble de noeuds est indépendant ssi son complémentaire est une couverture de sommets.
+    \item Corollaire : |ensemble indépendant max| + |couverture min| = |\{noeuds\}|
+\end{itemize}
+\section{Cliques}
+\subsection{Définitions}
+\begin{itemize}
+    \item Une clique d'un graphe est un ensemble de noeuds deux à deux adjacents. C'est donc un sous-graphe complet.
+    \item Une clique maximum est une clique dont le nombre de noeuds est maximal.
+    \item Un triangle est une clique de trois noeuds.
+\end{itemize}
+\subsection{Théorèmes}
+\begin{itemize}
+    \item Un ensemble est indépendant dans un graphe simple ssi il est une clique dans le graphe complémentaire. Cela implique que deux noeuds sont adjacents dans le complémentaire du graphe \(G\) ssi ils sont non-adjacents dans \(G\).
+    \item Théorème de Ramsey : tout graphe simple à 6 noeuds contient une clique de trois noeuds ou un ensemble indépendant de trois noeuds.
+    \item Théorème de Ramsey généralisé : Soit un graphe complet à \(r\) noeuds. On colorie les arêtes en les couleurs \(c_i\), \(i\in\{1,\cdots,k\}\). On cherche la plus petite valeur de \(r\) telle que tout coloriage crée une clique à \(n_i\) noeuds de couleur \(c_i\) pour un certain \(i\). Cette plus petite valeur de \(r\) est le nombre de Ramsey \(R(n_1,\dots,n_k)\). Le théorème de Ramsey dit que ce nombre existe et est fini. Cela se prouve grâce aux théorèmes suivants.
+    \item Pour \(m,n\ge2\), \(R(m,n)\le R(m,n-1)+R(m-1,n)\). Cela implique que \(R(m,n) \le \begin{pmatrix}
+        m+n-2\\
+        m-1\\
+    \end{pmatrix}\).
+    \item \(R(n_1,\dots,n_k) \le R(n_1,\dots, n_{k-2}, R(n_{k-1},n_k))\).
+    \item Si \(N\) est tel que \(\begin{pmatrix}
+        N\\
+        m\\
+    \end{pmatrix} < 2^{m(m-1)/2-1}\), alors \(R(m,m)>N\). En utilisant l'approximation de Stirling\footnote{\(m! \approx \sqrt{2\pi m}(\frac{m}{e})^m\)}, on obtient pour les grands \(m\): \(R(m,m)\ge \frac{m2^{m/2}}{e\sqrt{2}}\).
+\end{itemize}
+\subsection{Ramsey}
+Il existe beaucoup de théorèmes qui imitent le théorème de Ramsey : "Dans quelque chose suffisamment grand, il y a toujours des sous-quelque chose qui ont une certaine propriété". Cela signifie que le désordre complet est impossible.\\
+Exemples : 
+\begin{itemize}
+    \item Théorème de Schur : Pour chaque \(k\), il y a un nombre \(r_k\) tel que pour toute partition des nombres \(1,\dots,r_k\) en \(k\) classes, une de ces classes contient \(x,y,z\) tels que \(x+y=z\).
+    \item Parmi cinq points arbitraires dans le plan, tels que trois d'entre eux ne sont jamais alignés, on peut toujours en choisir quatre qui déterminent un quadriliatère convexe.
+    \item Théorème de Van der Waerden : Pour tout \(k,l\), il existe un nombre \(W(k,l)\) tel que les nombres de \(1\) à \(W(k,l)\), coloriés arbitrairement en \(k\) couleurs, contiennent une progression arithmétique monochrome de longueur \(l\).
+    \item Théorème de Green-Tao : la suite des nombres premiers contient des suites arithmétiques arbitraiement longues.
+\end{itemize}
+\section{Cliques et densité}
+Si un graphe simple a strictement plus de \(\left(1-\frac{1}{r}\right)\frac{n^2}{2}\) arêtes, alors il a une clique de \(r+1\) noeuds.\\
+\chapter{Réseaux et flots}
+\section{Définitions}
+\begin{itemize}
+    \item Un réseau est un digraphe, i.e. un graphe dirigé, avec un sommet \(s\) tel que \(d^+(s)>0\) (degré sortant), et un noeud \(t\) tel que \(d^{-}(s)>0\) (degré entrant); et une capacité limitée \(c(u,v)\ge0\) pour toute arête \((u,v)\).
+    \item Un flot est une fonction \(f\) qui associe un scalaire \(f(u,v)\) à chaque arête \((u,v)\). Elle vérifie les contraintes suivantes :
+    \begin{itemize}
+        \item \(0\le f(u,v)\le c(u,v)\qquad \forall (u,v)\).
+        \item Conservation du flot : \(\sum_uf(u,v)=\sum_uf(v,u)\qquad\forall v\neq s,t\).
+    \end{itemize}
+    \item La valeur d'un flot \(N\) est \(F(N) = \sum_u f(s,u)\).
+    \item Une coupe \((P,\Bar{P})\) d'un réseau \(N=(V,E)\) est une partition de sommets telle que \(V = P\cup \Bar{P}\), \(P\cap \Bar{P}=\emptyset\), \(s\in P\) et \(t\in \Bar{P}\).
+    \item La capacité d'une coupe \((P,\Bar{P})\) est la somme des capacités des arêtes de \(P\) à \(\Bar{P}\)\footnote{Et pas celles de \(\Bar{P}\) à \(P\)!}.
+    \item Un chemin d'augmentation est un chemin qui part de \(s\) et arrive en \(t\) par des arêtes dont le flot n'est pas encore maximum, ou dans le sens inverse des arêtes dont le flot est maximum.
+\end{itemize}
+\section{Théorèmes}
+\begin{itemize}
+    \item Soit une coupe \((P,\Bar{P})\) quelconque. La valeur d'un flot est donné par \(F(N)= \sum_{u\in P}\sum_{v\in \Bar{P}} f(u,v) - \sum_{u\in P}\sum_{v\in \Bar{P}} f(v,u)\).
+    \item La valeur d'un flot dans un réseau ne peut pas excéder la capacité d'une coupe.
+    \item Si toutes les capacités sont entières, alors il existe un flot maximum entier également, i.e. sa valeur est entière et le flot sur chaque arête aussi.
+\end{itemize}
+\section{Observations}
+\begin{itemize}
+    \item Si un réseau possède plusieurs noeuds sources et/ plusieurs noeuds de destination, on ajoute un noeud source (resp. destination) global lié à tous les noeuds sources (resp. destination) et le poids de ces arêtes est la somme de tous les noeuds sortant (resp. entrant) du noeud.
+    \item Si certains noeuds ont des capacités, on peut les remplacer par deux noeuds sans poids, reliés par une arête dans chaque sens, de même poids que le noeud initial.
+    \item Un problème de réseau et de flot est un problème d'optimisation linéaire s'écrivant sous la forme suivante :
+\end{itemize}
+\begin{equation}
+    \max \sum_uf(s,u) - \sum_u f(u,s)\qquad \begin{cases}
+        0 \le f(u,v)\le c(u,v)\\
+        \text{Conservation du flot}\\
+    \end{cases}
+\end{equation}
+\begin{itemize}
+    \item Un couplage de graphes bipartis est un problème de réseau et de flot : chaque arête a un coût unitaire, et on relie tous les noeuds d'une partition à \(s\) et les autres à \(t\). 
+\end{itemize}
+\section{Algorithme de Ford Fulkerson}
+\begin{enumerate}
+    \item Trouver un flot initial;
+    \item Tant qu'il reste un chemin d'augmentation, le saturer, i.e. l'ajouter au flot;
+    \item S'il n'existe plus de chemin d'augmentation, alors le flot est maximum.
+\end{enumerate}
+Théorème de Edmond-Karp : Parmi les chemins d'augmentation possibles, choisir un plus court chemin.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : L'algorithme de Ford Fulkerson a une complexité indépendante des capacités.
+\end{itemize}
+\chapter{Graphes planaires}
+\section{Définitions}
+\begin{itemize}
+    \item Un graphe est planaire ssi il peut être représenté par des points distincts dans le plan, tels que les arêtes sont des courbes qui ne s'intersectent pas.
+    \item Le degré d'une face est le nombre de sommets qui la composent.
+    \item Un polyèdre régulier est un solide dont toutes les faces sont des polygônes réguliers identiques. Soit \(k\) le degré des noeuds et \(k\) le degré des faces. Ils vérifient \((k-2)(l-2)<4\).
+    \item Un mineur d'un graphe \(G\) est obtenu au départ de \(G\) : 
+    \begin{enumerate}
+        \item Supprimer des arêtes de \(G\);
+        \item Supprimer des sommets isolés;
+        \item Contracter des arêtes.
+    \end{enumerate}
+\end{itemize}
+\section{Propriétés}
+\begin{itemize}
+    \item Une représentation planaire d'un graphe peut être transformée en une autre représentation pour laquelle une face quelconque devient la face extérieure.
+    \item Il existe des algorithmes vérifiant qu'un graphe est planaire qui tournent en temps linéaire.
+\end{itemize}
+\section{Théorèmes}
+\begin{itemize}
+    \item Théorème de Fary : Tout graphe planaire possède une représentation dans le plan dans laquelle les arêtes sont des segments de droite.
+    \item La propriété de projection sur une sphère est équivalente à la planarité.
+    \item Une représentation planaire d'un graphe divise le plan en un nombre fini de faces. La face extérieure est celle qui entour le graphe.
+    \item Formule d'Euler : Si \(G\) est un graphe connexe planaire, alors \(f=e-n+2\), avec \(f\) le nombre de faces, \(e\) le nombre d'arêtes et \(n\) le nombre de noeuds.
+    \item Soit un graphe planaire avec \(f\ge 2\). Alors \(3f\le2e\). Si le graphe ne contient pas de triangles, alors \(4f\le 2e\).
+    \item Dans un graphe planaire connexe avec \(n\ge3\), \(e\le3n-6\). Si le graphe ne contient pas de triangles, \(e\le2n-4\).
+    \item Un graphe planaire est toujours 6-colorable.
+    \item Théorème de Kuratovski : pour être planaire, un graphe ne peut posséder \(K_5\) ou \(K_{3,3}\) comme mineur.
+    \item Conjecture de Hadwiger : soit un graphe sans mineur \(K_n\). Il est \(n-1\) colorable.
+\end{itemize}
+\chapter{Complexité algorithmique}
+\section{Formalisation et problèmes de décision}
+Lors de la formalisation d'un problème mathématique, nous avons besoin de plusieurs éléments :
+\begin{itemize}
+    \item Un nom : il faut donner un nom au problème;
+    \item Des instances : il s'agit de tous les éléments nécessaires en input du problème;
+    \item Une question : Dans un problème de décision, il faut avoir une question à laquelle l'agorithme répondra.
+\end{itemize}
+Tout problème mathématique peut être transformé en un problème de décision. Exemple :\\
+
+Quel est le nombre chromatique du graphe \(G\)?
+\begin{itemize}
+    \item Nom : Nombre chromatique
+    \item Instance : Graphe \(G\), entier \(k\)
+    \item Question : Le graphe \(G\) peut-il être colorié avec \(k\) couleurs?
+\end{itemize}
+\section{Efficacité}
+Pour tout problème utilisant des objets finis, il existe un algorithme qui résout le problème : les algorithmes énumératifs. Cependant, ils ne sont pas efficaces!
+\begin{itemize}
+    \item Un algorithme est dit efficace\footnote{L'efficacité est liée à un problème et non pas à un algorithme.} (polynomial) si il produit une réponse en un nmobre d'opérations borné par un polynôme en la taille de l'instance.
+    \item Un problème est polynomial s'il peut être résolu par un algorithme polynomial.
+    \item Un problème appartient à la classe \(\mathcal{P}\) s'il peut être résolu par un algorithme polynomial : classe \(\mathcal{P} \equiv\) polynomial.
+    \item Un problème appartient à la classe \(\mathcal{NP}\)\footnote{\(\mathcal{NP}\) signifie Nondeterministic polynomial} si une réponse positive peut toujours être vérifiée en temps polynomial, i.e. on peut toujours vérifier (en temps polynomial) si une instance répond positivement à la question du problème de décision.
+    \item [\(\rightarrow\)] Remarque : \(\mathcal{P}\subseteq \mathcal{NP}\), mais on ne sait pas si \(\mathcal{P}=\mathcal{NP}\). 
+\end{itemize}
+\section{Réductibilité}
+Etant donnés deux problèmes \(P\) et \(Q\), \(P\) est réductible à \(Q\), i.e. \(P\) est plus facile que \(Q\), noté \(P\le Q\), s'il existe un algorithme efficace qqui transforme les instances de \(P\) en insatnces équivalentes de \(Q\). 
+\begin{itemize}
+    \item Si \(P\le Q\) et \(Q\in \mathcal{P}\), alors \(P\in \mathcal{P}\).
+    \item Un problème \(P\in \mathcal{NP}\) est \(\mathcal{NP}\)-complet si \(Q\le P\) pour tous les problème \(Q\in \mathcal{NP}\), i.e. tout problème de \(\mathcal{NP}\) est plus facile que \(P\). Un problèle \(\mathcal{NP}\)-complet est donc un problème de \(\mathcal{NP}\) qui est aussi difficile que tous les autres problèmes de \(\mathcal{NP}\).
+\end{itemize}
+\chapter{Algèbre linéaire et théorie des graphes}
+\section{Graphes, matrices et valeurs propres}
+Soit un graphe \(G\) et soient \(M\) la matrice d'incidence et \(A\) la matrice d'adjacence.\\
+\begin{itemize}
+    \item Le rayon spectral \(\rho(A)\) est la valeur propre de plus grande valeur absolue. Il permet d'estimer la croissance du nombre de parcours de longueur \(l\) par \([\rho(A)]^l\).
+    \item \(\deg\min\le \rho(A)\le \deg\max\).
+    \item Le laplacien du graphe \(G\) est \(L=A-D\), avec \(D\) la matrice diagonale des degrés. 
+\end{itemize}
+\section{Equation différentielle sur un graphe}
+\subsection{Equation de la chaleur sur un graphe}
+Si la température au temps \(t\) au noeud \(i\) (e.g. une pièce dans un bâtiment) est \(T_(t)\), que le poids \(a_{ij}\) de l'arête \(ij\) est la conductance thermique entre \(i\) et \(j\), et que chaque noeud a une capacité calorigique unitaire (énegergie interne = température), alors l'équation de la chaleur est 
+\begin{equation}
+    \Dot{T}_i = \sum_j a_{ij}(T_j-T_i) \Longrightarrow \Dot{T} = LT
+\end{equation}
+Cela est équvalent en espace discret à l'équation de la chaleur \(\Dot{T}=\nabla^2T\) dans l'espace continu.
+\subsection{Dynamique d'opinion sur un graphe}
+\(T_i(t)\) représente maintenant l'opinion d'un noeud \(i\) au temps \(t\) dans un graphe social. On fait l'hypothèse que les noeuds voisins discutent et tendent à rapprocher leur opinion avec le temps : \(\Dot{T}_i = a_{ij}(T_j-T_i)\) sur une arête \(ij\), où \(a_{ij}\) est une influençabilité mutuelle. L'équation de la dynamique d'opinion sur le graphe social est identique à l'équation de la chaleur : 
+\begin{equation}
+    \Dot{T} = LT
+\end{equation}
+\section{Laplacien}
+Soit un graphe \(G\) dont le laplacien est \(L\).\\
+Les valeurs propres de \(L\) sont dans l'intervalle \([-2\deg\max,0]\), et la dimension du noyau, i.e. le nombre de valeurs propres nulles, est le nobre de composantes connexes du graphe. \\
+Donc l'équation de la chaleur sur un graphe connexe converge vers une température constante. La dynamique d'opinion aboutit à un consensus.
+\subsection{Déterminant}
+Le déterminant du laplacien est nul, mais ses cofacteurs sont intéressants. \\
+\underline{Matrix-tree theorem} : \\
+Tout cofacteur du laplacien d'un graphe simple non-pondéré connexe est égal, au signe près, au nombre d'arbres sous-tendants du graphe. De manière équivalente, ce théorème signifie que le nombre d'arbres sous-tendants d'un graphe simple non-pondéré connexe à \(n\) noeuds est égal à 
+\begin{equation}
+    \frac{|\lambda_2\lambda_3\dots \lambda_n}{n} = \frac{|\text{coefficient de degré 1 du polynôme caractéristique }\det{(L-xI)}}{n}
+\end{equation}
+avec les \(\lambda_i\) les valeurs propres non nulles du laplacien (on fait l'hypothèse que seule \(\lambda_1=0\).\\
+
+On en déduit le théorème de Cayley : le graphe complext à \(n\) noeuds, i.e. \(K_n\) a \(n^{n-2}\) arbres sous-tendants. 
+\section{Orienter un graphe non dirigé}
+Sur un graphe non-dirigé non-pondéré, on peut donner une orientation arbitraire au graphe. Soit \(M\) la matrice d'incidence dirigée de ce graphe : une arête \(e\) de \(i\) vers \(j\) est encodée par un \(-1\) dans la ligne \(i\) et un \(+1\) dans la ligne \(j\) de la colonne de cette arête. \\
+Alors, \(L=-MM^T\) est le laplacien du graphe, quelle que soit l'orientation. Si le graphe est connexe, alors \(rank(M) = n-1\) avec \(\mathbb{1}M = 0\) pour seule relatio linéaire entre les lignes. \\
+
+Une matrice d'incidence réduite \(M'\) s'obtient en retirant une ligne arbitraire de \(M\). Elle est de rang plein \(n-1\) et les lignes sont donc linéairement indépendantes.
+\section{Matrice d'incidence et arbres}
+Un graphe à \(n\) noeuds et \(n-1\) arêtes a une matrice d'incidence \(M\) de rang \(n-1\), et une matrice d'incidence carrée inversible ssi le graphe est un arbre. La matrice d'incidence réduite est alors triangulaire supérieure, pour un certain ordre des noeuds, et de déterminant \(\pm1\).\\
+
+Dans un graphe à \(n\) noeuds, un ensemble de \(n-1\) arêtes forment un arbre sous-tendant ssi les \(n-1\) colonnes correspondantes de \(M\) sont libres, ssi les \(n-1\) colonnes correspondantes de \(M'\) forment une matrice carrée inversible.
+\section{Théorème de Binet-Cauchy}
+Pour des matrices carrées \(A\) et \(B\), on a \(\det(AB) = \det(A)\det(B)\). \\
+
+Pour des matrices rectangulaires, \(\det(AB) = \sum_S\det(A_S)\det(B_S)\), où \(A_S\) est une sous-matrice carrée résultant du choix d'un ensemble de \(n\) colonnes de \(A\) et \(B_S\) la sous-matrice de \(B\) résultant du choix des \(n\) lignes correspondantes. 
+\chapter{Graphes hamiltoniens}
+\section{Définitions}
+\begin{itemize}
+    \item Un chemin est hamiltonien s'il passe par chaque noeud du graphe une et une seule fois. 
+    \item Un cycle est hamiltonien s'il passe par chaque noeud du graphe une et une seule fois.
+    \item Un graphe est hamiltonion s'il possède un cycle hamiltonien.
+\end{itemize}
+\section{Propriétés et théorèmes}
+\begin{itemize}
+    \item Un graphe biparti est hamiltonien s'il a autant de noeuds dans chaque partition. 
+    \item Condition nécessaire : Si on ôte \(k\) noeuds quelconques d'un graphe hamiltonien, on obtient au plus \(k\) composantes connexes.
+    \item Condition suffisante : Un graphe simple à \(n\ge3\) noeuds tel que le degré minimum est au moins \(n/2\) est hamiltonien.
+\end{itemize}
+\section{Problèmes}
+\subsection{Problème du postier chinois}
+Mise en contexte : Un postier veut passer dans chaque rue au moins une fois, de façon à parcourir la plus petite distance possible. \\
+
+Dans un graphe pondéré, il faut trouver le parcours fermé le plus court qui passe par toutes les arêtes au moins une fois. 
+\subsection{Problème du voyageur de commerce}
+Un voyageur de commerce doit passer par chaque ville au moins une fois, de façon à parcourir la plus petite distance possible.\\
+
+Dans un graphe pondéré, trouver le parcours fermé le plus court qui passe par tous les noeuds au moins une fois. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : ce problème ne possède actuellement aucun algorithme efficace. 
+\end{itemize}
+\end{document}

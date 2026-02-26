@@ -1,0 +1,1076 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage{arydshln}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\renewcommand{\contentsname}{Table des matières}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.4]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LINMA1702 Modèles et méthodes d'optimisation \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2022-2023 - Q2}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+\chapter{Optimisation linéaire}
+\section{Introduction}
+\subsection{Définition}
+Un problème d'optimisation linéaire est défini tel que 
+\begin{equation}
+    \min_{x\in\mathbb{R}^n}{c^Tx}\text{   } Ax \geq b
+\end{equation}
+avec \(c\) et \(x\) des vecteurs de \(\mathbb{R}^n\), \(A\) une matrice \(m\times n\) contenant les coefficients des \(m\) contraintes linéaires et \(b\) le vecteur de \(\mathbb{R}^m\) complétant les contraintes.\\
+\begin{itemize}
+    \item Les variables \(x_i\) sont appelées variables de décision.
+    \item Une solution \(x \in \mathbb{R}^n\) est admissible si elle appartient au domaine admissible \(\Omega\).
+    \item Une solution optimale \(x^*\) est telle que \(f(x^*)\le f(x)\text{, } \forall x\in \Omega\). Le coût optimal (valeur unique) est alors donné par la valeur \(f(x^*)\).
+    \item [\(\rightarrow\)] Remarque : il peut exister plusieurs solutions optimales, mais jamais plusieurs coûts optimaux.
+\end{itemize}
+\subsection{Déterminer le problème d'optimisation}
+\begin{itemize}
+    \item Définir les variables du vecteur \(x\).
+    \item Déterminer la fonction objectif \(c^Tx\), souvent appelée fonction de coût.
+    \item Lister les contraintes linéaires sur les variables de \(x\).
+\end{itemize}
+\subsection{Problème de transport}
+Un produit est transporté de \(m\) origines vers \(n\) destinations. Il est disponible en quantités \(a_i, i\in \{1,...,m\}\) aux origines et les demandes aux destinations sont de \(b_j, j \in \{1,...,n\}\). Le coût de transport d'une unité du produit de l'origine \(i\) à la destination \(j\) est \(c_{ij}\). On désir déterminer les quantités du produit à transporter de \(i\) à \(j\) de manière ) satisfaire les demandes tout en minimisant le coût total des transports.
+\subsection{Problème du flot dans un réseau}
+On considère un réseau de communication de \(n\) noeuds. Les noeuds sont connectés entre eux par des liens de communication. Un lien entre le noeud \(i\) et le noeud \(j\) est représenté par le couple \((i,j)\). Chaque lien \((i,j)\) possède une capacité maximale de \(u_{ij}\) unités de flot. La transmission sur le lien \((i,j)\) coûte \(c_{ij}\) par unité de flot transmise. Le noeud 1 génère \(b\) unités qui doivent être transmises au noeud \(n\). La transmission se fait soit par un lien direct, soit par une suite de liens. On chercher le flot qui permet la transmission pour un coût minimum.
+\subsection{Problème d'affectation}
+Il y a \(n\) personnes disponibles et \(n\) tâches à accomplir. A chaque personne on affecte exactement une tâche. On souhaite que toutes les tâches soient affectées. Le coût de la réalisation de la tâche \(j\) par la personne \(i\) est \(c_{ij}\). On cherche une affectation des tâches qui minimise le coût total. 
+\subsection{Problème de classification}
+Considérons \(m\) objets. Pour chaque objet on dispose d'une description de ses caractéristiques en terme d'un vecteur \(a_i \in \mathbb{R}^n\). Ces objets appartiennent à une classe parmi deux. Soit \(I_1\) l'ensemble des indices des objets qui appartiennent à la première classe, et \(I_2\) l'ensemble des indices de ceux qui appartiennent à la seconde. \\
+
+Nous disons que les ensembles \(\{a_i |i\in I_1\}\) et \(\{a_i |i\in I_2\}\) sont séparables par un hyperplan s'il existe un vecteur \(x\in \mathbb{R}^n\) non nul et un scalaire \(b\) pour lesquels 
+\begin{equation}
+    \begin{cases}
+        a_i^Tx \le b \text{ lorsque } i\in I_1\\
+        a_i^Tx \ge b \text{ lorsque } i\in I_2\\
+    \end{cases}
+\end{equation}
+avec les \(a_i\) les coordonées des points, \(x\) le vecteur des coefficients de l'hyperplan et \(b\) le terme indépendant.\\
+
+Le problème consiste donc à déterminer si deux ensembles donnés de vecteurs sont séparables, et l'équation de la droite de séparation.
+
+Résoudre 
+\begin{equation}
+    \max_{x,b,t} t \text{ tel que } \begin{cases}
+        a_i^T x \le b - t\text{, } i \in I_1\\
+        a_i^T x \ge b + t\text{, } i \in I_2\\
+    \end{cases}
+\end{equation}
+Si ce problème admet une solution admissible avec un objectif positif (\(t\ge 0\)), alors le problème est admissible, et si \(t>0\), alors il existe une séparation stricte des données.\\
+\section{Enoncé d'un problème d'optimisation}
+Il s'agit de minimiser ou maximiser une fonction objectif linéaire sous des contraintes d'égalité et d'inégalité linéaires, avec la contrainte supplémentaires que certaines variables sont entières ou binaires.
+\begin{itemize}
+    \item Optimisation entière : \(x_i \in \mathbb{Z}\)
+    \item Optimisation mixte : \(x_i \in \mathbb{Z}\) pour \(i \in N\)
+    \item Optimisation en variables binaires : \(x_i \in \{0,1\}\)
+\end{itemize}
+\subsection{Forme générale}
+\begin{equation}
+    \min_{x\in \mathbb{R}^n} {c^Tx}
+\end{equation}
+\begin{equation}
+    \begin{cases}
+        a^T_ix\le b_i\text{  } i\in M_1\\
+        a^T_ix\ge b_i\text{  } i\in M_2\\
+        a^T_ix =  b_i\text{  } i\in M_3\\
+        x_i \ge 0\text{  } i \in N_1\\
+        x_i \le 0\text{  } i \in N_2\\
+        x_i \text{ libres } i \not \in N_1 \cup N_2\\
+    \end{cases}
+\end{equation}
+On peut aussi spécifier des bornes sur chacune des variables : \(l_i \le x_i \le u_i\) avec les bornes inférieures \(l_i \in \mathbb{R}\cup \{-\infty\}\) et supérieures \(u_i \in \mathbb{R}\cup \{\infty\}\).
+\subsection{Forme géométrique}
+Un programme linéaire sous forme géométrique est un problème de la forme 
+\begin{equation}
+    \min_{x\in \mathbb{R}} {c^Tx} \text{  } Ax \ge b
+\end{equation}
+\subsection{De la forme générale à la forme géométrique}
+\begin{itemize}
+    \item \(\max{c^Tx} = - \min{-c^Tx}\) 
+    \item \(a^Tx\le b \Longleftrightarrow -a^Tx\ge -b\)
+    \item \(x_i \le 0\) et \(x_i \ge 0\) sont des cas particuliers de \(a^Tx\ge 0\)
+    \item \(a^Tx=b \Longleftrightarrow a^Tx\ge b\) et \(a^Tx\le b\)
+\end{itemize}
+\subsection{Forme standard}
+Un problème linéaire sous forme standard est un problème de la forme 
+\begin{equation}
+    \min{c^Tx} \text{    } Ax = b \text{    } x_i \ge 0\text{  } \forall i\in \{1,...,n\}
+\end{equation}
+\subsection{De la forme géométrique à la forme standard}
+\begin{itemize}
+    \item Eliminer les contraintes d'inégalités : Chaque inégalité \(\sum_{i}{a_{ij}x_j} \ge b_i\) est remplacée par les contraintes \(\sum_{i}{a_{ij}x_j - s_i} = b_i\) et \(s_i \ge 0\).
+    \item Eliminer les variables libre : Une variable libre \(x_i\) est remplacée par \(x_i = x_i^+ - x_i^-\), composée de deux nouvelles variables strictement positives.
+    \item [\(\rightarrow\)] Remarque : afin de ne pas doubler le nombre de contraintes, on peut définir \(x_i = x_i^+ - \Delta \text{ } \forall x_i\) libre.
+\end{itemize}
+\section{Polyèdres}
+\subsection{Centre de Chebychev}
+Le centre de Chebychev d'un polyèdre est le centre de la sphère de plus grand rayon incluse dans le polyèdre.\\
+
+Soit un ensemble de \(m\) hyperplans d'équation \(a_i^Tx = b_i\) et soit le polyèdre \(\{x\in\mathbb{R}^2|a_i^Tx\le b_i\}\). Le centre de la sphère est le point \(c\) situé dans le polyèdre pour lequel la plus petite distance \(\min_i|a^Tc-b|/\lVert a\rVert\) est la plus grande possible.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : on cherche le centre de la boule car il est plus résistant à des variations dans les contraintes que les autres.
+\end{itemize}
+Ce problème s'énonce comme suit : \\
+\begin{itemize}
+    \item Les variables sont les coordonnées \(x\) du centre et le rayon \(r\).
+    \item La fonction objectif est \(r\).
+    \item les contraintes sont 
+\end{itemize}
+\begin{equation}
+    r\le d\left(x,\{a_i^Tx = b_i\}\right)\text{, } \forall i \Longleftrightarrow \lVert a_i\rVert r\le |a_i^Tx-b_i| \Longrightarrow \lVert a_i\rVert r\le a_i^Tx-b_i
+\end{equation}
+La dernière égalité s'obtient car lorsque le point \(x\) est dans le polyèdre, la valeur absolue est non positive.
+\subsection{Résolution approchée}
+Soit le système d'équations linéaires \(Ax=b\). Lorsqu'il y a moins de variables que d'équations, le vecteur \(b\) n'appartient pas à l'image de \(A\) et le système est surdéterminé. Il n'admet pas de solution.\\
+On peut chercher à résoudre le système de manière approchée en minimisant la norme du vecteur résidu \(r=Ax-b\) pour une norme particulière.
+\subsubsection{Normes}
+\begin{itemize}
+    \item Norme \(\ell^1\) : 
+\end{itemize}
+\begin{equation}
+    \lVert x\rVert_1 = \sum_i |x_i|
+\end{equation}
+\begin{itemize}
+    \item Norme \(\ell^2\), ou norme euclidienne : 
+\end{itemize}
+\begin{equation}
+    \lVert x\rVert_2 = \sqrt{\sum_i x_i^2}
+\end{equation}
+\begin{itemize}
+    \item Norme \(\ell^{\infty}\) : 
+\end{itemize}
+\begin{equation}
+    \lVert x\rVert_{\infty} = \max_i|x_i|
+\end{equation}
+\begin{itemize}
+    \item Généralisation - norme \(\ell^p\) : 
+\end{itemize}
+\begin{equation}
+    \lVert x\rVert_p = \left(\sum_i|x_i|^p\right)^{1/p}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : la norme \(\ell^2\) est la seule pour laquelle un problème de résolution approchée a une solution analytique.
+\end{itemize}
+\subsection{Approximation de fonctions convexes}
+Soit \(f:\mathbb{R}^n\rightarrow\mathbb{R}\) une fonction différentiable convexe.\\
+En évaluant \(f\) et \(\nabla f\) en \(k\) points \(x^{i}\), on a 
+\begin{equation}
+    f(x^{i})+\nabla f(x^{i})^T(x-x^{i})\le f(x)
+\end{equation}
+et donc 
+\begin{equation}
+    \max_{i\in \{1,...,k\}}\left\{f(x^{i})+\nabla f(x^{i})^T(x-x^{i})\right\}\le f(x)
+\end{equation}
+\section{Géométrie des polyèdres}
+\subsection{Théorème fondamental}
+\begin{equation}
+    \min_xc^Tx\qquad Ax\ge b
+\end{equation}
+L'ensemble \(\mathcal{P} = \{x\in\mathbb{R}^n|Ax\ge b\}\) est un polyèdre.\\
+
+Si un problème d'optimisation linéaire possède un coût optimal fini et si le polyèdre \(\mathcal{P}\) possède un sommet, alors il y a un sommet de \(\mathcal{P}\) qui est optimal.
+\subsection{Hyperplans}
+Un hyperplan de \(\mathbb{R}^n\) est un sous-ensemble de \(\mathbb{R}^n\) qui peut être écrit comme \(\{x\in \mathbb{R}^n|a^Tx=b\}\) pour certains \(b\in \mathbb{R}\) et \(a\in \mathbb{R}^n\), \(a\neq 0\).\\
+Le vecteur \(a\) est un vecteur normal à l'hyperplan.
+\subsection{Demi-espaces}
+Un demi-espace de \(\mathbb{R}^n\) est un sous-ensemble de \(\mathbb{R}^n\) qui peut être écrit comme \(\{x\in \mathbb{R}^n|a^Tx\ge b\}\) pour certains \(b\in \mathbb{R}\) et \(a\in \mathbb{R}^n\), \(a\neq 0\). C'est donc l'ensemble des points qui se trouvent d'un côté donné d'un hyperplan.\\
+Le vecteur \(a\) est un vecteur normal au demi-espace.
+\subsection{Polyèdres}
+Un polyèdre de \(\mathbb{R}^n\) est un sous-ensemble de \(\mathbb{R}^n\) qui peut être écrit comme une intersection d'un nombre fini de demi-espaces de \(\mathbb{R}^n\) : \(\mathcal{P} = \{x\in \mathbb{R}^n|a_i^Tx\ge b_i,\text{ } i\in \{1,...,m\}\}\). En notation matricielle, \(\mathcal{P} = \{x|Ax\ge b\}\). \\
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : un polyèdre est toujours convexe puisqu'il s'écrit comme une intersection d'ensembles convexes.
+\end{itemize}
+\subsubsection{Exemples}
+\begin{itemize}
+    \item Demi-espace
+    \item Hyperplan
+    \item Tranche : \(\{x|b_1\le a^Tx\le b_2\}\)
+    \item Polyèdre sous forme standard : \(\{x|Ax=b,x\ge 0\}\)
+    \item Polyèdre sous forme géométrique : \(\{x|Ax\ge b\}\)
+    \item [\(\rightarrow\)] Remarque : un même polyèdre peut être obtenu au moyen de représentations différentes : si on rajoute des lignes combinaisons linéaires des autres dans la matirce \(A\), la représentation change mais pas le polyèdre lui-même.
+    \item [\(\rightarrow\)] Remarque : l'orthant positif est le quadrant supérieur droit dans le plan 2D.
+\end{itemize}
+\subsection{Contraintes actives}
+Soit le polyèdre \(\mathcal{P}\). Si le point \(x^{*}\) est tel que \(a_k^Tx^{*} = b_k\) pour un certain indice \(k\), nous disons que la contrainte correspondante est active en \(x^{*}\), i.e. \(x^{*}\) est sur le bord du polyèdre.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : dans \(\mathbb{R}^n\), si \(n\) contraintes sont actives en \(x^{*}\), alors \(x^{*}\) est un sommet.
+\end{itemize}
+\subsection{Contraintes linéairement indépendantes}
+Soit le polyèdre \(\mathcal{P}\). Ses contraintes sont linéairement indépendantes si les vecteurs correspondants \(a_i\) le sont.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : le nombre maximum de vecteurs indépendants dans \(\mathbb{R}^n\) est \(n\).
+\end{itemize}
+\subsection{Solutions admissibles de base}
+Soit le polyèdre \(\mathcal{P}\). La solution \(x^{*}\in \mathbb{R}^n\) est une solution admissible de base de \(\mathcal{P}\) si \(x^{*}\in \mathcal{P}\) et s'il y a \(n\) contraintes linéairement indépendantes actives en \(x^{*}\).\\
+
+Une solution admissible de base est dégénérée si le nombre de contraintes actives en cette solution est supérieur à \(n\).\\
+
+Le caractère dégénéré d'une solution admissible de base dépend en général de la représentation du polyèdre. Ce n'est pas une propriété géométrique du polyèdre, mais bien une propriété de sa représentation.
+\subsection{Solutions adjacentes}
+Soit le polyèdre \(\mathcal{P}\). Soient \(x_1,x_2\) deux solutions admissibles de base de \(\mathcal{P}\). Ces deux solutions sont adjacentes s'il y a \(n-1\) contraintes linéairement indépendantes actives à la fois en \(x_1\) et en \(x_2\).
+\subsection{Points extrêmes et sommets}
+Le point \(x\in \mathcal{P}\) est un point extrême du polyèdre \(\mathcal{P}\) s'il ne peut pas être exprimé comme combinaison convexe d'autres points de \(\mathcal{P}\), i.e. s'il n'existe pas deux points \(y,z\in \mathcal{P}\) différents de \(x\) et un scalaire \(\lambda \in [0,1]\) tels que \(x=\lambda y+(1-\lambda)z\).\\
+
+Le point \(x\in \mathcal{P}\) est un sommet du polyèdre \(\mathcal{P}\) si \(x\) est séparable de \(\mathcal{P}\) par un hyperplan, i.e. s'il existe un vecteur \(c\) tel que \(c^Tx<c^T y\) \(\forall y\in P,y \neq x\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : ces définitions sont des propriétés géométriques du polyèdre, elles ne dépendent pas de sa représentation.
+\end{itemize}
+\underline{Théorème :}\\
+
+Soit \(\mathcal{P}\) un polyèdre et \(x^{*}\in \mathcal{P}\). Les conditions suivantes sont équivalentes : 
+\begin{itemize}
+    \item \(x^{*}\) est un sommet.
+    \item \(x^{*}\) est un point extrême.
+    \item \(x^{*}\) est une solution admissible de base.
+\end{itemize}
+
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : il existe des polyèdres sans sommets : hyperplan, demi-espace, tranche,...
+\end{itemize}
+\subsection{Existence des sommets}
+Un polyèdre \(\mathcal{P}\) contient une droite s'il existe un vecteur \(x_0\) et un vecteur non nul \(d\) tels que \(x_0+\lambda d\in \mathcal{P}\) pour tout \(\lambda \in \mathbb{R}^n\). \\
+
+Les polyèdres qui possèdent un sommet sont exactement ceux qui ne contiennent pas de droite.\\
+
+\subsection{Présence des sommets}
+Un polyèdre donné sous forme géométrique \(\mathcal{P} = \{x\in \mathbb{R}^n|Ax\ge b\}\) possède un sommet ssi l'équation \(Ad=0\) ne possède pas d'autre solution que \(d=0\).\\
+
+Un polyèdre donné sous forme standard \(\mathcal{P} = \{x\in \mathbb{R}^n|Ax=b,x\ge0\}\) possède toujours un sommet.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : un même problème sous forme standard ne possède pas forcément de sommet sous forme géométrique.
+\end{itemize}
+
+Soit le problème de la minimisation d'une fonction linéaire sur un polyèdre \(\mathcal{P}\). Si le coût optimal est fini et si le polyèdre possède un sommet, alors il y a un sommet du polyèdre qui est optimal.
+\subsection{Nombre de sommets}
+Un polynôme de \(\mathbb{R}^n\) donné sous forme géométrique au moyen de \(m\) contraintes possède au plus \(\frac{m!}{n!(m-n)!}\). Il s'agit bien d'une borne supérieure, le nombre de sommets peut être plus faible, car il faut que \(x\in \mathcal{P}\) et que les contraintes soient linéairement indépendantes.\\
+\subsection{Diamètre d'un polyèdre}
+La distance \(d(x,y)\) entre les sommets \(x\) et \(y\) d'un polyèdre est définie comme étant le plus court chemin, de sommet adjacent en sommet adjacent, de \(x\) à \(y\). Le diamètre \(D(\mathcal{P})\) du polyèdre \(\mathcal{P}\) est la plus grande des distances entre des paires de sommets de \(\mathcal{P}\).\\
+
+On définit \(\Delta(d,n)\) comme le plus grand diamètre \(D(\mathcal{P})\) des polyèdres bornés de \(\mathbb{R}^d\) décrits au moyen de \(n\) contraintes d'inégalité. Voici la conjecture de Hirsch(en réalité fausse) : 
+\begin{equation}
+    \Delta(d,n) \le n-d
+\end{equation}
+La meilleure borne actuellement disponible est 
+\begin{equation}
+    \Delta(d,n) \le (n-d)^{\log_2d} = d^{\log_2(n-d)}
+\end{equation}
+\section{Méthode du simplexe}
+\subsection{Théorème fondamental}
+Si le problème d'optimisation linéaire \(\min c^Tx\) tel que \(x\in \mathcal{P}\) possède un coût optimal fini et si le polyèdre \(\mathcal{P}\) possède un sommet, alors il y a un sommet de \(\mathcal{P}\) qui est optimal.
+\subsection{Tableau simplexe}
+Soit le problème linéaire sous forme standard \(\min c^Tx\) tel que \(Ax=b\) et \(x\ge 0\). Le problème est équivalent à celui de la minimisation de \(z\) sous les contraintes
+\begin{equation}
+    \begin{cases}
+        c^Tx = z\\
+        Ax=b\\
+        x\ge 0\\
+    \end{cases}
+\end{equation}
+Le tableau simplexe se note 
+\begin{center}
+    \begin{tabular}{c|c}
+        \(c^T\) & \(z\) \\
+        \hline
+        \(A\) & \(b\)\\
+    \end{tabular}
+\end{center}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les contraintes \(x\ge0\) sont maintenant implicites.
+    \item [\(\rightarrow\)] Remarque : un problème peut être représenté par différents tableaux simplexes.
+\end{itemize}
+- \underline{Propriétés :}
+\begin{itemize}
+    \item Nous pouvons faire des combinaisons linéaires des contraintes dans le tableau simplexe, et on peut ajouter des multiples de contraintes à la première ligne.
+    \item Un tableau simplexe est sous forme canonique si un ensemble de colonnes dans les contraintes forme la matrice identité et si les coefficients au-dessus de ces colonnes sont nuls. Les variables intervenant dans cette matrice identité sont les variables de base du simplexe.
+    \item La propriété précédente implique que maximum \(n\) variables sont non nulles, avec \(n\) le nombre de contraintes actives.
+    \item Tous les tableaux simplexes ne sont pas des sommets : si un des termes de \(b\) après les transformations est négatif, alors le point n'est pas un sommet.
+    \item Si en un sommet tous les coûts réduits\footnote{Les coûts réduits sont les valeurs de \(c^T\) après transformations} sont positifs ou nuls, alors le sommet est optimal.
+    \item Si une colonne ne possède que des termes négatifs, alors le coût est non borné.
+\end{itemize}
+\subsection{Algorithme du simplexe}
+Une itération s'appelle un pivot : 
+\begin{enumerate}
+    \item Ecrire le tableau simplexe sous forme canonique
+    \item Si tous les coûts réduits sont positifs ou nuls, stop. Sinon, choisir une variable hors base \(x_k\) de coût réduit négatif.
+    \item Soit \(a\) la colonne du tableau simplexe associée à la variable \(x_k\) et \(d\) la dernière colonne du tableau. Si \(a\le 0\), stop (coût optimal non borné). Sinon, il y a au moins un indice pour lequel \(a_i > 0\). Calculer les quotients \(d_i/a_i\) pour les indices \(i\) pour lequels \(a_i>0\) et trouver l'indice \(l\) du plus petit quotient.
+    \item La variable \(x_k\) entre dans la base et \(x_l\) en sort. Mettre à jour la base et retour en 1.
+\end{enumerate}
+La variable choisie à l'étape 2 est la variable de coût réduit minimum, mais elles peuvent toutes être utiliées.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : Si deux variables sortent de la base en même temps, on en rajoute une seule dans la base et l'autre est hors de la base bien que sa valeur soit nulle.
+\end{itemize}
+\underline{Convergence de l'algorithme :} Si lors de chaque pivot, le coût décroit strictement, alors l'algorithme converge.
+\subsection{Dégénérescence}
+Un sommet est dégénéré si plusieurs bases donnent le même sommet. Il y a alors une possibilité de boucle (=cyclage) et l'algorithme ne convergera pas. \\
+La règle de Bland permet de sortir du cyclage : 
+\begin{itemize}
+    \item Parmi les variables candidates à l'entrée dans la base, choisir celle de plus petit indice (numéro de colonne).
+    \item Parmi les variables candidates à la sortie, choisir celle de plus petit indice.
+\end{itemize}
+\subsection{Initialisation de l'algorithme}
+L'algorithme du simplexe nécessite de partir d'un sommet du polyèdre. Cependant, un sommet initial n'est pas toujours disponible. La recherche d'un sommet d'un polyèdre peut se faire par la résolution d'un problème d'optimisation linéaire annexe pour lequel on dispose d'un sommet initial. \\
+
+Soit le polyèdre \(\mathcal{P} = \{x\in \mathbb{R}^n|Ax=b, x\ge0\}\) pour lequel nous cherchons un sommet. Supposons sans perte de généralité que \(b\ge0\). On introduit autant de variables artificielles \(y_i\) que d'équations et on construit le problème annexe à \(n+m\) variables:
+\begin{equation*}
+    \min{\sum_iy_i}
+\end{equation*}
+tel que 
+\begin{equation*}
+    Ax+y = b \qquad
+    x\ge0,y\ge 0
+\end{equation*}
+La solution \(x=0,y=b\) est une solution admissible de ce problème. De plus, cette solution serre \(n+m\) contraintes linéairement indépendantes. C'est donc un sommet que l'on peut utiliser pour démarrer l'algorithme annexe.\\
+
+Si le coût optimal du problème annexe est supérieur à 0, le polyèdre initial est vide et il n'y a pas de solution admissible pour laquelle \(y=0\). Si le coût optimal du problème est 0, on considère une solution admissible de base optimale \((x^*,0)\) et \(x^*\) est un sommet du polyèdre initial \(\mathcal{P}\).
+\subsection{Forme générale du tableau simplexe canonique}
+Soit le tableau simplexe initial et général \\
+\begin{minipage}{.4\textwidth}
+    \begin{center}
+        \begin{tabular}{c|c}
+            \(c^T\) & \(z\) \\
+            \hline
+            \(A\) & \(b\)\\
+        \end{tabular}
+    \end{center}
+\end{minipage}
+\begin{minipage}{.2\textwidth}
+    \begin{center}
+        \(\Longrightarrow\)
+    \end{center}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    \begin{center}
+    \begin{tabular}{c:c|c}
+        \(c_B^T\) & \(c_N^T\) & \(z\)\\
+        \hline
+        \(B\) & \(N\) & \(b\)\\
+    \end{tabular}
+\end{center}
+\end{minipage}
+
+Décomposons la matrice \(A\) telle que \(A = (B|N)\), avec \(B\) les variables dans la base et \(N\) les variables hors base, et le vecteur \(c\) tel que \((c_B|c_N)\) de la même manière que \(A\).\\
+
+Le tableau canonique général est le suivant : 
+\begin{center}
+    \begin{tabular}{p{3cm}:p{3cm}|p{3cm}}
+        \begin{center}\(0\) \end{center}& \begin{center}\(c_N^T - c_B^TB^{-1}b\) \end{center}& \begin{center}\(z-c_B^TB^{-1}b\) \end{center}\\
+        \hline
+        \begin{center}\(I\)\end{center}& \begin{center}\(B^{-1}N\) \end{center} & \begin{center}\(B^{-1}b\)\end{center}\\
+    \end{tabular}
+\end{center}
+Soit \(\Bar{x}\) le sommet décrit dans le tableau et \(\Bar{y}\) le sommet correspondant dans le problème dual.
+\begin{itemize}
+    \item Si \(B^{-1}b \ge0\), alors le sommet \(\Bar{x}\) est admissible et si \(c_N^T - c_B^TB^{-1}N\ge0\), il est optimal.
+    \item Si \(c_N^T - c_B^TB^{-1}N\ge0\), alors le sommet dual \(\Bar{y}\) est admissible et si \(B^{-1}b\ge 0\), il est optimal.
+\end{itemize}
+\subsection{Complexité}
+La complexité pire cas de l'algorithme du simplexe est exponentielle, mais le cas moyen est polynomial en \(n\) et \(m\).
+\section{Dualité}
+Un problème d'optimisation linéaire possède un problème dual, pour lequel le rôle des variables et des contraintes est inversé. Le dual du dual est le problème initial et on l'appelle le primal. Pour chaque contrainte dans le dual il y a une variable dans le primal et inversement.
+\subsection{Borne sur la valeur optimale}
+Soit un problème d'optimisation linéaire de minimisation.\\
+
+On peut facilement trouver une borne supérieure en prenant une solution admissible quelconque car sa valeur est toujours supérieure ou égale à la solution minimale optimale.\\
+
+Pour trouver une borne inférieure, on peut faire une combinaison linéaire de contraintes qui donnent la fonction à minimiser dans le membre de gauche. Pour trouver la meilleure borne inférieure, on utilise la dualité.
+\subsection{Dualité}
+\begin{minipage}{.5\textwidth}
+    Problème primal \\
+
+    \(\min{c^Tx}\) tel que \(Ax\ge b\) et \(x\ge0\). \\
+
+    Ce problème a \(m\) contraintes et \(n\) variables.
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Problème dual\\
+
+    \(\max{b^Ty}\) tel que \(A^Ty \le c\) et \(y\ge0\) \(\Longleftrightarrow -\min{-b^Ty}\) tel que \(-A^Ty\ge -c\) et \(y\ge0\)\\
+
+    Ce problème a \(m\) variables et \(n\) contraintes.
+\end{minipage}
+\begin{itemize}
+    \item Chaque contrainte donne une variable duale et chaque variable correspond à une contrainte duale.
+    \item Echanger les vecteurs de coûts et de contraintes.
+    \item Transposer la matrice des coefficients.
+    \item Changement de minimisation à maximisation.
+\end{itemize}
+\subsection{Dualité faible}
+Si \(x\) est une solution admissible du primal et \(y\) une solution admissible du dual, alors \(c^Tx \ge b^Ty\) et on appelle écart dual la quantité \(c^Tx-b^Ty \ge 0\).
+\subsection{Certificat d'optimalité}
+Si \(x\) est une solution admissible du problème primal, \(y\) une solution admissible du dual et \(c^Tx = b^Ty\), alors \(x\) et \(y\) sont des solution optimale pour leur problème respectif. 
+\begin{itemize}
+    \item [\(\Longrightarrow\)] Une solution admissible \(y\) du dual pour laquelle \(b^Ty = c^Tx\) certifie que \(x\) est bien optimal.
+\end{itemize}
+\subsection{Cas de solutions}
+\begin{center}
+\begin{tabular}{|c|c|}
+    \hline
+    Problème primal & Problème dual \\
+    \hline \hline
+    Non borné & Pas de solution admissible\\
+    \hline
+    Pas de solution admissible & Non borné\\
+    \hline
+    Pas de solution admissible & Pas de solution admissible\\
+    \hline
+    Optimum fini & Optimum fini\\
+    \hline
+\end{tabular}
+\end{center}
+\subsection{Généralisation du dual}
+\begin{minipage}{.5\textwidth}
+    \begin{center}
+        \(\min{c^Tx}\) tel que\\ \(A_1x \ge b_1\)\\ \(A_2x \le b_2\) \\ \(A_3x = b_3\) \\ \(x\ge0\)
+    \end{center}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{center}
+        \(\max{b_1^Ty_1 + b_2^Ty_2 + b_3^Ty_3}\) tel que \\
+        
+        \(A_1^Ty_1 + A_2^Ty_2 + A_3^Ty_3 \le c\) \\ \(y_1\ge0\)\\ \(y_2 \le 0\) \\ \(y_3\) libres
+    \end{center}
+\end{minipage}
+- \underline{En résumé :} \\
+\begin{itemize}
+    \item \(\min \longleftrightarrow \max\), variables \(\longleftrightarrow\) contraintes, matrice  \(\longleftrightarrow\) transposée.
+    \item Variable libre \(\longleftrightarrow\) égalité, variable positive \(\longleftrightarrow\) inégalité dans le sens naturel (\(\le\) pour min et \(\ge\) pour max), variable négative \(\longleftrightarrow\) inégalité dans l'autre sens.
+\end{itemize}
+\subsection{Dualité forte}
+Si un des problème possède une solution optimale, l'autre en possède une également et les objectifs optimaux sont égaux. L'écart dual est alors nul.
+\subsection{Conditions de complémentarité}
+Il y a une interdépendance entre les contraintes \(x\ge0\) du primal et les contraintes \(A^Ty\le c\) du dual. En des solutions optimales, il y a donc au moins une de ces contraintes qui est active. \\
+
+Si \(x\) est une solution optimale du primal et \(y\) une solution optimale du dual, alors \(x^T(c - A^Ty) = 0\) et \(y^T(Ax-b) = 0\). \\
+
+Soit \(a_i^Tx\ge b\) une contrainte dont l'écart \(b_i - a_i^Tx\ge0\) et soit \(y_i\) la variable duale correspondante. Parmi l'écart et la variable, au moins une des deux quantités est nulle, i.e. si l'écart est non nul (contrainte inactive), alors la variable duale est nulle, et si la variable duale est non nulle, alors l'écart est nul (contrainte active). 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les deux quantités peuvent être nulles simultanément et la relation fonctionne pour n'importe quelle paire contrainte/variable duale.
+\end{itemize}
+\subsection{Lemme de Farkas}
+Exactement un des deux systèmes suivants admet une solution :\\
+\begin{minipage}{.5\textwidth}
+    \begin{equation*}
+        Ax=b
+    \end{equation*}
+    \begin{equation*}
+        x\ge0
+    \end{equation*}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{equation*}
+        A^Ty\ge0
+    \end{equation*}
+    \begin{equation*}
+        b^Ty<0
+    \end{equation*}
+\end{minipage}
+\section{Interprétations de la dualité}
+Dans un problème d’allocation de ressources, où la quantité maximale disponible de chaque ressource est exprimée par une contrainte (d’inégalité ou d’égalité), la valeur optimale de la variable duale correspondante fournit la valeur marginale de cette ressource :
+\begin{itemize}
+    \item Si un concurrent propose d’acheter les ressources du producteur de façon à ce que ce dernier ait intérêt à les vendre (prix offert pour une combinaison de ressources permettrant de fabriquer un produit au moins égal au profit qu’on peut retirer de la vente de ce produit), les variables duales sont les prix unitaires qui minimisent le coût total de l’achat du concurrent.
+    \item Si le producteur souhaite augmenter la quantité disponible d’une ressource, la variable duale correspondante fournit le prix unitaire minimal qu’il serait prêt à payer (pour que le profit additionnel escompté à partir de l’optimum compense le coût de  l’achat supplémentaire).
+\end{itemize}
+Les variables duales fournissent les valeurs marginales des ressources, i.e. à quel point augmente le profit si on augmente l'achat de ressources. ! Ce comportement est local autour de l'optimum du problème initial et ne peut pas se généraliser sur tout le domaine du problème.
+\section{Modification des paramètres}
+\subsection{Modification de \(c\)}
+Si le vecteur \(c\) de l'objectif dans le problème primal change vers \(c+\Delta c\), la contrainte d'admissibilité reste satisfaite, mais la contrainte d'optimalité reste satisfaite uniquement sous condition : modifier l'objectif au primal revient à changer les contraintes au dual.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : si l'objectif change peu, le sommet reste optimal, mais son coût optimal change.
+\end{itemize}
+\subsection{Modification de \(b\)}
+Si le vecteur \(b\) des contraintes change vers \(b+\Delta b\), la contrainte d'optimalité reste satisfaite, mais la contrainte d'admissibilité reste satisfaite uniquement sous condition : modifier les contraintes au primal revient à modifier l'objectif au dual.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : la solution optimale du dual \(y_{*}\) donne la sensibilité de l'objectif optimal à une variation de \(b\). Quand \(b\) augmente de \(\Delta b\), la fonction objectif augmente de \(y_{*}^T\Delta b\).
+\end{itemize}
+\subsection{Modification du nombre de contraintes}
+Ajouter une variable au primal revient à ajouter une contrainte au dual et inversement.
+\section{Optimisation linéaire en nombres entiers}
+\subsection{Types de problèmes}
+\begin{enumerate}
+    \item Optimisation linéaire en nombres entiers :
+\end{enumerate}
+\begin{equation}
+    \begin{cases}
+        \max c^Tx\\
+        Ax\le b\\
+        x\ge0\\
+        x \text{ entiers}
+    \end{cases}
+\end{equation}
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item Optimisation mixte : 
+\end{enumerate}
+\begin{equation}
+    \begin{cases}
+        \max c^Tx\\
+        Ax\le b\\
+        x\ge0\\
+        x_i \text{ entiers, } i=1,...,k
+    \end{cases}
+\end{equation}
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item Optimisation en variables binaires :
+\end{enumerate}
+\begin{equation}
+    \begin{cases}
+        \max c^Tx\\
+        Ax\le b\\
+        x\ge0\\
+        x_i\in \{0,1\}\text{  } \forall i
+    \end{cases}
+\end{equation}
+Le problème linéaire sans la contrainte de valeurs entières est appelé relaxation du problème initial.\\
+
+Arrondir la solution du problème relaxé pour avoir celle du problème en nombres entiers ne fonctionne pas, car l'ensemble des solutions admissibles n'est plus un polyèdre convexe.
+\subsection{Variables de décision}
+\begin{itemize}
+    \item Conditions exclusives : soit \(x_i\), soit \(x_j\), mais pas les deux : \(x_i+x_j \le 1\).
+    \item Conditions alternatives : au moins une des décisions est positive : \(x_i + x_j \ge 1\).
+    \item Conditions contingentes : la décision \(x_i\) n'est prise que si \(x_j\) l'est aussi : \(x_i \le x_j\).
+    \item Méthode systématique : 
+    \begin{itemize}
+        \item [\(\bullet\)] Ecrire la table logique de toutes les combinaisons acceptées.
+        \item [\(\bullet\)] Pour chaue ligne qui n'appartient pas à la table, on peut écrire une contrainte linéaire pour l'éliminer : soit la combinaison \(\delta\) avec \(\delta_i\in \{0,1\}, 1\le i\le N\). Pour éliminer le choix \(x_i=\delta_i\) \(\forall i\), on écrit
+    \end{itemize}
+\end{itemize}
+\begin{equation}
+    \left(\sum_{i\text{ tq } \delta_i =0} x_i\right) + \left(\sum_{i\text{ tq } \delta_i = 1} (1-x_i)\right) \ge 1
+\end{equation}
+\subsection{Contraintes alternatives}
+Soit un polyèdre \(P\). L'ensemble des vecteurs de \(P\) qui satisfont les contraintes \(a_1^Tx\le b_1\) et \(a_2^Tx\le b_2\) est aussi un polyèdre. On introduit ls variables binaires \(y_1, y_2\) afin de pour le cas de l'ensemble des vecteurs qui satisfont les contraintes \(a_1^Tx\le b_1\) ou \(a_2^Tx\le b_2\). Imposons que \(x\in P\).\\
+\begin{equation}
+    \begin{cases}
+        a_i^Tx - b_i \le M(1-y_i)\\
+        \sum y_i = 1
+    \end{cases}
+\end{equation}
+On choisit une valeur de \(M\) telle qu'elle soit toujours suffisamment grande pour que les contraintes \(a_i^Tx-b_i\le M\) soient satisfaites pour tout \(x\in P\). Ces contraintes sont alors équivalentes à la condition qu'une au moins des contraintes \(a_i^Tx\le b_i\) est satisfaite.
+\subsection{Exemples de problèmes en nombres entiers}
+\begin{itemize}
+    \item Problème d'affectation : expliqué précédemment. Les variables sont \(x_{ij} = 1\) si la personne \(i\) effectue la tâche \(j\) et 0 sinon.
+    \item Problème du sac à dos : on remplit un sac d'objets. Il y a \(n\) objets susceptibles de rentrer dans le sac, chacun ayant un poids \(a_i\) et procurant une satisfaction \(c_i\). La somme des poids ne peut pas dépasser \(b\), et on ne peut prendre que des nombres entiers d'objets. Soit le rendement \(r_i = c_i/a_i\). Dans un sac à dos optimal, on ne peut charger un objet que si on a déja chargé tous les objets disponibles de rendement strictement supérieur. 
+    \item Planification de vols (sous forme de graphe): Supposons qu'il y ait \(m\) vols (= arêtes) et \(n\) circuits possibles (= cycles). Soit \(a_ij = 1\) si le vol \(i\) fait partie du circuit \(j\) et 0 sinon. Soit \(x_j = 1\) si le circuit \(j\) est sélectionné et 0 sinon. Chaque vol doit appartenir à exactement un des circuits sélectionnés (variables binaires). L'objectif est de minimiser le coût total.
+    \item Problème de recouvrement : problème de planification de vols, avec chaque vol doit appartenir à AU MOINS un des circuits sélectionnés.
+    \item Set packing problem : 
+    \begin{itemize}
+        \item [\(\bullet\)] Set partitioning : 
+    \end{itemize}
+\end{itemize}
+\begin{equation}
+    \begin{cases}
+        \min \sum_j^n c_jx_j\\
+        \sum_j^n a_{ij}x_j = 1\\
+        x_j \in \{0,1\}\\
+    \end{cases}
+\end{equation}
+\qquad
+\begin{itemize}[leftmargin = 1.925cm]
+    \item [\(\bullet\)] Set covering : 
+\end{itemize}
+\begin{equation}
+    \begin{cases}
+        \min \sum_j^n c_jx_j\\
+        \sum_j^n a_{ij}x_j \ge 1\\
+        x_j \in \{0,1\}\\
+    \end{cases}
+\end{equation}
+\begin{itemize}[leftmargin = 1.925cm]
+    \item [\(\bullet\)] Set packing : 
+\end{itemize}
+\begin{equation}
+    \begin{cases}
+        \min \sum_j^n c_jx_j\\
+        \sum_j^n a_{ij}x_j \le 1\\
+        x_j \in \{0,1\}\\
+    \end{cases}
+\end{equation}
+\subsection{Relaxation continue}
+Soit le problème en nombres entiers général 
+\begin{equation}
+    \begin{cases}
+        \max c^Tx\\
+        Ax\le b\\
+        x\ge0\\
+        x \text{ entiers}
+    \end{cases}
+\end{equation}
+La relaxation continue de ce problème est 
+\begin{equation}
+    \begin{cases}
+        \max c^Tx\\
+        Ax\le b\\
+        x\ge0\\
+    \end{cases}
+\end{equation}
+\begin{itemize}
+    \item Si le problème relaxé ne possède pas de solution admissible, le problème de départ n'en possède pas non plus.
+    \item Une solution optimale du problème relaxé fournit une borne supérieure sur l'objectif optimal du problème initial.
+    \item Si la solution optimale du problème relaxé est entière, alors cette solution est également solution optimale pour le problème initial.
+\end{itemize}
+\subsection{Bornes}
+Soit le problème de maximisation en nombres entiers général définit plus haut. Toute solution admissible \(x\) fournit une borne inférieure de l'optimum.\\
+
+Soit le problème de maximisation relaxé. Toute solution optimale \(x\) du problème relaxé fournit une borne supérieure de l'optimum.\\
+\subsection{Méthode Branch and Bound}
+Soit \(z = \max\{cx|x\in S\}\). Pour trouver la solution, on divise l'ensemble \(S\) en deux sous-ensembles \(S = S_1 \cup S_2\) et on cherche à résoudre les problème distincts \(z_1 = \max\{cx|x\in S_1\}\) et \(z_2 = \max\{cx|x\in S_2\}\) (= branchement) \(\Longrightarrow z = max(z_1,z_2)\).\\
+
+Souvent, on a seulement des bornes sur \(z_1,z_2\) : \(\underline{z}_1 \le z_1 \Bar{z}_1\) et \(\underline{z}_2 \le z_2 \Bar{z}_2\). On a donc 
+\begin{equation}
+    \max(\underline{z}_1,\underline{z}_2) \le z \le \max(\Bar{z}_1, \Bar{z}_2)
+\end{equation}
+En poursuivant, on arrive à la construction d'un arbre d'énumération. 
+\begin{itemize}
+    \item Optimalité : si pour un noeud donné on a \(\underline{z} = \Bar{z}\), le coût optimal pour le noeud est connu et le processus de division s'arrête.
+    \item Sous-optimalité : si au noeud \(i\) on obtient une borné supérieure qui est inférieure à la borné supérieure en un autre noeud, alors le processus s'arrête au noeud \(i\).
+    \item Ensemble admissible vide : après décomposition d'un ensemble \(S\) en deux sous ensembles \(S_1,S_2\), il se peut qu'un des ensembles soit vide. Le processus s'arrête au noeud d'ensemble associé vide.
+\end{itemize}
+\subsubsection{Choix des décompositions}
+    Une stratégie pour décomposer \(S\) consiste à examiner la solution optimale de la relaxation et à choisir la variable \(x_i\) dont la partie fractionnaire est la plus proche de \(1/2\).
+\begin{itemize}
+    \item Dans le cas d'une variable entière binaire \(0\le x_i\le 1\), les deux sous-problèmes correspondent toujours aux contraintes \(x_i = 0\) et \(x_i = 1\).
+    \item Dans le cas d'une variable entière générale \(x_i \in \mathbb{Z}\) prenant la valeur non entière \(f\), les deux sous-problèmes correspondent aux contraintes \(x_i \le f\) et \(x_i \ge f\).
+\end{itemize}
+\subsubsection{Choix de l'ordre des noeuds}
+\begin{itemize}
+    \item Recherche en largeur : résolution de tous les problèmes d'un niveau donné avant de poursuivre.
+    \item Recherche en profondeur : on descend le plus rapidement possible dans l'arbre afin de trouver une solution admissible. 
+    \item Stratégie du meilleur noeud : on choisit un noeud pour lequel la borne supérieure est la plus élevée, de cette manière on ne développe jamais un noeud dont la borne supérieure est inférieure à l'optimum.
+\end{itemize}
+\chapter{Optimisation non linéaire}
+\section{Conditions d'optimalité sous contraintes}
+Les problèmes vu lors de ce cours sont des problèmes d'optimisation non linéaire
+\begin{itemize}
+    \item en dimension finie
+    \item déterministe (= dépend uniquement de \(x\)).
+    \item mono-objectifs (une seule fonction objectif).
+    \item Avec un objectif explicite, décrit analytiquement.
+    \item Avec un objectif continu et différentiable.
+    \item Sans contraintes (\(X = \mathbb{R}^n\)).
+\end{itemize}
+\subsection{Format d'un problème avec contraintes}
+Soit \(\mathcal{E}\) l'ensemble des indices des contraintes d'égalité et \(\mathcal{I}\) l'ensemble des indices des contraintes d'inégalités.
+\begin{equation}
+    \min_{x\in \mathbb{R}^n} f(x) \text{ tel que } c_i(x) = 0\text{  } \forall i \in \mathcal{E}\text{,  } c_i(x) \ge 0 \text{  }\forall i \in \mathcal{I}
+\end{equation}
+\begin{itemize}
+    \item \(f\) et les \(c_i\) sont des fonctions scalaires à \(n\) variables définies sur tout \(\mathbb{R}^n\).
+    \item \(f\) est la fonction objectif.
+    \item Le domaine admissible s'écrit \(X = \{x\in \mathbb{R}^n | c_i(x) = 0, c_j(x) \ge 0\}\).
+    \item On ne considère que la minimisation (équivalence avec la maximisation).
+\end{itemize}
+\subsection{Extrema}
+\begin{equation}
+    \min_{x\in \mathbb{R}^n} f(x) \text{ tel que } x \in X
+\end{equation}
+\begin{itemize}
+    \item \(x^{*}\) est un minimum global ssi \(x^{*} \in X\) et \(f(x^{*} \le f(x)\) \(\forall x\in X\).
+    \item \(x^{*}\) est un minimum local ssi \(x^{*} \in X\) et il existe un voisinage \(V\) (boule ouverte,...) de \(x^{*}\) tel que \(f(x^{*} \le f(x)\) \(\forall x\in X\cap V\).
+    \item \(x^{*}\) est un minimum global strict ssi \(x^{*} \in X\) et \(f(x^{*} < f(x)\) \(\forall x\in X\setminus\{x^{*}\}\).
+    \item \(x^{*}\) est un minimum local strict ssi \(x^{*} \in X\) et il existe un voisinage \(V\) (boule ouverte,...) de \(x^{*}\) tel que \(f(x^{*} < f(x)\) \(\forall x\in X\cap V \setminus \{x^{*}\}\).
+\end{itemize}
+\section{Conditions d'optimalité}
+Un ensemble de conditions d'optimalité (CO) permet de caractériser les solutions optimales par un systèmes d'équations plutôt que par une définition impliquant un quantificateur 'pour tout'. \\
+
+Idéalement, un ensemble de conditions d'optimalité doit être nécessaire (toute solution optimale satisfait les conditions) et suffisant (tous les points les satisfaisant sont des solutions optimales).\\
+
+Dans la plupart des cas, elles sont soit nécessaires mais pas suffisantes ou suffisantes mais pas nécessaires.\\
+\subsection{Problème sans contraintes}
+Pour caractériser les solutions optimales locales, on dispose de 
+\begin{itemize}
+    \item la condition \(\nabla f(x^{*}) = 0\) : \(x^{*}\) est un point critique. Nécessaire mais pas suffisante.
+    \item la condition \(\nabla^2f(x^{*}) \succeq 0\)\footnote{semi-définie positive} : \(x^{*}\) est un minimum local. Nécessaire mais pas suffisante.
+    \item L'ensemble des deux conditions est suffisant mais pas nécessaire pour que \(x^{*}\) soit un minimum local strict.
+\end{itemize}
+\subsubsection{Solutions globales}
+Si une fonction admet un minimum global, il se trouve forcément parmi les minima locaux. On peut garantir son existence par le TBA.
+\subsection{Problème avec contraintes d'égalité}
+On suppose que \(f\) et \(c_i\) sont \(\mathcal{C}^1\). A chaque contrainte \(c_i\) on associe une variable réelle \(\lambda_i\) appelée multiplicateur de Lagrange. L'ensemble de ces multiplicateurs est rassemblé en un vecteur \(\lambda = (\lambda_i)_{i\in \mathcal{E}}\). \\
+On introduit une fonction nommée lagrandien dépendant à la fois des variables \(x_i\) et des multiplicateurs \(\lambda_i\) telle que : 
+\begin{equation}
+    \mathcal{L}(x,\lambda) = f(x) - \sum_{i\in \mathcal{E}} \lambda_i c_i(x)
+\end{equation}
+Si \(x^{*}\) est une solution optimale locale pour le problème non linéaire sous contraintes d'égalité telle que l'ensemble des gradients des contraintes \(\{\nabla c_i(x^{*})\}_{i\in \mathcal{E}}\) est linéairement indépendant, alors il existe un vecteur de multiplicateurs de Lagrange \(\lambda^{*}\) tel que 
+\begin{equation}
+    \nabla_x \mathcal{L}(x^{*}, \lambda^{*})=0
+\end{equation}
+Cette condition est nécessaire et le vecteur \(\lambda^{*}\) est unique.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : si un des gradients s'annule, l'ensemble des gradients est automatiquement linéairement dépendant.
+\end{itemize}
+\subsubsection{Déterminer l'ensemble des minima locaux}
+\begin{enumerate}
+    \item Vérifier que \(f,c_i\in \mathcal{C}^1\) pour tout \(i\in \mathcal{E}\).
+    \item Identifier toutes les solutions admissibles \(x^{*}\) vérifiant les conditions d'optimalité, i.e. telles qu'il existe un vecteur \(\lambda^{*}\) tel que 
+    \begin{equation}
+        \begin{cases}
+            \nabla f(x^{*}) = \sum_{i\in \mathcal{E}}\lambda_i^{*}c_i(x^{*})\\
+            c_i(x^{*}) = 0
+        \end{cases}
+    \end{equation}
+    \item Y ajouter les solutions admissibles où les gradients sont linéairement dépendants.
+\end{enumerate}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : dans certains cas, il peut s'avérer avantageux d'éliminer les contraintes par substitution plutôt que d'utiliser les multiplicateurs de Lagrange.
+\end{itemize}
+\section{Problèmes avec contraintes d'égalité et d'inégalité}
+La contrainte \(i \in \mathcal{E}\cup \mathcal{I}\) est dite active au point \(x\) lorsque \(c_i(x) = 0\). Si \(x\) appartient au domaine admissble, alors toutes les contraintes d'égalité sont actives, mais pas forcément les autres.\\
+
+L'ensemble des contraintes actives en un point admissible \(x\) se note \(\mathcal{A}(x)\) : 
+\begin{equation}
+    \mathcal{A}(x) = \mathcal{E} \cup \{i \in \mathcal{I} | c_i(x) = 0\}
+\end{equation}
+On dit qu'un point admissible \(x\) satisfait la condition d'indépendance linéaire des gradients des contraintes actives (ILGCA) ssi l'ensemble \(\{\nabla c_i(x)\}_{i\in \mathcal{A}(x)}\) est linéairement indépendant.
+\subsection{Conditions d'optimalité de Karush-Kuhn-Tucker}\label{KKT}
+Si \(x^{*}\) est une solution optimale locale pour le problème telle que ILGCA, alors il existe un vecteur des multiplicateurs de Lagrange \(\lambda^{*}\) tel que \(\lambda_i^{*}\ge0\) pour tout \(i\in \mathcal{I}\), \(\lambda_i^{*}c_i(x) = 0\) pour tout \(i\in \mathcal{I}\), et 
+\begin{equation}
+    \nabla_x\mathcal{L}(x^{*},\lambda^{*})=0
+\end{equation}
+Le vecteur \(\lambda^{*}\) est unique.
+\section{Optimisation convexe}
+\subsection{Absence de minima globaux}
+Une fonction peut ne pas posséder de minimum global : soit le plus petit minimum local est un minimum global, soit la fonction n'admet pas de minimum global.
+\subsection{Garantir l'existence d'un minimum global}
+Une fonction objectif \(f\) continue définie sur un domaine \(X\) fermé et borné possède forcément au moins un minimum global.
+\subsection{Définition}
+Le problème d'optimisation 
+\begin{equation}
+    \min_{x\in \mathbb{R}^n} f(x) \text{ tel que } x \in X\subseteq \mathbb{R}^n
+\end{equation}
+est un problème d'optimisation convexe ssi
+\begin{itemize}
+    \item Il s'agit d'un problème de minimisation   
+    \item La fonction objectif est une fonction convexe
+    \item Le domaine admissible \(X\) est un ensemble convexe
+\end{itemize}
+Dans un problème convexe, tout minimum local est aussi un minimum global. 
+\subsection{Ensemble convexe}
+Un ensemble \(X\subset \mathbb{R}^n\) est convexe ssi
+\begin{equation}
+    \forall x,y \in X\text{, } \lambda x+ (1-\lambda)y \in X \qquad \forall 0\le \lambda \le 1
+\end{equation}
+En d'autres termes, \(X\) est convexe ssi il contient tous les segments joignant deux de ses points.
+\subsubsection{Ensembles convexes de base}
+\begin{itemize}
+    \item \(\emptyset\) et \(\mathbb{R}^n\)
+    \item Les boules (ouvertes ou fermées) \(\{x | \lVert x-a\rVert \le r\}\) 
+    \item Les demi-espaces (ouverts ou fermés) \(\{x| b^Tx\le \beta\}\) et les hyper-plans \(\{x|b^Tx=\beta\}\)
+    \item Dans \(\mathbb{R}\), les ensembles convexes sont tous les intervalles.
+\end{itemize}
+- \underline{Propriétés :}
+\begin{itemize}
+    \item Si deux ensembles \(X,Y\subseteq \mathbb{R}^n\)  sont convexes, alors leur intersection \(X\cap Y \subseteq \mathbb{R}^n\) est également convexe.
+    \item Si deux ensembles \(X \subseteq \mathbb{R}^n\) et \(Y \subseteq \mathbb{R}^m\) sont convexes, alors leur produit cartésien \(X\times Y \subseteq \mathbb{R}^{n+m}\) est également convexe.
+    \item La convexité est compatible avec les transformations linéaires : Si \(S \subseteq \mathbb{R}^n\) est convexe et \(\Theta : \mathbb{R}^m\rightarrow \mathbb{R}^n : x\rightarrow Ax+b\) est une transformation linéaire, l'image de \(S\) par l'inverse de \(\Theta\) 
+\end{itemize}
+\begin{equation}
+    \Theta^{-1}S = \{x|\Theta(x)\in S\}
+\end{equation}
+est aussi convexe.
+\subsection{Fonction convexe}
+Une fonction \(f:D\rightarrow \mathbb{R}\) est une fonction convexe lorsque son domaine \(D\) est convexe et
+\begin{equation}
+    \forall x,y \in D\text{, } f(\lambda x + (1-\lambda)y) \le \lambda f(x) + (1-\lambda) f(y)\qquad \forall 0\le \lambda \le 1
+\end{equation}
+En d'autres termes, \(f\) est convexe si elle se situe sous les cordes qui sous-tendent son graphe.
+\subsubsection{Fonctions convexes de base}
+\begin{itemize}
+    \item Les fonctions linéaires et affines
+    \item La fonction norme et son carré, quelle que soit la norme utilisée
+    \item La fonction quadratique \(x \rightarrow x^TQx\) ssi \(Q\in \mathbb{R}^{n\times n}\) est semi-définie positive.
+    \item \(x \rightarrow e^x\), \(x\rightarrow -\log{(x)}\), \(x\rightarrow |x|^p\) lorsque \(p\ge 1\)
+    \item Une fonction est dite concave ssi \(-f\) est convexe.
+\end{itemize}
+\subsubsection{Propriétés}
+\begin{itemize}
+    \item Si \(f\) est convexe, alors \(cf\) est également convexe \(\forall c\ge 0\).
+    \item Si \(f\) et \(g\) sont convexes, alors leur somme l'est également (pas leur différence).
+    \item Si \(f\) et \(g\) sont convexes, alors leur maximum \(\max{\{f,g\}}\) est convexe (pas leur minimum).
+    \item Seules les fonctions affines sont convexes ET concaves.
+    \item Soit \(f\) une fonction deux fois différentiable dont le domaine \(D\) est ouvert. \(f\) est convexe ssi son domaine est convexe et sa matrice hessienne est toujours définie positive.
+    \item Soit \(f\) une fonction différentiable dont le domaine \(D\) est ouvert. \(f\) est convexe ssi \(D\) est convexe et 
+\end{itemize}
+\begin{equation}
+    f(y)\ge f(x) + \nabla f(x)^T(y-x) \qquad \forall x,y\in D
+\end{equation}
+i.e. \(f\) se situe au-dessus de ses tangentes.\\
+\begin{itemize}
+    \item La convexité est compatible avec les transformations linéaires : Si \(f:x\rightarrow f(x)\) est une fonction convexe, alors la composée \(f\circ \Phi : x \rightarrow f(\Phi(x)) = f(Ax+b)\) est aussi convexe, i.e. un changement de variables linéaire conserve la convexité.
+\end{itemize}
+\subsection{Domaine admissible défini par des contraintes}
+Le domaine \(X\) est souvent défini par des contraintes fonctionnelles : 
+\begin{equation}
+    \min_{x\in \mathbb{R}^n} f(x) \text{ tel que } c_i(x) = 0 \text{ pour } i\in \mathcal{E} \text{ et } c_i\ge 0 \text{ pour } i \in \mathcal{I}
+\end{equation}
+Dans ce cas, si chaque contrainte d'égalité est affine et si chaque contrainte d'inégalité est concave, alors le domaine admissible défini par ces contraintes est convexe (condition suffisante mais pas nécessaire).
+\subsection{Propriétés d'un problème convexe}
+\begin{itemize}
+    \item L'ensemble des solutions admissibles globales est un ensemble convexe.
+    \item L'optimisation linéaire est toujours convexe.
+    \item L'optimisation quadratique \(\min_{\in \mathbb{R}^n} x^TQx + c^Tx \) tel que \(Ax=b\) est convexe si \(Q\) est semi-définie positive.
+\end{itemize}
+\subsection{Conditions d'optimalité - sans contraintes}
+Soit le problème de minimisation de la fonction convexe \(f\). \\
+
+Si \(f\) est différentiable, la condition d'optimalité au premier ordre \(\nabla f(x^{*}) = 0\) est nécessaire et suffisante. Les conditions au second ordre sont donc inutiles. 
+\subsection{Conditions d'optimalité - avec contraintes}
+Dans un problème d'optimisation avec contraintes d'égalité et d'inégalité, si le problème est convexe, alors les conditions KKT (voir section \ref{KKT}) sont suffisantes\footnote{Les exceptions des KKT sont toujours d'application}.
+\subsection{Point de Slater}
+Un point de Slater dans un problème d'optimisation convexe est un point tel que les contraintes d'inégalité ne sont pas actives, mais les contraintes d'égalité le sont. \\
+
+Si un problème d'optmisation convexe admet un point de Slater, alors les conditions KKT sont nécessaires et suffisantes sans exception.
+\section{Méthode de recherche en ligne - Méthode du premier ordre}
+\subsection{Optimisation non linéaire sans contrainte}
+Cette section étudie les problème d'optimisation sans contrainte, où \(f\) est suffisamment différentiable, mais pas nécessairement convexe. 
+\begin{equation}
+    \min_{x\in \mathbb{R}^n}f(x)
+\end{equation}
+Si les conditions KKT ne sont pas solubles analytiquement, on tente de résoudre le porblème par une méthode itérative. Obtenir exactement la solution après un certain nombre d'itérations est très rare, on vise plutôt la convergence vers une solution optimale. Ces méthodes ne servent qu'à identifier un point stationnaire et l'on n'a aucune garantie d'obtenir un minimum global. 
+\subsubsection{Convergence locale et globale}
+Une méthode d'otpimisation itérative calcule à partir d'un itéré initial \(x_0\) une suite d'itérés \(\{_k\}_{k\in \mathbb{N}}\).
+\begin{itemize}
+    \item Si les itérés convergent vers une solution quel que soit l'itéré initial, on dit que la méthode converge globalement.
+    \item Si les itérés convergent à condition que l'itéré initial soit suffisamment proche d'une solution, on dit que la méthode converge localement.
+\end{itemize}
+\subsubsection{Vitesse de convergence}
+Soit une suite d'itérés tendant vers une solution \(x^{*}\), i.e. telle que \(\lim_{k\rightarrow \infty}\lVert x_k-x^{*}\rVert = 0\). 
+\begin{itemize}
+    \item Une méthode converge linéairement (convergence globale) s'il existe une constante \(0<c<1\) et un indice \(K\) à partir duquel on a 
+\end{itemize}
+\begin{equation}
+    \lVert x_{k+1} - x^{*}\rVert \le c \lVert x_{k} - x^{*}\rVert \qquad \forall k\ge K
+\end{equation}
+\begin{itemize}
+    \item [\(\bullet\)] On peut utiliser une norme ellipsoïdale pour définir la distance : \(\lVert x\rVert_Q = \sqrt{x^TQx}\) ou encore la norme du gradient de la fonction objectif : \(\lVert\nabla f(x_k)\rVert\).
+    \item [\(\bullet\)] Soit \(d_k = \lVert x_k - x^{*}\rVert\). \(d_k < \varepsilon\) à partir de \(k \approx \frac{\ln{d_0/\varepsilon}}{\theta}\) avec \(c = 1 - \theta \approx 1\).
+    \item La suite converge superlinéairement si
+\end{itemize}
+\begin{equation}
+    \lim_{k\rightarrow \infty} \frac{\lVert x_{k+1} - x^{*}\rVert}{\lVert x_{k} - x^{*}\rVert} = 0
+\end{equation}
+\begin{itemize}
+    \item [\(\bullet\)] Cette convergence est globale et plus rapide que la convergence linéaire.
+    \item La suite converge quadratiquement s'il existe une constante \(c>0\) et un indice \(K\) à partir duquel on a 
+\end{itemize}
+\begin{equation}
+    \lVert x_{k+1} - x^{*}\rVert \le c \lVert x_{k} - x^{*}\rVert^2 \qquad \forall k\ge K
+\end{equation}
+\begin{itemize}
+    \item [\(\bullet\)] La convergence est locale, mais seul un petit nombre d'itérations est nécessaire si la suite converge.
+\end{itemize}
+\subsection{Cas des fonctions à une variable}
+\subsubsection{Minimisation d'une fonction à une variable}
+Soit la fonction \(f :\mathbb{R} \rightarrow \mathbb{R}\) à minimiser.\\
+
+La résolution du problème se fait facilement à partir de sa dérivée, par les méthodes de la bissection, de Newton-Raphson ou de la sécante. Il existe également des méthodes n'utilisant pas la dérivée, que nous ne voyons pas dans ce cours.
+\subsubsection{Descente coordonnée par coordonnée}
+Cette méthode consiste à minimiser successivement chaque variable séparément en gardant les autres fixes.\\
+Méthodologie : 
+\begin{itemize}
+    \item Choisir un point de départ \(x\).
+    \item Calculer \(\alpha\) qui minimise \(f(x)\) telle que \(x_1 = \alpha\), puis poser \(x_1 \coloneqq \alpha\).
+    \item Idem pour toutes les coordonnées suivantes.
+    \item Recommencer dans l'autre sens ( d'abord dans le sens \(x_i \rightarrow x_{i+1}\) puis \(x_{i} \rightarrow x_{i-1}\).
+\end{itemize}
+Propriétés : 
+\begin{itemize}
+    \item Méthode simple et intuitive facile à implémenter si on sait minimiser les fonctions à une variable.
+    \item Convergence souvent lente.
+    \item La méthode peut ne pas converger vers un point stationnaire.
+\end{itemize}
+La méthode ne converge pas de manière générale. Toutefois, si la valeur \(\alpha\) calculée correspond à un minimum global et unique, alors l'algorithme converge globalement vers un point stationnaire.
+\subsection{Méthode du gradient}
+\subsubsection{Sans contrainte}
+Un grand nombre de méthodes de résolution est basé sur une stratégie de recherche en ligne : 
+\begin{itemize}
+    \item Soit un point de départ \(x_0 \in \mathbb{R}^n\) et un indice \(k \coloneqq 0\).
+    \item Tant que l'on n'est pas proche d'un minimum : 
+    \begin{itemize}
+        \item [\(\bullet\)] Choisir une direction de recherche \(p_k \in \mathbb{R}^n\) appropriée, i.e. \(p_k = -\frac{\nabla f(x_k)}{\lVert \nabla f(x_k) \rVert}\)
+        \item [\(\bullet\)] Choisir une longueur de pas \(\alpha_k>0\) qui minimise \(f(x_k + \alpha_k p_k)\).
+        \item [\(\bullet\)] Mettre à jour \(x_{k+1} \coloneqq x_k + \alpha_k p_k\) et \(k \coloneqq k+1\)
+    \end{itemize}
+    \item [\(\rightarrow\)] Remarque : pour un problème de maximisation, prendre \(p_k = \nabla f(x_k)\). 
+\end{itemize}
+- \underline{Longueur de pas :}\\
+
+On choisit généralement une longueur de pas minimale approximative, car la calculer est coûteux. Elle doit vérifier les conditions de Wolfe :
+\begin{itemize}
+    \item Condition de décroissance suffisante : \(f(x_k + \alpha p_k) \le f(x_k) + c_1 \alpha \nabla f(x_k)^T p_k\) avec \(0<c_1<1\).
+    \item Condition de courbure : \(\nabla f(x_k + \alpha p_k)^T p_k \ge c_2 \nabla f(x_k)^Tp_k\) avec \(c_1 < c_2 <1\).
+\end{itemize}
+\section{Méthodes de Newton et quasi-Newton}
+\subsection{Méthode de Newton}
+Soit un problème de minimisation de la fonction \(f\). Soit un point de départ \(x_0\in \mathbb{R}^n\) et un indice \(k\coloneqq O\). Tant qu'on n'est pas suffisamment proche d'un minimum, 
+\begin{itemize}
+    \item Calculer la direction de Newton 
+\end{itemize}
+\begin{equation}
+    p=-\nabla^2f(x)^{-1}\nabla f(x)
+\end{equation}
+\begin{itemize}
+    \item Choisir une longueur de pas \(\alpha_k\) : soit unitaire, soit via les conditions de Wolfe.
+    \item Calculer l'itéré suivant : \(x_{k+1} \coloneqq x_k + \alpha_k p_k\).
+    \item Incrémenter \(k\).
+\end{itemize}
+\subsubsection{Conditions sur le pas de Newton}
+Si la hessienne de la fonction objectif est semi-définie positive, alors \(p\) est bien définie et est un minimum global du système, et \(p\) est une direction de descente.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : la convergence globale de la méthode de Newton est quadratique.
+    \item [\(\rightarrow\)] Remarque : si la fonction objectif est est quadratique convexe, on converge en un pas.
+\end{itemize}
+\subsection{Méthode de quasi-Newton}
+On a inventé la méthode de quasi-Newton car la méthode de Newton est coûteuse bien que sa convergence soit globale et quadratique.
+\begin{itemize}
+    \item Soit un point de départ \(x_0 \in \mathbb{R}^n\) et un indice \(k\coloneqq0\). Soit \(B_0\) une approximation initiale de la hessienne en \(x_0\). 
+    \item Tant qu'on n'est pas suffisamment proche d'un minimum, 
+    \begin{itemize}
+        \item [\(\bullet\)] Calculer la direction de quasi-Newton : \(p=-B_k^{-1}\nabla f(x_k)\)
+        \item [\(\bullet\)] Choisir une longueur de pas \(\alpha_k\) qui minimise \(\min_{\alpha >0} \phi_k(\alpha) = f(x_k + \alpha p_k)\)
+        \item [\(\bullet\)] Calculer l'itéré suivant : \(x_{k+1} \coloneqq x_k + \alpha p_k\)
+        \item [\(\bullet\)] Calculer une nouvelle appproximation de la hessienne \(B_{k+1}\)
+        \item [\(\bullet\)] Incrémenter \(k \coloneqq k+1\)
+    \end{itemize}
+    \item [\(\rightarrow\)] Remarque : la convergence globale est quadratique et la convergence locale est superlinéaire.
+\end{itemize}
+\subsubsection{Mise à jour SR1}
+On met à jour l'approximation de la hessienne de la manière suivante : 
+\begin{equation}
+    B_{k+1} = B_k + \frac{(y_k -B_ks_k)(y_k-B_ks_k)^T}{(y_k-B_ks_k)^ts_k}
+\end{equation}
+Soient les vecteurs \(s_k \coloneqq x_{k+1}-x_k\) et \(y_k \coloneqq \nabla f(x_{k+1}) - \nabla f(x_k)\).\\
+
+Posons \(H_k\) est une approximation de l'inverse de la hessienne : \(H_k \approx \nabla^2f(x_k)^{-1}\). On peut alors remplacer \(B_k^{-1}\) par \(H_k\). On met à jour \(H_k\) par la formule 
+\begin{equation}
+    H_{k+1} = H_k + \frac{(s_k -H_ky_k)(s_k-H_ky_k)^T}{(s_k-H_ky_k)^ty_k}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les deux approximations donnent un résultat identique si on part de \(H_0 = B_0^{-1}\).
+\end{itemize}
+Inconvénients de la méthode : 
+\begin{itemize}
+    \item Le dénominteur peut s'annuler.
+    \item Rien ne garantit la définie-positivité de l'approximation de la hessienne.
+    \item Pas de preuve de convergence locale ou globale.
+\end{itemize}
+\subsubsection{Mise à jour BFGS}
+La mise à jour BFGS pallie à tous les problèmes de SR1. 
+\begin{equation}
+    B_{k+1} = B_k + \frac{y_ky_k^T}{y^T_ks_k} - \frac{B_ks_ks_k^TB_k}{s_k^TB_ks_k}
+\end{equation}
+Si \(H_0\) est définie positive, alors tous les \(H_k\) le sont aussi. De plus, la méthode converge globalement pour toute \(H_0 \succ 0\) et la convergence locale est superlinéaire.
+\section{Implémentation et autres méthodes}
+\subsection{Implémentation}
+\subsubsection{Critère d'arrêt}
+Un critère d'arrêt consiste à fixer une tolérance \(\epsilon\) et à itérer tant que la norme du gradient lui est supérieure. Cependant, ce critère ne garantit ni la précision de la fonction objectif, ni la distance par rapport à la solution.
+\subsubsection{Longueur de pas}
+\underline{Minimisation inexacte :}\\
+Voici l'algorithme de calcul d'un pas satisfaisant aux conditions de Wolfe pour des constantes \(0<c_1<c_2<1\) à partir d'un pas initial \(\alpha >0\).
+\begin{itemize}
+    \item Partir de l'intervalle \([L,U] = [0,\infty]\)
+    \item Calculer \(\phi(0)\) et \(\phi'(0)\)
+    \item Répéter 
+    \begin{itemize}
+        \item [\(\bullet\)] Evaluer \(\phi(\alpha)\). Si \(\phi(\alpha) > \phi(0) + c_1 \alpha \phi'(0)\)
+        \begin{itemize}
+            \item [\(\circ\)] \(U \coloneqq \alpha\)
+            \item [\(\circ\)] \(\alpha \coloneqq (U+L)/2\)
+            \item [\(\circ\)] Retour en 3.
+        \end{itemize}
+        \item Evaluer \(\phi'(\alpha)\). Si \(\phi'(\alpha) < c_2 \phi'(0)\)
+        \begin{itemize}
+            \item [\(\circ\)] \(L \coloneqq \alpha\)
+            \item [\(\circ\)] Si \(U = \infty\), \(\alpha \coloneqq 2L\); sinon \(\alpha = (L+U)/2\)
+            \item [\(\circ\)] Retour en 3.
+        \end{itemize}
+    \item Stop : \(\alpha\) vérifie les conditions de Wolfe.
+    \end{itemize}
+\end{itemize}
+\underline{Choix de la longueur de pas initiale :}\\
+\begin{itemize}
+    \item Pour (quasi-)Newton, choisir \(\alpha_0 =1\).
+    \item Pour la méthode du gradient, pas de valeur universelle de \(\alpha\).
+\end{itemize}
+\underline{Minimisation exacte :}\\
+
+Par minimisation exacte, il faut minimiser la fonction \(\phi_k(\alpha) = f(x_k + \alpha p_k)\). Si cette fonction est strictement convexe, on a 
+\begin{equation}
+    \alpha^* = \frac{p_k^T(b-Ax_k)}{p^T_kAp_k} \left(= \frac{p_k^Tp_k}{p_k^TAp_k}\right)
+\end{equation}
+La seconde égalité n'est vraie que pour la méthode du gradient.
+\subsection{Autres méthodes}
+\underline{Méthode des gradients conjugués : }\\
+
+Au lieu de choisir la direction du gradient \(p_k = -\nabla f(x_k)\), on combine avec une direction précédente
+\begin{equation}
+    p_k = -\nabla f(x_k) + \beta_k p_{k-1}
+\end{equation}
+où \(\beta_k\) est un paramètre de la méthode à déterminer.\\
+
+Dans le cas d'une fonction objectif quadratique convexe, on calcule \(\beta_k\) de telle manière que \(p_k^T Ap_{k-1} =0\):
+\begin{equation}
+    \beta_k = \frac{(Ax_k-b)^TAp_{k-1}}{p_{k-1}^TAp_{k-1}}
+\end{equation}
+A l'aide de cette propriété, cette méthode, combinée à une minimisation unidimensionnelle exacte, calcul la solution optimale après \(n\) itérations pour une fonction objectif à \(n\) variables.\\
+
+Dans le cas d'une fonction objectif quelconque, on peut utiliser la méthode de Fletcher-Reeves :
+\begin{itemize}
+    \item Soit un point de départ \(x_0\) et un indice \(k\coloneqq 0\). On pose \(p_0 \coloneqq -\nabla f(x_0)\)
+    \item Tant que \(\nabla f(x_k) \neq 0\)
+    \begin{itemize}
+        \item [\(\bullet\)] \(x_{k+1} \coloneqq x_k + \alpha_kp_k\)
+        \item [\(\bullet\)] \(p_{k+1} \coloneqq -\nabla f(x_{k+1} + \beta_{k+1}p_k)\)
+        \item [\(\bullet\)] \(k\coloneqq k+1\)
+    \end{itemize}
+\end{itemize}
+avec \(\beta_k = \frac{\nabla f(x_k)^T \nabla f(x_k)}{\nabla f(x_{k-1}^T\nabla f(x_{k-1}}\).
+\end{document}

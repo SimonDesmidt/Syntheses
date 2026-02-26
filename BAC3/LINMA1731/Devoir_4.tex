@@ -1,0 +1,118 @@
+\documentclass[11pt]{article}
+\pagestyle{plain}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=1cm,bottom=2.5cm]{geometry}
+\usepackage[english]{babel}
+\usepackage{libertine}
+\usepackage{gensymb}
+\usepackage{tabularray}
+\usepackage{graphicx}
+\usepackage{steinmetz}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{nicematrix}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage{verbatim}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\usepackage{apptools}
+    \titleformat{\chapter}[hang]{\bfseries\huge}{\IfAppendix{\appendixname~}{\relax}\thechapter\IfAppendix{.}{.}}{\IfAppendix{0.333em}{2pc}}{}
+%\AtBeginEnvironment{}{\appendixtrue}
+
+% this alters "before" spacing (the second length argument) to 0
+\titlespacing {\chapter}{0pt}{0pt}{40pt}
+
+\usepackage[nottoc]{tocbibind}
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{keyval}
+\usepackage{kvoptions}
+\usepackage{fancyvrb}
+\usepackage{ifthen}
+\usepackage{calc}
+\usepackage{pdftexcmds}
+\usepackage{etoolbox}
+\usepackage{xstring}
+\usepackage{xcolor}
+\usepackage{lineno}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usetikzlibrary{patterns,arrows,decorations.pathreplacing,babel}
+
+\usepackage[]{minted}
+\newminted{python}{
+    linenos=true,
+    bgcolor=lightgray,
+    tabsize=4,
+    gobble=8,
+    fontfamily=courier,
+    fontsize=\small,
+    xleftmargin=5pt,
+    xrightmargin=5pt
+}
+    \title{LINMA1731 - Assignment 4}
+    \author{Desmidt Simon - NOMA 19012100}
+    \date{\today}
+\begin{document}
+\maketitle
+Let $X(t)$ be a continuous WSS stochastic process. The covariance function of $X(t)$ is given by $C_X(\tau) = e^{-\tau^2/2}$ and its mean by $m_X = 1$. $X(t)$ is filtered by a LTI system of impulse response $h(t) = e^{-3t}u(t)$ to produce a new process $Y(t)$.
+\begin{enumerate}
+    \item Derive the expression of the power spectrum density of $X(t)$. 
+\end{enumerate}
+The power spectrum density of \(X(t)\) is the Fourier transform of \(X(t)\) and is defined as follows:
+\begin{equation}
+    \gamma_X(\omega)\int_{-\infty}^{\infty}C_X(\tau)e^{-j\omega \tau}d\tau
+\end{equation}
+Therefore, its expression is 
+\begin{equation}
+    \gamma_X(\omega) = \int_{-\infty}^{\infty} e^{-j\omega \tau} e^{-\tau^2/2}d\tau
+\end{equation}
+\begin{equation}
+    \color{red}\boxed{\color{black}\gamma_X(\omega) = \sqrt{2\pi}e^{-\omega^2/2}}\color{black}
+\end{equation}
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item Derive the mean of $Y(t)$. 
+\end{enumerate}
+The expression of the mean of \(Y(t)\), based on the mean of \(X(t)\), is 
+\begin{equation}
+    m_Y = m_X \int_t h(t)dt = m_XH(0)
+\end{equation}
+with \(h(t)\) the impulse response and \(H(\omega)\) the transfer function of the system.
+\begin{equation}
+    H(\omega) = \mathcal{L}(h(t)) = \frac{1}{j\omega+3} \longrightarrow H(0) = \frac{1}{3}
+\end{equation}
+\begin{equation}
+    \color{red}\boxed{\color{black}m_Y = m_XH(0) = \frac{1}{3}}\color{black}
+\end{equation}
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item Derive the expression of the power spectrum density of $Y(t)$.
+\end{enumerate}
+We can derive the expression of the psd of \(Y(t)\) based on the one for \(X(t)\):
+\begin{equation}
+    \gamma_Y(\omega) = |H(\omega)|^2\gamma_X(\omega) = \frac{1}{(j\omega+3)(3-j\omega)}e^{-\omega^2/2}
+\end{equation}
+\begin{equation}
+    \color{red}\boxed{\color{black}\gamma_Y(\omega) = \frac{1}{9+\omega^2}e^{-\omega^2/2}}\color{black}
+\end{equation}
+\end{document}

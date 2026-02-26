@@ -1,0 +1,1955 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{mathtools}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\titleformat{\chapter}[display] 
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\renewcommand{\contentsname}{Table des matières}
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.5]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LEPL1203 Physique III \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2023-2024 - Q1}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+
+\chapter{Partie 1 -- Ondes}
+\section{A savoir faire à la fin}
+\begin{itemize}
+    \item expliquer la différence entre onde spatiale et temporelle;
+    \item donner les hypothèses des ondes mécaniques;
+    \item donner les unités de chaque terme de 1.17.;
+    \item expliquer ondes transversales ou longitudinales;
+    \item expliquer l'effet Doppler;
+    \item expliquer les types de polarisation;
+    \item expliquer les interférences (et les conditions) et les expériences liées;
+    \item donner les hypothèses pour le calcul de l'intensité d'une figure d'interférence (1.7.7);
+    \item expliquer la diffraction;
+    \item expliquer ce qu'est une onde stationnaire et comment on en obtient une;
+    \item expliquer l'exemple du tube fermé/ouvert pour les ondes sonores stationnaires;
+    \item expliquer les deux types d'antennes;
+\end{itemize}
+\section{Rappels}\label{rappels}
+
+\begin{itemize}
+\item
+  Des charges électriques immobiles créent un champ électrique. Ce champ est conservatif\footnote{ça veut dire quoi?} et dérive d'un potentiel :
+  \(\overrightarrow{E} = - \nabla\phi\) et
+  \(\oint_{}^{}{\overrightarrow{E} \cdot d\overrightarrow{l}} = 0\).
+\item
+  Des courants constants créent un champ magnétique constant.
+\item
+  Théorème de Gauss :
+  \(\oint_{\Omega}^{}{\varepsilon_{0}\overrightarrow{E} \cdot d\overrightarrow{s}} = \int_{\text{Vol}}{\rho dv}\)
+\item
+  Pas de monopôles magnétiques :
+  \(\oint_{\Omega}^{}{\overrightarrow{B} \cdot d\overrightarrow{s}} = 0\)
+\item
+  Loi d'Ampère :
+  \(\oint_{\partial \Omega}^{}{\overrightarrow{H} \cdot d\overrightarrow{l}} = I = \int_{\Omega}^{}{\overrightarrow{J} \cdot d\overrightarrow{s}}\),
+  avec \(\overrightarrow{J} = \frac{I}{A} \hat{i}\)
+\item
+  $Q = \int_{\text{Vol}}^{} \rho dv$, 
+  \(\Delta V = - \int_{A}^{B}{\overrightarrow{E} \cdot d\overrightarrow{l}} = V_{B} - V_{A} \Longrightarrow \overrightarrow{E} = - \nabla V\)
+\item
+  \(\overrightarrow{D}\) est le déplacement :
+  \(\overrightarrow{D} = \varepsilon_{0}\overrightarrow{E}\)
+\item
+  Un flux/champ magnétique variable crée une fem (force électromagnétique) induite et un champ électromoteur même s'il n'y a pas de conducteur. Loi de Lenz-Faraday :
+  \(\varepsilon_{\text{ind}} = \oint_{\partial\Omega}^{}{{\overrightarrow{E}}_{\text{mot}} \cdot d\overrightarrow{l}} = - \frac{d\Phi_{B}}{dt} \neq 0.\)
+\item
+  Pour un champ variable, la loi de Lenz-Faraday s'écrit :
+  \(\int_{\Omega}^{}{\overrightarrow{E} \cdot d\overrightarrow{l}} = - \frac{d\Phi}{dt} = - \frac{d}{dt}\int_{\Omega}^{}{\overrightarrow{B} \cdot d\overrightarrow{s}} = \int_{\Omega}^{}{\left( - \frac{d\overrightarrow{B}}{dt} \right) \cdot d\overrightarrow{s}}\),
+  si \(\frac{ds}{dt} = 0\)
+\item
+  Si une divergence est non nulle en un point, le flux est non nul "autour" de ce point, il est source de champ ou en absorbe.
+\end{itemize}
+
+\section{Équations de Maxwell}\label{uxe9quations-de-maxwell}
+
+\subsection{Courant de déplacement}\label{courant-de-duxe9placement}
+
+La loi d'Ampère est parfois incohérente en fonction de la surface définie par la courbe fermée que l'on choisit. On peut résoudre cette incohérence en corrigeant la loi par le théorème de Stokes :
+\(\nabla \times \overrightarrow{H} = \overrightarrow{J} + \frac{\partial\overrightarrow{D}}{\partial t} \Longrightarrow \nabla \cdot \left( \overrightarrow{J} + \frac{\partial\overrightarrow{D}}{\partial t} \right) = 0 \Longrightarrow \nabla \cdot \overrightarrow{J} = - \nabla \cdot \left( \frac{\partial\overrightarrow{D}}{\partial t} \right) = - \frac{\partial\rho}{\partial t}\)
+
+Il s'agit donc d'une divergence de la densité de courant différente de 0 s'il y a un apport ou une perte de charges $\rightarrow$ Loi de conservation de la charge.
+
+\subsection{4 lois de Maxwell}\label{lois-de-maxwell}
+\begin{tabularx}{\textwidth}{|c|X|X|}
+    \hline
+     & Sous forme intégrale & Sous forme différentielle\\
+    \hline
+    Théorème de Gauss & $\oint_{\Omega} \Vec{D}\cdot d\Vec{S} = \int_{Vol} \rho dv$
+    \newline $= Q$ & $\Vec{\nabla} \cdot \Vec{D} = \rho$ \\
+    \hline
+    Pas de monopôles magnétiques & $\oint_{\Omega} \Vec{B} \cdot d\Vec{S} = 0$ & $\Vec{\nabla} \cdot \Vec{B} = 0$ \\
+    \hline
+    Loi de Lenz-Faraday	& $\oint_{\partial \Omega} \Vec{E} \cdot d\Vec{l} = -\frac{d}{dt} \int_{\Omega} \Vec{B}\cdot d\Vec{S}$ & $\Vec{\nabla} \times \Vec{E} = -\frac{\partial \Vec{B}}{\partial t}$\\
+    \hline
+    Loi de Maxwell-Ampère & $\oint_{\partial\Omega} \Vec{H} \cdot d\Vec{l} = \int_{\Omega} \Vec{J} \cdot d\Vec{S} + \frac{d}{dt} \int_{\Omega} \Vec{D} \cdot d\Vec{S}$ & $\Vec{\nabla} \times \Vec{H} = \Vec{J} + \frac{\partial \Vec{D}}{\partial t}$ \\
+    \hline
+\end{tabularx}
+
+\subsection{Dans le vide}\label{dans-le-vide}
+Ce sont les plus importantes : 
+\begin{align}
+    \overrightarrow{\nabla} \cdot \overrightarrow{E} = 0 \qquad & \qquad\overrightarrow{\nabla} \cdot \overrightarrow{H} = 0\\
+    \overrightarrow{\nabla} \times \overrightarrow{E} = - \mu_{0}\frac{\partial\overrightarrow{H}}{\partial t}\qquad& \qquad \overrightarrow{\nabla} \times \overrightarrow{H} = \varepsilon_{0}\frac{\partial\overrightarrow{E}}{\partial t}
+\end{align}
+
+
+\subsection{Condition à l'interface entre deux matériaux}
+
+Pour des matériaux différents dont les propriétés sont \(\varepsilon_{1},\ \mu_{1}\) et \(\varepsilon_{2},\mu_{2}\),
+\begin{align}
+    {\overrightarrow{D}}_{1,n} = {\overrightarrow{D}}_{2,n}\qquad & \qquad {\overrightarrow{B}}_{1,n} = {\overrightarrow{B}}_{2,n}\\
+    {\overrightarrow{E}}_{1,tg} = {\overrightarrow{E}}_{2,tg}\qquad & \qquad {\overrightarrow{H}}_{1,tg} = {\overrightarrow{H}}_{2,tg}
+\end{align}
+
+Avec d'indice \(n\) qui est la composante normale du vecteur et \(tg\) la composante tangentielle.
+\section{Ondes électromagnétiques}
+\subsection{Champs transverses}
+Soit le cas particulier des champs transverses : 
+\(\overrightarrow{E}\bot\overrightarrow{H}\) : \(\overrightarrow{E}\)
+selon \(Oy\) et \(\overrightarrow{H}\) selon \(Oz\). Si on suppose par ailleurs que l'onde ne se propage que selon \(Ox\), on peut simplifier vers :
+
+\[\frac{\partial E_{y}}{\partial x} = - \mu_{0}\frac{\partial H_{z}}{\partial t}\text{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\frac{\partial H_{z}}{\partial x} = - \varepsilon_{0}\frac{\partial E_{y}}{\partial t}\]
+
+En dérivant chaque expression par rapport à \(x\) et \(t\), on obtient les équations de propagation, avec
+\(c^{2} = \frac{1}{\varepsilon_{0}\mu_{0}}\) :
+
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \color{red}\boxed{\color{black} \frac{\partial^2 H_z}{\partial t^2} = c^2 \frac{\partial^2 H_z}{\partial x^2}} \color{black}
+    \end{equation}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \color{red}\boxed{\color{black} \frac{\partial^2 E_y}{\partial t^2} = c^2 \frac{\partial^2 E_y}{\partial x^2}} \color{black}
+    \end{equation}
+\end{minipage}
+
+\subsection{Équation d'onde}
+
+Pour toute équation d'ondes progressives se propageant dans le vide, on a donc
+\begin{equation}
+    \frac{\partial^{2}}{\partial t^{2}}f\left( x,t \right) = v^{2}\frac{\partial^{2}}{\partial x^{2}}f\left( x,t \right)
+\end{equation}
+
+
+La solution est de la forme \color{red}\boxed{\color{black}f\left( x,t \right) = f\left( x \pm vt \right)} \color{black} On voit donc que la forme d'onde est translatée.
+
+\begin{itemize}
+\item [$\rightarrow$] Remarque : les ondes ne déplacent jamais de matières, uniquement une déformation de l'environnement.
+\end{itemize}
+
+\subsection{Forme générale des ondes}
+Soient \(A,B\) des champs quelconques (souvent magnétique et électrique dans le cadre de ce cours).
+\begin{equation}
+    \begin{cases}
+        \frac{\partial A}{\partial x} = - a\frac{\partial B}{\partial t} \\
+        \frac{\partial A}{\partial t} = - b\frac{\partial B}{\partial x} \\
+    \end{cases}
+\end{equation}
+
+Le rapport \(b/a\) est une constante appelée \(Z\).
+
+Si \(A\left( x,t \right)\) et \(B\left( x,t \right)\) obéissent à l'équation d'ondes, alors elles sont de la forme \(A\left( x - vt \right)\) et \(B\left( x - vt \right)\). On pose \(w = x - vt\). On peut donc obtenir :
+\begin{equation}
+    \frac{\partial A\left( w \right)}{\partial w} = Z\frac{\partial B\left( w \right)}{\partial w} + cste
+\end{equation}
+
+La constante est la déformation initiale (pression, champ \(B\) statique,\ldots), que l'on peut ignorer car il n'y a une propagation uniquement des valeurs variables.
+
+\subsection{Équation d'ondes des ondes électromagnétiques}
+\begin{minipage} {0.5\textwidth}
+    \begin{equation}
+        \frac{\partial^{2}H_{z}}{\partial t^{2}} = c^{2}\frac{\partial^{2}H_{z}}{\partial x^{2}}
+    \end{equation}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+    \begin{equation}
+        \frac{\partial^{2}E_{y}}{\partial t^{2}} = c^{2}\frac{\partial^{2}E_{y}}{\partial x^{2}}
+    \end{equation}
+\end{minipage}
+
+\begin{equation}
+    c = \sqrt{\frac{1}{\varepsilon_{0}\varepsilon_{r}\mu_{0}\mu_{r}}}
+\end{equation}
+\begin{equation}
+    \frac{E_{y}\left( x,t \right)}{H_{z}\left( x,t \right)} = Z = \sqrt{\frac{\mu_{0}}{\varepsilon_{0}}}\left( = \sqrt{\frac{\mu_{0}\mu_{r}}{\varepsilon_{0}\varepsilon_{r}}} \right)
+\end{equation}
+
+Les deux champs sont en phase, car leur rapport est une constante.\\
+
+\underline{Conditions aux limites :} 
+
+Source : $y\left( 0,t \right) = y_{s}\left( t \right) \Longrightarrow f\left( 0 - vt \right) = f\left( - vt \right) = g\left( t \right)$
+
+\begin{itemize}
+\item [$\rightarrow$] Remarque : les courbes des mouvements de la source et de l'onde sont
+  toujours inversés.
+\end{itemize}
+
+\subsection{Ondes sinusoïdales}
+\begin{itemize}
+    \item Onde temporelle \footnote{Toute fonction périodique peut être créée par une combinaison linéaire de fonctions sinusoïdales.} : $\xi\left( 0,t \right) = \xi_{a}\sin{(\omega t)}$
+    \item Onde spatiale: $\xi\left( x,t \right) = \xi_{a}\sin\left(\omega t - \frac{\omega}{v}t \right) = \xi_{a}\sin(\omega t - kx)$
+\end{itemize}
+
+\subsection{Densité d'énergie}
+
+\begin{itemize}
+    \item Énergie associée à un champ électrique : 
+        \begin{itemize}
+            \item[$\bullet$] Énergie dans une capacité : $U_E=CV^2/2$
+            \item[$\bullet$] Densité d’énergie électrique : $E_E=\int \varepsilon_0 \varepsilon_rEdE = \frac{\varepsilon_0\varepsilon_r E^2}{2} = \varepsilon E^2/2$. 
+        \end{itemize}
+    \item Énergie associée à un champ magnétique : 
+        \begin{itemize}
+            \item[$\bullet$] Énergie dans une inductance : $U_M=LI^2/2$
+	      \item[$\bullet$] Densité d’énergie magnétique : $E_M=\int HdB = \frac{\mu H^2}{2} = \frac{B^2}{2\mu}$
+        \end{itemize}
+    \item Densité d'énergie totale dans le vide :
+\end{itemize}
+\begin{equation}
+    E_{t} = E_{E} + E_{M} = \frac{\varepsilon_{0}E^{2}}{2} + \frac{\mu_{0}H^{2}}{2}
+\end{equation}
+
+Par le rapport \(\frac{E}{H} = Z\), \(E_{E} = E_{M} \Longrightarrow E_{t} = \varepsilon_{0}E^{2} = \mu_{0}H^{2} = \frac{EH}{c}\)
+
+L'intensité d'énergie est la quantité d'énergie transportée par une onde EM :
+\begin{equation}
+    I = \varepsilon_{0}E^{2}c = EH = [W/m^2]
+\end{equation}
+
+\section{Ondes mécaniques}
+
+\subsection{Corde vibrante }
+\begin{minipage} {0.6\textwidth}
+Une corde vibrante subit une déformation locale. Les hypothèses sont :
+
+\begin{itemize}
+    \item La corde reste tendue et parfaitement souple et élastique.
+    \item Les déplacements verticaux sont petits et \(\overrightarrow{\xi}\left( x,t \right) = y\left( x,t  \right){\overrightarrow{a}}_{y}\)
+\end{itemize}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+    \includegraphics[width = \textwidth]{img/Corde vibrante.png} 
+\end{minipage}
+
+\begin{itemize}
+    \item Les déplacements horizontaux sont négligeables : la tension longitudinale \(F\) est supposée constante. 
+    \item   La pesanteur est négligeable.
+\end{itemize}
+
+\begin{itemize} 
+    \item [$\rightarrow$] Remarque : \(F_{y}\) en un point \(x\) est définie comme la force verticale appliquée par la partie gauche de la corde sur la partie droite.
+\end{itemize}
+
+Puisque les déformations verticales sont petites, \(\alpha \approx \sin\alpha \approx \tan\alpha \approx \left( \frac{\partial y}{\partial x} \right)_{x}\)= pente locale.
+
+\begin{equation}
+    F_{y}\left( x,t \right) = - F\left( \frac{\partial y}{\partial x} \right){\overrightarrow{a}}_{y}
+\end{equation}
+
+On définit la vitesse verticale locale du tronçon de corde : \(\overrightarrow{u}\left( x,t \right) = u\left( x,t \right){\overrightarrow{a}}_{y}\)
+
+Le tronçon de corde subit une seule et même force définie par les équations de propagation : 
+\begin{equation}
+    \begin{cases}
+        \frac{\partial{\overrightarrow{F}}_{y}}{\partial t} = - F\frac{\partial\overrightarrow{u}}{\partial x} \\
+        \frac{\partial{\overrightarrow{F}}_{y}}{\partial x} = - \mu\frac{\partial^{2}y}{\partial t^{2}} \\
+    \end{cases}
+\end{equation}
+
+Avec \(\mu\) la masse linéique \(\left\lbrack kg/m \right\rbrack\).
+
+L'équation d'onde de la corde vibrante est \(\color{red}\boxed{\color{black}\frac{F}{\mu}\frac{\partial^{2}y}{\partial x^{2}} = \frac{\partial^{2}y}{\partial t^{2}}}\) \color{black}
+
+On a donc \(v = \sqrt{\frac{F}{\mu}}\) et \(\frac{F_{y}\left( x,t \right)}{u\left( x,t \right)} = \pm Z = \sqrt{F\mu}\)
+
+\underline{Puissance et énergie :}
+
+\begin{itemize}
+\item Cas sinusoïdale : \(P_{moy} = Zu^{2} = \frac{F_{y}^{2}}{Z}\)
+\item Énergie cinétique : \(\Delta U_{k} = \frac{\left( \mu\Delta x \right)u^{2}}{2}\)
+\item Énergie cinétique par unité de longueur : \(U_{k} = \frac{\mu u^{2}}{2}\)
+\item Énergie potentielle de déformation : \(\Delta W =\) couple \(\times\) angle \(= \frac{F_{y}^{2}}{2F}\Delta l\)
+\item Énergie potentielle de déformation par unité de longueur : \(U_{p} = \frac{F_{y}^{2}}{2F}\)
+\end{itemize}
+
+\subsection{Ondes acoustiques }
+
+Les ondes sont dites transversales lorsque la déformation est perpendiculaire à la direction de propagation, et longitudinales lorsque la déformation lui est parallèle.
+
+La vitesse du son est déterminée par \( v = \sqrt{\frac{B}{\rho_{0}}}\), avec \(B\) la compressibilité du milieu, et \(\rho_{0}\) sa masse volumique.
+
+\underline{Intensité du son :} \\
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+    I = \frac{P}{S} = Zu^{2} = \frac{p_{y}^{2}}{Z}
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        I_{moy} = \frac{p_{ymax}^{2}}{2\rho_{0}v}
+    \end{equation}
+\end{minipage}\\
+
+Avec \(p_{y}\) le changement de pression. 
+\(I_{0}\) est le seuil d'audition \(I_{0} = 10^{- 12}W/m^{2} \rightarrow p_{0} = 2\ 10^{- 5}\text{Pa}\).
+Et le seuil de douleur est \(1W/m^{2}\).
+
+\begin{equation}
+    I\left\lbrack \text{dB}\left( A \right) \right\rbrack = 10\log_{10}\left( \frac{I}{I_{0}} \right)    
+\end{equation}
+
+Si la source sonore est ponctuelle et le rayonnement isotrope à symétrie sphérique, \(I = \frac{P_{t}}{4\pi r^{2}}\), avec \(P_{t}\) la puissance de l'émetteur et \(r\) la distance de l'observateur.
+
+\subsection{Ondes sphériques}
+
+En trois dimensions l'équation d'onde se généralise à \(\frac{\partial^{2}f}{\partial t^{2}} = v^{2}\left( \frac{\partial^{2}f}{\partial x^{2}} + \frac{\partial^{2}f}{\partial y^{2}} + \frac{\partial^{2}f}{\partial z^{2}} \right)\) pour toute fonction \(f\).\\
+
+\underline{Vecteur de Poynting :}\\
+
+Le vecteur de Poynting est le vecteur de la densité de puissance.
+
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \lVert \overrightarrow{S} \rVert = I
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        P_{t} = \int_{}^{}{\overrightarrow{S}d\overrightarrow{\Sigma}}
+    \end{equation}
+\end{minipage}
+
+Si la source est ponctuelle, \(P_{t} = 4\pi R^{2}I\).
+
+\section{Effet Doppler}
+
+\begin{equation}
+    f_{o} = \frac{v - v_{o}}{v - v_{s}}f_{s}
+\end{equation}
+
+Si \(v_{s}\) et \(v_{o} \ll v\), alors \(\frac{f_{o} - f}{f_{s}} = \frac{\Delta v_{s,o}}{v}\).
+
+Pour être certain des signes à utiliser, on peut réécrire la formule sous forme vectorielle :
+
+\begin{equation}
+    \color{red} \boxed{\color{black} \frac{f_{o}}{f_{s}} = \frac{v - \left( {\widehat{v}}_{o} \cdot {\widehat{v}}_{s \rightarrow o} \right) \cdot \left| v_{o} \right|}{v - \left( {\widehat{v}}_{s} \cdot {\widehat{v}}_{s \rightarrow o} \right) \cdot \left| v_{s} \right|}} \color{black}
+\end{equation}
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : une octave plus basse correspond à une fréquence divisée par deux.
+\end{itemize}
+
+\section{Polarisation, réflexion et réfraction}
+
+\subsection{Onde plane monochromatique scalaire}
+
+\begin{equation}
+    M\left( x,y,z,t \right) = A \cdot \sin\left( \overrightarrow{k} \cdot \overrightarrow{r} - \omega t \right)
+\end{equation}
+
+Avec \(\overrightarrow{r}\) les coordonnées de l'endroit où l'on veut calculer \(M\) et \(\overrightarrow{k}\) le vecteur d'onde (direction de propagation et norme \(k = 2\pi/\lambda\).
+
+Lorsque \(\overrightarrow{k}\cdot\overrightarrow{r}\) est une constante :
+
+\begin{itemize}
+    \item Le front d'onde est un plan si \(\overrightarrow{k} = k\widehat{x}\)
+    \item Le front d'onde est une sphère si \(\overrightarrow{k} = k\widehat{r}\)
+    \item Le front d'onde est un cylindre si \(\overrightarrow{k} = k\sqrt{x^{2} + y^{2}}\)
+\end{itemize}
+
+Si l'onde est vectorielle, \(\overrightarrow{M}\left( x,y,z,t \right) = A\sin\left( \omega t - \overrightarrow{k} \cdot \overrightarrow{r} \right)\widehat{a}\). Le vecteur \(\widehat{a}\) définit la direction de polarisation.
+
+\begin{itemize}
+    \item[$\rightarrow$] Remarque : pour savoir si une fonction \(\overrightarrow{M}\left( \overrightarrow{r},t \right)\) est une onde, il faut vérifier si elle vérifie l'équation d'onde.
+\end{itemize}
+
+\subsection{Polarisation}
+
+La polarisation est un concept qui sert à donner une information sur la direction d'oscillation d'un vecteur associé à une onde transverse. Le type de polarisation indique la forme du lieu parcouru par l'extrémité du vecteur champ électrique (pour les ondes EM) au cours du temps, à un endroit donné de l'espace.\\
+
+\underline{Polarisation linéaire :}
+
+\begin{equation}
+    \overrightarrow{E}\left( \overrightarrow{r},t \right) = \overrightarrow{A} \cdot \sin\left(\overrightarrow{k} \cdot \overrightarrow{r} - \omega t \right)
+\end{equation}
+
+Le vecteur \(\overrightarrow{A}\) définit la polarisation et le vecteur \(\overrightarrow{k}\) la direction de propagation.\\
+Elle est linéaire car l'argument du sinus est le même dans toutes les directions. 
+
+\underline{Polarisation elliptique :}
+
+\begin{equation}
+    \overrightarrow{E}\left( t \right) = A_{x}\sin{\left(\omega t \right)\overrightarrow{1_{x}} + A_{y}\sin\left( \omega t + \phi \right)\overrightarrow{1_{y}}}
+\end{equation}
+
+Où \(\overrightarrow{1_{x}}\) et \(\overrightarrow{1_{y}}\) sont deux vecteurs de base perpendiculaire à \(\overrightarrow{k}\).\\
+
+Cas particuliers : \\
+
+\begin{itemize}
+    \item Si \(\phi = n\pi\), la polarisation est linéaire.
+    \item Si \(\phi = \pi/2\) et \(A_{x} = A_{y}\), la polarisation est circulaire : les deux vecteurs sont perpendiculaires, de même amplitude et de phase 90$\circ$; on a donc les deux axes d'un cercle.
+    \item [$\rightarrow$] Remarque : la polarisation est toujours elliptique, mais ce n'est pas
+  toujours le terme le plus précis.
+\end{itemize}
+
+\subsection{Réflexion et réfraction }
+
+\includegraphics[width=4.86136in,height=1.02783in]{img/Réflexion et réfraction.png} \\
+\underline{Cas de l'onde mécanique transverse :}\\
+
+La tension \(F\) est constante dans toute la corde. Les densités linéiques diffèrent de part\footnote{En gros la corde est d'un matériau différent de chaque côté et ses propriétés changent.} et d'autre de l'interface la vitesse de propagation change à l'interface de \(\left( F/m_{L1} \right)^{1/2}\) à
+\(\left( F/m_{L2} \right)^{1/2}\).
+
+\begin{itemize}
+    \item Onde incidente : \(\xi_{1}\left( x,t \right) = I\sin\left( k_{1}x - \omega t \right)\), \(k_{1} = 2\pi/\lambda_{1} = \omega/v_{1}\)
+    \item Onde réfléchie : \(\xi_{1r}\left( x,t \right) = R\sin\left( - k_{1}x - \omega t \right)\), \(k_{1} = 2\pi/\lambda_{1} = \omega/v_{1}\ \)
+    \item Onde transmise : \(\xi_{2}\left( x,t \right) = T\sin\left( k_{2}x - \omega t \right)\), \(k_{2} = 2\pi/\lambda_{2} = \omega/v_{2}\)
+\end{itemize}
+
+!! Les deux ondes sont en phase et les positions/vitesses du point blanc sont identiques pour les deux ondes.\\
+\underline{Conditions d'interface :}
+
+\begin{itemize}
+    \item Continuité du déplacement vertical : \(\ \xi_{1}\left( 0,t \right) + \xi_{1r}\left( 0,t \right) = \xi_{2}\left( 0,t \right) \Longrightarrow I + R = T\) 
+    \item Continuité de la force verticale exercée sur la corde : \(F_{y1}\left( 0,t \right) + F_{y1r}\left( 0,t \right) = F_{y2}\left( 0,t \right)\). Or \(F_{yi}\left( x,t \right) = - F\frac{\partial\xi_i}{\partial x} \Longrightarrow k_{1}I - k_{1}R = k_{2}T\)\footnote{Montre comment on y arrive.}
+\end{itemize}
+Le terme de dérivée est la pente de la corde à l'interface.
+On a donc deux équations à deux inconnues : \(I\) est un paramètre.
+
+\subsection{Indice de réfraction }
+\(n \triangleq \left( \varepsilon_{r}\mu_{r} \right)^{1/2}\).\\
+Plus précisément, \(Z = \sqrt{\frac{\mu}{\varepsilon}} \approx 377\sqrt{\frac{\mu_{r}}{\varepsilon_{r}}}\)\\
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : un milieu est isotrope si \(\varepsilon \in \mathbb{R}^{1}, \notin \mathbb{R}^{n > 1}\) (donc scalaire), et linéaire si \(\varepsilon\in\mathbb{R} \notin \mathbb{C}\).
+\end{itemize}
+
+En passant d'un milieu à impédance \(Z_{1}\) à un milieu d'impédance \(Z_{2}\), l'onde doit adapter sa vitesse, tout en respectant les conditions d'interface du champ EM aux interfaces. \\
+
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Indice de réfraction.png}    
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \underline{Postulats : }
+    \begin{itemize}
+        \item La fréquence \(\omega\) se conserve de part et d'autre de l'interface.
+        \item Les vecteurs d'onde appartiennent à un même plan, qui contient aussi la normale à l'interface.
+        \item \(\theta_{1} = \theta_{1r}\)
+        \item \(v_{2}\sin\left( \theta_{1} \right) = v_{1}\sin\left( \theta_{2} \right)\) (loi de Snell-Descartes).
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Amplitude des ondes}
+Essaie de comprendre mais retiens juste les lois de Fresnel.
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Amplitude des ondes.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+
+\(\overrightarrow{E_{1}}\left( \overrightarrow{r},t \right) = \left( E_{1}^{\parallel}\cos\left( \theta_{1} \right);E_{1}^{\bot};E_{1}^{\parallel}\sin\left( \theta_{1} \right) \right) \cdot \sin\left(\overrightarrow{k_{1}} \cdot \overrightarrow{r} - \omega t \right)\)
+
+\[\overrightarrow{H_{1}}\left( \overrightarrow{r},t \right) = 1/Z_{1}\left( \overrightarrow{1_{k}} \times \overrightarrow{E_{1}} \right)\]
+
+On peut ensuite injecter \(\overrightarrow{E_{1}}\) dans \(\overrightarrow{H_{1}}\).\\
+Pour les ondes transmises et réfléchies, on trouve : 
+\end{minipage}\\ \newline
+
+Transmise : \(\overrightarrow{E_{2}}\left( \overrightarrow{r},t \right) = \left( E_{2}^{\parallel}\cos\left( \theta_{2} \right);E_{2}^{\bot};E_{2}^{\parallel}\sin\left( \theta_{2} \right) \right) \cdot \sin\left( \overrightarrow{k_{2}} \cdot \overrightarrow{r} - \omega t \right)\)
+
+Réfléchie : \(\overrightarrow{E_{1r}}\left( \overrightarrow{r},t \right) = \left( E_{1r}^{\parallel}\cos\left( \theta_{1r} \right);E_{1r}^{\bot}; - E_{1r}^{\parallel}\sin\left( \theta_{1} \right) \right) \cdot \sin\left( \overrightarrow{k_{1r}} \cdot \overrightarrow{r} - \omega t \right)\)\\
+
+\underline{Lois de Fresnel :}\\
+Champ réfléchi : \\
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        E_{1r}^{\parallel} = \frac{Z_{2}\cos\left( \theta_{2} \right) - Z_{1}\cos\left( \theta_{1} \right)}{Z_{2}\cos\left( \theta_{2} \right) + Z_{1}\cos\left( \theta_{1} \right)}E_{1}^{\parallel}
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        E_{1r}^{\bot} = \frac{Z_{2}\cos\left( \theta_{1} \right) - Z_{1}\cos\left( \theta_{2} \right)}{Z_{2}\cos\left( \theta_{1} \right) + Z_{1}\cos\left( \theta_{2} \right)}E_{1}^{\bot}
+    \end{equation}
+\end{minipage}\\
+\newline
+Champ transmis/réfracté :\\
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        E_{2}^{\parallel} = \frac{2Z_{2}\cos\left( \theta_{1} \right)}{Z_{2}\cos\left( \theta_{2} \right) + Z_{1}\cos\left( \theta_{1} \right)}E_{1}^{\parallel}
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        E_{2}^{\bot} = \frac{2Z_{2}\cos\left( \theta_{1} \right)}{Z_{2}\cos\left( \theta_{1} \right) + Z_{1}\cos\left( \theta_{2} \right)}E_{1}^{\bot}
+    \end{equation}
+\end{minipage} \\
+\newline
+
+Lors d'une polarisation perpendiculaire, les vecteurs \(E_{i}\) sont perpendiculaires au plan d'incidence\footnote{Définis le plan d'incidence.} et les vecteurs \(H_{i}\) lui sont parallèles, et inversement pour la polarisation parallèle.\\
+
+\underline{Conséquences des lois de Fresnel :}\\ 
+
+- Lors du passage \(v_{1} \rightarrow v_{2},\ v_{1} > v_{2}\) : Le champ électrique réfléchi est de sens opposé au champ incident, et le champ électrique transmis est de même sens que le champ incident.
+
+\begin{itemize}
+    \item[$\rightarrow$] Remarque : sous incidence rasante, la réflexion est totale.
+\end{itemize}
+
+L'angle de Brewster est l'angle \(\theta_{B}\) tel que quand \(\theta_{1} = \theta_{B}\), la composante parallèle de l'onde réfléchie s'annule (coefficient de Fresnel nul). Si \(\mu_{r} = 1\), \(\theta_{B} = \theta_{1}\) tel que \(\theta_{1} + \theta_{2} = \pi/2\).
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : en général, l'état de polarisation d'une onde est modifié lors d'une réflexion ou réfraction.
+\end{itemize}
+
+- Lors du passage \(v_{1} \rightarrow v_{2},\ v_{2} > v_{1}\) : le champ électrique réfléchi est de même sens que le champ incident, et le champ électrique transmis est de même sens que le champ incident. \\
+
+L'angle critique est l'angle tel que, au-delà de celui-ci, la réflexion est totale : \(\sin\left( \theta_{1c} \right) = n_{2}/n_{1}\).
+
+\section{Interférences}
+
+\subsection{Principe de superposition des ondes}
+
+Les effets en provenance de plusieurs sources s'additionnent. Si deux ondes ou plus vérifient l'équation d'onde, alors on peut les additionner vectoriellement.\footnote{Peut être plus compliqué en raison des conditions aux limites.}
+
+\subsection{Interférences entre deux sources}
+
+Pour avoir des interférences entre les sources, il faut que celles-ci soient de même \(\omega\) (et de même polarisation). Soit une onde 1 d'équation \(A\cos\left( kr_{1} - \omega t \right)\) et une onde 2
+d'équation \(A\cos\left( kr_{2} - \omega t \right)\). Par le principe de superposition, l'onde résultante est \(2A\cos\left( \phi/ 2 \right)\cos\left( kr - \omega t \right)\), avec \(\phi = k\left( r_{2} - r_{1} \right)\) et \(r = (r_{1} + r_{2})/2\). \\
+
+La somme est maximale lorsque \(\phi = 2n\pi\) et minimale lorsque \(\phi = \left( 2n + 1 \right)\pi\). Les lieux des points où les interférences sont destructives sont appelées lignes nodales et les lieux des points où les interférences sont constructives sont appelées lignes ventrales, ou anti-nodales. Elles ont toutes une forme hyperbolique.
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : le phénomène d'interférence redistribue spatialement l'énergie, mais ne crée pas, ni ne perd, de l'énergie. 
+\end{itemize}
+\underline{Représentation de la distribution de l'intensité :}
+
+\begin{minipage}{.2\textwidth}
+    \includegraphics[width=1.09033in,height=1.2084in]{img/Intensité (1).png}
+\end{minipage}
+\begin{minipage}{.2\textwidth}
+    \includegraphics[width=0.78476in,height=1.11117in]{img/Intensité (2).png}
+\end{minipage}
+\begin{minipage} {.6\textwidth}
+    On peut représenter l'intensité lumineuse en échelle de gris. L'intensité en un point est alors le niveau de gris de ce point.\\
+    Il est également possible de la représenter sous forme de diagramme polaire : la hauteur des lobes représente l'intensité en une direction. 
+\end{minipage}
+
+\subsection{Principe de Huygens}
+\begin{minipage}{.3\textwidth}
+    \includegraphics[width=1.66667in,height=1.4375in]{img/Huygens.png}
+\end{minipage}
+\begin{minipage}{.7\textwidth}
+    Chaque point atteint par une onde se comporte comme une source secondaire qui émet des ondelettes sphériques dans toutes les directions. Toutes ces ondelettes forment le nouveau front d'onde en \(t'\). \\
+    Cela fonctionne pour tout type d'onde, mais uniquement dans la direction de propagation de l'onde.    
+\end{minipage}
+
+\subsection{Deux fentes éclairées par une onde plane}
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width=2.39861in,height=1.54861in]{img/Fentes.png}
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    Le déphasage entre les deux ondes atteignant le point \(P\) est \(\phi\left( P \right) = 2\pi\frac{r_{2} - r_{1}}{\lambda} + \phi'\), avec \(\phi'\) le déphasage entre les deux sources et \(\lambda\) la longueur d'onde du milieu de gauche.\\
+    
+    Les deux sources sont considérées comme cohérentes si les fentes sont assez proches.
+\end{minipage}\footnote{Deux sources sont cohérentes si elles ont un déphasage identique.}
+
+L'approximation de Fraunhofer dit que le point \(P\) est "à l'infini". On a donc un triangle rectangle et \(r_{2} - r_{1} = d\sin\theta\), avec \(d\) la distance entre les deux fentes, et donc entre les sources. \\
+
+Les deux sources sont atteintes par une même onde, on a donc par trigonométrie \(\phi' = \left( 2\pi/\lambda \right)d\sin\alpha\), avec \(\lambda\) la longueur d'onde du milieu de droite. \\
+
+Si les milieux de droite et de gauche sont identiques, on peut simplifier \(\phi\left( P \right) = \left( 2\pi/\lambda \right)d\left( \sin\theta + \sin\alpha \right)\).\\
+
+Si \(\alpha = 0\), on a des interférences constructives pour \(\left( 2\pi/\lambda \right)d\sin\theta = 2m\pi \Longrightarrow d\sin\theta = m\lambda\), avec \(m_{\max} = d/\lambda\).
+
+\subsection{Film illuminé par une onde plane}
+\begin{minipage}{.3\textwidth}
+    \includegraphics[width=\textwidth]{img/Savon.png}     
+\end{minipage}
+\begin{minipage}{.7\textwidth}
+    \begin{itemize}
+        \item [$\rightarrow$] Remarque : les trois ondes viennent d'une même source et sont identiques, les couleurs servent uniquement à les différencier.
+    \end{itemize}
+    Les trois ondes sont choisies de manière à ce que l'onde bleue arrive en contact avec la surface à l'endroit où l'onde rouge est réfléchie. Les trois sont de déphasages différents, car les distances qu'elles ont parcourues sont différentes.
+    
+\end{minipage}
+
+\begin{equation}
+    n_{0}\sin\left( \theta_{0} \right) = n_{1}\sin{(\theta_{1})} = n_{2}\sin\left( \theta_{2} \right)
+\end{equation}
+
+Le retard du bleu par rapport au rayon incident est \(\left( 2\pi/\lambda_{0} \right)a\) et le retard du rouge pointillé par rapport au rayon incident est \(\left( 2\pi/\lambda_{1} \right)\left( b_{1} + b_{2} \right)\).\\
+
+Le retard total du rouge par rapport au bleu est \(\phi = 4\pi dn_{1}/\left( n_{0}\lambda_{0} \right)\cos\theta_{1}\) (après simplifications). Si \(\phi = 2m\pi\), la couleur associée à \(\lambda_{0}\) est plus perçue, et si \(\phi = \left( 2m + 1 \right)\pi\), la couleur associée à \(\lambda_{0}\) est moins perçue. \\
+
+!! Il faut ajouter un retard de \(\pi\) si on passe d'un milieu moins réfringent à un milieu plus réfringent.
+
+\subsection{Représentation d'une onde sous forme complexe}
+
+On oriente le système d'axes pour avoir \(x\) dans la direction de propagation et \(z\) dans la direction de polarisation.
+
+\(\overrightarrow{E}\left( x,y,z,t \right) = A\cos\left(kx - \omega t \right)\overrightarrow{1_{z}}\), or \(\cos\left( a \right) = Re\left\{ \cos\left( a \right) + j\sin\left( a \right) \right\} = Re\left\{ \exp\left(ja\right) \right\}\). On a donc \({\overrightarrow{E}}_{c}\left( x,y,z,t \right) = \text{Re}\left\{ \ A\exp\left\lbrack j\left( kx - \omega t \right) \right\rbrack\overrightarrow{1_{z}} \right\}\). Cela permet de calculer plus facilement l'intensité des ondes : le produit scalaire du champ complexe par son conjugué est proportionnel à l'intensité.
+
+\subsection{Calcul de l'intensité d'une figure d'interférence}
+
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width=2.23611in,height=1.6125in]{img/Interférence.png}
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    \underline{Hypothèses :}
+    \begin{itemize}
+        \item L'onde incidente est plane.
+        \item Les ondes sont perpendiculaires, car les sources sont en phase.
+        \item L'onde est sinusoïdale.
+        \item Les fentes sont idéales, à distance \(d\).
+        \item Fraunhofer.
+    \end{itemize}
+\end{minipage}\\
+
+En notation complexe, avec le champ dirigé selon \(\overrightarrow{1_{z}}\) : 
+
+\begin{equation}
+    \overrightarrow{E}\left( P \right) = \sum_{p = 1}^{N}{\left( A/R_{p} \right)\exp\left( j\left\lbrack kR_{p} - \omega t \right\rbrack \right)}\overrightarrow{1_{z}}
+\end{equation}
+
+Par l'approximation de Fraunhofer, \(R_{p} = R + \left( p - 1 \right)d\sin\theta\). 
+
+\begin{equation}
+    \overrightarrow{E}\left( P \right) = \sum_{p = 1}^{N}{\left( \frac{A}{R + \left( p - 1 \right)d\sin\theta} \right)\exp\left( j\left\lbrack k\left( R + \left( p - 1 \right)d\sin\theta \right) - \omega t \right\rbrack \right)}\overrightarrow{1_{z}}
+\end{equation}
+\begin{equation}
+    \approx \sum_{p = 1}^{N}{\frac{A}{R}\exp\left( j\left\lbrack k\left( R + \left( p - 1 \right)d\sin\theta \right) - \omega t \right\rbrack \right)}\overrightarrow{1_{z}}
+\end{equation}
+
+\begin{itemize}
+    \item[$\rightarrow$] Remarque : on ne simplifie par \(R_{d}\) dans l'exponentielle complexe, car une petite variation de déphasage (e.g. \(\pi/2\)) fait beaucoup varier la valeur.
+\end{itemize}
+
+\begin{equation}
+    \overrightarrow{E}\left( P \right) = \frac{A\exp\left( j\left\lbrack kR - \omega t \right\rbrack \right)}{R}\overrightarrow{1_{z}}\frac{1 - \exp\left( jNkd\sin\theta \right)}{1 - \exp\left( jkd\sin\theta \right)}
+\end{equation}
+
+Par la proportionnalité de l'intensité, 
+
+\begin{equation}
+    \color{red}\boxed{\color{black}I \propto \overrightarrow{E}\left( P \right).{\overrightarrow{E}}^{*}\left( P \right) = \frac{A^{2}}{R^{2}}\frac{\sin^{2}\left( \frac{N\pi d\sin\theta}{\lambda} \right)}{\sin^{2}\left( \frac{\pi d\sin\theta}{\lambda} \right)}} \color{black}
+\end{equation}
+
+! Cette formule donne la répartition, et pas la valeur réelle. \\
+Lorsque \(d\sin\theta = m\lambda\), les deux \({sin^2}\ \) tendent vers \(0\), mais leur quotient tend vers \(N^{2}\). On a donc un maximum d'intensité, car tous les faisceaux sont en phase \(I\sim\frac{A^{2}N^{2}}{R^{2}}\). 
+
+\section{Diffraction}
+
+\subsection{Diffraction par une fente de petite taille}
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width=2.30556in,height=1.09981in]{img/Diffraction.png}
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    La direction de propagation de la lumière est déviée par la fente.
+    Par le principe de Huygens, cette fente est équivalente à un ensemble de \(N\) petites sources d'ondelettes.
+    Le problème est alors identique à celui de la figure d'interférences au point supérieur, et la valeur de l'intensité est la même.
+\end{minipage}\\
+
+On pose \(I_{0} = \frac{A^{2}N^{2}}{R^{2}} = I\left( \theta = 0 \right)\). On a donc \(I\left( P \right)\sim\frac{I_{0}}{N^{2}}\frac{\sin^{2}\left( \frac{N \pi d\sin\theta}{\lambda} \right)}{\sin^{2}\left( \frac{\pi d \sin\theta}{\lambda} \right)}\). \\
+! La valeur de \(I\) ne diminue pas avec \(N\), car \(I_{0}\) augmente avec \(N\). \\
+En diffraction, on a les minima d'intensité lorsque 
+\begin{equation}
+    \frac{\pi a\sin\theta}{\lambda} = m\pi \Longrightarrow a\sin\theta = m\lambda
+\end{equation}
+
+Avec \(a\) la largeur de la fente. !! \(m \neq 0\).
+
+\subsection{Diffraction par un objet de petite taille}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width=\textwidth]{img/Diffraction petit.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Soit \(E_{0}\) le champ transmis en l'absence d'obstacle. \(E_{2} = E_{0} - E_{1}\), avec \(E_{2}\) le champ transmis par diffraction par un objet de petite taille, et \(E_{1}\) le champ transmis par diffraction par une fente de la taille de cet objet (situation complémentaire).
+\end{minipage} \\
+Aux endroits où l'on peut négliger le champ transmis, \(E_{0} \approx 0\) (partout sauf au point central), on a \(I_{2} = I_{1} = \left| E_{1} \right|^{2} = \left| E_{2} \right|^{2}\).
+
+\(\Longrightarrow\) La diffraction par un petit objet et la situation complémentaire donne donc la même figure de diffraction.
+
+\subsection{Pouvoir séparateur}
+
+Diffraction pour une fente rectangulaire de largeur \(a\) : minima pour \(a\sin\theta = m\lambda\).\\
+
+\begin{minipage}{.2\textwidth}
+    \includegraphics[width=1.29173in,height=1.30562in]{img/Pouvoir séparateur (1).png}
+\end{minipage}
+\begin{minipage}{.7\textwidth}
+    Diffraction par une ouverture circulaire de diamètre \(a\) : \(\Delta\left( \sin\left( \theta \right) \right) = 2.44\lambda/a\).\\
+    \begin{minipage}{.6\textwidth}
+        La figure de diffraction est appelée disques d'Airy.
+    \end{minipage}
+    \begin{minipage}{.2\textwidth}
+        \includegraphics[width=1.77092in,height=0.84032in]{img/Pouvoir séparateur (2).png}
+    \end{minipage}
+\end{minipage}\\
+
+Si deux sources sont séparées par une distance \(d\) et passent par une
+ouverture de diamètre \(a\), il sera possible de faire la différence
+entre les deux sources tant que
+\(\Delta\left( \sin\left( \theta \right) \right) > 1.22\lambda/a\). Pour
+augmenter la résolution d'un microscope, il faut donc augmenter \(a\),
+ou diminuer \(\lambda\).
+
+\[d_{\min} = L\tan\left( \Delta\theta \right) \approx L\Delta\theta = 1.22L\lambda/a\]
+
+\subsection{Réseaux de N fentes de largeur finie et de période d}
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width=\textwidth]{img/Réseau de fentes.png}
+\end{minipage}
+\begin{minipage} {.55\textwidth}
+    Par le principe de Huygens, chaque fente est comme la source d'une infinité d'ondelettes. Il suffit donc d'additionner les ondes en arrivant à \(P\) en prenant en compte le déphasage. \\
+    En notation complexe, l'amplitude du champ en \(P\) vaut :
+    \begin{equation}
+        E\left( P \right)\sim\sum_{p = 0}^{N - 1}{\int_{pd}^{pd + a}{\frac{A}{R_{\left( z \right)}}\exp\left( j\left\lbrack kR_{\left( z \right)} - \omega t \right\rbrack \right)dz}}
+    \end{equation}
+\end{minipage}\\
+
+Puisque l'onde est sphérique, \(k\) est un nombre (pas un vecteur), et \(R\) est la distance radiale à la source. De plus, par l'approximation de Fraunhofer, \(R_{\left( z \right)} = R_{0} + z\sin\theta\). On peut
+donc simplifier la valeur de \(E\left( P \right)\) : 
+\begin{equation}
+    E\left( P \right)\sim\frac{A}{R_{\left( 0 \right)}}\ \exp\left( j\left\lbrack kR_{\left( 0 \right)} - \omega t \right\rbrack \right)\frac{\exp\left( jka\sin\theta \right) - 1}{jk\sin\theta}\ \frac{1 - \exp\left( jNkd\sin\theta \right)}{1 - \exp\left( jkd\sin\theta \right)}
+\end{equation}
+
+\begin{equation}
+    \color{red}\boxed{\color{black}\Longrightarrow I\left( P \right) = I_{0}\frac{\sin^{2}\left( \frac{\pi a\sin\theta}{\lambda} \right)}{\left( \frac{\pi a\sin\theta}{\lambda} \right)^{2}}\ \frac{\sin^{2}\left( \frac{N\pi d\sin\theta}{\lambda} \right)}{{sin^2}\left( \frac{\pi d\sin\theta}{\lambda} \right)}}\color{black}
+\end{equation}
+
+Le premier quotient est l'expression de l'intensité diffractée par une fente de largeur \(a\), et le deuxième l'expression de l'intensité d'interférence par un réseau de \(N\) fentes idéales (de largeur nulle). \\
+Les pics de luminosité sont observés lorsque \(\pi d\sin\left( \theta \right)/\lambda = m\pi\), sauf lorsque \(\pi a\sin\theta/\lambda = p\pi\), avec \(p \in \mathbb{Z}^{*}\). \\
+La largeur des lobes est \(\Delta\left( d\sin\theta/\lambda \right) = 2/N\), avec \(N\) le nombre
+de fentes.
+
+\section{Ondes stationnaires }
+
+\subsection{Onde stationnaire mécanique}
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width=\textwidth]{img/Ondes stationnaires.png}
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    Soit une corde de longueur \(L\) dont les extrémités sont fixées. Soit une onde \(f_{1}\) partant de \(x = L\). La corde étant fixée en \(x = 0\), il y aura un retour d'onde \(f_{2}\) lorsque \(f_{1}\) atteindra \(x = 0\). 
+\end{minipage}\\
+
+Lorsque \(f_{2}\) atteindra \(x = L\), il y aura un retour d'onde \(f_{3}\), et ainsi de suite indéfiniment.
+
+\begin{equation}
+    \begin{cases}
+        f_{1}\left( x,t \right) = \cos\left( \omega t + kx \right),\ f_{2} = - \cos\left( \omega t - kx \right)\\
+        f_{2}\left( L,t \right) + f_{3}\left( L,t \right) = 0 \rightarrow f_{3} = \cos\left( \omega t + kx - \phi_{3} \right) \rightarrow \phi_{3} = - 2kL\\
+    \end{cases}
+\end{equation}
+
+Si \(\phi_{3} = 2m\pi\), \(f_{3}\) et \(f_{1}\) sont constructives, ainsi que toutes les ondes suivantes. On a un effet de résonance et l'amplitude augmente.
+
+La fonction \(\xi\left( x,t \right)\) vérifie l'équation d'onde \(\frac{\partial^{2}\xi}{\partial x^{2}} = \frac{1}{v^{2}}\frac{\partial^{2}\xi}{\partial t^{2}}\). 
+
+Par séparation des variables, on a \(\xi\left( x,t \right) = \Upsilon\left( t \right)\Xi\left( x \right)\),
+il s'agit d'une fonction sinusoïdale de l'espace, dont l'amplitude varie avec le temps.
+
+L'équation d'onde se réécrit \(\Upsilon\Xi^{''} = \frac{1}{v^{2}}\Xi\Upsilon^{''}\), ou encore \(\frac{\Xi^{''}}{\Xi} = \frac{1}{v^{2}}\frac{\Upsilon^{''}}{\Upsilon} = cste\).
+
+Cette constante prend une valeur parmi \(\left\{ \begin{matrix}
+k^2\\
+0 \\
+ - k^{2} \\
+\end{matrix} \right.\ ,k\mathbb{\in R}\).
+
+Si la constante vaut \(k^{2}\ \)ou \(0\), on a la solution triviale \(\xi\left( x,t \right) = 0\). Si la constante vaut \(- k^{2}\), on a 
+\begin{equation}
+    \begin{cases}
+        \Xi\left( x \right) = A\sin\left( kx \right),\ k = \frac{2\pi}{\lambda},\Xi\left( 0 \right) = 0 \\
+        \Upsilon\left( t \right) = A'\sin\left(\omega t \right) \\
+    \end{cases}
+\end{equation}
+
+\begin{equation}
+    \Longrightarrow \xi\left( x,t \right) = A^{''}\sin\left( kx \right)\sin\left( \omega t \right),\ \xi\left( L,t \right) = 0
+\end{equation}
+
+On trouve alors que \(k\) et \(\lambda\) sont quantifiés : 
+\(\left\{ \begin{matrix}
+k \in \left\{ \pi L,2\pi/L,3\pi/L,\ldots \right\} \\
+\lambda \in \left\{ 2L,2L/2,\ 2L/3,\ldots \right\} \\
+\end{matrix} \right.\ \)\\
+L'onde n'est pas stationnaire si ces valeurs ne sont pas vérifiées. \\
+\underline{Onde stationnaire dans un tube ouvert :}\\
+
+L'équation d'onde est \(\frac{\partial^{2}p}{\partial x^{2}} = \frac{1} {v_{\text{son}}^{2}}\frac{\partial^{2}p}{\partial t^{2}}\), où \(p\) est la pression acoustique (la surpression par rapport à la pression atmosphérique). La surpression aux extrémités du tube est nulle.
+
+\begin{equation}
+    p\left( x,t \right) = A\sin{(k_{m}x)}\sin\left( \omega_{m}t \right),\ k_{m}L_{\text{tube}} = m\pi
+\end{equation}
+
+Cela peut se généraliser pour tout type d'onde (EM, \ldots). \\
+Pour les ondes stationnaires, le rapport \(E/H\) n'est pas égal à une constante, puisque les ondes stationnaires sont des combinaisons d'ondes progressives.\\
+
+Tout nœud de pression correspond à un ventre de vitesse, et inversement. Pression et vitesse sont déphasées de \(\pi/2\) temporellement. \\
+
+\underline{Onde stationnaire dans un tube fermé à une extrémité :} \\
+
+Les conditions aux limites changent : seule l'extrémité ouverte est nulle. On obtient \(\lambda\left( \frac{m}{2} - \frac{1}{4} \right) = L\), et donc une fréquence \(f = \frac{v}{4L}\left( 2m - 1 \right)\).\\
+
+\underline{Généralisation :}\\
+
+En général, un système supporte plusieurs modes :
+
+\begin{equation}
+    \xi\left( x,t \right) = \sum_{m = 1}^{\infty}{A_{m}\sin\left( k_{m}x \right)\sin\left( \omega_{m}t \right)} 
+\end{equation}
+\underline{Ondes stationnaires en 3D :}
+
+\begin{equation}
+    \frac{\partial^{2}\xi}{\partial x^{2}} + \frac{\partial^{2}\xi}{\partial y^{2}} + \frac{\partial^{2}\xi}{\partial z^{2}} = \frac{1}{v_{\text{son}}^{2}}\frac{\partial^{2}\xi}{\partial t^{2}}
+\end{equation}
+
+Si \(\xi = 0\) sur les parois du domaine cubique, la solution est de type :
+
+\begin{equation}
+    \xi\left( x,y,z,t \right) = A\sin\left( k_{1}x \right)\sin\left( k_{2}y \right)\sin\left( k_{3}z \right)\sin\left(\omega t \right)
+\end{equation}
+
+Avec \(\left\{ \begin{matrix}
+k_{1}L_{x} = m_{1}\pi \\
+k_{2}L_{y} = m_{2}\pi \\
+k_{3}L_{z} = m_{3}\pi \\
+\end{matrix} \right.\ \) et \(\left\{ \begin{matrix}
+k = 2\pi/\lambda = \sqrt{k_{1}^{2} + k_{2}^{2} + k_{3}^{2}} \\
+\omega = kv_{\text{son}} \\
+\end{matrix} \right.\ \) \\
+\newline
+\newline
+\underline{Résonance :}\\
+
+La résonance est l'excitation d'une mode propre d'un système (\(m = 1,2,\ldots\)) par une onde externe de même fréquence. L'amplitude du mode propre est fortement amplifiée, par stockage de l'énergie de
+l'onde dans le mode propre du système. 
+
+\subsection{Battement}
+\begin{minipage}{.6\textwidth}
+    \includegraphics[width = \textwidth]{img/Battement.png}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    La somme de deux ondes de fréquences différentes donne des battements, i.e. des interférences se déplaçant dans l'espace. \\
+    La fréquence de l'enveloppe est 
+    \begin{equation}
+        f = (f_{1} - f_{2})/2
+    \end{equation}
+\end{minipage} \\
+
+Cependant, l'oreille entend de façon identique les parties où l'enveloppe est négative, et celles où elle est positive. La fréquence de battement est donc généralement définie comme la fréquence d'apparition des zéros d'intensité : \(f = f_{1} - f_{2}\), pour \(f_{1} > f_{2}\).
+
+\section{Rayonnement électromagnétique -- sources et énergie}
+
+\subsection{Source du rayonnement}
+
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width=\textwidth]{img/Hertz (1).png}
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    Lorsque la tension aux bornes \(AB\) est suffisamment élevée, il se forme un arc électrique entre les bornes.
+    \includegraphics[width= .5\textwidth]{img/Hertz (2).png}
+\end{minipage}
+Dans ce cas, lorsque l'on règle la capacité du second circuit à une certaine valeur, l'ampoule s'allume, et ce quelle que soit la distance au premier circuit. On constate donc qu'une onde EM se propage entre les 
+ deux circuits. \\
+
+\underline{Retard :}
+
+Si il existe un rayonnement électromagnétique, on utilise les équations de Maxwell, d'onde et de propagation, et on a une vitesse \(c \neq \infty\). Il y a donc un temps de propagation \(t = \frac{\left| \overrightarrow{r} \right|}{c} \neq 0\). Une onde EM arrivant au point \(P\) à l'instant \(t\) dépend donc du rayonnement de la source en 
+\begin{equation}
+    \color{red}\boxed{\color{black}t' = t - \frac{\left| \overrightarrow{r} \right|}{c}}\color{black}
+\end{equation}
+En gros ça dit juste que le rayonnement met du temps à arriver.\\
+\underline{Conservation d'énergie :}\\
+
+Autour d'une source ponctuelle de rayonnement EM isotrope, la
+propagation est sphérique, et l'intensité rayonnée est
+
+\begin{equation}
+    I \approx \frac{1}{4\pi r^{2}}\qquad E,H \approx \frac{1}{r}
+\end{equation}
+
+\begin{itemize} 
+    \item [$\rightarrow$] Remarque : à grande distance, toute onde sphérique est approximée comme plane.
+    \item [$\rightarrow$] Remarque : le phénomène ne peut pas être expliqué par les loi de Coulomb ou Biot-Savart parce que les charges sont accélérées.
+\end{itemize}
+
+\underline{Loi empirique :}\\
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width=2.91389in,height=2.09722in]{img/Charge accélérée.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Le champ \(\overrightarrow{E}\) est transverse (\(\overrightarrow{E}\bot\overrightarrow{u_{r}}\)), est nul dans la direction \(\overrightarrow{u_{r}}//\overrightarrow{a}\) et maximum dans la direction \(\overrightarrow{u_{r}}\bot\overrightarrow{a}\). Le champ électrique au point \(P\) quelconque est
+    \begin{equation}
+        \left\{ \begin{matrix}
+{\overrightarrow{E}}_{P}\left( t \right) = - \frac{\mu_{0}}{4\pi}\frac{q}{r}{\overrightarrow{a}}_{\bot}\left( t' \right),\ {\overrightarrow{a}}_{\bot} = \overrightarrow{a} - \left( \overrightarrow{a} \cdot \overrightarrow{u_{r}} \right)\overrightarrow{u_{r}} \\
+{\overrightarrow{H}}_{P}\left( t \right) = \sqrt{\frac{\varepsilon_{0}}{\mu_{0}}}\overrightarrow{u_{r}} \times \overrightarrow{E}\left( t \right) \\
+\end{matrix} \right.\ 
+    \end{equation}
+\end{minipage}
+
+\subsection{Sources de rayonnement élémentaires}
+\underline{Une seule charge en MRUA :}\\
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width=2.43615in,height=1.89583in]{img/MRUA.png}
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    \begin{equation}
+        \overrightarrow{E} = E_{\theta}\overrightarrow{u_{\theta}}\
+    \end{equation}
+    \begin{equation}
+        E_{\theta} = \frac{\mu_{0}}{4\pi}\frac{q}{r'}a\left( t' \right)\sin\theta\footnote{Le signe moins disparait car on définit $\theta$ vers le bas.}
+    \end{equation}
+    \begin{equation}
+        H_{\varphi} = \sqrt{\frac{\varepsilon_{0}}{\mu_{0}}}E_{\theta}
+    \end{equation}
+    \(a_{\bot}\) définit la polarisation de \(E\) (en MRUA, elle est linéaire).
+\end{minipage} \\
+
+\underline{Dipôle électrique oscillant (modèle simplifié de Hertz) :}\\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Dipôle oscillant.png}
+\end{figure}
+La charge $-q$ est fixe et la charge $+ q$ oscille suivant \(Oz\) entre \(- z_{0}\) et \(+ z_{0}\). Puisque la charge négative est fixe, elle n'émet aucun champ rayonné.\\
+Le moment dipolaire électrique est \(p \triangleq qz\).
+\begin{equation}
+    z\left( t \right) = z_{0}\sin\left(\omega t \right) \Rightarrow p\left( t \right) = qz_{0}\sin\left( \omega t \right) = p_{0}\sin\left( \omega t \right)
+\end{equation}
+\begin{equation}
+    q \cdot a\left( t \right) = q\frac{d^{2}z\left( t \right)}{dt^{2}} = \frac{d^{2}p\left( t \right)}{dt^{2}} = - \omega^{2}p_{0}\sin\left(\omega t \right)        
+\end{equation}
+\begin{equation}
+    \sin\left( \omega t' \right) = \sin\left( \omega\left( t - \frac{r'}{c} \right) \right) = \sin\left( \omega t - kr' \right)
+\end{equation}
+On fait les hypothèses que \(r \gg z_{0} \rightarrow r' \approx r\), et \(\theta' \approx \theta \rightarrow a_{\bot} = a\sin\theta\). \\
+
+La première se justifie par le fait que le point \(P\) est très éloigné de la source et la seconde par le fait que si \(z_{0} \ll \lambda \rightarrow kz_{0} \approx 0 \rightarrow kr \approx kr'\).
+
+On trouve alors que 
+\begin{equation}
+    \overrightarrow{E} = E_{\theta}{\overrightarrow{u}}_{\theta} = \frac{\mu_{0}}{4\pi}\frac{q}{r'}a(t')\sin\theta = - \frac{p_{0}k^{2}}{4\pi\varepsilon_{0}}\frac{\sin\theta}{r}\sin\left( \omega t - kr \right)\text{\ \ \ \ \ \ \ \ \ \ \ \ \ }H_{\varphi} = \sqrt{\frac{\varepsilon_{0}}{\mu_{0}}}E_{\theta}
+\end{equation}
+
+\subsection{Antennes élémentaires}
+
+\underline{Dipôle électrique oscillant :}\\
+
+Deux charges \(\pm q\) sont en mouvement sinusoïdal opposé : \(p\left( t \right) = q2z_{0}\sin{\omega t} \rightarrow I\left( t \right)\) sinusoïdal.
+
+\begin{equation}
+    I\left( t \right) = \frac{dq}{dt} = \frac{dq}{dz}\frac{dz}{dt} = \frac{dq}{dz}\omega z_{0}\cos{\omega t} = I_{0}\cos{\omega t}
+\end{equation}
+\begin{equation}
+    \Longrightarrow I_{0}dz = dq\omega z_{0} \rightarrow I_{0}\Delta z = \Delta q \omega z_{0} \rightarrow I_{0}2z_{0} = 2q\omega z_{0} \rightarrow I_{0}h = \omega p_{0} \footnote{$h=2z_0$, pas la constante de Planck.}
+\end{equation}
+
+Le champ rayonné par un dipôle, ou un petit élément de courant (\(h \ll \lambda\)) est
+
+\begin{equation}
+    E_{\theta} = - \frac{\mu_{0}}{4\pi}\omega^{2}p_{0}\frac{\sin\theta}{r}\sin\left( \omega t - kr \right) = - \frac{\mu_{0}}{4\pi}\omega I_{0}h\frac{\sin\theta}{r}\sin\left( \omega t - kr \right) 
+\end{equation}
+\begin{equation}
+    = - \frac{1}{2}\sqrt{\frac{\mu_{0}}{\varepsilon_{0}}}\frac{h}{\lambda}I_{0}\frac{\sin\theta}{r}\sin\left( \omega t - kr \right)
+\end{equation}
+
+La polarisation du champ électrique est verticale. En réalité, elle ne l'est que dans le plan \(\theta_{0}\), mais on l'appelle verticale partout.\\
+
+\underline{Antennes linéaires :}\\
+
+Soit une antenne de longueur \(h\). On la décompose en une série de petits éléments de courant de longueur \(\Delta z\) mis bout à bout. !! on ne peut plus faire l'hypothèse que \(h \ll \lambda\) : il faut tenir
+compte des phases des champs rayonnés par différents éléments de courant lorsque l'on somme/intègre les champs élémentaires. 
+
+\begin{equation}
+    \Delta E_{\theta} = - \frac{1}{2}\ \sqrt{\frac{\mu_{0}}{\varepsilon_{0}}}\frac{\Delta z}{\lambda}I_{0}\frac{\sin\theta}{r'}\sin\left( \omega t - kr' \right)
+\end{equation}
+
+Avec \(r' = r - z\cos\theta\), et \(z\) varie entre \(- h/2\) et \(h/2\). Passons en complexe, avec l'hypothèse que \(I_{0}\) est constant selon \(h\), on trouve :
+
+\begin{equation}
+    \color{red}\boxed{\color{black}E_{\theta} = - \frac{1}{2\pi}\sqrt{\frac{\mu_{0}}{\varepsilon_{0}}}\frac{\Delta z}{\lambda}I_{0}\tan\theta\sin\left( \frac{kh}{2}\cos\theta \right)\sin\left( \omega t - kr \right)}\color{black}
+\end{equation}
+
+Pour \(h = \lambda/2\), ces antennes sont appelées antennes de demi-onde, et la polarisation est linéaire.
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : pour avoir une polarisation circulaire, il faut deux antennes de polarisation linéaire identiques et déphasées de \(90{^\circ}\).
+\end{itemize}
+
+\subsection{Densité d'énergie rayonnée}
+
+\underline{Rappel du vecteur de Poynting :}
+
+\begin{equation}
+    \overrightarrow{S} = \overrightarrow{E} \times \overrightarrow{H} = \frac{1}{\mu_{0}}\overrightarrow{E} \times \overrightarrow{B}
+\end{equation}
+
+Si l'onde est plane (\(\overrightarrow{E}\bot\overrightarrow{H}\bot\overrightarrow{u_{x}}\)) : 
+
+\begin{equation}
+    \left| \overrightarrow{S} \right| = EH = I,\ \overrightarrow{S} = I\ \overrightarrow{u_{x}} = \left\lbrack W/m^{2} \right\rbrack,\ \overrightarrow{H} = \sqrt{\varepsilon_{0}/\mu_{0}}{\overrightarrow{u}}_{x} \times \overrightarrow{E}
+\end{equation}
+
+Si l'onde est sinusoïdale : 
+\begin{equation}
+    E = E_{\max}\sin\left( \omega t - kx \right),\ H = H_{\max}\sin\left( \omega t - kx \right),\ \overrightarrow{S} = I\overrightarrow{u_{x}}
+\end{equation}
+
+\begin{equation}
+    \left| \overrightarrow{S} \right|_{\text{moy}} = E_{\max}H_{\max}\left\langle \sin^{2}\left( \omega t - kx \right) \right\rangle = \frac{E_{\max}H_{\max}}{2} = I_{\text{moy}}
+\end{equation}
+
+!! Ici, \(I\) est l'intensité \(\left\lbrack W/m^{2} \right\rbrack\), et pas le courant \(\left\lbrack A \right\rbrack\). 
+
+Un dipôle émet des ondes sphériques : la puissance totale transmise est \(P_{i} = \oint\overrightarrow{S}d\overrightarrow{\Sigma}\).
+
+Si la source est sinusoïdale, la puissance moyenne transmise est 
+\begin{equation}
+    P_{\text{moy}} = \oint_{}^{}{{\overrightarrow{S}}_{\text{moy}} \cdot d\overrightarrow{\Sigma}} = \int_{}^{}{\int_{}^{}{I_{\text{moy}}d\Sigma}}
+\end{equation}
+
+\begin{equation}
+    I_{\text{moy}} = \frac{I_{\max}}{2} = \sqrt{\frac{\mu_{0}}{\varepsilon_{0}}}\frac{H_{\varphi max}^{2}}{2} = \sqrt{\frac{\varepsilon_{0}}{\mu_{0}}}\frac{E_{\theta max}^{2}}{2}
+\end{equation}
+
+Pour un dipôle, cette puissance vaut\footnote{À pouvoir démontrer.}
+
+\begin{equation}
+    P_{\text{moy}} = \int_{}^{}{\int_{}^{}{I_{\text{moy}}d\Sigma}} = \int_{}^{}{\int_{}^{}{I_{\text{moy}}rd \theta\ r\sin\theta d\varphi}},\ E_{\theta max}\left( r \right) = \frac{\mu_{0}}{4\pi}\ \omega^{2}p_{0}\frac{\sin\theta}{r}
+\end{equation}
+\begin{equation}
+    \Longrightarrow P_{\text{moy}} = \left( \frac{\mu_{0}}{4\pi} \right)^{2}\sqrt{\frac{\varepsilon_{0}}{\mu_{0}}}\frac{\omega^{4}p_{0}^{2}}{2}\frac{r^{2}}{r^{2}}\int_{0}^{2\pi}{d \varphi\int_{0}^{\pi}{\sin^{3}\theta d \theta}} = \color{red}\boxed{\color{black}P_{\text{moy}} = \frac{\mu_{0}^{2}}{12\pi}\sqrt{\frac{\varepsilon_{0}}{\mu_{0}}}\omega^{4}p_{0}^{2}}\color{black}
+\end{equation}
+
+Dans le cas du dipôle (\(h \ll \lambda\)), 
+\begin{equation}
+    P_{\text{moy}} = \frac{\pi}{3}\sqrt{\frac{\mu_{0}}{\varepsilon_{0}}}\left( \frac{h}{\lambda} \right)^{2}I_{0}^{2}
+\end{equation}
+\(I_{0}\) est le courant. 
+
+Dans le cas d'une antenne quelconque, 
+
+\begin{equation}
+    P_{\text{moy}} = \frac{1}{4\pi} \sqrt{\frac{\mu_{0}}{\varepsilon_{0}}}I_{0}^{2}\int{\frac{\sin^{3}\theta}{\cos^{2}\theta}\sin^{2}\left( \frac{kh}{2}\cos\theta \right)d\theta}
+\end{equation}\\
+
+\underline{Effet de l'environnement -- réflexion sur le sol :}\\
+
+Supposons une antenne linéaire en émission et une antenne isotrope en réception. Le champ reçu par réflexion des ondes sur l'environnement est 
+\begin{equation}
+    E_{r,\theta} = - \frac{1}{2}\sqrt{\frac{\mu_{0}}{\varepsilon_{0}}}\frac{h}{\lambda}I_{0}\frac{\sin\theta}{r^{2}}\sin\left( \omega t - kr \right)R_{//}
+\end{equation}
+À cause des interférences entre le champ direct et réfléchi. Le vecteur \(R_{//}\) est le coefficient de réflexion de Fresnel.
+\chapter{Partie 2 -- Physique quantique}
+\section{A savoir faire à la fin}
+\begin{itemize}
+    \item - expliquer l'effet photoélectrique;
+    \item expliquer l'expérience de Young et le mystère quantique;
+    \item expliquer le principe d'incertitude de Heisenberg sur base de la formule + différence onde/corpuscule/quantum;
+    \item expliquer le concept de fonction d'onde;
+    \item quelles sont les unités d'un potentiel?
+    \item expliquer la superposition quantique;
+    \item comment tu peux passer de 2.19 à 2.21?
+    \item refais le développement de 2.5.3. après avoir revu EDP
+    \item donner les unités dans 2.30;
+    \item pourquoi 6 constantes dans le 2.40?;
+    \item donner tous les nombres quantiques;
+    \item expliquer l'écrantage;
+    \item expliquer le principe d'exclusion de Pauli, et montrer le 2n²;
+    \item expliquer isolant/conducteur;
+    \item expliquer diode et transistor.
+\end{itemize}
+\section{Dualité : Onde -- Particule}
+\subsection{Aspects corpusculaires des ondes EM}
+- \underline {Corps noir :}
+En physique, un corps noir désigne un objet idéal dont le spectre EM ne dépend que de sa température. Le corps noir absorbe toute l'énergie électromagnétique qu'il reçoit, sans en réfléchir ni en transmettre (la lumière est donc totalement absorbée), mais il peut émettre de la lumière si il a une température suffisamment élevée. 
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : Le spectre continu des étoiles (mesuré hors de l'atmosphère) est un spectre de corps noir.
+\end{itemize}
+
+L'énergie totale émise est calculée par intégration du spectre sur toutes les longueurs d'onde. \\
+
+Hypothèse des quanta (Planck) : L'énergie n'est pas émise de manière continue, un oscillateur de fréquence ne peut émettre ou absorber de l'énergie que par paquets (=quanta) de valeur $E = hf = \frac{hc}{\lambda}$. Cette énergie ne peut donc pas exister en quantité inférieure à $hf$. \\
+
+- \underline{Effet photoélectrique : }L'effet photoélectrique est l'émission d'électrons extraits à la surface d'un matériau sous l'action d'une onde EM. 
+
+L'extraction des électrons produit un courant photoélectrique, qui a besoin d'un potentiel d'arrêt $V_0$ pour être annulé. La valeur de ce potentiel d'arrêt est telle que le travail d'extraction $-eV_0$ exercé sur les électrons permette de contrecarrer leur énergie cinétique maximale $K_{max} = eV_0$. L'énergie cinétique maximale est $K_{max} = E - \phi$, avec $E$ l'énergie transférée aux électrons par le rayonnement et $\phi$ le travail d'extraction. 
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : la valeur de $\phi$ dépend uniquement de la nature du métal. 
+\end{itemize}
+Aucun courant photoélectrique n'est mesuré tant que la fréquence du rayonnement ne dépasse pas une certaine valeur, appelée fréquence de seuil, quelle que soit l'intensité du rayonnement incident. La valeur du potentiel d'arrêt est indépendante de l'intensité du rayonnement incident également, et la valeur de la fréquence de seuil dépend de la nature du métal.
+
+Postulat d'Einstein : La lumière incidente est constitutée de paquets d'énergie, de photons, d'énergie $E = hf$. Les échanges d'énergie entre rayonnement EM et matière ne peuvent donc se faire que de manière discontinue. Un photon arrivant à la surface du matériau fournit une énergie $hf$ telle que $E_{cin} = hf - \phi$. Pour être extrait, l'électron doit avoir une énergie cinétique positive : $E_{cin} > 0 \rightarrow f > \phi/h$.\\
+
+- \underline{Diffusion de Compton : }
+Le produit de la collision d'une onde EM de longueur d'onde $\lambda$ avec un électron est une autre onde EM de longueur d'onde $\lambda'$, et une quantité de mouvement de l'électron plus élévée : 
+\begin{equation}
+    \lambda' - \lambda = \frac{h}{mc} (1- \cos{\phi})
+\end{equation}
+avec $\phi$ l'angle formé entre la direction de propagation des deux ondes EM.
+
+$\Longrightarrow$ On en conclut que les ondes EM de fréquence $f$ et de longueur d'onde $\lambda$ sont composées de particules appelées photons, d'énergie $E = hf$, et de quantité de mouvement $p 
+ = h/\lambda$.\\
+
+- \underline{Nature corpusculaire du photon : }
+Les photons sont indissociables. \\
+
+- \underline{Nature ondulatoire du photon : }
+La diffraction de photons donne une distribution statistique prédite par la théorie de la diffraction d'ondes EM, on ne peut pas déterminer exactement où un photon va exactement sur l'écran au temps $t$. On voit donc que les photons interfèrent (caractéristique des ondes).
+
+\subsection{Aspects ondulatoires des particules}
+
+- \underline{Ondes de de Broglie :}\\
+Hypothèse : les particules peuvent se comporter comme des ondes électromagnétiques (= dualité onde-particule).
+\begin{equation}
+    \lambda \approx \frac{h}{mv} = \frac{hc}{E}
+\end{equation}
+Pour un humain, on trouve une longueur d'onde $\lambda = 7 \times 10^{-36} m^2$. Cette valeur n'est pas pertinente, mais pour un électron, on trouve $\lambda = 1 nm$. On peut donc essayer de diffracter des électrons.
+
+- \underline{Diffraction des électrons :}
+
+Ce phénomène conduit à l'apparition de figures de diffraction dont la position des franges dépend de la longueur d'onde du rayonnement et de la distance entre les fentes.\\
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \color{red}\boxed{\color{black}2d \sin{\theta} = n \lambda}\color{black}
+    \end{equation}
+    avec $d$ la distance entre les fentes, $\theta$ l'angle complémentaire à l'angle incident, $n$ l'ordre de diffraction, et $\lambda$ la longueur d'onde. 
+    e
+    En connaissant l'énergie des électrons : $E = eV = \frac{h^2}{2m\lambda^2}$\\
+Ensuite, en calculant $\lambda$ et en mesurant $\theta$, on peut estimer $d$.\\
+\end{minipage}
+\begin{minipage}{.5 \textwidth}
+    \includegraphics[width = \textwidth]{img/Diffraction e-.png}
+\end{minipage}
+- \underline{Interférences électroniques :}\\
+L'expérience de Young réalisée avec un faisceau d'électrons donne un résultat similaire à celui observé pour les photons. 
+
+\begin{itemize}
+    \item Lorsqu'une seule fente est ouverte, une seule frange. 
+    \item Lorsque les deux fentes sont ouvertes, figure d'interférences.
+    \item Lorsque les deux fentes sont ouvertes, et que les électrons sont envoyés un à un, figure d'interférences (donc pas du aux interactions).
+    \item Lorsque les deux fentes sont ouvertes, et qu'un capteur est allumé à une des deux fentes, deux franges.
+    \item Lorsque les deux fentes sont ouvertes, et qu'un capteur est mis (éteint) à une des deux fentes, figure d'interférences.
+\end{itemize}
+$\Longrightarrow$ Mystère quantique.
+
+\section{Principe d'incertitude de Heisenberg}
+
+\begin{equation}
+    \Delta x\Delta p \geq \frac{\hbar}{2} 
+\end{equation}
+
+C'est le principe d'indétermination entre la position et la quantité de mouvement d'une particule. Ces incertitudes ne sont pas dues aux appareils de mesure, mais sont liées à la nature quantique des particules (les concepts classiques ne leur sont plus applicables).
+
+\begin{itemize}
+    \item Une onde est un objet localisé en fréquence, pas en espace.
+    \item Un corpuscule est un objet localisé en espace, pas en fréquence.
+    \item Un quantum est le cas général.
+\end{itemize}
+
+Du fait de la dualité entre les deux représentations, l'étalement spatial est inversement proportionnel à l'étalement fréquentiel.
+
+\begin{equation}
+    p = \frac{h}{\lambda}
+\end{equation}
+
+En résumé, si la position de la particule est bien déterminée, sa fonction d'onde comporte moins d'oscillations $n$ et sa longueur d'onde est donc moins bien déterminée (et donc aussi sa quantité de mouvement).
+
+\begin{minipage}{.5 \textwidth}
+    \begin{equation}
+        \frac{\Delta \lambda }{\lambda} = \frac{1}{n}
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5 \textwidth}
+    \begin{equation}
+        \frac{\Delta p_x}{p_x} = \frac{1}{n}
+    \end{equation}
+\end{minipage}
+
+\subsection{Diffraction d'électrons par une fente}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Diffraction fente e-.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Les électrons ayant pratiquement tous la même vitesse et direction, ils sont caractérisés par la même onde de de Broglie : 
+    \begin{equation}
+        \sin{\theta_1} = \frac{\lambda}{a} \Longrightarrow \theta_1 \approx \frac{\lambda}{a}
+    \end{equation}
+    Connaissant la probabilité de distribution dans l'espace, on a 
+    \begin{equation}
+        \frac{p_y}{p_x} = \tan{\theta_1} \Longrightarrow \theta_1 \approx \frac{p_y}{p_x}
+    \end{equation}
+\end{minipage}
+
+\begin{minipage}{.5\textwidth}
+    Et on a finalement 
+    \begin{equation}
+        \color{red}\boxed{\color{black}\Delta p_y = p_x \frac{\lambda}{a}}\color{black}
+    \end{equation}
+    La version énergie-temps du principe d'incertitude est 
+    \begin{equation}
+        \Delta E \Delta t \geq \frac{\hbar}{2}
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = 0.4\textwidth]{img/Principe d'incertitude.png}
+\end{minipage}
+
+
+\section{Fonction d'onde et Equation de Schrödinger}
+
+\subsection{Fonction d'onde}
+
+La fonction d'onde $\psi$ d'une particule quantique contient, comme pour les ondes vues précédemment, toute l'information sur la dynamique de la particule (position, vitesse,...). Elle décrit la distribution d'une particule dans l'espace. Le carré du module de la fonction d'onde \(|\psi|^2 = \psi^* \psi\) représente la densité de probabilité de trouver la particule en un point. Pour une particule en mouvement, \(|\psi(x,y,z,t)|^2 dV\) représente la probabilité de trouver la particule au temps $t$ dans un volume $dV$ autout du point $(x,y,z)$. 
+
+Normalisation de la fonction d'onde : 
+\begin{equation}
+    \int_{-\infty}^{+\infty} |\psi(x,y,z,t)|^2 dV = 1
+\end{equation}
+
+Une forme simplifiée de la fonction d'onde est décrite par l'équation de Schrödinger. 
+
+\subsection{Equation de Schrödinger}
+
+\underline{Hypothèses : }
+L'équation de Schrödinger est l'équation d'onde qui généralise l'approche de de Broglie aux particules massives non relativistes soumises à une force dérivant d'une énergie potentielle dont l'énergie totale est \(E = p^2/2m + V(r)\), avec $V$ le potentiel initiateur.
+
+\begin{itemize}
+    \item Vitesse des particules $v\ll c$
+    \item Pas de création de particules virtuelles de masse non nulle au repos (pas de création de duo particule/antiparticule). 
+\end{itemize}
+
+\begin{equation}
+    \left (-\frac{\hbar^2\nabla^2}{2m} + V(\Vec{r},t) \right) \psi(\Vec{r},t) = i\hbar \frac{\partial \psi(\Vec{r},t)}{\partial t}
+\end{equation}
+
+\subsection{Onde stationnaire}
+
+Dans un grand nombre de cas, l'onde est stationnaire et la particule est dans un état d'énergie défini, i.e. $|\psi|^2$ est indépendant du temps. On peut alors séparer les variables spatiales et temporelle : 
+
+\begin{equation}
+    \psi(x,y,z,t) = \psi(x,y,z) \exp{(-i\omega t)} = \psi(x,y,z)\exp{(-iEt/\hbar)}
+\end{equation}
+Dans ce cas, \(|\psi(x,y,z,t)|^2 = |\psi(x,y,z)|^2\). \\
+
+Pour une particule de masse $m$ et d'énergie $E$ constante se déplaçant selon un axe $x$, caractérisée par une fonction d'onde $\psi$ et sous l'influence d'une force à laquelle correspond un potentiel d'énergie $U(x)$ : 
+
+\begin{equation}
+    \color{red}\boxed{\color{black}-\frac{\hbar^2}{2m}\frac{\partial^2 \psi(x)}{\partial x^2} + U(x)\psi(x) = E\psi(x)}\color{black}
+\end{equation}
+avec le premier terme l'énergie cinétique, le second l'énergie potentiel et le troisième l'énergie totale.
+
+\subsection{Superposition quantique}
+
+La fonction d'onde d'une particule en fonction d'une seule dimension spatiale possède deux maxima, la particule peut donc se trouver à deux endroits en même temps. L'état quantique de ce système à deux états est décrit par une fonction d'onde qui peut se décomposer en deux états propres, i.e. une combinaison linéaire de deux vecteurs propres \(\psi_1, \psi_2\).
+
+\begin{equation}
+    \psi(x) = \alpha_1 \psi_1 + \alpha_2\psi_2
+\end{equation}
+
+La probabilité que la particule soit mesurée dans l'état 1 est 
+\begin{equation}
+    \mathcal{P} = \frac{|\alpha _1|^2}{|\alpha _1|^2 + |\alpha _2|^2}
+\end{equation}
+
+Cette superposition quantique implique que les électrons autour des noyaux d'atome ne sont pas sur des orbites comme dans le modèle de Bohr, mais forment un nuage d'électrons distribué dans tout l'espace avec une probabilité de présence en chaque point.
+
+\section{Particule libre}
+
+Supposons une particule libre (pas de force appliquée), i.e. $U(x) = cste$ suivant $x$. Son énergie cinétique et totale est $E = \frac{1}{2}mv^2$. L'onde associée à la particule est stationnaire de longeur d'onde $\lambda = h/p$. Son équation d'onde se réécrit 
+
+\begin{equation}
+    \frac{\partial^2\psi(x)}{\partial x^2} + -\frac{2Em}{\hbar^2}\psi(x) = 0
+\end{equation}
+Puisque $E\geq 0$, posons $k^2 = \frac{2mE}{\hbar^2}$. On trouve alors un problème aux valeurs propres, dont la solution générale est
+\begin{equation}
+    \psi(x) = A\exp{\left(ikx\right)} + B \exp{\left(-ikx\right)}
+\end{equation}
+Sans condition sur la valeur de $k$, la fonction propre générale est \(\psi(x) = C(k) \exp{(ikx)}\), avec \(C(k)\) une constante arbitraire indépendante de $x$. \\
+
+Le spectre d'énergie de la particule est continu, car $k\in\mathbb{R}$ : 
+\begin{equation}
+    E = \frac{\hbar^2k^2}{2m}
+\end{equation}
+
+La fonction d'onde totale est 
+
+\begin{equation}
+    \psi(x,t) = C(k) \exp{\left[i\left(kx-\frac{Et}{h}\right)\right]} = C(k)\exp{\left[i\left(kx - \frac{\hbar k^2t}{2m}\right)\right]}
+\end{equation}
+
+Dans ce cas, la particule libre a une quantité de mouvement $p$ bien déterminée selon $x$, et $\Delta p_x = 0$. Or, d'après le principe d'incertitude d'Heisenberg, cela implique que $\Delta x = +\infty $. La probabilité de distribution ne dépend donc pas du temps, ni de la position de la particule, i.e. elle a la même probabilité de présence en tout point de l'espace. Cela s'explique par le fait que la fonction d'onde est une sinusoïde qui s'étend sur tout $\mathbb{R}$.
+
+\section{Paquets d'ondes}
+
+En pratique, la position de la particule est toujours bornée dans un espace connu. Cela s'explique par la somme d'un certain nombre de fonctions d'ondes définies pour des $k$ différents. On parle alors de paquet d'ondes.
+
+\begin{equation}
+    \psi(x) = \int_{-\infty}^{+\infty}{C(k)\exp{(ikx)}dk}
+\end{equation}
+
+Si la fonction $C(k)$ résulte de la superposition 
+\begin{itemize}
+    \item d'un nombre limité de nombres d'onde autour de $k_0$, le pic de $C(k)$ est étroit, le paquet d'onde étalé, et le $\Delta x$ est alors grand, i.e. position peu localisée.
+    \item d'un grand nombre de nombres d'onde autour de $k_0$, le pic de $C(k)$ est large, le paquet d'onde étroit, et le $\Delta x$ est alors petit, i.e. position "bien" localisée.
+\end{itemize}
+
+Soit $v_g$ la vitesse de déplacement, i.e. la vitesse de groupe de la particule. Avec \(\omega = \frac{\hbar k^2}{2m}\), 
+\begin{equation}
+    \color{red}\boxed{\color{black} v_g \coloneqq \left(\frac{\partial \omega}{\partial k}\right)_{(k=k_0)}} \color{black} = \frac{\hbar k_0}{m} = \frac{p_0}{m}
+\end{equation}
+
+\subsection{Conclusion}
+Une particule libre non-localisée est caractérisée par une onde monochromatique et la fonction d'onde est une exponentielle complexe.\\
+Une particule libre localisée est caractérisée par un paquet d'ondes et la fonction d'onde est une intégrale d'exponentielle complexe. Son impulsion est \(\bigl \langle p \bigr \rangle = \hbar k_0\) et son énergie est \(\bigl \langle E \bigr \rangle = \hbar \omega_0\).
+
+\subsection{Puits de potentiel infini}
+\subsection{Particule en présence d'un potentiel}
+
+$U(x) \neq 0$ dans certaines régions de l'espace. On utilise donc l'équation de Schrödinger avec le terme d'énergie potentielle.
+
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Puits de potentiel infini.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    On simplifie la situation par un confinement de la particule entre deux murs de potentiel (\(U(x) = \infty\)). \\
+    $U(x) =0$ uniquement sur \(x\in [0,L]\). Sur cet intervalle, l'équation de Schrödinger sans terme potentiel est toujours valable, et la solution générale est une exponentielle complexe avec des conditions aux limites qui déterminent les coefficients.\\
+\end{minipage}
+
+\begin{equation}
+    \psi(x) = A\exp{ikx} + B\exp{-ikx} = (A+B) \cos{kx} + i(A-B) \sin{kx}
+\end{equation}
+
+Par les conditions aux limites \(\psi(x = 0) = \psi(x=L) = 0\), 
+\begin{equation}
+    \psi(x) = C \sin{kx}
+\end{equation}
+avec $k = \frac{n\pi}{L}$ discret.\\
+Le spectre d'énergie de la particule est alors discret et vaut 
+
+\begin{equation}
+    E_n = \frac{n^2h^2}{8mL^2}
+\end{equation}
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : le niveau fondamental d'énergie $E_1$ est non nul.
+\end{itemize}
+\begin{equation}
+    |\psi(x)|^2dx = C^2 \sin^2{\frac{n\pi x}{L}} dx
+\end{equation}
+
+Il y a donc des positions où la probabilité de trouver la particule est nulle.\\
+
+Par la formule intégrale de normalisation de la fonction d'onde, on trouve $C =  \sqrt{\frac{2}{L}}$, et donc 
+\begin{equation}
+    \psi_n (x) = \sqrt{\frac{2}{L}} \sin{\left(\frac{n \pi x}{L}\right)}
+\end{equation}
+
+\section{Puits de potentiel fini}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Puits de potentiel fini.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    L'équation de Schrödinger est toujours indépendante du temps.
+    \begin{equation}
+        \begin{cases}
+            -\frac{\hbar^2}{2m} \frac{\partial ^2\psi(x)}{\partial x^2} = E\psi(x), |x| > L/2\\
+            -\frac{\hbar^2}{2m} \frac{\partial ^2\psi(x)}{\partial x^2} - U_0\psi(x)= E\psi(x), |x| \leq L/2\\
+        \end{cases}
+    \end{equation}
+\end{minipage}
+
+Posons 
+\begin{equation}
+    \begin{cases}
+        \alpha^2 = -\frac{2mE}{\hbar^2}\\
+        \beta^2 = \frac{2m(E+U_0)}{\hbar^2}\\
+        \gamma^2 = \frac{2mU_0}{\hbar^2}
+    \end{cases}
+\end{equation}
+\begin{minipage}{.5\textwidth}
+    Par les conditions aux limites, on trouve 
+    \begin{equation}
+        (\beta \tan{\beta \frac{L}{2}} - \alpha) \times ((\beta \cot{\beta \frac{L}{2}} + \alpha) =0
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Solutions générales.png}
+\end{minipage}
+
+
+Les deux termes ne peuvent pas être nuls, car sela signifierait que $\beta$ est complexe. Un seul des deux peut donc être nul. \\
+- \underline{Cas 1 :}
+
+\begin{equation}
+    C = 0, A = B = D \cos{\left(\beta \frac{L}{2}\right)} \exp{\left(\alpha L/2\right)}
+\end{equation}
+Par la normalisation, 
+\begin{equation}
+    D = \sqrt{\frac{2\alpha}{2 + \alpha L}}
+\end{equation}
+La fonction d'onde est alors symétrique.\\
+- \underline{Cas 2 :}
+
+\begin{equation}
+    D = 0, A = -B = C\sin{\beta L/2}\exp{\alpha L/2}
+\end{equation}
+
+Par la normalisation, 
+\begin{equation}
+    C = \sqrt{\frac{2\alpha}{2 + \alpha L}}
+\end{equation}
+\subsection{Niveau d'énergie}
+
+Par détermination graphique, on trouve des niveaux d'énergie pour une particule dans un puits de potentiel fini :
+\begin{equation}
+    E_n = \frac{\hbar^2\alpha_n^2}{2m}
+\end{equation}
+Pour $-U_0\leq E < 0$, le spectre d'énergie de la particule (en valeurs discrètes).
+
+On a des fonctions d'ondes symétriques pour des $n$ impairs et antisymétriques pour des $n$ pairs.
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : pour $E>U_0$, le spectre de la particule est continu.
+    \item [$\rightarrow$] Remarque : pour $E<U_0$, la probabilité de présence de la particule hors du puits est non nulle (= pénétration de barrière de potentiel).
+\end{itemize}
+
+\section{Puits 3D infini}
+
+Soit une particule strictement confinée dans une boîte de volume $V = L^3$. 
+\begin{equation}
+    \begin{cases}
+        U(x,y,z) = 0, 0\leq x,y,z\leq L\\
+        U(x,y,z) = U_0, 0 > x,y,z > L\\
+    \end{cases}
+\end{equation}
+$U_0$ tend vers $\infty$ pour que la pénétration de la barrière de potentiel soit négligeable.\\
+
+On est dans le même cas qu'en 1D, sauf qu'on utilise le laplacien plutôt que la dérivée partielle seconde, et on a $k^2 = k_1^2+k_2^2+k_3^2$. \\
+
+On trouve finalement une fonction d'onde 
+
+\begin{equation}
+    \color{red}\boxed{\color{black}\psi_{(n_1,n_2,n_3)}(x,y,z) = \sqrt{\frac{8}{L^3}} \sin{\left(\frac{n_1\pi x}{L}\right)}\sin{\left(\frac{n_2\pi y}{L}\right)}\sin{\left(\frac{n_3\pi z}{L}\right)}}\color{black}
+\end{equation}
+
+Et les niveaux d'énergie sont 
+
+\begin{equation}
+    E = \frac{h^2(n_1^2 + n_2^2 + n_3^2)}{8mL^2}
+\end{equation}
+
+! Pour une somme des $n_i^2$, on n'a pas une seule fonction d'onde : plusieurs combinaisons de \(n_i\) donnent la même fonction d'onde. 
+
+\section{Barrière de potentiel}
+
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Barrière de potentiel.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Sur \(0 < x < L, U(x)=U_0\) et \(U(x) = 0\) partout ailleurs.\\
+    On a donc deux équations de Schrödinger indépendantes du temps sur des domaines différents : 
+    \begin{equation}
+        \begin{cases}
+            -\frac{\hbar}{2m} \frac{\partial ^2 \psi(x)}{\partial x^2} = E\psi(x)\\
+            -\frac{\hbar}{2m} \frac{\partial ^2 \psi(x)}{\partial x^2} + U_0 \psi(x)= E\psi(x)\\
+        \end{cases}
+    \end{equation}
+\end{minipage}
+
+Posons 
+\begin{equation*}
+    \begin{cases}
+        k^2 = \frac{2mE}{\hbar^2}\\
+        \alpha^2 = \frac{2m(U_0-E)}{\hbar^2}
+    \end{cases}
+\end{equation*}
+
+Pour \( 0\leq E < U_0\), \(k\) et \(\alpha\) sont réels et strictement positifs. On peut donc transformer les équations de Schrödinger en équations aux valeurs propres, dont les solutions sont des expontielles complexes pour \(x>L\) ou \(x<0\) et des exponentielles réelles sinon. Elles sont définies à des constantes d'intégration près, déterminées par les CL, la symétrie de la barrière de potentiel, la normalisation de la densité de probabilité et une interprétation physique de la fonction d'onde. En gros, comme on a fait dans les cas précédents mais avec des CL différentes.\\
+
+On choisit que les fonctions \(\psi\) et \(\frac{\partial \psi}{\partial x}\) soient continues en \(x=0,L\), ce qui permet de trouver 4 des 6 constantes.\\
+
+Puisqu'il n'y a pas de conditions restrictives sur \(k\) et \(\alpha\), le spectre d'énergie lors du passage à travers une barrière de potentiel est continu (entre 0 et \(U_0\)). \\ 
+
+On remarque que, contrairement à la physique classique, la probabilité pour la particule de traverser la barrière est non-nulle. 
+
+\subsection{Effet tunnel}
+
+\begin{minipage}{.5\textwidth}
+    L'effet tunnel est un effet quantique qui désigne la propriété que possède un objet quantique de franchir une barrière de potentiel même si son énergie est inférieure à l'énergie minimale requise pour franchir cette barrière. 
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Effet tunnel.png}
+\end{minipage}\\
+
+Soient \(|A|^2\) la densité de probabilité de la particule incidente, \(|B|^2\) la densité de probabilité de la particule réfléchie, et \(|F|^2\) la densité de probabilité de la particule transmise. On peut définir les coefficients de réflexion \(R\) et de transmission \(T\) : 
+\begin{equation}
+    \begin{cases}
+        R = \left|\frac{B}{A}\right|^2\\
+        T = \left|\frac{F}{A}\right|^2\\
+        R+T=1
+    \end{cases}
+\end{equation}
+La dernière relation s'explique par le fait que tout ce qui n'est pas transmis est forcément réfléchi. \\
+Pour \(E\leq U_0\) : 
+\begin{equation}
+    T = \frac{4E(U_0-E)}{4E(U_0-E) + U_0^2 \sinh^2{\left(\frac{L}{\hbar}\sqrt{2m(U_0-E)}\right)}}
+\end{equation}
+Pour \(E\geq U_0\) : 
+\begin{equation}
+    T = \frac{4E(E-U_0)}{4E(E-U_0) + U_0^2 \sin^2{\left(\frac{L}{\hbar}\sqrt{2m(E-U_0)}\right)}}
+\end{equation}
+Voir la différence entre le sinh et le sin.
+
+\section{Oscillateur harmonique}
+
+Pour rappel, dans un système d'oscillateur harmonique, la force de rappel est \(F = -k'x\) et l'énergie potentielle est \(U(x) = \frac{1}{2}k'x^2\). La particule oscille avec une fréquence angulaire \(\omega = \sqrt{k'/m}\).
+
+L'équation d'onde d'un oscillateur harmonique quantique s'écrit 
+
+\begin{equation}
+    \color{red}\boxed{\color{black}-\frac{\hbar^2}{2m} \frac{\partial^2\psi(x)}{\partial x^2} + \frac{1}{2} k'x^2\psi(x) = E\psi(x)}\color{black}
+\end{equation}
+La solution est une fonction d'Hermite : \(\psi(x) = C\exp{\left(-\frac{\sqrt{mk'}}{\hbar}\frac{x^2}{2}\right)}\), et le niveau d'énergie le plus bas est \(E_0 = \frac{1}{2}\hbar \sqrt{\frac{k'}{m}}\).\\
+
+Le spectre d'énergie est discret et 
+\begin{equation}
+    \color{red}\boxed{\color{black}E_n = \left(n+\frac{1}{2}\right)\hbar \omega}\color{black}
+\end{equation}
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : Les niveaux d'énergie sont équidistants, de \(\Delta E = \hbar\omega\).
+\end{itemize}
+
+\subsection{Densité de probabilité : Classique >< Quantique}
+\begin{minipage}{.6\textwidth}
+    \includegraphics[width = .8\textwidth]{img/Oscillateur harmonique.png}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    La courbe bleue est la densité en mécanique classique et la courbe jaune en mécanique quantique. \\
+    En classique, la particule est plus lente près des parois puisqu'elle rebondit et a donc une vitesse nulle à un moment. Ce n'est pas le cas en quantique. 
+\end{minipage}
+
+\section{Modèle de l'atome -- Atome d'hydrogène}
+\subsection{Structure atomique de l'hydrogène}
+
+L'atome d'hydrogène est constitué d'un noyau (un proton) et d'un électron. \\
+
+D'après le modèle de Bohr, l'électron est soumis à un potentiel coulombien \(U(r) = -\frac{1}{4\pi\varepsilon_0}\frac{e^2}{r}\). Pour que l'atome existe et soit stable, il faut respecter la conservation de l'énergie, l'équilibre des forces, et la conservation du moment de la quantité de mouvement : 
+\begin{equation}
+    \begin{cases}
+        \frac{mv^2}{2} - \frac{1}{4\pi\varepsilon_0}\frac{e^2}{r} = E_n\\
+        \frac{mv^2}{r} - \frac{1}{4\pi\varepsilon_0}\frac{e^2}{r^2} = 0\\
+        mvr = cste\\
+    \end{cases}
+\end{equation}
+
+L'hypothèse de Bohr est que \(mvr = n\hbar, n = 1,2,3,...\). 
+
+On trouve alors 
+\begin{equation}
+    \begin{cases}
+        r_n = n^2 \frac{4\pi\varepsilon\hbar^2}{e^2m_e} = n^2 a_0\\
+        v_n = \frac{e^2}{n\hbar 4\pi\varepsilon_0} = \frac{v_0}{n}\\
+        E_n = -\frac{1}{(4\pi\varepsilon_0)^2} \frac{e^4m_e}{2n^2\hbar^2} = \frac{E_0}{n^2}
+    \end{cases}
+\end{equation}
+avec \(a_0\) le rayon de Bohr, \(r_n\) le rayon de la \(n\)ème orbite électronique, \(v_n\) la vitesse de l'électron sur cette orbite et \(E_n\) son énergie sur l'orbite.
+
+Puisque le spectre d'énergie des atomes est discret, l'énergie échangée ne peut prendre que des valeurs discrètes et l'atome n'absorbe ou n'émet que des quanta d'énergie. Cette énergie permet à l'électron de s'éloigner ou de se rapprocher du noyau.
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : les spectres d'absorption et d'émission se complètent pour former un spectre continu.
+\end{itemize}
+
+\subsection{Nombres quantiques}
+
+\begin{itemize}
+    \item \(\psi(r, \theta,\phi,t) = R(r) \Theta(\theta)\Phi(\phi) e^{-iEt/\hbar}\)
+    \item \(R(r) \propto N_l(r) e^{-\frac{r}{na_0}}\)
+    \item \(\Theta(\theta) \propto P_{l,m_l}(\sin{\theta},\cos{\theta})\)
+    \item \(\Phi(\phi) \propto e^{im_l\phi}\)
+    \item \(\Longrightarrow \Phi_{n,l,m_l} (r,\theta,\phi,t) \propto N_l(r) \exp{-\frac{r}{na_0}} P_{l,m_l}(\sin{\theta},\cos{\theta}) e^{im_l\phi}\exp{-iEt/\hbar}\)
+\end{itemize}
+Oui c'est imbuvable, incompréhensible et pas important. \\
+
+Les trois nombres quantiques sont 
+\begin{itemize}
+    \item \(n\) le nombre quantique principal (\(n = 1,2,3,...)\)
+    \item \(l\) le nombre quantique orbital (\(l = 0,1,...,n-1)\)
+    \item \(m_l\) le nombre quantique magnétique (\(m_l = 0, \pm1,...,\pm l)\)
+\end{itemize}
+
+Le spectre d'énergie d'un électron est 
+\begin{equation}
+    E_n = \frac{-13.6eV}{n^2}
+\end{equation}
+\underline{Moment angulaire :}\\
+
+Le moment angulaire quantique d'une particule est déduit de la formule de physique classique : 
+
+\begin{equation}
+    |\Vec{L}| = I \omega = m v r
+\end{equation}
+avec \(I\) le moment d'inertie de la particule. \\
+
+Il existe des contraintes sur la valeur du moment angulaire dues aux conditions d'existence des fonctions à une variable de la fonction d'onde : 
+\begin{itemize}
+    \item La fonction \(\Theta(\theta)\) est finie en \(0,\pi\) : \(|\Vec{L}|_l = \sqrt{l(l+1)}\hbar\), avec \(l\) le nombre quantique orbital.
+    \item \(\Phi(\phi+2\pi) = \Phi(\phi)\) : La projection du moment cinétique \(L_z\) sur un axe imposé ne peut prendre que les valeurs \(-l\hbar,...,l\hbar \Longrightarrow L_z = m_l\hbar\).
+    \item [$\rightarrow$] Puisque \(L_z\) ne peut prendre que des valeurs discrètes, l'angle que la composante forme avec le vecteur aussi. 
+\end{itemize}
+
+\subsubsection{Orbitales atomiques}
+
+Les orbitales atomiques sont directement liées à la probabilité de présence d'un électron dans une certaine zone d'espace autour du noyau.
+\begin{itemize}
+    \item \(l=0 \rightarrow s\)
+    \item \(l=1 \rightarrow p\)
+    \item \(l=2 \rightarrow d\)
+    \item \(l=3 \rightarrow f\)
+    \item \(l=4 \rightarrow g\)
+\end{itemize}
+
+La probabilité de présence d'un électron est radiale : \(P(r)\) est la probabilité par unité de longueur radiale de trouver l'électron à différentes distances du noyau : 
+\begin{equation}
+    P(r)dr = |\Phi|^24\pi r^2 dr
+\end{equation}
+
+\subsubsection{Spin de l'électron}
+
+Un électron n'est pas une simple masse ponctuelle, c'est une sphère en rotation, qui possède donc un moment angulaire de rotation intrinsèque  : c'est le spin de l'électron.
+
+Le spin est une propriété quantique, dont la composante \(S_z\) est quantifiée : \(S_z = \pm \frac{1}{2}\hbar\). 
+
+On définit le nombre quantique de spin \(m_s = \pm \frac{1}{2}\).
+
+L'amplitude du moment angulaire de spin vaut \(|\Vec{S}| = S = \sqrt{\frac{3}{4}\hbar}\).
+
+En toute généralité, les fermions ont un spin demi-entier (= électrons, positrons, neutrinos, quarks,...), et les bosons un spin entier (= gluons, bosons de Higgs,...).
+
+\section{Atomes à plusieurs électrons}
+
+Un atome est composé de $Z$ électrons et est électriquement neutre; la complexité est donc beaucoup plus grande, car il faut prendre en compte les répulsions interélectroniques. Dans l'équation de Schrödinger, il faut traduire le fait que chaque électron interagit avec le noyau et les $Z-1$ autres électrons.
+
+On va faire l'approximation qu'on néglige les interactions entre électrons, i.e. l'électron est seul autour du noyau de charge $Ze$. 
+\begin{equation}
+    \color{red}\boxed{\color{black}E_n = - \frac{Z^2}{n^2} \times 13.6eV}\color{black}
+\end{equation}
+
+\subsection{Seconde approximation}
+- \underline{Hypothèses : }
+\begin{itemize}
+    \item L'ensemble des électrons constitue un nuage sphérique autour du noyau.
+    \item Le mouvement d'un électron s'effectue dans un champ moyen dû au noyau et nuage électronique.
+    \item La fonction d'onde se réduit à la fonction d'onde d'un seul électron.
+    \item \(U(r)\) est remplacé par un "pseudo-potentiel" associé au noyau et au nuage électronique.
+\end{itemize}
+
+- \underline{Solutions :}
+\begin{itemize}
+    \item L'électron est caractérisé par les mêmes nombres quantiques que l'hydrogène.
+    \item La probabilité de distribution électronique \(P(r)\) est différente que celle de l'hydrogène.
+    \item L'énergie d'un état dépend non seulement de \(n\), mais aussi de \(l\).
+    \item Les états quantiques sont déterminés par 4 nombres \(n, l, m_l, m_s\).
+\end{itemize}
+
+\begin{minipage}{.5\textwidth}
+    On observe sur ce graphique que l'orbitale \(4s\) a une énergie inférieure à celle de la \(3d\) et les électrons auront tendance à remplir la \(4s\) avant la \(3d\).
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = .7\textwidth]{img/Plusieurs électrons.png}
+\end{minipage}
+
+\subsection{Effet d'écrantage}
+
+Pour un électron des couches externes, la charge du noyau est écrantée par la charge du nuage électronique des couches internes. La charge effective est donc \(Z_{eff}e = Ze - \#\) charge du nuage interne.
+
+Cela implique des propriétés drastiquement différentes entre des atomes ayant un \(Z\) proche, des états fondamentaux différents, et un nombre limité d'électrons sur une même orbitale.\\
+
+\subsection{Principe d'exclusion de Pauli}
+
+Dans un système quantique, deux fermions ne peuvent pas occuper un même état quantique. Deux électrons ne peuvent donc pas avoir les mêmes nombres quantiques. Cela implique que la couche \(n\) ne peut accepter que \(2n^2\) électrons.\\
+
+\subsection{Tableau périodique des éléments}
+
+Le modèle des couches et la structure atomique permettent d'organiser les électrons dans les atomes et définir leur configuration électronique. 
+
+\begin{itemize}
+    \item La construction du TPE se fait par ordre croissant du nombre atomique \(Z\). 
+    \item L'ensemble des électrons décrits par le même nombre quantique principal \(n\) constituent une couche électronique.
+    \item Les sous-couches sont définies à partir des orbitales atomiques correspondantes. 
+    \item Les cases sont définies à partir des possibilités de remplissage (\(m_l\)).
+    \item Une période désigne une ligne du TPE. Elle se définit par le remplissage progressif des sous-couches électroniques jusqu'à atteindre la sous-couche \(s\) de le couche électronique suivante. 
+    \item Un groupe désigne une colonne du TPE, constituant souvent un ensemble d'éléments aux propriétés bien distinctes des groupes voisins.
+\end{itemize}
+
+Les propriétés physico-chimiques des atomes dépendent directement de leurs configurations électroniques, et plus spécifiquement des électrons de valence. \\
+
+- \underline{Exemples :}
+\begin{itemize}
+    \item Caractère métallique ou non-métallique
+    \item Etat physique à température ambiante
+    \item Rayon atomique (augmente vers la droite et vers le bas)
+    \item Potentiel d'ionisation (diminue quand le rayon augmente)
+    \item Electronégativité
+\end{itemize}
+
+\section{Molécules et matière condensée}
+\subsection{Molécules}
+Il existe des interactions fortes (\(\approx 1...5eV\)) et des interactions faibles (\(<1eV\)).
+
+\subsubsection{Liaisons chimiques}
+\begin{itemize}
+    \item Les liaisons ioniques sont des interactions entre des ions de charges opposées (\(E = 5eV\)).
+    \item Les liaisons covalentes sont une attraction entre atomes par mise en commun d'un nombre égal d'électrons (\(E = 5eV\)).
+    \item Les liaisons de Van der Waals sont une interactions entre des dipôles électriques (permanents ou induits) (\(E \ll 1eV\)).
+    \item Les liaisons hydrogènes sont une interactions entre un atome d'hydrogène polarisé et un autre atome polarisé (\(E \ll 1eV\)).
+\end{itemize}
+\begin{minipage}{.5\textwidth}
+    En physique classique, les liaisons interatomiques s'expliquent par la courbe de Condon-Morse. 
+    \begin{equation}
+        U(r) = A \left(\frac{r_0}{r}\right)^{12} - B \left(\frac{r_0}{r}\right)^{6}
+    \end{equation}
+    L'énergie de liaison correspond à \(U_0\) et la distance interatomique à \(r_0\).
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Condon-Morse.png}
+\end{minipage}
+
+\subsection{Modèle de l'ion \(H_2^+\)}
+\begin{minipage}{.5\textwidth}
+    Cet ion est le système moléculaire le plus simple.\\
+    Comme pour l'atome, il existe une équation de Schrödinger moléculaire dont la résolution fournit les fonctions d'onde décrivant le comportement des électrons dans la molécule.
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/H2+.png}
+\end{minipage}
+
+Cependant, la résolution exacte de cette équation n'est possible que dans le cas le plus simple, celui de la molécule \(H_2\).
+
+Pour l'ion \(H_2^+\), composé des noyaux \(A,B\) et de l'électron \(i\), l'équation de Schrödinger est 
+\begin{equation}
+    H\Psi = E\Psi
+\end{equation}
+\begin{equation}
+    H = \sum_{j=A,B}{\left (\color{blue}\boxed{\color{black} E_{cin, i}}\color{black} - \color{green} \boxed{\color{black} \text{Attraction } i-j} \color{black}\right)} - \sum_{j = A,B}{\left(\color{red}\boxed{\color{black}E_{cin,j}}\color{black} + \color{yellow}\boxed{\color{black} \text{Répulsion }i-j}\color{black} \right)} 
+\end{equation}
+\begin{equation}
+    = \sum_{j=A,B}{\left (\color{blue}\boxed{\color{black} -\frac{\hbar^2}{2m_i}\nabla_i}\color{black} - \color{green} \boxed{\color{black} \frac{Z_j e^2}{4\pi \varepsilon_0 R_{ij}}} \color{black}\right)} - \sum_{j = A,B}{\left(\color{red}\boxed{\color{black}\frac{\hbar^2}{2M_j}\nabla_j}\color{black} + \color{yellow}\boxed{\color{black} \frac{Z_AZ_Be^2}{4\pi \varepsilon_0R_{AB}}}\color{black} \right)}
+\end{equation}
+Ici, \(H\) est un opérateur linéaire appliqué sur la fonction d'onde \(\Psi\) : il ne contient que des constantes et des gradients, tous deux opérateurs linéaires. \\
+Approximation de Born-Oppenheimer : comme la masse des noyaux est 18336x plus importante que celle de l'électron, les ions peuvent être considrés comme fixes lors de l'étude du mouvement des électrons d'une molécule. Les positions des noyaux se traitent comme des paramètres fixes.\\
+
+\subsubsection{Equation de Schrödinger atomique}
+
+\begin{equation}
+    \begin{cases}
+        H_A \phi_A = E_A\phi_A\\
+        H_B \phi_B = E_B \phi_B\\
+    \end{cases}
+\end{equation}
+
+La fonction d'onde \(\psi\) est une orbitale moléculaire, c'est donc une combili d'orbitales atomiques : \(\psi = a\phi_A + b\phi_B\).
+
+Seul le carré de la fonction d'onde a un sens physique :
+\begin{equation}
+    |\psi|^2 = |a\phi_A + b\phi_B|^2 = a^2 \phi^2_A + 2ab\phi_A\phi_B + b^2\phi^2_B
+\end{equation}
+
+\begin{itemize}
+    \item \(a^2\phi_A^2\) : probabilité de trouver l'électron près de A.
+    \item \(b^2\phi_B^2\) : probabilité de trouver l'électron près de B.
+    \item \(2ab\phi_A\phi_B\) : probabilité de trouver l'électron entre les noyaux.
+\end{itemize}
+La probabilité de trouver l'électron près de A est identique à celle en B par symétrie du système \(\rightarrow b = \pm a\). 
+
+\begin{itemize}
+    \item \(\psi = a(\phi_A + \phi_B)\) : orbitale moléculaire liante.
+    \item \(\psi = a(\phi_A - \phi_B)\) : orbitale moléculaire non-liante.
+\end{itemize}
+On trouve la valeur de \(a\) en normalisant la probabilité de présence. 
+
+\begin{itemize}
+    \item En orbitale liante, la probabilité de présence de l'électron entre les atomes est renforcée et il y a donc création de la liaison.
+    \item En orbitale non-liante, la probabilité de présence de l'électron entre les atomes est diminuée et il y a donc destruction de la liaison.
+\end{itemize}
+
+\begin{minipage}{.4\textwidth}
+    Au niveau énergétique, en se recouvrant, les deux orbitales atomiques de même énergie donnent naissance à deux orbitales moléculaires d'énergies différentes, l'une liante stabilisée et l'autre anti-liante déstabilisée.
+    \begin{itemize}
+        \item [$\rightarrow$] Remarque : les deux noyaux de l'ion \(H_2^+\) peuvent être assimilés à deux puits de potentiel finis et adjacents.
+    \end{itemize}
+    Le niveau d'énergie de l'oribtale non-liante est plus élevé que celui de l'orbitale liante : \(|\Delta E^+| < |\Delta E^-|\).
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    \includegraphics[width = \textwidth]{img/Deux puits.png}
+\end{minipage}
+
+Pour les autres ions et molécules, la manière de fonctionner est identique, mais le recouvrement est plus complexe (Toujours prendre en compte le principe d'exclusion de Pauli et la règle de Hund\footnote{Les électrons se repoussent moins s'ils sont sur des orbitales différentes.}).
+
+\subsection{Physique du solide}
+
+Dans la matière condensée (solide/liquide), la distance inter-atomique est de l'ordre de l'Angström (0.1nm) et les interactions interatomiques sont fortes.\\
+
+\subsubsection{Liaisons dans les solides}
+\begin{itemize}
+    \item Solides ioniques : liaisons ioniques directionnelles.
+    \item Solides covalents : liaisons covalentes directionnelles.
+    \item Solides métalliques : électrons délocalisés ("libres"), liaisons homogènes et isotropes, et empilement compact des atomes.
+\end{itemize}
+
+\underline{Particule dans un réseau en 1D :}
+
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Réseau 1D.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    On cherche à modéliser le comportement des électrons dans un réseau cristallin périodique qui subissent un potentiel périodique provoqué par les ions positifs du métal (disposés de manière régulière).\\
+
+    Pour simplifier le problème, l'électron est placé dans un réseau à une seule dimension constitué par les ions du matériau, espacés d'une longueur \(a\) régulière. Le potentiel du réseau est donc une fonction périodique dont la période est \(a\).
+\end{minipage}\\
+
+
+Nous devons résoudre l'équation de Schrödinger pour un puits de potentiel périodique en 1D. Le théorème de Bloch nous impose que la fonction d'onde satisfasse \(\Psi_{n,k} (x+a) = \Psi_{n,k}(x)e^{ika}\). Elle s'écrit donc sous la forme \(\Psi_{n,k}(x) = u_n(x)e^{ikx}\), où \(u_n(x)\) est la fonction périodique du cristal de période \(a\). De plus, pour éviter les problèmes aux limites, on considère le réseau périodique aux limites : \(\Psi_{n,k}(0) = \Psi_{n,k}(L)\).\\
+
+Soit \(N\) le nombre d'ions dans le réseau : \(aN=L\). En appliquant les CL et le théorème de Bloch, on trouve une condition sur \(k\) : \(k_n = n \frac{2\pi}{Na}, n=0, \pm1,..., \pm N/2\).\\
+
+\begin{minipage}{.45\textwidth}
+    \includegraphics[width = \textwidth]{img/Bandes d'énergie.png}
+\end{minipage}
+\begin{minipage}{.05\textwidth}
+
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Les électrons dans le cristal ont alors un niveau d'énergie \(E = \frac{\hbar^2k^2}{2m}\) discret et on voit l'apparition de bandes interdites d'énergie. C'est la théorie des bandes d'énergies.\\
+
+    Les électrons du cristal sont donc quasi-libres. \\
+
+    Le principe d'exclusion de Pauli requiert que seulement deux électrons occupent un même niveau d'énergie. Dans le solide, le principe reste valable : il y a une seule bande d'énergie au niveau de chaque orbitale.
+\end{minipage}\\
+
+Plus il y a d'atomes, plus les bandes d'énergie sont continues : il y a \(N\) niveaux par bandes pour \(N\) atomes.
+
+\section{Isolants, conducteurs et semi-conducteurs}
+
+Pour chaque matériau il existe une bande de conduction, des bandes interdites, et une bande de valence. 
+Soit \(E_C\) l'énergie minimale de la bande de conduction, \(E_V\) l'énergie maximale de la bande de valence, et \(E_g\) la largeur de la bande interdite.\\
+\begin{itemize}
+    \item Dans les isolants, les bandes de conduction et de valence sont séparées par une large bande interdite infranchissable par les électrons. (\(E_C - E_V = E_g \ll E_{cin, e^-}\))
+    \item Dans les conducteurs, les bandes de conduction et de valence se recouvrent partiellement, ce qui permet aux électrons de passer facilement de l'un à l'autre. (\(E_V > E_C\))
+    \item Dans les semi-conducteurs, les bandes de conduction et de valence sont séparées par une fine bande interdite, qui permet à une partie des électrons de la franchir. (\(E_g > E_{cin, e^-}\))
+\end{itemize}
+
+Le niveau de Fermi est le niveau d'énergie qui forme la frontière entre la bande de valence et la bande de conduction. Les électrons sont libres si leur énergie cinétique est supérieure à ce seuil. 
+
+\begin{minipage}{.5\textwidth}
+    \begin{itemize}
+        \item Conduction intrinsèque dans les semi-conducteurs : l'excitation des électrons vers la bande de conduction crée des "trous" (\(h^+\)) dans la bande de valence et ces deux "particules" sont accélérées sous l'effet d'un champ électrique \(E\). 
+    \end{itemize}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = .8\textwidth]{img/Semi-conducteur 1.png}
+\end{minipage}
+
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Semi-conducteur 2.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Semi-conducteur 3.png}
+\end{minipage}
+
+\begin{minipage}{.4\textwidth}
+    Le dopage \(N\) est un dopage du semi-conducteurs avec des atomes ayant plus d'électrons de valence que le matériau, afin que \(N_{e^-} >> N_{h^+}\).
+\end{minipage}
+\begin{minipage}{.1\textwidth}
+    \color{white} ggg\color{black}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    Le dopage \(P\) est un dopage du semi-conducteurs avec des atomes ayant moins d'électrons de valence que le matériau, afin que \(N_{e^-} << N_{h^+}\).
+\end{minipage}\\
+
+\subsection{Diode}
+
+Dans un semi-conducteur, lorsque la région dopée \(P\) est mise en contact avec la région \(N\), les électrons et les trous diffusent spontanément de part et d'autre de la jonction, créant une zone de déplétion (concentration en électrons quasiment nulle). Alors qu'un semi-conducteur dopé est un bon conducteur, la jonction ne laisse quasiment pas passer le courant. La longueur de la zone de déplétion varie avec la tension appliquée de part et d'autre de la jonction P-N. Plus cette zone est courte, plus la résistance de la jonction est faible. La caractéristique I(V) de la jonction est donc fortement non-linéaire.\\
+
+Lorsque l'on applique une tension positive à cette diode, la barrière de potentiel s'affine et le courant augmente. Lorsque la tension est négative, le processus inverse se produit et il n'y a donc plus de courant. \\
+
+\subsection{Transistor à effet de champ}
+
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = .8\textwidth]{img/Transistor.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Les parties dopées différemment dans le transistor permettent le passage d'électrons vers les jonctions et le pont agit comme un régulateur de courant.
+\end{minipage}
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

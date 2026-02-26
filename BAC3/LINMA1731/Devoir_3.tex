@@ -1,0 +1,149 @@
+\documentclass[11pt]{article}
+\pagestyle{plain}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=1cm,bottom=2.5cm]{geometry}
+\usepackage[english]{babel}
+\usepackage{libertine}
+\usepackage{gensymb}
+\usepackage{tabularray}
+\usepackage{graphicx}
+\usepackage{steinmetz}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{nicematrix}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage{verbatim}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\usepackage{apptools}
+    \titleformat{\chapter}[hang]{\bfseries\huge}{\IfAppendix{\appendixname~}{\relax}\thechapter\IfAppendix{.}{.}}{\IfAppendix{0.333em}{2pc}}{}
+%\AtBeginEnvironment{}{\appendixtrue}
+
+% this alters "before" spacing (the second length argument) to 0
+\titlespacing {\chapter}{0pt}{0pt}{40pt}
+
+\usepackage[nottoc]{tocbibind}
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{keyval}
+\usepackage{kvoptions}
+\usepackage{fancyvrb}
+\usepackage{ifthen}
+\usepackage{calc}
+\usepackage{pdftexcmds}
+\usepackage{etoolbox}
+\usepackage{xstring}
+\usepackage{xcolor}
+\usepackage{lineno}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usetikzlibrary{patterns,arrows,decorations.pathreplacing,babel}
+
+\usepackage[]{minted}
+\newminted{python}{
+    linenos=true,
+    bgcolor=lightgray,
+    tabsize=4,
+    gobble=8,
+    fontfamily=courier,
+    fontsize=\small,
+    xleftmargin=5pt,
+    xrightmargin=5pt
+}
+    \title{LINMA1731 - Assignment 3}
+    \author{Desmidt Simon - NOMA 19012100}
+    \date{\today}
+\begin{document}
+\maketitle
+Let $X_0,X_1,\dots$ be mutually independent random variables with $\mathbb{E}[X_n] = 0$ for all $n \ge 0$ and 
+\begin{equation}
+    Var(X_n) = \begin{cases}
+        \frac{\sigma^2}{1-\lambda^2}\qquad n = 0\\
+        \sigma^2 \quad n\ge 1\\
+    \end{cases}
+\end{equation}.
+where $\lambda^2 < 1$. We define a discrete-time stochastic process $Y (n)$ such that 
+\begin{equation}
+    \begin{cases}
+        Y(0) = X_0\\
+        Y(n) = \lambda Y(n-1)+X_n \qquad n\ge1\\
+    \end{cases}
+\end{equation}
+\begin{enumerate}
+    \item Compute the expectation and variance of $Y(n)$.
+\end{enumerate}
+First, we can calculate the expectation and variance for \(n=0\) : 
+\begin{equation}
+    \mathbb{E}(Y(0)) = \mathbb{E}(X_0) = 0\qquad Var(Y(0)) = Var(X_0) = \frac{\sigma^2}{1-\lambda^2}
+\end{equation}
+Next, we express \(y_(n)\) from the \(X_i\):
+\begin{equation}
+    Y(n) = \lambda^n X_0 + \sum_{i=1}^n \lambda^{n-i} X_i
+\end{equation}
+From which, using the linearity property of the expectation, we have
+\begin{equation}
+    \mathbb{E}(Y(n)) = \lambda^n \underbrace{\mathbb{E}(X_0)}_{=0} + \sum_{i=1}^n \lambda^{n-i} \underbrace{\mathbb{E}(X_i)}_{=0} = 0
+\end{equation}
+Using once again the expression of \(Y(n)\), we can find its variance, based on the variance of the $X_i$:
+\begin{align}
+    Var(Y(n)) &= Var(\lambda^n X_0+\sum_{i=1}^n \lambda^{n-i} X_i) \\
+    & = \lambda^{2n} Var(X_0) + \sum_{i=1}^n \lambda^{2(n-i)}Var(X_i)\\
+    & = \lambda^{2n} \frac{\sigma^2}{1-\lambda^2} + \sum_{i=1}^n \lambda^{2(n-i)}\sigma^2 \\
+    & = \frac{\lambda^{2n}\sigma^2}{1-\lambda^2} + \frac{(\lambda^{2n}-1)\sigma^2}{\lambda^2-1} = \frac{\sigma^2}{1-\lambda^2}
+\end{align}
+Which means that, for any \(n\ge0\), the expectation and variance are
+\begin{equation}
+    \color{red}\boxed{\color{black}
+    \begin{cases}
+        \mathbb{E}(Y(n)) = 0\\
+        Var(Y_n) = \frac{\sigma^2}{1-\lambda^2}\\
+    \end{cases}} \color{black}
+\end{equation}
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item Determine the covariance $C_Y(n,m)$.
+\end{enumerate}
+The definition of the covariance is 
+\begin{align}
+    \mathcal{C}_Y(n,m) &= \mathbb{E}((Y_n-\mathbb{E}(Y_n))(Y_m-\mathbb{E}(Y_m))) \\
+    & = \mathbb{E}(Y_nY_m) = \mathbb{E}\left[\left(\lambda^n X_0+\sum_{i=1}^n \lambda^{n-i}X_i\right)\left(\lambda^mX_0 + \sum_{j=1}^m\lambda^{m-j}X_j\right)\right]\\
+    & = \mathbb{E}\left[\lambda^{n+m} X_0^2 +\lambda^nX_0\sum_{j=1}^m\lambda^{m-j}X_j + \lambda^mX_0\sum_{i=1}^n \lambda^{n-i}X_i + \sum_{i=1}^n\sum_{j=1}^m \lambda^{n+m-(i+j)}X_iX_j\right]\\
+    & = \lambda^{n+m} \mathbb{E}(X_0^2) + \lambda^n \sum_{j=1}^m \lambda^{m-j}\underbrace{\mathbb{E}(X_0X_j)}_{=0, X_0\independent X_j}+\lambda^m \sum_{i=1}^n \lambda^{n-i}\underbrace{\mathbb{E}(X_0X_i)}_{=0, X_0\independent X_i} + \sum_{i=1}^n\sum_{j=1}^m \lambda^{n+m-(i+j)} \mathbb{E}(X_iX_j)\\
+    & = \lambda^{n+m}\underbrace{\mathbb{E}(X_0^2)}_{=Var(X_0)} + \sum_{i=1}^{\min(n,m)} \lambda^{n+m-2i}\underbrace{\mathbb{E}(X_i^2)}_{=Var(X_i)}\\
+    &= \lambda^{n+m} \frac{\sigma^2}{1-\lambda^2}+\sum_{i=1}^{\min(n,m)}\lambda^{n+m-2i}\sigma^2\\
+\end{align}
+\begin{equation}
+    \color{red}\boxed{\color{black}
+    \mathcal{C}_Y(n,m) = \frac{\sigma^2}{1-\lambda^2}\lambda^{|n-m|}} \color{black}
+\end{equation}
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item Is $Y(n)$ WSS? Justify your answer.
+\end{enumerate}
+The conditions for $Y(n)$ to be WSS are the following:
+\begin{itemize}
+    \item The mean is time invariant;
+    \item the covariance function only depends on the difference between the two time instants.
+\end{itemize}
+The first condition is verified, as the expectation is equal to zero for every \(i\ge 0\). The second is true too, because the parameters \(n,m\) only appear as their difference in the exponent. \\
+Hence, \(Y(n)\) is WSS.
+\end{document}

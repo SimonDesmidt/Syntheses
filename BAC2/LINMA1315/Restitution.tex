@@ -1,0 +1,264 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{amsfonts}
+\usepackage{mathrsfs}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\renewcommand{\contentsname}{Table des matières}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=1]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LINMA1315 Compléments d'analyse \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2022-2023 - Q2}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+\chapter{Questions de restitution}
+\begin{enumerate}
+    \item Définition d'un espace de Hilbert : Un espace de Hilbert est un espace vectoriel complet muni d'un produit scalaire. Un espace vectoriel est complet lorsque toute suite de Cauchy qu'il contient est convergente.
+    \item Définition d'un espace de Banach séparable : Un espace de Banach séparable est un espace de Banach qui possède un ensemble dénombrable et dense, c'est-à-dire qu'il existe un sous-ensemble infini et dénombrable dont la fermeture est égale à l'espace lui-même.
+    \item Définition d'un espace métrique complet : Un espace métrique est dit complet lorsque toute suite de Cauchy qu'il contient est convergente.
+    \item Définition d'une fonction continue entre deux espaces métriques : Soit une fonction \(f:X\rightarrow Y\), avec \(X,Y\) des espaces métriques. \(f\) est dite continue en \(x\in X\) si \(\forall y \forall \varepsilon >0, \exists \delta >0 \text{ } : \text{ } d_X(x,y) < \delta \Longrightarrow d_Y(f(x),f(y)) <\varepsilon\). \(f\) est dite continue si elle est continue en tout point \(x\in X\).
+    \item Définition d'un espace de Banach : Un espace de Banach est un espace vectoriel normé complet, c'est-à-dire un espace vectoriel muni d'une fonction vérifiant les propriétés de la norme, et dans lequel toute suite de Cauchy converge.
+    \item Définition d'un produit scalaire : Un produit scalaire sur un espace vectoriel réel \(X\) est une application \(\langle\cdot,\cdot\rangle :X\times X\rightarrow \mathbb{R}\) qui satisfait les conditions suivantes : 
+    \begin{itemize}
+        \item [\(\bullet\)] bilinéaire : pour tout \(f,f_1,f_2,g,g_1,g_2 \in X\) et tout \(\alpha_1,\alpha_2\in \mathbb{R}\), on a \newline \(\begin{cases} 
+        \langle \alpha_1f_1+\alpha_2f_2, g\rangle = \alpha_1 \langle f_1,g\rangle + \alpha_2\langle f_2,g\rangle\\ 
+        \langle f,\alpha_1g_1 + \alpha_2g_2\rangle = \alpha \langle f,g_1\rangle+\alpha_2\langle f,g_2\rangle
+        \end{cases}\).
+        \item [\(\bullet\)] symétrique : \(\langle f,g\rangle  = \langle g,f\rangle \), \(\forall f,g\in X\).
+        \item [\(\bullet\)] définie positive : \(\langle f,f\rangle\) \( > 0\) pour tout \(f\in X\setminus \{0\}\).
+    \end{itemize}
+    \item Définition de continuité d'une fonction \(F :X\rightarrow \mathbb{R}\) en un point \(x\in X\), avec \(X\) un espace de Banach : Une fonction \(F:X\rightarrow \mathbb{R}\), avec \(X\) un espace de Banach, est continue en un point \(x\in X\) si, pour tout \(\varepsilon >0\), il existe \(\delta>0\) tel que, pour tout \(y\in X\) qui satisfait \(\lVert y-x\rVert<\delta\), on a \(|F(y)-F(x)| <\varepsilon\).
+    \item Définition d'un espace métrique : Un espace métrique est un ensemble \(X\) lié à une fonction distance \(d\) \(:\) \(X\times X \rightarrow [0,\infty)\) telle que, pour des points quelconques \(x,y,z\in X\), ces trois conditions sont respectées : 
+    \begin{itemize}
+        \item Séparation : \(d(x,y) = 0 \Longleftrightarrow x = y\)
+        \item Symétrie : \(d(x,y) = d(y,x)\)
+        \item Inégalité triangulaire : \(d(x,z) \le d(x,y) + d(y,z)\)
+    \end{itemize}
+    \item Inégalité triangulaire inverse dans un espace métrique \(X\): Soit \(f,g\) des fonctions dans \(X\). L'inégalité triangulaire inverse dans \(X\) est \(\left|\lVert f\rVert - \lVert g\rVert\right| \le \lVert f-g\rVert\).
+    \item Définition d'une boule ouverte de centre \(x\) et de rayon \(r\) dans un espace métrique \((X,d)\): Une boule ouverte autour de \(x\) de rayon \(r>0\) est l'ensemble \(B_r(x) \coloneqq \left\{y\in X | d(x,y) <r\right\}\).
+    \item Définitions des types de points : 
+    \begin{itemize}
+        \item Point intérieur : Un point intérieur \(x\) de l'ensemble \(U\) est tel que \(U\) contient une boule ouverte de rayon \(r>0\) centrée en \(x\).
+        \item Point limite : \(x\) est dit point limite de l'ensemble \(U\) si, pour toute boule ouverte \(B_r(x)\), il existe au moins un point dans \(B_r(x) \cap U\) distinct de \(x\).
+        \item Point isolé : Un point \(x\) est dit isolé dans \(U\) s'il est tel qu'il existe un voisinage de \(x\) qui ne contient aucun autre point de \(U\).
+        \item Point frontière : Un point \(x\) est un point frontière de \(U\) si tout voisinage de \(x\) contient au moins un point de \(U\) et un point de \(\Bar{U}\).
+    \end{itemize}
+    \item Définition d'un sous-ensemble ouvert/fermé d'un espace métrique : Un sous-ensemble d'un espace métrique est dit ouvert si tous ses points sont intérieurs. Un sous-ensemble d'un espace métrique est dit fermé si son complémentaire est ouvert.
+    \item Convergence d'une suite : Soit \(X\) un espace métrique. Une suite \((x_n)^{\infty}_{n=1}\in X^{\mathbb{N}}\) converge vers un point \(x \in X\) si \(\lim_{n\rightarrow\infty}{d(x,x_n)} = 0\).
+    \item Définition d'un sous-ensemble borné d'un espace métrique : Soit \(X\) un espace métrique. Un sous-ensemble \(U\subseteq X\) est dit borné s'il admet un minorant et un majorant dans \(X\).
+    \item Définition d'un sous-ensemble dense : Un sous-ensemble \(U\subseteq X\) est dit dense dans \(X\) si son adhérence est \(X\) : \(\Bar{U} = X\).
+    \item Définition d'une suite de Cauchy : Une suite de Cauchy dans un espace métrique \((X,d)\) est une suite \((x_n)_{n=1}^{\infty}\) telle que \(\forall \varepsilon >0, \exists N\in \mathbb{N} : d(x_n,x_m) \le \varepsilon, \text{   } n,m\ge N\).
+    \item Définition de la continuité d'une fonction entre deux espaces métrique en \(x\in X\) : Soit une fonction \(f:X\rightarrow Y\), avec \(X,Y\) des espaces métriques. \(f\) est dite continue en \(x\in X\) si \(\forall y \forall \varepsilon >0, \exists \delta >0 \text{ } : \text{ } d_X(x,y) < \delta \Longrightarrow d_Y(f(x),f(y)) <\varepsilon\).
+    \item Définition d'un sous ensemble compact d'un espace métrique \(X\) : Un sous-ensemble \(K\subset X\) est dit compact si tout recouvrement ouvert de \(K\) possède un nombre fini de sous-recouvrements. Le recouvrement de l'ensemble \(Y\subseteq X\) est une famille \(\{U_\alpha\}\) telle que \(Y\subseteq \cup_\alpha U_\alpha\). Un sous-recouvrement de \(Y\) est tout sous-ensemble de la famille \(\{U_\alpha\}\) qui recouvre toujours \(Y\).
+    \item Théorème de Heine-Borel : Pour tout \(X\subseteq \mathbb{R}^n\), \(X\) est compact ssi il est fermé et borné.
+    \item Théorème de Bolzano-Weierstraß : Toute suite bornée dans \(\mathbb{R}^n\) contient une sous-suite convergente.
+    \item Théorème des valeurs extrêmes : Si \(X\) est un espace métrique compact, alors toute fonction continue \(f:X\rightarrow \mathbb{R}\) atteint un minimum et un maximum.
+    \item Définition de norme du maximum : Pour une fonction \(f : I \rightarrow \mathbb{R}\), la norme du maximum, ou norme infinie est définie telle que \(\lVert f \rVert_{\infty} \coloneqq \max_{x\in I}{|f(x)|}\)
+    \item Définition d'une norme : Une norme sur un espace vectoriel réel \(X\) est une application \(\lVert \cdot \rVert : X\rightarrow \mathbb{R}\) telle que
+    \begin{itemize}
+        \item Séparation : \(\lVert u\rVert \neq 0\) pour tout \(u\in X\setminus \{0\}\);
+        \item Homogénéité positive : \(\lVert \alpha u\rVert = |\alpha|\lVert u\rVert\) pour tout \(\alpha \in \mathbb{R}\) et \(u\in X\);
+        \item Inégalité triangulaire : \(\lVert u+v\rVert \le \lVert u\rVert + \lVert y\rVert\) pour chaque \(u, v \in X\).
+    \end{itemize}
+    \item Définition de l'espace vectoriel normé \(\ell^1(\mathbb{N})\) : \(\ell^1(\mathbb{N}) = \left \{ a \in \mathbb{R}\text{ } |\text{ } \lVert a \rVert_1 \coloneqq \sum_{i=1}^{\infty}{|a_i|} < \infty\right \}\), avec \(a\) une suite de réels. Voir démonstration \ref{Complet}.
+    \item Théorème de Pythagore dans un espace à produit scalaire : Soient deux fonctions \(f,g\in \mathcal{H}\). Si \(f\perp g\), alors \(\lVert f+g\rVert^2 = \lVert f\rVert^2 + \lVert g\rVert^2\). Voir démonstration \ref{Py}.
+\item Théorème de Cauchy-Schwarz dans un espace préhilbertien : Soit \(\mathcal{H}\) un espace à produit scalaire. Pour tout \(f,g\in \mathcal{H}\), \(|\langle f,g\rangle|\le \lVert f\rVert \lVert g\rVert\), où \(\lVert\cdot\rVert = \sqrt{\langle\cdot,\cdot\rangle}\). Voir démonstration \ref{TCS}.
+    \item Théorème de Jordan-von Neumann : Soit \(\lVert\cdot\rVert\) une norme. Alors il existe \(\langle \cdot,\cdot\rangle\) telle que \(\lVert\cdot\rVert = \sqrt{\langle\cdot,\cdot\rangle}\) ssi \(\forall f,g\text{, } \lVert f+g\rVert^2 + \lVert f-g\rVert^2 = 2\lVert f\rVert^2 + 2 \lVert g\rVert^2\).
+    \item Définition d'une application linéaire bornée : Soit \(A\) un opérateur linéaire \(A:X\rightarrow Y\). \(A\) est borné lorsque \(\lVert A \rVert = \sup_{f\in \mathcal{D}(A),\lVert f\rVert_X = 1} \lVert Af\rVert_Y < \infty\).
+    \item Lien entre application linéaire bornée et continue : Soit \(A : \mathcal{D}(A)\subset X \rightarrow Y\) un opérateur linéaire. Les propriétés suivantes sont équivalentes (voir démonstration \ref{CB}) :
+    \begin{itemize}
+        \item \(A\) est borné,
+        \item l'image de \(\mathcal{D}(A) \cap \Bar{B}_1(0)\) est bornée,
+        \item l'image de tout sous-ensemble borné de \(\mathcal{D}(A)\) est borné,
+        \item \(A\) est continu en \(0\),
+        \item \(A\) est continu sur \(\mathcal{D}(A)\),
+        \item \(A\) est uniformément continu sur \(\mathcal{D}(A)\),
+        \item \(A\) est lipschitzien.
+    \end{itemize}
+    \item Exemples d'application linéaire bornée : Opérateur de multiplication, de décalage, de dérivation ou d'intégration.
+    \item Expliquez comment l'espace des application linéaires bornées peut être muni d'une structure d'espace normé et énoncez un critère pour que l'espace normé ainsi obtenu soit complet : 
+    \item Définition d'ensemble orthonormé : Un ensemble \(\{u_j\}_{j\in J}\) dans \(\mathfrak{H}\) est un ensemble orthonormé lorsque \(\langle u_j,u_k\rangle = \begin{cases}
+        1\text{ si } j=k\\
+        0 \text{ sinon}\\
+    \end{cases}\)
+    \item Décomposition orthogonale : Pour un ensemble \(J\) fini, si \(\{u_j\}_{j\in J}\) est une famille orthonormée, alors pour tout \(f\in \mathcal{H}\),
+    \begin{itemize}
+        \item \(f_{\|} \coloneqq \sum_{j\in J} \langle u_j,f\rangle u_j\) et \(f_{\perp} \coloneqq f- f_{\|}\) existent.
+        \item \(\langle f_{\|},f_{\perp}\rangle = 0\)
+        \item \(\lVert f\rVert^2 = \lVert f_{\|}\rVert^2 + \lVert f_{\perp}\rVert ^2\)
+        \item \(\lVert f_{\|}\rVert^2 = \sum_{j\in J} |\langle u_j,f\rangle|^2\)
+        \item \(\forall j\in J\), \(\langle f_{\perp},u_j\rangle = 0\)
+        \item Si \(\Hat{f}\) est limite de combili de \(\{u_j\}_{j\in J}\), alors \(\lVert\Hat{f}-f\rVert^2\ge \lVert f_{\|} - f\rVert^2\)
+    \end{itemize}
+    \item Inégalité de Bessel : Dans le cas fini, si \(\{u_j\}_{j\in J}\) est une famille orthonormée, alors pour tout \(f\in \mathcal{H}\), \(\sum_{j\in J} |\langle u_j,f\rangle|^2 \le \lVert f\rVert^2\)
+    \item Définition d'une base orthonormée : \(\{u_j\}_{j\in \mathbb{N}}\) est une base orthnormée lorsque pour tout \(f\in \mathbb{N}\), avec \(J\) un ensemble infini dénombrable, \(f = \sum_{j\in J} \langle u_j,f\rangle u_j\). De plus, on a équivalence entre 
+    \begin{itemize}
+        \item \(\{u_j\}_{j\in J}\) est un ensemble orthonormé maximal, i.e. n'est plus orthonormé si on ajoute un vecteur.
+        \item pour tout \(f\in \mathcal{H}\), \(f=\sum_{j\in j}\langle u_j,f\rangle u_j\).
+        \item pour tout \(f\in \mathcal{H}\), \(\lVert f\rVert^2 = \sum_{j\in J} |\langle u_j,f\rangle|^2\).
+        \item \(\{f\in \mathcal{H}| \forall j\in J, \langle u_j,f\rangle =0\} = \{0\}\).
+    \end{itemize}
+    \item Projection orthogonale : Soit \(M\) un sous-espace vectoriel fermé de \(\mathcal{H}\) espace de Hilbert. Il existe \(P_M\in Lin(\mathcal{H},\mathcal{H})\)\footnote{\(Lin(X,Y)\equiv \) application linéaire de l'espace \(X\) vers l'espace \(Y\)} tel que 
+    \begin{itemize}
+        \item Pour tout \(f\in \mathcal{H}\), \(P_M f\in M\).
+        \item Pour tout \(f\in \mathcal{H}\) et \(g\in M\), \(\langle f-P_Mf, g\rangle = 0\).
+        \item Pour tout \(g\in M\), \(\lVert P_Mf-f\rVert\le \lVert g-f\rVert\).
+        \item Pour tout \(f\in M\), \(P_Mf = f\).
+    \end{itemize}
+    \item Lemme de Riesz (voir démonstration \ref{Riesz}) : Soit \(\mathcal{H}\) un espace de Hilbert et \(l\in \mathcal{H}^{*} = Lin(\mathcal{H}, \mathbb{C})\), alors il existe \(g\in \mathcal{H}\) tel que pour tout \(f\in \mathcal{H}\), \(l(f) = \langle g,f\rangle \)
+    \item Séries de Fourier : Voir CM9.
+    \item Noyaux de Dirichlet et Féjer : Soient les vecteurs de base \(e_k(x) = \frac{e^{ikx}}{\sqrt{2\pi}}\) formant un ensemble orthonormé muni du produit scalaire \(\langle f,g\rangle = \int_{-\pi}^{\pi}f^*(x)g(x) dx\). Le \(n\)-ème noyau de Dirichlet est formé par la \(\sum_{k=-n}^n\) des vecteurs de base, et les noyaux de Féjer sont formés en faisant la moyenne des noyaux de Dirichlet. L'intérêt du noyau de Féjer par rapport au noyau de Dirichlet est que les termes d'indice faible ont un poids plus important dans la somme, car ils apparaissent dans plus de termes de la somme.
+    \item Présentez les conséquences de la caractérisation des bases d'un espace de Hilbert sur les propriétés des séries de Fourier : Si on munit l'espace \(L^2[-\pi,\pi]\) du produit scalaire \(\langle f,g\rangle = \frac{1}{2\pi} \int_{-\pi}^{\pi} f^*g\), et si on définit \(e_k(x) = e^{ikx}\), les fonctions \(\{e_k\}_{k\in \mathbb{Z}}\) forment un ensemble orthonormé car pour tout \(k,l\in \mathbb{Z}\), \(\langle e_k,e_l\rangle = \frac{1}{2\pi}\int_{-\pi}^{\pi} e^{ikx}e^{ikl}dx = \delta_{k,l}\). On peut montrer que les fonctions \(\{e_k\}_{k\in \mathbb{Z}}\) forment une base orthonormée de \(L^2[-\pi,\pi]\). On a pour tout \(f\in L^2[-\pi,\pi]\), \(f(x) = \sum_{k\in \mathbb{Z}}\langle e_k,f\rangle e_k(x) = \sum_{k\in \mathbb{Z}} \frac{e^{ikx}}{2\pi}\int_{\pi}^{\pi}e^{ikt}f(t)dt\), où la convergence des sommes a lieu dans \(L^2[-\pi,\pi]\).
+    \item Mesure extérieure de Lebesgue : On définit la mesure de Lebesgue extérieure d'un ensemble \(A \subseteq \mathbb{R}^n\) comme \(\lambda^{n,*}(A) = \inf{\left\{ \sum_{j=1}^{\color{red}\infty\color{black}}|R_j| | \cup_{j=1}^{\color{red}\infty\color{black}} R_j \supseteq A \text{ et } R_j \in \mathcal{S}^n\right\}}\), avec \(\mathcal{S}^n\) l'ensemble des rectangles semi-fermés.
+    \item Définition de \(\sigma\)-algèbre : Une \(\sigma\)-algèbre \(\Sigma\) d'un ensemble \(X\) est un ensemble de sous-ensembles de \(X\) vérifiant les propriétés suivantes : 
+    \begin{itemize}
+        \item \(\emptyset \in \Sigma\).
+        \item si pour \(j\in \mathbb{N}\), \(A_j\in \Sigma\), \(\cap_{j\in \mathbb{N}} A_j\in \Sigma\).
+        \item Si \(A\in \Sigma\), alors \(X\setminus A \in \Sigma\).
+    \end{itemize}
+    \item Ensemble ouvert et ensemble borélien : Tout ensemble ouvert est borélien, par définition de \(\sigma-\)algèbre borélienne. Cependant, tout borélien n'est pas ouvert, puisque toute \(\sigma-\)algèbre bolérienne contient tous les ouverts, mais aussi tous les fermés.
+    \item Définition de mesure : \(\mu :\Sigma \rightarrow [0,\infty]\) est une mesure lorsque 
+    \begin{itemize}
+        \item \(\mu(\emptyset) = 0\)
+        \item Si pour \(j\in \mathbb{N}\), \(A_j\in \Sigma\) et \(A_i\cap A_j = \emptyset\) pour \(i\neq j\), \(\mu \left(\cup_{j\in \mathbb{N}} A_j\right) = \sum_{j\in \mathbb{N}} \mu(A_j)\).
+    \end{itemize}
+    \item Mesure, mais pas Lebesgue : Mesure de Dirac (étant donné un \(x\)) \(\mu : \mathfrak{B}(X)\rightarrow [0,\infty] : A \rightarrow \mu(A) = \begin{cases}
+        1\text{ si } x\in A\\
+        0\text{ sinon}\\
+    \end{cases}\)
+    \item Définition d'ensemble négligeable : Si \(\mu:\Sigma \rightarrow [0,\infty]\) est une mesure, alors l'ensemble \(A\in \Sigma\) est négligeable lorsque \(\mu(A) = 0\).
+    \item Tout ensemble de \(\mathbb{R}\) dénombrable pour la mesure de Lebsegue est négligeable. En effet, si \(A\subset \mathbb{R}\) est dénombrable, alors \(A\) est négligeable puisque \(\lambda^1(A) =\sum_{a\in A}\lambda^1(\{a\}) = 0\).
+    \item Limite de la mesure d'une suite (dé-)croissante :
+    \begin{itemize}
+        \item Suite croissante : la limite de la suite est \(\lim_{m\rightarrow \infty} \mu(A_m) = \mu\left(\cup_{n=1}^{\infty}A_n\right)\)
+        \item Suite décroissante : la limite de la suite est \(\lim_{m\rightarrow \infty} \mu(A_m) = \mu\left(\cap_{n=1}^{\infty}A_n\right)\)
+    \end{itemize}
+    \item Définition d'une fonction Borel-mesurable : une fonction \(f:X\rightarrow Y\) est Borel-mesurable lorsque pour tout \(A \in \mathfrak{B}(Y)\), \(f^{-1}(A) \in \mathfrak{B}(X)\), i.e. l'image inverse de tout ensemble borélien est borélienne.
+    \item Lien entre continuité et mesurabilité : Si \(f:X\rightarrow Y\) est continue, alors \(f\) est Borel-mesurable. Cela découle des deux propriétés suivantes : 
+    \begin{itemize}
+        \item \(f:X\rightarrow Y\) est continue ssi pour tout \(A\subseteq Y\) ouvert, \(f^{-1}(A) \subseteq X\) est ouvert.
+        \item \(f:X\rightarrow Y\) est Borel-mesurable ssi pour tout \(A\subseteq Y\) ouvert, \(f^{-1}(A) \in \mathfrak{B}(X)\).
+    \end{itemize}
+\end{enumerate}
+Cependant, toute fonction Borel-mesurable n'est pas continue: e.g. la fonction de Dirichlet.
+\begin{enumerate}\addtocounter{enumi}{50}
+    \item Définition de l'intégrale d'une fonction positive : Si  \(f:X\rightarrow [0,\infty]\) est Borel-mesurable, on définit \(\int_A fd\mu \coloneqq \sup\left\{\int_A sd\mu | s : X\rightarrow [0,\infty[ \text{ est une fonction simple et }s\le f\right\}\). Une fonction est simple lorsqu'elle prend un nombre fini de valeurs.
+    \item Définition de l'intégrale d'une fonction réelle ou complexe : La fonction Borel-mesurable \(f:X\rightarrow \mathbb{R}\) est intégrable sur l'ensemble \(A\subset X\) lorsque \(\int_A f^+d\mu <\infty\) et \(\int_A f^-d\mu <\infty\). On définit alors \(\int_A fd\mu = \int_A f^+d\mu - \int_A f^-d\mu\), où \(f=f^+-f^-\) avec \(f^+ = \max(f,0)\) et \(f^- = \max(-f,0)\).
+     \item Exemple de fonction non intégrable : La fonction \(f:\mathbb{R}\rightarrow\mathbb{R} : x\rightarrow f(x) = \frac{d}{dx}\left(x^2\sin(1/x^2)\right)\) n'est pas intégrable au sens de Lebesgue sur \([0,1]\), car \(\int_0^1|f(x)|dx = \infty\), et une fonction est intégrable au sens de Lebesgue ssi elle l'est absolument.
+    \item Lien entre intégrabilité et intégrabilité absolue : Si \(f:X\rightarrow \mathbb{C}\) est Borel-mesurable, alors f est intégrable ssi \(|f|\) est intégrable, i.e. les deux concepts sont équivalents.
+    \item Exemple de fonction telle que la limite de l'intégrale n'est pas l'intégrale de la limite : \(\lim_{n\rightarrow \infty} \int_0^1 nx^{n-1}dx = 1 \neq 0 = \int_0^1 \lim_{n\rightarrow \infty} nx^{n-1}dx\)
+    \item Fonction positive dont l'intégrale est nulle : fonction de Dirichlet.
+    \item Théorème de convergence monotone : Si pour tout \(n\in \mathbb{N}\), la fonction \(f_n :X\rightarrow[0,\infty[\) est mesurable, si \(f_n\le f_{n+1}\) et si \((f_n)_{n\in \mathbb{N}}\) converge ponctuellement vers \(f\), alors \(f\) est mesurable et \(\lim_{n\rightarrow \infty} \int_A f_n d\mu = \int_A fd\mu = \int_A \lim_{n\rightarrow \infty} f_nd\mu\)
+    \item Exemple pertinent de l'application du théorème de convergence monotone : \(f(x) = \frac{1}{1+x^2}\) et \(f_n(x) = \begin{cases}
+        0\text{ si } |x|>n\\
+        f(x) \text{ si } |x|\le n\\
+    \end{cases}\)
+    \item Théorème de la convergence dominée : Si pour tout \(n\in \mathbb{N}\), soit la fonction \(f_n:X\rightarrow \mathbb{C}\), si \((f_n)_{n\in \mathbb{N}}\) converge ponctuellement vers \(f\) et s'il existe \(g:X\rightarrow [0,\infty[\) intégrable sur \(A\) telle que pour tout \(n\in \mathbb{N}\), \(|f_n|\le g\), alors \(f\) est intégrable et \(\lim_{n\rightarrow \infty} \int_A f_n d\mu = \int_A fd\mu = \int_A \lim_{n\rightarrow \infty} f_nd\mu\).
+    \item Exemple pertinent de l'application du théorème de convergence dominée : 
+\end{enumerate}
+\chapter{Démonstrations}
+\section{\(\ell^1(\mathbb{N})\) est complet}\label{Complet}
+\section{\(C(I)\) muni de la norme du maximum est complet}
+Soit \(f_n\) une suite de Cauchy, i.e. \(\lim_{m,n\rightarrow \infty} \lVert f_n-f_m\rVert_{\infty} = 0\). Alors, \(\forall x\in I\) fixé, \(f_n(x)\) est une suite de Cauchy \(\Longleftrightarrow\lim_{m,n\rightarrow \infty} \lVert f_n-f_m\rVert = 0\) car, puisque \(f_n(x) \in \mathbb{R}\) et \(\mathbb{R}\) est complet, \(f_n(x)\) converge. Soit \(f(x)\) la limite.\\
+
+Ceci défini une fonction \(f\), et il nous reste à prouver que 
+\begin{itemize}
+    \item \(\lim_{n\rightarrow \infty} \lVert f_n-f\rVert_{\infty} = 0\)
+    \item \(f\in C(I)\)
+\end{itemize}
+On a donc :
+\begin{equation}
+    \forall \varepsilon>0, \exists N_\varepsilon : \forall m,n>N_\varepsilon : \max_{x\in I} |f_n(x) -f_m(x)| < \varepsilon/2 
+\end{equation}
+\begin{equation*}
+    \Longleftrightarrow \forall \varepsilon>0:\exists N_\varepsilon : \forall m,n>N_\varepsilon :\forall w\in I:|f_n(x)-f_m(x)|<\varepsilon/2
+\end{equation*}
+\begin{equation*}
+    \Longleftrightarrow \forall \varepsilon>0, \exists N_\varepsilon \forall x\in I : \forall n>N_\varepsilon:\forall m>N_\varepsilon : |f_n(x)-f_m(x)|<\varepsilon/2\Longleftrightarrow \lim_{m\rightarrow\infty} |f_n(x)-f_m(x)| \le \varepsilon/2
+\end{equation*}
+\begin{equation*}
+    \Longleftrightarrow \forall \varepsilon>0, \exists N_\varepsilon \forall x\in I : \forall n>N_\varepsilon: |f_n(x)-f(x)|<\varepsilon/2
+\end{equation*}
+\begin{equation*}
+    \Longleftrightarrow \forall \varepsilon>0, \exists N_\varepsilon \forall n>N_\varepsilon : \max_{x\in I}|f_n(x)-f(x)|=\lVert f_n-f\rVert_{\infty}<\varepsilon/2 \le \varepsilon
+\end{equation*}
+\begin{equation*}
+    f_n\xrightarrow{n\rightarrow \infty} f
+\end{equation*}
+et \(f_n\) converge uniforément vers \(f\), ce qui conclut le premier point.\\
+
+Soit \(x\in I = [a,b]\). 
+\begin{equation*}
+    \forall \varepsilon \exists n,\delta :\forall y\in B_{\delta}(x):|f(x)-f_n(x)| + |f_n(x)-f_n(y)|+|f(y)-f_n(y)|<\varepsilon \Longrightarrow |f(x)-f(y)|<\varepsilon
+\end{equation*}
+\begin{equation*}
+    \forall \varepsilon : \exists\text{ } n, \delta :\forall y\in B_{\delta}(x):|f(x)-f(y)|<\varepsilon
+\end{equation*}
+i.e. \(f\) est continue en \(x\), ce qui conclut la preuve.
+\section{Théorème de Pythagore dans un espace à produit scalaire}\label{Py}
+Soit deux fonctions \(f,g\in \mathcal{H}\) un espace à produit scalaire, dans lequel on définit la norme \(\lVert\cdot\rVert = \sqrt{\langle\cdot,\cdot\rangle}\). Soient les fonctions telles que \(f\perp g\). On a alors 
+\begin{equation}
+    \lVert f+g\rVert ^2 = \langle f+g,f+g\rangle = \langle f,f\rangle + \langle g,g\rangle + 2\langle f,g\rangle 
+\end{equation}
+Le dernier terme est nul car \(f \perp g\) implique que \(\langle f,g\rangle = 0\). On a donc 
+\begin{equation}
+    \lVert f+g\rVert^2 = \langle f,f\rangle + \langle g,g\rangle = \lVert f\rVert^2+\lVert g\rVert^2
+\end{equation}
+\section{Théorème de Cauchy-Schwarz}\label{TCS}
+Soient \(f,g\in \mathcal{H}\). Si \(g=0\), alors le théorème est vérifié car ses deux membres sont nuls. Il reste à considérer le cas \(g\neq 0\). Posons \(u=g/\lVert g\rVert\). On a \(f=\langle u,f\rangle + (f - \langle u,f\rangle u) \eqqcolon f_{\parallel}+ f_{\perp}\). En utilisant la bilinéarité du produit scalaire et la relation \(\langle u,u\rangle = 1\), on trouve que \(\langle f_{\parallel}, f_{\perp}=0\), c’est-à-dire \(f_{\parallel}\perp f_{\perp}\). On obtient alors successivement, en utilisant notamment ce dernier résultat, ainsi que la bilinéarité du produit scalaire, 
+\begin{equation}
+    \lVert f\rVert^2 = \langle f,f\rangle = \langle f_{\parallel}+f_{\perp}, f_{\parallel}+f_{\perp}\rangle = \lVert f_{\parallel}\rVert^2 + \lVert f_{\perp}\rVert^2 \ge \lVert f_{\parallel}\rVert^2 = \langle u,f\rangle^2 = \langle \frac{g}{\lVert g\rVert^2}, f\rangle^2
+\end{equation}
+c’est-à-dire \(\lVert f\rVert^2\ge\langle \frac{g}{\lVert g\rVert^2}, f\rangle^2\), ce qui implique \(\lVert f\rVert^2\lVert g\rVert^2 \ge \langle g,f\rangle^2\), et on a finalement l'énoncé du théorème par monotonicité de la racine carrée.
+\section{Tout espace vectoriel normé admettant un sous-ensemble dénombrable total est séparable}
+\section{Caractère continu et borné des opérateurs linéaires}\label{CB}
+\section{Lemme de Riesz}\label{Riesz}
+
+\end{document}

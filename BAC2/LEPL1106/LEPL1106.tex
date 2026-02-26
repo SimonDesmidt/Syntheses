@@ -1,0 +1,1008 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\renewcommand{\contentsname}{Table des matières}
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=1]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LEPL1106 Signaux et systèmes \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2022-2023 - Q2}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+\chapter{Introduction}
+\section{Signaux}
+Un signal est une fonction d'une ou plusieurs variables, continues ou discrètes, correspondant à de l'information ou à un phénomène physique.
+\subsection{Conventions}
+\begin{itemize}
+    \item Un signal en temps continu s'écrit \(x(t)\), et un signal en temps discret s'écrit \(x[n]\)
+    \item \(x\) est un signal, i.e. une fonction, tandis que \(x[k]\) est une valeur.
+    \item Par convention, pour alléger les notations, on note en temps discret (resp. continu) \(x[n]\) (resp. \(x(t)\)) comme étant le signal \(x\) dans son ensemble, et \(n\) (resp. \(t\)) est la variable libre.
+\end{itemize}
+
+\subsection{Opérations sur les signaux}
+\begin{tabular}{c|c|c}
+    \hline
+     & Temps discret & Temps continu \\
+     \hline
+     Combinaison linéaire & \(\alpha_1 x_1[n] + \alpha_2 x_2[n]\) & \(\alpha_1 x_1(t) + \alpha_2 x_2(t)\), \(\alpha_1, \alpha_2 \in \mathbb{R}\)\\
+     \hline
+     Multiplication & \(x_1[n]x_2[n]\) & \(x_1(t)x_2(t)\) \\
+     \hline
+     Différentiation & & \(d^nx(t)/dt^n\)\\
+     \hline
+     Intégration & & \(\int_{-\infty}^{t}{x(\tau)d\tau}\)\\
+     \hline
+     Dilatation & \(x[n/a]\) ! Arrondis & \(x(t/a)\), \(a \in \mathbb{R}\)\\
+     \hline
+     Translation & \(x[n-n_0], n_0 \in \mathbb{Z}\) & \(x(t-t_0), t_0\in \mathbb{R}\)\\
+     \hline
+     Renversement & \(x[-n]\) & \(x(-t)\) \\
+\end{tabular}
+\section{Impulsion}
+\subsection{Temps discret}
+\begin{equation}
+    \color{red}\boxed{\color{black}\delta[n] = \begin{cases}
+    1 \text{ si } n=0\\
+    0 \text{ sinon }\\
+    \end{cases}}\color{black}
+\end{equation}
+\begin{minipage}{0.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Impulsion.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Une impulsion peut également être décalée par rapport à l'axe vertical. Elle se note alors
+    \begin{equation}
+        \delta[n-n_0] = \begin{cases}
+    1 \text{ si } n=n_0\\
+    0 \text{ sinon }\\
+    \end{cases}
+    \end{equation}
+\end{minipage}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : La composition d'impulsions est possible, il s'agit de combinaisons linéaires de différentes impulsions.
+\end{itemize}
+- \underline{Théorème :} Pour tout signal \(x\), 
+\begin{equation}
+    \color{red}\boxed{\color{black}x[n] = \sum_{k = -\infty}^{+\infty}{x[k]\delta[n-k]}}\color{black}
+\end{equation}
+Cela signifie que tout signal peut s'écrire comme une somme d'impulsions décalées. Les impulsions forment donc une base de l'espace des signaux.
+\subsection{Temps continu}
+\begin{equation}
+    \delta(t) = \begin{cases}
+        0 \text{ si } t\neq 0\\
+        +\infty \text{ si } t = 0\\
+    \end{cases}
+\end{equation}
+\begin{minipage}{0.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Impulsion continue.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    De plus, toute impulsion continue respecte la propriété suivante : \(\int_{-a}^{a}{\delta(s)ds} = 1\).
+\end{minipage}
+\underline{Propriétés :}
+\begin{itemize}
+    \item \(\int_{-\infty}^{\infty}{x(s)\delta(s)ds} = x(0)\)
+    \item \(\int_{-\infty}^{\infty}{x(s)\delta(s-t)ds} = \int_{-\infty}^{\infty}{x(s)\delta(t-s)ds} = x(t)\)
+\end{itemize}
+- \underline{Théorème :} Pour tout signal \(x\),
+\begin{equation}
+    x(t) = \int_{-\infty}^{\infty}{x(s)\delta(t-s)ds} 
+\end{equation}
+Les impulsions forment donc une base de l'espace des signaux en temps continu également.
+\section{Echelon}
+\subsection{Temps discret}
+\begin{equation}
+    u[n] = \begin{cases}
+        1 \text{ si } n \ge 0\\
+        0 \text{ si } n < 0\\
+    \end{cases}
+\end{equation}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Echelon discret.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Un échelon peut s'écrire comme une somme d'impulsions : 
+    \begin{equation}
+        \color{red}\boxed{\color{black}u[n] = \sum_{k\ge 0}{\delta[n-k]}}\color{black}
+    \end{equation}
+\end{minipage}
+\subsection{Temps continu}
+\begin{equation}
+    u(t) = \begin{cases}
+        1 \text{ si } t \ge 0\\
+        0 \text{ si } t < 0\\
+    \end{cases}
+\end{equation}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Echelon continu.png}
+\end{minipage}
+\subsection{Lien avec l'impulsion}
+Dans le cas continu, on a la propriété : 
+\begin{equation}
+    u(t) = \int_{-\infty}^{t}{\delta(s)ds}
+\end{equation}
+\section{Systèmes}
+Un système est une entité qui produits de nouveaux signaux (sortie) sur base d'un ou plusieurs signaux (entrée). Il se note \(H\{x[n]\}\) ou \(H\{x(t)\}\).
+
+Les systèmes peuvent traiter aussi bien des signaux discrets que continus.
+
+\subsection{Systèmes LIT}
+Un système LIT est un système linéaire et invariant dans le temps.\\
+- \underline{Linéaire :}
+\begin{equation}
+    H\{\sum_{i}{a_ix_i}\} = \sum_{i}{a_iH\{x_i\}}
+\end{equation}
+- \underline{Invariance temporelle :}\\
+\begin{equation}
+    H\{x\}[n] = y[n] \Longrightarrow H\{x[n-n_0]\} = y[n-n_0]
+\end{equation}
+\subsection{Produit de convolution}
+\subsubsection{Temps discret}
+\begin{equation}
+    f[n] * g[n] \coloneqq \sum_{k=-\infty}^{+\infty}{f[k]g[n-k]}
+\end{equation}
+ avec \(h \coloneqq H\{\delta\}\) et l'opération \(*\) le produit de convolution.\\
+ - \underline{Propriétés :}
+ \begin{itemize}
+     \item Pour tout système LIT, le signal de sortie est le produit de convolution du signal d'entrée avec la réponse impulsionnelle du système.
+     \item Le produit de convolution est commutatif, associatif et distributif par rapport à l'addition.
+     \item L'élément neutre de la convolution est \(\delta[n]\).
+     \item Pour décaler un signal, \(f[n] * \delta[n-n_0] = f[n-n_0]\)
+ \end{itemize}
+- \underline{Evaluation graphique de la convolution :}
+\begin{itemize}
+    \item Renversement : \(g[-k]\)
+    \item Translatation : \(g[n-k]\)
+    \item Multiplication : \(f[k]g[n-k]\)
+    \item Sommation : \(z[n] \coloneqq \sum_{k=-\infty}^{+\infty}{f[k]g[n-k]}\)
+    \item Répéter à partir de la translation \(n\) fois.
+\end{itemize}
+\subsubsection{Temps continu}
+Soit \(f(t)\) et \(g(t)\) deux signaux en temps continu. Leur convolution est 
+\begin{equation}
+    f(t) * g(t) = \int_{-\infty}^{+\infty}{f(\tau)g(t-\tau)d\tau}
+\end{equation}
+Les propriétés vues pour un temps discret tiennent également pour le temps continu.\\
+
+- \underline{Evaluation graphique de la convolution :}
+\begin{itemize}
+    \item Renversement : \(g(-\tau)\)
+    \item Translatation : \(g(t-\tau)\)
+    \item Multiplication : \(f(\tau)g(t-\tau)\)
+    \item Sommation : \(z(t) \coloneqq \int_{-\infty}^{+\infty}{f(\tau)g(t-\tau)}\)
+    \item Répéter à partir de la translation sur un intervalle \(t\).
+\end{itemize}
+
+\section{Convolutions de signaux}
+La réponse impulsionnelle d'un système LIT \(H\) est la réponse du système à une impulsion en entrée. Elle est notée \(h\). Elle existe en temps discret et continu.
+
+Pour tout système LIT, le signal de sortie est le produit de convolution du signal d'entrée avec la réponse impulsionnelle du système : 
+\begin{equation}
+    \begin{cases}
+        y[n] = x[n] * h[n]\\
+        y(t) = x(t)*h(t)\\
+    \end{cases}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : ce signal caractérise complètement le comportement du système entrée-sortie.
+\end{itemize}
+\subsection{Système sans mémoire}
+Un système sans mémoire est caractérisé par une sortie à un temps donné ne dépendant que de la valeur de l'entrée à cet instant.
+\subsection{Système causal}
+Un système est causal lorsque le futur dépend du passé, mais jamais l'inverse.
+\subsection{Système stable}
+Un système est stable lorsque, si l'entrée est bornée, la sortie l'est également.
+\subsection{Réponse indicielle}
+La réponse indicielle d'un système LIT est la réponse du système à un échelon unité en entrée. Elle se note \(s\).
+\section{Modélisation/représentation des systèmes}
+\subsection{Inconvénients de la réponse impulsionnelle}
+\begin{itemize}
+    \item La description de tout signal est de taille infinie : c'est toute une fonction. On souhaiterais que des systèmes simples aient une représentation simple.
+    \item La modélisation d'un système ne mène pas de façon naturelle à une réponse impulsionnelle.
+    \item Il est nécessaire de connaître le signal d'entrée depuis \(-\infty\).
+\end{itemize}
+\section{Représentations en temps continu}
+\subsection{Equation différentielle entrée - sortie}
+\begin{equation}
+    \color{red}\boxed{\color{black} \sum_{k=0}^{N} {a_k \left(\frac{d^k}{dt^k}\right)y(t)} = \sum_{k=0}^{M} {b_k \left(\frac{d^k}{dt^k}\right)u(t)}}\color{black}
+\end{equation}
+Avec \(x(t)\) le signal d'entrée et \(y(t)\) le signal de sortie. Un système de ce type est SISO (single input, single output).\\
+
+Cette représentation ne permet par de représenter tous les systèmes LIT (e.g. \(\mathcal{H}(x)(t) = x(t-t_0)\)).\\
+
+Observation : nous pouvons introduire la notation \(\left(\frac{d}{dt}\right)^k \coloneqq \frac{d^k}{dt^k}\), \(k\ge 0\).\\
+
+Nous pouvons donc maintenant poser les "polynômes de différentielles" 
+\begin{equation}
+    \begin{cases}
+        p\left(\frac{d}{dt}\right) = \sum_{k=0}^{N} {a_k \left(\frac{d}{dt}\right)^k}\\
+        q\left(\frac{d}{dt}\right) = \sum_{k=0}^{M} {b_k \left(\frac{d}{dt}\right)^k}\\
+    \end{cases}
+\end{equation}
+Si on pose également \(f(t) \coloneqq q\left(\frac{d}{dt}\right)u(t)\), on a une EDO de \(y(t)\) dont la solution est la somme d'une solution particulière et la solution homogène.
+\subsubsection{Réponse libre et forcée}
+Nous pouvons décomposer l'équation différentielle autrement : par l'effet des conditions initailes et les entrées.
+\begin{itemize}
+    \item La réponse libre est la solution de l'équation homogène avec les conditions initiales du problème. Elle représente l'impac des solutions initiales.
+    \item La réponse forcée est la solution de l'équation non homogène avec des conditions initiales nulles. Elle représente l'impact de l'entrée \(u\).
+    \item [\(\rightarrow\)] Remarque : les réponses forcée et libre sont linéaires entre elles.
+\end{itemize}
+La solution finale est bien entendu la même, qu'on utilise la technique homogène/particulière ou la technique libre/forcée.\\
+
+\subsubsection{Stabilité}
+\begin{equation}
+    p\left(\frac{d}{dt}\right)y(t) = q\left(\frac{d}{dt}\right)u(t)
+\end{equation}
+Soit la solution homogène \(y_H(t) = \sum_{i}{\alpha_ie^{r_it}}\) avec les \(r_i\) les racines complexes de \(p(z)\).
+\begin{itemize}
+    \item \(Re(r_i)<0\) \(\forall i\) : les exponentielles sont décroissantes (en module) et le système est stable et stable BIBO.
+    \item \(Re(r_i)>0\) pour un \(i\) : une exponentielle croissante (en module) et le système est instable.
+    \item \(Re(r_i)= 0\) pour un \(i\) : stabilité "marginale", i.e. n'explose pas mais ne revient pas à 0, ou instabilité.
+\end{itemize}
+\subsection{Schéma bloc}
+\includegraphics[width = \textwidth]{img/Schéma bloc.png}
+En principe, toutes les opérations sont possibles dans un bloc, mais, dans les LIT, on se limite aux opérations linéaires, et parfois juste mulitplication/addition/intégration.
+
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : pour des opérations linéaires sur des signaux en une dimension, la multiplication par une constante est commutative aux autres opérations.
+\end{itemize}
+\subsection{Représentation d'état}
+\begin{equation}
+    \begin{cases}
+        \text{Evolution : } \frac{d}{dt}x(t) = Ax(t) + Bu(t)\\
+        \text{Sortie : } y = Cx(t) + Du(t)\\
+    \end{cases}
+\end{equation}
+\begin{itemize}
+    \item \(x\) est l'état. C'est le vecteur de variables représentant la situation interne du système.
+    \item \(u\) est l'entrée. C'est le signal venant de l'extérieur du système et affectant celui-ci.
+    \item \(y\) est la sortie. C'est le signal qui est accessible depuis l'extérieur du système.
+\end{itemize}
+La solution est une combinaison linéaire de \(e^{\lambda_i}\), avec \(\lambda_i\) les vap de la matrice \(A\). Les conditions de stabilités sont les mêmes que précédemment.
+\subsubsection{Etat non unique}
+Posons le changement d'état \(z = Tx\), avec \(T\) inversible. On a maintenant le système
+\begin{equation}
+    \begin{cases}
+        \frac{d}{dt}z(t) = TAT^{-1}z + TBu = \Tilde{A}z+\Tilde{B}u\\
+        y = Cx + Du = CT^{-1}z + Du = \Tilde{C} + Du\\
+    \end{cases}
+\end{equation}
+Le changement d'état n'a aucun impact sur le lien entrée-sortie de \(u,y\). Cela montre par contre que les états ne sont pas uniques, et que certains choix de représentation sont plus "physiques" que d'autres.\\
+
+\subsubsection{Découplage}
+Dans le changem ent d'état précédent, si \(A\) est diagonalisable, on peut prendre \(T\) tel que \(\Tilde{A} = TAT^{-1}\) est diagonale, et on a maintenant des modes découplés
+\begin{equation}
+    \frac{d}{dt}z_i = \lambda_i z_i + \Tilde{B}_iu
+\end{equation}
+Les solutions sont alors faciles à trouver.
+\section{Passage d'une représentation à l'autre}
+\subsection{Etat \(\rightarrow\) Schéma bloc}
+\begin{equation}
+    \color{green}\frac{d}{dt} \begin{pmatrix}
+    x_1\\
+    x_2\\
+    \end{pmatrix}\color{black} = \color{cyan}\begin{pmatrix}
+        a_{11} & a_{12}\\
+        a_{21} & a_{22}\\
+    \end{pmatrix}
+    \begin{pmatrix}
+        x_1\\
+        x_2\\
+    \end{pmatrix}\color{black}
+    + \color{red} \begin{pmatrix}
+        b_1\\
+        b_2\\
+    \end{pmatrix}u\color{black}
+\end{equation}
+\includegraphics[width = 0.8\textwidth]{img/bloc.png}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : cette technique fonctionne dans les deux sens.
+\end{itemize}
+\subsection{Equation différentielle \(\rightarrow\) Schéma bloc}
+Exemple pour \(y(t) = b_0y_A + b_1y_A' + b_2y_A''\):\\
+\includegraphics[width = 0.8\textwidth]{img/EDO.png}
+\section{Temps discret}
+Les équations en temps discret fonctionnent de la même façon. On remplace l'opérateur \(\frac{d}{dt}\) par l'opérateur décalage \(D : Dx[n] = x[n-1]\).
+L'équation initiale devient alors
+\begin{equation}
+    \sum_{k=0}^N{a_ky[n-k]} = \sum_{k=0}^M{b_ku[n-k]} \Longrightarrow p(D)y=q(D)u
+\end{equation}
+La solution homogène est
+\begin{equation}
+    y_H[n] = \sum_ic_ir_i^n
+\end{equation}
+Pour \(r_i\) racines complexes de \(p\). \\
+Stabilité : 
+\begin{itemize}
+    \item Décroissance si \(|r_i| < 1\)
+    \item Croissance si \(|r_i| > 1\)
+\end{itemize}
+En temps discret, il est par contre possible d'utiliser l'opérateur \(D\) dans les schémas blocs, alors que l'opérateur différentielle ne l'est pas en temps continu.\\
+
+\chapter{Série et transformée de Fourier}
+Pour stocker un signal qui est la somme de sinus ou cosinus, on peut stocker uniquement les coefficients, les fréquences et les phases de chacun des sinus.
+\section{Série de Fourier}
+Soit un signal \(x(t)\) périodique d'énergie finie. La décomposition de \(x(t)\) en série de Fourier trigonométrique est 
+\begin{equation}
+    \color{red}\boxed{\color{black}x(t) = a_0 + \sum_{k=-\infty}^{\infty}\left(2a_k\cos{(k\omega_0 t)} + 2b_k \sin{(k\omega_0t)}\right)}\color{black}
+\end{equation}
+où les coefficients sont
+\begin{equation}
+    \begin{cases}
+        a_k = \frac{1}{T_0}\int_0^{T_0} x(t)\cos{(k\omega_0t)}dt\\
+        b_k = \frac{1}{T_0}\int_0^{T_0} x(t)\sin{(k\omega_0t)}dt\\
+    \end{cases}
+\end{equation}
+Tout signal périodique peut être décomposé en une partie paire (les cosinus) et une partie impaire (les sinus).
+\subsection{Spectre}
+Le signal \(x(t)\) est défini de manière unique par ses coefficients de Fourier qui composent le spectre discret de \(x(t)\). On peut faire deux graphes discrets : l'un contenant les \(2a_n\) en fonction de \(n\) et l'autre les \(2b_n\) en fonction de \(n\)\footnote{\(n\) ou \(k\), indice muet}.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les sommes infinies de sinus permettent de modéliser le signal carré en prenant \(a_k = 0\) \(\forall k\).
+    \item [\(\rightarrow\)] Remarque : on observe un effet de Gibbs aux limites des discontinuités de la fonction sinusoïdale carrée, mais la variation est bornée.
+\end{itemize}
+\subsection{Série de Fourier complexe}
+Soit le signal \(x(t)\) périodique d'énergie finie. La décomposition de ce signal en série de Fourier complexe est
+\begin{equation}
+    \color{red}\boxed{\color{black}x(t) = \sum_{k=-\infty}^{+\infty}{X_ke^{jk\omega_0t}}}\color{black}
+\end{equation}
+où les coefficients sont\footnote{Bien faire attention au signe -} 
+\begin{equation}
+    X_k = \frac{1}{T_0}\int_0^{T_0}{x(t)e^{-jk\omega_0t}}dt
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : rappel des formules d'Euler : \(\cos{t} = \frac{e^{jt}+e^{-jt}}{2}\) et \(\sin{t} = \frac{e^{jt} - e^{-jt}}{2j}\)
+\end{itemize}
+Nous pouvons alors caractériser les signaux à partir de leurs coefficients \(X_k\), avec les graphes parties réelle-imaginaire ou les graphes module-argument.\\
+\begin{center}
+    \begin{tabular}{c|c|c}
+         & \(x(t)\) est réel & \(x(t)\) est imaginaire\\
+        & \(X[k]^{*} = X[-k]\) & \(X[k]^{*} = -X[-k]\)\\
+        \hline
+        \(Re(X[n])\) & Pair & Impair\\
+        \hline
+        \(Im(X[n])\) & Impair & Pair\\
+        \hline
+        \(|X[n]|\) & Pair & Pair\\
+        \hline
+        \(arg\{X[n]\}\) & Impair & Supplémentaire\\
+    \end{tabular}
+\end{center}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les \(\{e^{jk\omega_0t}\}\) forment une base orthogonale.
+\end{itemize}
+\section{Transformée de Fourier}
+La série de Fourier est un cas particulier de la transformée de Fourier, qui généralise la décomposition aux signaux non périodiques. \\
+
+Soit le signal \(x(t)\) non périodique d'énergie finie. Un signal non périodique est un signal périodique dont la période est infinie : \(T_0 \rightarrow \infty\). Le signal s'exprime donc selon ses fréquences comme
+\begin{equation}
+    \color{red}\boxed{\color{black}x(t) = \sum_{k=-\infty}^{\infty}X_k e^{jk\omega_0t}}\color{black}
+\end{equation}
+Cette forme s'appelle la transformée de Fourier inverse. Les coefficients forment le spectre \(X(j\omega)\) du signal, qui est lui-même la transformée de Fourier du signal initial : 
+\begin{equation}
+    X(j\omega) = \int_{-\infty}^{\infty} x(t)e^{-j\omega t}dt
+\end{equation}
+Le signal s'exprime alors selon ses fréquences comme
+\begin{equation}
+    x(t) = \frac{1}{2\pi}\int_{-\infty}^{\infty}{X(j\omega)e^{j\omega t}d\omega}
+\end{equation}
+et cette formule s'appelle la transformée de Fourier inverse.\\
+
+On voit maintenant que les signaux périodiques s'expriment avec des coefficients discrets (\([k]\)) et les signaux non périodiques par des coefficients continus (\(\omega\)).\\
+
+\section{Série de Fourier discrète}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : un signal sinusoïdal discret n'a une période finie que si l'argument contient \(\pi\). La période \(N \in \mathbb{N}\) vérifie \(x[n+N] = x[n]\).
+\end{itemize}
+Soit le signal \(x[n]\) périodique. Sa pulsation fondamentale est \(\Omega_0 = \frac{2\pi}{N} = [rad]\). La décomposition en série de Fouier discrète est
+\begin{equation}
+    \color{red}\boxed{\color{black}x[n] = \sum_{k=0}^{N-1}{X[k]e^{jk\Omega_0 n}}}\color{black}
+\end{equation}
+où les coefficients de Fourier sont 
+\begin{equation}
+    X[k] = \frac{1}{N}\sum_{m=0}^{N-1}{x[m]e^{-jk\Omega_0m}}
+\end{equation}
+Les indices itérés sont limités à \(N-1\) car \( 0 \equiv 2\pi\).\\
+\section{Transformée de Fourier discrète}
+Soit le signal discret \(x[n]\) non périodique d'énergie finie. Le signal \(x[n]\) s'exprime de manière unique selon ses "fréquences" : 
+\begin{equation}
+    \color{red}\boxed{\color{black}x[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi}{X(e^{j\Omega})e^{j\Omega n}d\Omega}}\color{black}
+\end{equation}
+où la transformée de \(x[n]\) est 
+\begin{equation}
+    X\left(e^{j\Omega}\right) = \sum_{m = -\infty}^{\infty}{x[m]e^{-j\Omega m}}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(X\left(e^{j(\Omega+\pi)}\right) = X\left(e^{j(\Omega-\pi)}\right)\)
+\end{itemize}
+\section{Propriétés de la transformée de Fourier}
+\subsection{Dualité}
+\begin{equation}
+    \color{red}\boxed{\color{black}x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega) \Longrightarrow X(jt) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} 2\pi x(-\omega)}\color{black}
+\end{equation}
+
+Si on connait une transformée donnée, il suffit d'échanger les variables (\(\omega \rightarrow t\) et \(t \rightarrow -\omega\)) et d'échanger les fonctions pour obtenir la transformée du signal dual.\\
+
+Exemple : la transformée du signal \(x(t) = 1\) est duale de celle de \(x(t) = \delta(t)\).
+\subsection{Linéarité}
+L'opérateur d'intégration étant linéaire, la transformée de Fourier l'est aussi.\\
+\begin{equation}
+    \color{red}\boxed{\color{black} x_k(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X_k(j\omega),\text{  }k = 0,1,2,... \Longrightarrow \sum_kx_k(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} \sum_k X_k(j\omega)}\color{black}
+\end{equation}
+Cette propriété permet de décomposer des fonctions a priori complexe en une somme de fonctions simples.
+\subsubsection{Train d'impulsions}
+Un train d'impulsion de Dirac est \(s_{T_0}\text{ } : \mathbb{R} \rightarrow \mathbb{R} \text{ }: t \rightarrow s_{T_0}(t) = \sum_{k\in \mathbb{Z}}\delta(t-kT_0)\). \\
+
+Sa transformée de Fourier est, par liénarité, \(X(j\omega) = \omega_0s_{\omega_0}(\omega)\), où \(\omega_0 = \frac{2\pi}{T_0}\). Il est donc sa propre transformée à une constante près.
+\subsection{Translation et modulation}
+\begin{equation}
+    \color{red}\boxed{\color{black}x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega) \Longrightarrow x(t-t_0) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega) e^{-j\omega t_0}}\color{black}
+\end{equation}
+La translation d'un signal modifie donc la phase de son spectre.\\
+
+Par dualité, la modulation du signal modifie son amplitude : si \(x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega)\), alors \(e^{j\omega_0t}x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j(\omega-\omega_0))\)
+\subsection{Différentiation}
+Dériver un signal à énergie finie revient à amplifier (resp. atténuer) ses hautes (resp. basses) fréquences : \\
+
+\begin{equation}
+    \color{red}\boxed{\color{black} x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega) \Longrightarrow \frac{d^kx}{dt^k}(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} (j\omega)^kX(j\omega)}\color{black}
+\end{equation}
+\subsection{Multiplication par un monôme}
+Par dualité, multiplier un signal par un monôme revient à dériver son spectre. \\
+\begin{equation}
+    \color{red}\boxed{\color{black} x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega)\Longrightarrow t^nx(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} j^n \frac{d^nX}{d\omega^n}(j\omega)}\color{black}
+\end{equation}
+\subsection{Intégration}
+Par effet réciproque, intégrer un signal promeut les basses fréquences.
+\begin{equation}
+    \color{red}\boxed{\color{black} x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega)\Longrightarrow \int_{-\infty}^{t}x(t)dt \xleftrightarrow{\text{  }\mathcal{F}\text{  }} \frac{X(j\omega)}{j\omega} + \pi X(0)\delta(\omega)}\color{black}
+\end{equation}
+Où le second terme est la constante d'intégration.
+\subsubsection{Fonction échelon}
+La fonction échelon est\(u:\mathbb{R} \rightarrow \mathbb{R} : u(t) = \begin{cases}
+    0 \text{ si } t<0\\
+    1 \text{ sinon}\\
+\end{cases}\). Sa transformée de Fourier est donc \(X(j\omega) = \pi \delta(\omega) + \frac{1}{j\omega}\).
+\subsubsection{Fonction fenêtre}
+La fonction fenêtre est \(\Pi :\mathbb{R}\rightarrow \mathbb{R} : \Pi(t) = \begin{cases}
+    1 \text{ si } -1<t<1\\
+    0 \text{ sinon}\\
+\end{cases} = u(t+1) - u(t-1)\). La transformée de Fourier de cette fonction est \(X(j\omega) = 2sinc(\omega) = 2\frac{\sin{\omega}}{\omega}\).
+\subsection{Dilatation}
+Dilater un signal revient à compresser son spectre. 
+\begin{equation}
+    \color{red}\boxed{\color{black}x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega) \Longrightarrow x(t/a) = |a| X(aj\omega)}\color{black}
+\end{equation}
+La dilatation ralentit le signal et favorise les basses fréquences, tandis que la compression accélère le signal et favorise les hautes fréquences.
+\subsection{Relation de Parseval}
+L'énergie du signal est conservée dans son spectre :
+\begin{equation}
+    x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega) \Longrightarrow \int_{-\infty}^{\infty}|x(t)|^2dt = \frac{1}{2\pi}\int_{-\infty}^{\infty}|X(j\omega)|^2d\omega
+\end{equation}
+Cela signifie que l'énergie du signal ne dépend pas de la représentation choisie.
+\subsection{Renversement}
+Renverser un signal revient à renverser son spectre.
+\begin{equation}
+    \color{red}\boxed{\color{black} x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega) \Longrightarrow x(-t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(-j\omega)}\color{black}
+\end{equation}
+Il s'agit en réalité d'une dilatation par \(a=-1\).
+\subsection{Complexe conjugué}
+Le spectre d'un signal conjugué est le conjugué renversé du spectre du signal.
+\begin{equation}
+    \color{red}\boxed{\color{black}x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} x^*(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X^*(-j\omega)}\color{black}
+\end{equation}
+\subsubsection{Fonction signe}
+La fonction sign est \(sign : \mathbb{R} \rightarrow \mathbb{R} : sign(t) = \begin{cases}
+    -1 \text{ si } t<0\\
+    0 \text{ si }  t=0\\
+    1 \text{ si }  t>0\\
+\end{cases}\). Sa transformée de Fourier est \(X(j\omega) = \frac{2}{j\omega}\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : calculer des transformées de Fourier nécessite souvent l'utilisation des formules d'Euler et de la linéarité.
+\end{itemize}
+\subsection{Convolution}
+Convoluer deux signaux revient à multiplier leurs spectres. 
+\begin{equation}
+    \color{red}\boxed{\color{black} x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega),\text{  } y(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} Y(j\omega) \Longrightarrow (x*y)(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega)Y(j\omega)}\color{black}
+\end{equation}
+\subsection{Multiplication}
+Par dualité, multiplier deux signaux revient à convoluer leurs spectres. 
+\begin{equation}
+    \color{red}\boxed{\color{black} x(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} X(j\omega), \text{  } y(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} Y(j\omega) \Longrightarrow (x\cdot y)(t) \xleftrightarrow{\text{  }\mathcal{F}\text{  }} \frac{1}{2\pi}(X*Y)(j\omega)}\color{black}
+\end{equation}
+\chapter{Filtrage}
+La réponse fréquentielle est la transformée de Fourier de la réponse impulsionnelle du système.\\
+
+Un filtre est un système qui modifie le contenu fréquentiel du signal. Un filtre peut être passe-bas, passe-haut, ou passe-bande.\\
+\section{Filtres idéaux}
+\subsection{Filtre passe-bas idéal}
+Un filtre passe-bas est un filtre qui laisse passer les basses fréquences. \\
+
+Le module de la réponse fréquentielle du filtre passe-bas est une fonction fenêtre. La réponse impulsionnelle du filtre basse-pas idéal alors est paire, et donc non-causale! Un tel filtre est donc impossible à réaliser physiquement, tout comme tous les filtres idéaux, mais il est possible de s'en approcher. 
+\subsection{Filtre passe-bande idéal}
+Le module de la réponse fréquentielle du filtre passe-bande est une double fonction fenêtre, paire, dont les deu fenêtres sont de largeur \(B\) et centrées en \(\pm \omega_0\). 
+\section{Filtres analogiques en pratique}
+Un filtre analogique est un système analogique LIT composé d'éléments passifs et/ou actifs. L'entrée et la sortie de ce système sont des fonctions continues et peuvent être décrites de manière équivalentes par leur réponse impulsionnelle, indicielle ou fréquentielle. \\
+\begin{center}
+\begin{tabular}{c|c|c|c}    
+    \hline
+    \multicolumn{4}{c}{Filtres}\\
+    \hline
+    \multicolumn{2}{c}{Filtres causaux} & \multicolumn{2}{c}{Filtres non causaux}\\
+    \hline
+    \multicolumn{2}{c}{Réponse impulsionnelle} & \multicolumn{2}{c}{Réponse impulsionnelle} \\
+    \hline
+    Finie & Infinie & Finie & Infinie\\
+    \hline
+    Filtre FIR & Filtre IIR & Filtre FIR & Filtre idéal\\
+    \hline
+\end{tabular}
+\end{center}
+
+Si la variable est le temps, seuls les filtres causaux sont physiquement réalisables.
+\subsection{Gabarit}
+\begin{center}
+    \includegraphics[width = .8\textwidth]{img/Gabarit.png}
+\end{center}
+Un gabarit spécifie les tolérances par rapport à un filtre idéal : 
+\begin{itemize}
+     \item Fluctuations dans la zone passe \((1-\varepsilon)\).
+     \item Zone de transition (\(\Delta\)).
+     \item Fluctuations dans la zone bloquante (\(\delta\)).
+\end{itemize}
+\subsection{Filtre passe-bas -- Circuit analogique}
+\begin{minipage}{.5\textwidth}
+    Dans le cas du circuit RC, par l'EDO du circuit et la transformée de Fourier du signal, on trouve une réponse impulsionnelle \(H(j\omega) = \frac{1}{1+j\omega RC}\) la fréquence de coupure.\\
+
+    Le module du filtre (i.e. de sa réponse impulsionnelle) est \(|H(j\omega)| = \frac{1}{\sqrt{1+(\omega/\omega_c)^2}}\), avec \(\omega_c = 1/RC\).
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = .8\textwidth]{img/RC.png}
+\end{minipage}
+\subsection{Filtre passe-bas -- Butterworth}
+Le filtre de Butterworth est "maximally flat", i.e. le signal de sortie est le plus plat possible dans la bande passante. Butterworth d'ordre \(n\) est défini comme 
+\begin{equation}
+    |H_n(j\omega)|^2 = \frac{1}{1+(\omega/\omega_c)^{2n}}
+\end{equation}
+Il existe d'autres filtres, qui permettent une oscillation dans la bande passante, dans la bande bloquante, ou encore dans les deux; masis ils ne sont pas à connaître.
+\subsection{Filtre passe-haut}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Passe-haut.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Un filtre passe-haut est l'inverse du filtre passe-bas. Son module est le suivant : \(H(j\omega)= \frac{j\omega RC}{1+j\omega RC}\). Il est possible d'obtenir un filtre passe-haut à partir de l'expression du filtre \\
+    \color{white} ggg \color{black}
+\end{minipage}
+\newline
+passe-bas en faisant le changement de variable 
+\begin{equation}
+    \frac{j\omega}{\omega_c} \rightarrow \frac{\omega_c}{j\omega}
+\end{equation}
+Le filtre de Butterworth passe-haut d'ordre \(n\) est défini comme
+\begin{equation}
+    |H_n(j\omega)|^2 = \frac{1}{1+(\omega_c/\omega)^{2n}}
+\end{equation}
+\subsection{Filtre passe-bande}
+Pour obtenir un filtre passe-bande à partir d'un filtre passe-bas, on fait le changement de variable suivant :
+\begin{equation}
+    j\omega \rightarrow \frac{\omega_0^2-\omega^2}{Bj\omega}
+\end{equation}
+avec \(B\) la largeur du filtre et \(\omega_0\) la fréquence de centrage des fenêtres.
+\subsection{Filtre passe-tout}
+Le rôle d'un filtre passe-tout est de modifier la phase d'un filtre sans altérer sa réponse en amplitude. Sa réponse fréquentielle s'écrit
+\begin{equation}
+    H(j\omega) = \frac{j\omega-\alpha}{j\omega+\alpha}
+\end{equation}
+avec \(\alpha \) un paramètre.
+\section{Représentations}
+Un filtre peut être représenté par les graphes du module et de l'argument de sa réponse impulsionnelle, mais cela n'est pas toujours efficace, contrairement à la représentation de son module en échelle logarithmique.\\
+
+Le diagramme de Bode est le graphe de \(20\log_{10}|H(j\omega)|\) en fonction de \(\omega\). Il fait ressortir les modes asymptotiques du module et on appelle gain le logarithme.\\
+
+Tracer le diagramme de Bode en amplitude :
+\begin{itemize}
+    \item Factoriser \(H(j\omega)\)
+    \item Exprimer \(20\log_{10}|H(j\omega)|\)
+    \item Tracer la courbe correspondant à chacun des termes
+    \item Additionner les courbes
+\end{itemize}
+\chapter{Echantillonnage}
+L'échantillonnage fait le line entre le monde continu et le monde discret. Un signal discret correpond aux échantillons du signal continu, tel que \(x[n] = x(nT_e)\), avec \(T_e\) la période d'échantillonnage.\\
+
+La représentation continue \(x_e(t)\) du signal échantillonné fait le lien entre \(x(t)\) et \(x[n]\) : 
+\begin{equation}
+    \color{red}\boxed{\color{black} x_e(t) = x(t) \sum_n \delta(t-nT_e) = \sum_n x(nT_e) \delta(t-nT_e)}\color{black}
+\end{equation}
+\section{Effet de l'échantillonnage sur le spectre de \(x(t)\)}
+L'expression de \(X_e(j\omega)\) en fonction de \(X(j\omega)\) est 
+\begin{equation}
+    \color{red}\boxed{\color{black}X_e(j\omega) = \frac{1}{T_e} \sum_k X\left(j(\omega-k\omega_e)\right)}\color{black}
+\end{equation}
+On observe donc une répétition spectrale de période \(\omega_e = 2\pi f_e\) 
+\begin{center}
+    \includegraphics[width = .5\textwidth]{img/Xe.png}
+\end{center}
+L'expression de \(X_e(j\omega)\) en fonction de \(X(e^{j\Omega})\) est
+\begin{equation}
+    \color{red}\boxed{\color{black}X_e(j\omega) = \sum_n x[n]e^{-j\omega nT_e} = X(e^{j\Omega})|_{\Omega = \omega T_e}}\color{black}
+\end{equation}
+Les spectres sont dont identiques à un changement de variable près : \(\Omega = \omega T_e\)
+\begin{center}
+    \includegraphics[width = .5\textwidth]{img/XEDTFT.png}
+\end{center}
+\section{Du temps continu vers le temps discret}
+Pour passer d'un signal continu à un signal discret, on multiplie le signal par un train de Dirac et on pose ensuite le signal discret \(x[n] = x(nT_e)\).\\
+
+Pour passer du module de la transformée de Fourier en temps continu à celle en discret, on la périodise (période \(\omega_e = 2\pi f_e\)) et on pose le changement de variable \(\Omega = \omega T_e\).
+
+\subsection{Repli spectral}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Repli spectral.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    On observe un repli spectral, i.e. les périodes s'additionnent, si \(T > 2T_e\). Le théorème d'échantillonnage est une condition suffisante pour éviter le repli spectral : \\
+
+    Une fonction à bande limitée qui ne contient pas de fréquences supérieures à \(f_{max}\) est complètement déterminée par ses échantillons pour autant que \(f_e\ge 2f_{max} \Longleftrightarrow \omega_e \ge 2\omega_{max}\).
+\end{minipage}
+\section{Du temps discret vers le temps continu}
+Pour passer d'un signal discret à un signal continu, si \(T_e\) est connu, on multiplie par un train de Dirac (\(\sum_nx[n] \delta(t-nT_e)\) pour obtenir \(x_e(t)\) et on obtient ensuite le signal continu par filtrage pour autant que \(\omega_e \ge 2 \omega_{max}\).\\
+
+Pour passer du module de la transformée de Fourier en temps discret à celle en continu, on pose le changement de variable \(\omega = \Omega/T_e\) (si \(T_e\) est connnu) et on obtient ensuite le module du signal continu par filtrage, pour autant que \(\omega_e \ge 2\omega_{max}\).
+
+\subsection{Reconstruction par filtrage}
+Si le théorème d'échantillonnage est satisfait, on peut reconstuire exactement le signal continu \(x(t)\) en filtrant \(X_e(j\omega)\) : 
+\begin{equation}
+    X(j\omega) = T_eX_e(j\omega)\Pi\left(\frac{\omega}{\omega_c}\right)
+\end{equation}
+avec \(\omega_{max} \le omega_c\le \omega_e - \omega_{max}\).\\
+
+La formule de reconstruction de Shannon est
+\begin{equation}
+    \color{red}\boxed{\color{black}x(t) = \sum_n x[n] sinc\left(\frac{t-nT_e}{T_e}\right)}\color{black}
+\end{equation}
+La fonction sinus cardinal permet d'interpoler les points \(t,x(nT_e)\) (on pourrait en prendre une autre).
+\subsection{Généralisation du théorème d'échantillonnage}
+La reconstruction exacte de \(x\) est possible ssi il n'y a pas de recouvrement spectral. 
+\section{Sous-/Suréchantillonnage}
+\subsection{Sous-échantillonnage}
+\begin{equation}
+    x[n] \rightarrow x_M[n] = x[Mn]
+\end{equation}
+On garde un échantillon tous les \(M\).\\
+
+\begin{minipage}{.5\textwidth}
+\begin{center}
+    \includegraphics[width = \textwidth]{img/Sous.png}
+\end{center}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Souse.png}
+\end{minipage}\\
+!! Repli spectral.\\
+\subsection{Suréchantillonnage}
+\begin{equation}
+    x[n]\rightarrow x_M[n] = \begin{cases}
+        x[n/M] \text{ si } M \text{ divise } n\\
+        0 \text{ sinon}\\
+    \end{cases}
+\end{equation}
+On ajoute \(M-1\) zéros entre les échantillons.\\
+\begin{minipage}{.5\textwidth}
+\begin{center}
+    \includegraphics[width = \textwidth]{img/Sur.png}
+\end{center}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Sure.png}
+\end{minipage}
+\chapter{Transformée de Fourier discrète (DFT)}
+La transformée de Fourier discrète a pour intérêt d'être la seule qu'un ordinateur peut réellement calculer, car il ne peut jamais prendre des valeurs continues sur un support infini. 
+\section{Définition}
+A partir d'une suite discrète \(M\)-périodique \(x[n]\), on construit une nouvelle suite \(X_{DFT}[k]\) également \(M\)-périodique et appelée transformée de Fourier discrète de \(x[n]\). 
+\begin{equation}
+    \color{red}\boxed{\color{black}X_{DFT}[k] = \sum_{n=0}^{M-1} x[n] e^{-2\pi jkn/M}}\color{black}
+\end{equation}
+On peut écrire cela sous forme matricielle : 
+\begin{equation} \label{eq1}
+    \begin{bmatrix}
+        X_{DFT}[0]\\
+        X_{DFT}[1]\\
+        \vdots\\
+        X_{DFT}[M-1]\\
+    \end{bmatrix}
+     = \begin{bmatrix}
+         1 & 1 & \ldots & 1\\
+         1 & e^{-2\pi \frac{j}{M}} & \ldots & e^{-2\pi \frac{j(M-1)}{M}}\\
+         \vdots & \vdots & \ddots & \vdots\\
+         1 & e^{-2\pi \frac{j(M-1)}{M}} & \ldots & e^{-2\pi \frac{j(M-1)^2}{M}}\\
+     \end{bmatrix}
+     \begin{bmatrix}
+         x[0]\\
+         x[1]\\
+         \vdots\\
+         x[M-1]\\
+     \end{bmatrix}
+\end{equation}
+La matrice centrale est une matrice de Vandermonde.
+\section{Lien avec la DTFT}
+On suppose un signal \(x[n]\) non périodique et on définit sa version \(M\)-périodisée : 
+\begin{equation}
+    x_M[n] = \sum_{m\in \mathbb{Z}} x[n+mM]
+\end{equation}
+La DTFT de \(x[n]\) évaluée en \(\Omega_k = 2\pi k/M\) est 
+\begin{equation}
+    X(e^{j\Omega_k}) = \sum_{n\in \mathbb{Z}} x[n]e^{-2\pi jkn/M} = X_{M,DFT}[k]
+\end{equation}
+Les échantillons de la DTFT correspondent donc aux valeurs de la DFT de la version \(M\)-périodisée du signal.\\
+\begin{center}
+    \includegraphics[width = .6\textwidth]{img/DFT.png}
+\end{center}
+\section{Ré-échantillonage de la DTFT}
+On suppose un signal \(x[n]\) non périodique de support fini \(\{0,1,\dots, M-1\}\). Sa DFT est donc 
+\begin{equation}
+    X_{DFT,M}[k] = \color{white}\left|\color{black}X(e^{j\Omega})\right|\color{black}_{\color{black}\Omega = \Omega_k = \frac{2\pi k}{M}}
+\end{equation}
+Le zero-padding consiste alors à choisir une taille de périodisation \(M'>M\) en complétant avec des zéros. Cela permet d'évaluer la DTFT de \(x[n]\) en d'autres fréquences.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : la DFT possède les mêmes propriétés que toutes les transformées de Fourier vues jusqu'à présent.
+\end{itemize}
+\section{Transformée de Fourier rapide}
+A partir de l'équation \ref{eq1}, on déduit un nombre d'opérations pour calculer la DFT de l'ordre de \(8M^2\) (coûteux). L'idée de l'agorithme rapide est de factoriser \(M\) et de diviser la somme de la DFT en sous-sommes qui correspondent à des DFT de plus petites tailles.
+\chapter{Transformée de Laplace}
+\section{Définition}
+La transformée de Laplace d'un signal \(x\) est une généralisation à \(s\in \mathbb{C}\) quelconque de la transformée de Fourier : 
+\begin{equation}
+    X(s) = \mathcal{L}\{x\} \coloneqq \int_{-\infty}^{\infty}x(t)e^{-st}dt
+\end{equation}
+\(X(s)\) est définie pour les \(s\) pour lesquels l'intégrale existe, i.e. pour \(s\) dans la région de convergence (ROC).\\
+
+\noindent La transformée inverse est 
+\begin{equation}
+    x(t) = \mathcal{L}^{-1}\{X\} = \frac{1}{2\pi}\int_{-\infty}^{\infty} X(\sigma + i\omega)e^{(\sigma + i\omega)t} d\omega
+\end{equation}
+Pour tout \(\sigma \) tel que \(X\) est définie sur \(\sigma + i \mathbb{R}\)
+\section{Région de convergence}
+Si \(\mathcal{L}(x)=\mathcal{L}(y)\) sur \(\sigma + i\mathbb{R}\) pour un \(\sigma\) quelconque, alors \(x=y\). Toutefois, si les transformées ont la même expression sans avoir la même ROC, on ne peut rien déduire. \\
+\begin{center}
+\begin{tabular}{c|c}
+    Support & ROC \\ \hline
+    Support fini & \(ROC = \mathbb{C}\)\\ \hline
+    Support fini à gauche et \(|x(t)| \le a e^{k_1t}\) & \(ROC\) contient \(Re(s)>k_1\)\\ \hline
+    Support fini à droite et \(|x(t)| \le a e^{k_2t}\) & \(ROC\) contient \(Re(s)<k_2\)\\ \hline
+    Support infini, \(|x(t) \le a e^{k_1t}\) à droite & \(ROC\) contient \(k_1 < Re(s) < k_2\)\\ \hline
+    \(|x(t) \le a e^{k_2t}\) à gauche & \\ 
+\end{tabular}
+\end{center}
+\section{Propriétés}
+\begin{itemize}
+    \item La transformée de Laplace vérifie la propriété de liénarité : 
+\end{itemize}
+\begin{equation}
+    \mathcal{L}\{a_1x_1 + a_2x_2\} = a_1 \mathcal{L}\{x_1\} + a_2 \mathcal{L}\{x_2\} \qquad R_1 \cap R_2 \subseteq R
+\end{equation}
+\begin{itemize}
+    \item Décalage temporel (la \(ROC\) ne change pas) :
+\end{itemize}
+\begin{equation}
+    \mathcal{L}\{x(t-t_0)\} = e^{-st_0}\mathcal{L}\{x(t)\}
+\end{equation}
+\begin{itemize}
+    \item Par dualité, décalage fréquentiel (la \(ROC\) devient \(R + Re(s_0)\)) : 
+\end{itemize}
+\begin{equation}
+    \mathcal{L}\{e^{s_0t}x(t)\}  = X(s-s_0)
+\end{equation}
+\begin{itemize}
+    \item Convolution (la \(ROC\) : \(R_1 \cap R_2 \subseteq R\)) :
+\end{itemize}
+\begin{equation}
+    \mathcal{L}\{x*y\} = \mathcal{L}\{x\} \mathcal{L}\{y\} = X(s)Y(s)
+\end{equation}
+\begin{itemize}
+    \item Différentiation (la \(ROC\) : \(R = R_1 \cap R_2\)) :
+\end{itemize}
+\begin{equation}
+    \mathcal{L}\left\{\frac{dx}{dt}\right\} = s\mathcal{L}\{x\} = sX(s)
+\end{equation}
+\begin{itemize}
+    \item Intégration (la \(ROC\) : \(R = R_1 \cap R_2\)) :
+\end{itemize}
+\begin{equation}
+    \mathcal{L}\left\{\int_{-\infty}^{t} x(\tau)d\tau\right\} = \frac{1}{s}\mathcal{L}\{s\} = \frac{X(s)}{s}
+\end{equation}
+\begin{itemize}
+    \item Différentiation fréquentielle :
+\end{itemize}
+\begin{equation}
+    \mathcal{L}\{-tx(t)\} = \frac{d}{ds}X(s)
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : Lorsque \(X(s)\) est un quotient de polynôme, il faut la décomposer en fractions simples.
+\end{itemize}
+\section{Fonction de transfert}\label{section1}
+Pour un système tel que \(y = h*u\) avec \(h\) la réponse impulsionnelle du système, on a 
+\begin{equation}
+    Y(s) = H(s)U(s) = \mathcal{L}\{h*u\}
+\end{equation}
+et on appelle la fonction \(H(s) = \mathcal{L}\{h\}\) la fonction de transfert du système.
+\subsection{Résoudre une EDO}
+Soit l'EDO 
+\begin{equation}\label{eq2}
+    \sum_{k=0}^N a_k\left(\frac{d}{dt}\right)^ky(t) = \sum_{k=0}^M b_k\left(\frac{d}{dt}\right)^ku(t)
+\end{equation}
+Dans le domaine fréquentielle, elle se réécrit 
+\begin{equation}
+    \left(\sum_{k=0}^Na_ks^k\right) Y = \left(\sum_{k=0}^Mb_ks^k\right) U
+\end{equation}
+On peut donc isoler \(Y(s)\) et retrouver ensuite le signal \(y(t)\) par transformée inverse.
+\subsection{Représentation d'état}
+Soit le système dont la représentation d'état est
+\begin{equation}
+    \begin{cases}
+        \frac{d}{dt}x(t) = Ax(t) + Bu(t)\\
+        y(t) = Cx(t) + Du(t)\\
+    \end{cases}
+\end{equation}
+Par Laplace puis en isolant, on trouve 
+\begin{equation}
+    Y = (C(sI-A)^{-1}B+D)U
+\end{equation}
+et le terme entre parenthèses est la fonction de transfert du système.\\
+
+Si le système admet une représentation d'état, alors \(H(s)\) est rationnelle : son dénominateur est de degré \(n\) et son numérateur de degré \(<n\) si \(D=0\) et \(n\) sinon.
+\subsection{Passage de la représentation d'état à une EDO}
+Dans la représentation d'état, la fonction de transfert \(H\) rationnelle est 
+\begin{equation}
+    H = \frac{\sum_{k=0}^Mb_ks^k}{\sum_{k=0}^Na_ks^k}
+\end{equation}
+et l'EDO associée est donc l'équation \ref{eq2}
+\subsection{Schéma bloc}
+Dans un schéma bloc, si on a une intégration en temporel, on peut remplacer par \(\times \frac{1}{s}\) avec Laplace et si on a une dérivation en temporel, on remplace par \(\times s\) avec Laplace.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : on modifie ces blocs, mais on garde des signaux en temporel et le reste ne change pas.
+\end{itemize}
+\subsection{Importance des pôles}
+\color{red} A AJOUTER, SLIDES 5x SUR MOODLE\color{black}
+\section{Transformée de Laplace unilatérale}
+La transformée de Laplace unilatérale se note \(X_+(s) = \mathcal{L}_+\{x\}\)
+\begin{equation}
+    X_+(s) \coloneqq \mathcal{L}\{u(t)x(t)\} = \int_{0^-}^{\infty} x(t)e^{st}dt
+\end{equation}
+\subsection{Propriétés}
+La propriété de convolution de la transformée de Laplace ne reste valable en unilatéral que si 
+\begin{equation}
+    \begin{cases}
+        h(t) = u(t)h(t)\\
+        x(t) = u(t)x(t)\\
+        y(t) = u(t)y(t)\\
+    \end{cases}
+\end{equation}
+et le système est alors causal.\\
+
+La propriété de dérivation change : 
+\begin{equation}
+    \mathcal{L}_+\{x'(t)\} = -x(0) + sX_+(s)
+\end{equation}
+et celle d'intégration aussi : 
+\begin{equation}
+    \mathcal{L}_+\left\{\int_0^tx(\tau)d\tau\right\} = \frac{1}{s}\mathcal{L}_+\{x\}
+\end{equation}
+Propriétés des limites de \(X_+(s)\) : 
+\begin{equation}
+    \begin{cases}
+        \lim_{s\rightarrow 0} sX_+(s) = x(\infty)\\
+        \lim_{s\rightarrow\infty} sX_+(s) = x(0^+)\\
+    \end{cases}
+\end{equation}
+On en déduit que 
+\begin{equation}
+    \lim_{s\rightarrow0}H(s) = \frac{y(\infty)}{x(\infty)}
+\end{equation}
+et donc \(H(0)\) représente le rapport entre la sortie et l'entrée "à l'infini" (i.e. après stabilisation). On l'appelle gain à fréquence nulle.
+\subsection{Résoudre une EDO}
+Comme précédemment, on remplace les signaux par leur transformée de Laplace (maintenant unilatérale) et il faut donc prendre en compte les conditions initiales dans ces transformées.
+\chapter{Transformée en \(z\)}
+\section{Définition}
+La transformée en \(z\) d'un signal \(x\) est 
+\begin{equation}
+    \mathcal{Z}\{x\} \coloneqq X(z) = \sum_{k=-\infty}^{\infty} x[k]z^{-k}
+\end{equation}
+si la somme converge. Il s'agit en quelque sorte d'une DTFT atténuée par un facteur \(r^{-k}\), avec \(z = re^{i\omega}\). 
+\subsection{Convergence}
+La transformée en \(z\) d'un signal s'apparente à une série de Laurent autour de 0. En effet, elle se réécrit 
+\begin{equation}
+    X(z) = \sum_{k' = -\infty}^{\infty} x[k] z^{-k}
+\end{equation}
+Elle converge sur un anneau \(A(0,r,s)\), avec \(r\) le rayon de convergence des \(x[-k]\) et \(1/s\) le rayon de convergene des \(x[k]\). \\
+
+Si le support du signal est fini dans le futur, alors \(\sigma = \infty\) et \(A(0,\rho,0\).\\
+Si le support du signal est fini dans le passé, alors \(\rho = \infty\) et \(A(0,\infty,1/\sigma\), et on appelle \(s = 1/\sigma\) le taux de croissance asymptotique du signal.\\
+\subsection{Transformée en \(z\) inverse}
+Si \(X\) est analytique sur \(A(0,r,s)\), alors 
+\begin{equation}
+    x[k] = \frac{1}{2\pi i}\int_{\partial B(0,\rho)} X(z) z^{k-1}dz
+\end{equation}
+pour tout \(\rho \in (r,s)\).\\
+Le signal \(x[k]\) est donc une combinaison linéaire de \(z^k = \rho^k e^{i\omega k}\) pour un \(\rho\) fixe et \(\omega \in [-\pi,\pi[\), dont les poids sont \(X(z) = X(\rho e^{i\omega})\). 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : en fonction des rayons de l'anneau de convergence, la transformée est différente. 
+\end{itemize}
+\subsection{Propriétés}
+\begin{itemize}
+    \item Linéarité : \(\mathcal{Z}\{\alpha x+\beta y\} = \alpha \mathcal{Z}\{x\} = \beta \mathcal{Z}\{y\}\) et \(R \supseteq R_x \cap R_y\).
+    \item Décalage temporel : \(\mathcal{Z}\{x[n-n_0]\} = z^{-n_0} \mathcal{Z}\{x[n]\}\) et la ROC ne change pas.
+    \item Mise à l'échelle fréquentielle : \(X(az) = \mathcal{Z}\{a^{-n}x\}\) et la ROC subit un scaling par \(1/|a|\).
+    \item Convolution : \(\mathcal{Z}\{x*y\} = \mathcal{Z}\{x\}\mathcal{Z}\{y\}\) et \(R \supseteq R_X \cap R_y\).
+    \item Intégrale (accumulation) : si \(y[n] = \sum_{k=-\infty}^n x[k]\), alors \(Y = \frac{1}{1-z^{-1}}X\).
+    \item Dérivée fréquentielle : \(X'(z) = -\mathcal{Z}\{x[n-1](n-1)\} \Longleftrightarrow \mathcal{Z}(nx[n]) = -z X'(z)\).
+\end{itemize}
+\section{Fonction de transfert}
+Soit \(h\) la réponse impulsionnelle d'un système tel que \(y = h * u\). La fonction de transfert du système est \(H(z) \coloneqq \mathcal{Z}\{h\}\).\\
+
+Le signal \(z^n\) est un vecteur propre de tout système LTI et \(H(z)\) est la valeur propre qui multiplie ce vecteur propre. Si le signal \(x\) est une combili de vecteurs propres \(z^n\), on peut utiliser la linéarité pour traiter chaque \(z^k\) séparément.
+\subsection{Passage vers d'autres représentations}
+Voir section \ref{section1}, fonctionne de la même manière.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les zéros de \(H\) sont les \(z\) tels que \(H = 0\), tandis que les pôles de \(H\) sont les \(z\) tels que \(H = \infty\). 
+    \item [\(\rightarrow\)] Remarque : le système est causal si \(H\) est bornée en \(\infty\).
+    \item [\(\rightarrow\)] Remarque : le plus grand pôle (en module) de la fonction de transfert est le taux de croissance asymptotique.
+\end{itemize}
+\section{Transformée en \(z\) unilatérale}
+\begin{equation}
+    \mathcal{Z}_{+}\{x\} \coloneqq \mathcal{Z}\{u[n]x[n]\} = \sum_{n=0}^{\infty} x[n]z^{-n}
+\end{equation}
+\subsection{Propriétés}
+\begin{itemize}
+    \item Convolution : \(\mathcal{Z}\{x*y\} \neq \mathcal{Z}\{x\}\mathcal{Z}\{y\}\) en général.
+    \item Décalage arrière : \(\mathcal{Z}_+\{x[n-1]\} = z^{-1}\mathcal{Z}_+\{x[n]\} + x[-1]\)
+    \item Décalage avant : \(\mathcal{Z}_+\{x[n+1]\} = z\mathcal{Z}_+\{x[n]\} - zx[0]\)
+    \item \(\lim_{|z| \rightarrow\infty} X_+(z) = x[0]\)
+    \item \(\lim_{|z| \rightarrow 1} (z-1)X_+(z) = x[\infty]\) si elle existe.
+\end{itemize}
+
+\end{document}

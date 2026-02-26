@@ -1,0 +1,174 @@
+\documentclass[11pt]{article}
+\pagestyle{plain}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=1cm,bottom=2.5cm]{geometry}
+\usepackage[english]{babel}
+\usepackage{libertine}
+\usepackage{gensymb}
+\usepackage{tabularray}
+\usepackage{graphicx}
+\usepackage{steinmetz}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{nicematrix}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage{verbatim}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\usepackage{apptools}
+    \titleformat{\chapter}[hang]{\bfseries\huge}{\IfAppendix{\appendixname~}{\relax}\thechapter\IfAppendix{.}{.}}{\IfAppendix{0.333em}{2pc}}{}
+%\AtBeginEnvironment{}{\appendixtrue}
+
+% this alters "before" spacing (the second length argument) to 0
+\titlespacing {\chapter}{0pt}{0pt}{40pt}
+
+\usepackage[nottoc]{tocbibind}
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{keyval}
+\usepackage{kvoptions}
+\usepackage{fancyvrb}
+\usepackage{ifthen}
+\usepackage{calc}
+\usepackage{pdftexcmds}
+\usepackage{etoolbox}
+\usepackage{xstring}
+\usepackage{xcolor}
+\usepackage{lineno}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usetikzlibrary{patterns,arrows,decorations.pathreplacing,babel}
+
+\usepackage[]{minted}
+\newminted{python}{
+    linenos=true,
+    bgcolor=lightgray,
+    tabsize=4,
+    gobble=8,
+    fontfamily=courier,
+    fontsize=\small,
+    xleftmargin=5pt,
+    xrightmargin=5pt
+}
+    \title{LINMA1731 - Assignment 2}
+    \author{Desmidt Simon - NOMA 19012100}
+    \date{\today}
+\begin{document}
+\maketitle
+
+Consider the following discrete-time system with signal \(s\) and observations \(x\):
+\begin{align*}
+    s[k]&= \begin{pmatrix}
+        3&1\\
+        0&0.5\\
+    \end{pmatrix} s[k-1] \qquad k\ge 0\\
+    x[k]& = \begin{pmatrix}
+        0.5 & 0.5
+    \end{pmatrix} s[k] + w[k]
+\end{align*}
+where \(s[k]\in \mathbb{R}^2,x[k] \in \mathbb{R}, w[k]\sim \mathcal{N}(0,0.5)\) and \(s[-1]\sim \mathcal{N}\left(\begin{pmatrix}
+    0\\
+    0\\
+\end{pmatrix}, \begin{pmatrix}
+    2 & 0\\
+    0 & 2\\
+\end{pmatrix}\right)\).
+\begin{enumerate}
+    \item Obtain the Minimum predictor \(M(0|-1)\).
+\end{enumerate}
+The general formula from the vector Kalman filter equations is 
+\begin{equation}
+    M(n|n-1) = AM(n-1|n-1)A^T+BQB^T
+\end{equation}
+Here, we have 
+\begin{equation}
+    A = \begin{pmatrix}
+        3 & 1\\
+        0 & 1/2\\
+    \end{pmatrix}\qquad M(-1|-1) = C_s = \begin{pmatrix}
+        2 & 0\\
+        0 & 2\\
+    \end{pmatrix} \qquad 
+    B = 0
+\end{equation}
+Therefore, we have 
+\begin{equation}
+    \color{red}\boxed{\color{black}M(0|-1) = AC_sA^T = 2AA^T = \begin{pmatrix}
+        20 & 1\\
+        1 & 1/2\\
+    \end{pmatrix}}\color{black}
+\end{equation}
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item Compute the Kalman gain matrix at time step \(k=0\).
+\end{enumerate}
+From the Kalman filter equations, we have 
+\begin{equation}
+    K(n) = M(n|n-1) H^T(n)\left(C(n)+H(n)M(n|n-1)H^T(n)\right)^{-1}
+\end{equation}
+And we know the following:
+\begin{equation}
+    H(n) = H = \begin{pmatrix}
+        1/2 & 1/2\\
+    \end{pmatrix}
+    \qquad C(n) = C = 1/2\qquad M(0|-1) = \begin{pmatrix}
+        20 & 1\\
+        1 & 1/2\\
+    \end{pmatrix}
+\end{equation}
+We can finally find the value of the gain matrix:
+\begin{equation}
+    \color{red}\boxed{\color{black}
+    K(0) = M(0|-1)H^T\left(C(0)+HM(0|-1)H^T\right)^{-1} = \frac{8}{49}\begin{pmatrix}
+        21/2\\
+        3/4\\
+    \end{pmatrix} = \begin{pmatrix}
+        12/7\\
+        6/49\\
+    \end{pmatrix}}\color{black}
+\end{equation}
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item Obtain a recursive relation between \(\Hat{s}(0|0)\) and \(\Hat{s}(0|-1)\).
+\end{enumerate}
+Still using the general equations for a vector Kalman filter, we have 
+\begin{equation}
+    \Hat{s}[n|n] = \Hat{s}[n|n-1] + K[n](x[n]-H[n]\Hat{s}[n|n-1])
+\end{equation}
+From what we have derived earlier and by using the definition of the problem, we find 
+
+\begin{equation}
+    \color{red}\boxed{\color{black}\Hat{s}(0|0) = (I-K(0)H)\Hat{s}(0|-1) + K(0)\left(HAs(-1)+w(0)\right)}\color{black}
+\end{equation}
+\begin{equation}
+    \Hat{s}(0|0) = \begin{pmatrix}
+        1/7 & -6/7\\
+        -3/49 & 46/49\\
+    \end{pmatrix} \Hat{s}(0|-1) + \begin{pmatrix}
+        18/7 & 9/7\\
+        9/49 & 9/98\\
+    \end{pmatrix} s(-1) + \begin{pmatrix}
+        12/7\\
+        6/49\\
+    \end{pmatrix} w(0)
+\end{equation}
+\end{document}

@@ -1,0 +1,176 @@
+\documentclass[11pt]{article}
+\pagestyle{plain}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2cm,bottom=2.5cm]{geometry}
+\usepackage[english]{babel}
+\usepackage{libertine}
+\usepackage{gensymb}
+\usepackage{tabularray}
+\usepackage{graphicx}
+\usepackage{steinmetz}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{nicematrix}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage{verbatim}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\usepackage{apptools}
+    \titleformat{\chapter}[hang]{\bfseries\huge}{\IfAppendix{\appendixname~}{\relax}\thechapter\IfAppendix{.}{.}}{\IfAppendix{0.333em}{2pc}}{}
+%\AtBeginEnvironment{}{\appendixtrue}
+
+% this alters "before" spacing (the second length argument) to 0
+\titlespacing {\chapter}{0pt}{0pt}{40pt}
+
+\usepackage[nottoc]{tocbibind}
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{keyval}
+\usepackage{kvoptions}
+\usepackage{fancyvrb}
+\usepackage{ifthen}
+\usepackage{calc}
+\usepackage{pdftexcmds}
+\usepackage{etoolbox}
+\usepackage{xstring}
+\usepackage{xcolor}
+\usepackage{lineno}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usetikzlibrary{patterns,arrows,decorations.pathreplacing,babel}
+
+\usepackage[]{minted}
+\newminted{python}{
+    linenos=true,
+    bgcolor=lightgray,
+    tabsize=4,
+    gobble=8,
+    fontfamily=courier,
+    fontsize=\small,
+    xleftmargin=5pt,
+    xrightmargin=5pt
+}
+    \title{LINMA1731 - Assignment 1 : Estimation and prediction}
+    \author{Desmidt Simon - NOMA 19012100}
+    \date{\today}
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+    \item Compute the bias, variance and MSE of \(\Hat{X}\), as a function of \(a_i\)'s.
+\end{enumerate}
+The biased is defined as \(B(x) = \mathbb{E}(\Hat{X})-x\). From the definitions of the given variables, we have 
+\begin{equation}
+    \begin{cases}
+        \mathbb{E}(\Hat{X}) = \sum_{i=1}^N a_i\mathbb{E}(Y_i)\\
+        \mathbb{E}(Y_i) = \mathbb{E}(x+W_i) = \mathbb{E}(x) + \mathbb{E}(W_i) = \mathbb{E}(x) = x 
+    \end{cases}
+    \Longrightarrow \color{red}\boxed{\color{black}B(x) = \left(\sum_{i=1}^Na_i-1\right)x}\color{black}
+\end{equation}
+From the properties of the variance as seen in LEPL1109, we have 
+\begin{align}
+    \mathbb{V}(\Hat{X}) = \mathbb{V}\left(\sum_{i=1}^N a_iY_i\right) &= \mathbb{V}\left(x\sum_{i=1}^Na_i + \sum_{i=1}^N a_iW_i\right) = \mathbb{V}\left(\sum_{i=1}^Na_iW_i\right)\\ &= \sum_{i=1}^N a_i^2 \mathbb{V}(W_i) = \color{red}\boxed{\color{black}\mathbb{V}(\Hat{X}) =  \sum_{i=1}^Na_i^2 \frac{i}{N+1}}\color{black}
+\end{align}
+The definition of the MSE is \(MSE(\Hat{X}) = B^2(x)+\mathbb{V}(\Hat{x})\). From the values determined previously, we find
+\begin{equation}
+    \color{red}\boxed{\color{black}MSE(\Hat{X}) = \left(\sum_{i=1}^N a_i-1\right)^2x^2 +\sum_{i=1}^N a_i^2 \frac{i}{N+1}}\color{black}
+\end{equation}
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item (i) Derive the relationship between \(a_i\)'s such that the estimator \(\Hat{X}\) is unbiased. (ii) Find the value of \(a_i\)'s such that MSE is minimized. (iii) Obtain a mathematical relationship between \(\frac{Var(W_i)}{Var(W_j)}\) and \(\frac{a_i^*}{a_j^*}\) (where \(a_i^*\) is the value of \(a_i\) for which MSE is minimized). How would you interpret this relationship? 
+\end{enumerate}
+For the estimator to be unbiased, we need \(\mathbb{E}(\Hat{X}) = x \). Equation-wise, this means 
+\begin{equation}
+    x\sum_{i=1}^N a_i = x \Longrightarrow \color{red}\boxed{\color{black}\sum_{i=1}^Na_i-1=0}\color{black}
+\end{equation}
+To minimize MSE, we can use the Lagrange method \(\frac{\partial f}{\partial a_i} + \lambda \frac{\partial g}{\partial a_i} = 0 \) \(\forall i\), with 
+\begin{equation}
+    \begin{cases}
+        f(a_1,\dots, a_N) = MSE(x)\\
+        g(a_1,\dots, a_N) = \sum_{i=1}^Na_i-1\\
+    \end{cases}
+\end{equation}
+We then have 
+\begin{equation}
+    2x^2\left(\sum_{i=1}^Na_i-1\right) + \frac{2i}{N+1}a_i + \lambda= 0 \qquad \forall i\in \{1,\dots,N\}
+\end{equation}
+Using the constraint function \(g(a_1,\dots,a_N)\), we find 
+\begin{equation}
+    \left(\frac{2i}{N+1}\right) a_i = -\lambda \Longrightarrow a_i = \frac{-\lambda (N+1)}{2i}
+\end{equation}
+Substituting every \(a_i\) in the constraint function to find the value of \(\lambda\), we have 
+\begin{equation}
+    \lambda = -\frac{2}{N+1}\left(\sum_{i=1}^N\frac{1}{i}\right)^{-1} \Longrightarrow \color{red}\boxed{\color{black}a_i = \frac{1}{i\sum_{k=1}^N\frac{1}{k}} \qquad \forall i}\color{black} 
+\end{equation}
+Finally, we need to express the ratio \(Var(W_i)/Var(W_j)\): from the definitions of \(W_i\) and \(a_i^*\), we have 
+\begin{equation}
+    \begin{cases}
+        \frac{Var(W_i)}{Var(W_j)} = \frac{i}{j}\\
+        \frac{a_i^*}{a_j^*} = \frac{j}{i}
+    \end{cases} \Longrightarrow \color{red}\boxed{\color{black}\frac{Var(W_i)}{Var(W_j)} = \frac{a_j^*}{a_i^*}}\color{black}
+\end{equation}
+Interpretation: The variance ratio gives the relative importance of each Gaussian compared to the others. 
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item (i) Compute the pdf of the random variable Z, where \(Z \coloneqq [Y_1,Y_2,\dots,Y_N]\). (ii) Using the pdf of Z obtained in (i), compute the CRB associated with the estimation problem. (iii) Show that the pdf of Z satisfies the regularity conditions.
+\end{enumerate}
+From \(W_i\sim \mathcal{N}\left(0,\frac{i}{N+1}\right)\), we find \(Y_i\sim\mathcal{N}\left(x,\frac{i}{N+1}\right)\). We also know that the pdf of Z is given by the following formula 
+\begin{equation}
+    T_Z(z) = \frac{1}{\sqrt{(2\pi)^N \det(\Sigma)}} \exp{\left(-\frac{1}{2}(z-\mu)^T\Sigma^{-1}(z-\mu)\right)}
+\end{equation}
+with \(\mu\) the mean vector and \(\Sigma\) the covariance matrix:
+\begin{equation}
+    \mu = \begin{pmatrix}
+        x\\
+        \vdots \\
+        x\\
+    \end{pmatrix}
+    \qquad \Sigma = \begin{pmatrix}
+        \frac{1}{N+1} & 0 & \dots  & 0\\
+        0 & \frac{2}{N+1} & \dots & \vdots \\
+        \vdots & \dots & \ddots & \vdots\\
+        0 & \dots & \dots & \frac{N}{N+1}\\
+    \end{pmatrix}
+\end{equation}
+Then, we have 
+\begin{equation}
+    \color{red}\boxed{\color{black}T_Z(y_1,\dots,y_N) =  \frac{1}{\left(\frac{2\pi}{N+1}\right)^{N/2} \sqrt{N!}} \exp{\left(-\frac{N+1}{2}\sum_{i=1}^N\left(\frac{(y_i-x)^2}{i}\right)\right)}}\color{black}
+\end{equation}
+The CRB of the estimator is \(1/I(x)\), with \(I(x) = -\mathbb{E}\left(\frac{\partial^2 \ln{(p(z;x))}}{\partial x^2}\right)\). From the pdf calculated previously, we find 
+\begin{equation}
+    \frac{\partial^2\ln{(p(z;x))}}{\partial x^2} = -(N+1)\sum_{i=1}^N\frac{1}{i} \Longrightarrow I(x) = -\mathbb{E}\left(-(N+1)\sum_{i=1}^N\frac{1}{i}\right) = (N+1) \sum_{i=1}^N \frac{1}{i}
+\end{equation}
+\begin{equation}
+    \color{red}\boxed{\color{black}CRB = \frac{1}{N+1}\frac{1}{\sum_{i=1}^N \frac{1}{i}}}\color{black}
+\end{equation}
+Finally, we have to show that the pdf of Z satisfies the following regularity condition:
+\begin{equation}
+    \mathbb{E}(T_Z(z;x)) = 0 \qquad \forall x \in \Omega_x
+\end{equation}
+We can show that the condition is true by using the definition of the expectation: 
+\begin{align}
+    \mathbb{E}(T_Z(z;x)) &= \int_{-\infty}^{\infty} zT_Z(z;x)dz \\
+    \Longrightarrow &\left[\mathbb{E}(T_Z(z;x))\right]_i = \underbrace{\frac{1}{\left(\frac{2\pi}{N+1}\right)^{N/2}\sqrt{N!}}}_{\eqqcolon\alpha}\int_{-\infty}^{\infty}y_i\exp{\left(-\frac{N+1}{2}\sum_{i=1}^N\left(\frac{(y_i-x)^2}{i}\right)\right)}dy_i \\ &= \alpha \int_{-\infty}^{\infty}y_i\prod_{i=1}^N\exp{\left(-\frac{N+1}{2i}(y_i-x)^2\right)}dy_i = 0
+\end{align}
+We now use the property of the Gaussian integral saying that the value of \(x\) does not change the value of the total integral. As the expectation of a Gaussian is 0, and with the property stated above, we have that the expectation of \(Z\) is a vector of null terms and it is therefore null itself.
+
+\end{document}

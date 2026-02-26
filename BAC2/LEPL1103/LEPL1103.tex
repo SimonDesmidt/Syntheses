@@ -1,0 +1,1771 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\renewcommand{\contentsname}{Table des matières}
+\usepackage{hyperref}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.4]{img/page_de_garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LEPL1103 EDPs et Analyse complexe \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2023-2024 - Q1}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\chapter{Equations aux dérivées partielles}
+\section{A savoir faire à la fin}
+\begin{itemize}
+    \item définir une courbe caractéristique et une direction caractéristique;
+    \item donner les unités et significations de chaque terme de l'équation du transport;
+    \item donner les types d'EDP du second ordre et leur caractéristique (hyperbolique,...);
+    \item donner les unités et significations de chaque terme de l'équation d'onde;
+    \item donner les unités et significations de chaque terme de l'équation de diffusion;
+    \item définir une singularité;
+    \item donner la conversion entre les coordonnées cartésiennes et polaires/cylindriques;
+    \item donner les unités et significations de chaque terme de l'équation de Laplace et Poisson;
+    \item expliquer le théorème de la moyenne (sur le périmètre puis sur la surface) et le théorème du max/min;
+    \item donner la forme générale d'un problème aux valeurs propres;
+    \item donner la valeur importante des fonctions de Bessel 1 + la forme des fonctions de Bessel 2;
+    \item donner les unités et significations de chaque terme de l'équation de la chaleur;
+    \item expliquer les conditions de Neumann et Dirichlet;
+    \item expliquer la différence entre solution de régime et solution transitoire;
+\end{itemize}
+\section{Équations aux dérivées partielles d'ordre 1}
+
+Soit \(u\left( x_{1},\ldots,x_{n} \right)\). Toute relation \(F\left( u,\ x_{i},\frac{\partial u}{\partial x_{i}},\frac{\partial^{2}u}{\partial x_{i}^{2}},\ldots,\ \frac{\partial^{n}u}{\partial x_{i}^{n}} \right) = 0\) constitue une EDP.
+
+{Exemples :}
+
+\begin{itemize}
+    \item Équation de Laplace : \(\nabla^{2}u = 0\) 
+    \item Équation de Poisson : \(\nabla^{2}u = f\left( x,y \right)\)
+\end{itemize}
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : tous les termes doivent être de mêmes dimensions. 
+    \item [$\rightarrow$] Remarque : une EDP est quasi-linéaire si elle est linéaire par rapport aux dérivées partielles d'ordre le plus élevé en chacune des variables.
+\end{itemize}
+
+\subsection{EDP du 1\textsuperscript{er} ordre à deux variables}
+
+\begin{equation}\label{eq:1edp2var}
+    P\frac{\partial u}{\partial x} + Q\frac{\partial u}{\partial y} = R
+\end{equation}
+
+Avec \(P,Q,R\) des fonctions de \(x,y,u\) au plus. Cette EDP est quasi-linéaire, du 1\textsuperscript{er} ordre et à deux variables indépendantes.
+
+Soit la courbe paramétrique \(\Gamma\left( x\left( s \right),y\left( s \right) \right)\). Soit \(u\) donné le long de la courbe \(\Gamma\) (on note alors \(u(s)\) et dérivable une fois. Il faut obtenir \(u\) en dehors de la courbe \(\Gamma\) \(\Longrightarrow\) Problème de CAUCHY.
+
+\begin{enumerate} 
+\item Vérifier si le problème est bien posé : \(\frac{du}{ds} = \frac{\partial u}{\partial x}\frac{dx}{ds} + \frac{\partial u}{\partial y}\frac{dy}{ds}\) est connu.
+\end{enumerate}
+
+\begin{equation}
+    \begin{pmatrix}
+        P & Q \\
+        \frac{dx}{ds} & \frac{dy}{ds} \\
+    \end{pmatrix}
+    \begin{pmatrix}
+        \frac{\partial u}{\partial x} \\
+        \frac{\partial u}{\partial y} \\
+    \end{pmatrix} = 
+    \begin{pmatrix}
+        R \\
+        \frac{du}{ds} \\
+    \end{pmatrix}
+\end{equation}  
+Ce problème matriciel contient l'équation \ref{eq:1edp2var} et la relation ci-dessus. 
+
+Tant que le déterminant ne s'annule pas, on peut résoudre ce système et donc obtenir \(\frac{\partial u}{\partial x}\) et \(\frac{\partial u}{\partial y}\) le long de \(\Gamma\).  Par la règle de Kramer, on aura alors les deux équations suivantes :
+
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \frac{\partial u}{\partial x} = \frac{\left| \begin{matrix}
+        R & Q \\
+        \frac{du}{ds} & \frac{dy}{ds} \\
+        \end{matrix} \right|}{\left| \begin{matrix}
+        P & Q \\
+        \frac{dx}{ds} & \frac{dy}{ds} \\
+        \end{matrix} \right|}
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \frac{\partial u}{\partial y} = \frac{\left| \begin{matrix}
+        P & R \\
+        \frac{dx}{ds} & \frac{du}{ds} \\
+        \end{matrix} \right|}{\left| \begin{matrix}
+        P & Q \\
+        \frac{dx}{ds} & \frac{dy}{ds} \\
+        \end{matrix} \right|}
+    \end{equation}
+\end{minipage}\\
+
+La condition pour que le problème soit bien posé (et qu'on puisse utiliser ces deux relations) est donc que la courbe \(\Gamma\) soit telle que le déterminant ne s'annule en aucun de ses points. La caractéristique est donc une courbe que l'on détermine en obtenant des valeurs de \(u\) dans le voisinage de la courbe \(\Gamma\) et en recommençant la procédure indéfiniment.
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : les caractéristiques ne se croisent jamais et ne croisent jamais deux fois la courbe \(\Gamma\).
+\end{itemize}
+
+Lorsque le problème est bien posé, on sait que \(\frac{\partial u}{\partial x}dx + \frac{\partial u}{\partial y}dy = du\). On peut donc former le système :
+
+\begin{equation}
+    \begin{pmatrix}
+        P & Q \\
+        dx & dy \\
+        \end{pmatrix}\begin{pmatrix}
+        \frac{\partial u}{\partial x} \\
+        \frac{\partial u}{\partial y} \\
+        \end{pmatrix} = \begin{pmatrix}
+        R \\
+        du \\
+    \end{pmatrix}
+\end{equation}
+On trouve ce système en prenant de nouveau l'équation \ref{eq:1edp2var} et la relation ci-dessus. 
+
+La solution est \\
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \frac{\partial u}{\partial x} = \frac{\left| \begin{matrix}
+        R & Q \\
+        du & dy \\
+        \end{matrix} \right|}{\left| \begin{matrix}
+        P & Q \\
+        dx & dy \\
+        \end{matrix} \right|}
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \frac{\partial u}{\partial y} = \frac{\left| \begin{matrix}
+        P & R \\
+        dx & du \\
+        \end{matrix} \right|}{\left| \begin{matrix}
+        P & Q \\
+        dx & dy \\
+        \end{matrix} \right|}
+    \end{equation}
+\end{minipage} \\
+
+Il existe donc une direction locale particulière \(\left( dx,dy \right)\), la \emph{direction caractéristique}, telle que le déterminant du dénominateur s'annule : \(\color{red}\boxed{\color{black}Pdy = Qdx}\color{black}
+\)
+
+Même si le dénominateur s'annule en cette direction, le système reste soluble ssi les numérateurs s'annulent également : 
+
+\begin{equation}\label{eq:compatibility}
+    \color{red}\boxed{\color{black}\left\{ \begin{matrix}
+    Rdy = Qdu \\
+    Pdu = Rdx \\
+    \end{matrix} \right.\ } \color{black}
+\end{equation}
+
+Ces relations de compatibilité constituent les relations différentielles qui déterminent la variation \(du\) de la solution pour une variation \(dx,dy\) le long de la caractéristique. Ce sont également des EDO du premier ordre.
+
+\subsection{Équation de transport}
+
+\begin{equation}
+    \frac{\partial cu}{\partial x} + \frac{\partial u}{\partial t} = 0
+\end{equation}
+
+Avec \(\Gamma = \left\{ \begin{matrix} 
+x\left( s \right) = s \\
+t\left( s \right) = 0 \\
+\end{matrix} \right.\ \). La condition est \(c\ dt = dx \Longleftrightarrow \frac{dx}{dt} = c\)
+
+\underline{Cas \(c\) constant :}
+
+\begin{equation}
+    \int_{s}^{x}{dx'} = c\int_{0}^{t}{dt'} \Longrightarrow s = x - ct
+\end{equation}
+
+Avec la condition initiale \(u\left( s,0 \right) = f\left( s \right)\ \) connue, on a \(u\left( x,t \right) = f\left( s \right) = f\left( x - ct \right)\). Il s'agit d'une simple translation de la fonction à vitesse \(c\). D'où le terme de transport : on translate simplement la fonction dans une direction à vitesse constante ici. 
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : on peut faire le même raisonnement avec \(x\) constant et non plus \(t\). FAIS-LE!
+\end{itemize}
+
+\underline{Cas \(c = c\left( x \right)\ \) :}\footnote{Ce cas n’a pas de sens physique, mais existe mathématiquement.}
+
+Soit \(c\left( x \right)\) une fonction connue de la vitesse. La condition de compatibilité devient 
+\begin{equation}
+    \frac{dx}{c\left( x \right)} = dt
+\end{equation}
+
+Soit la primitive \(I\left( x \right)\coloneqq\int_{0}^{x}\frac{dx'}{c\left( x' \right)}\). On obtient alors \(I\left( x \right) - I\left( s \right) = t\).
+
+Dans ce cas-ci, l'intégrale sous la courbe \(u\) n'est pas constante, car le maximum de la fonction reste le même, mais celle-ci s'étend ou se contracte.
+
+\underline{Cas sous forme conservative :}
+
+\begin{equation}
+    \frac{\partial}{\partial x}\left( c\left( x \right)\ u \right) + \frac{\partial u}{\partial t} = 0
+\end{equation}
+
+L'intégrale \(I\left( t \right) = \int_{- \infty}^{+ \infty}{u\left( x,t \right)}dx\) est conservée au cours du temps : \(\frac{dI}{dt} = 0\). 
+
+Sous forme développée, l'EDP est :
+
+\begin{equation}
+    c(x)\frac{\partial u(x,t)}{\partial x} + \frac{\partial u(x,t)}{\partial t} = - \frac{dc(x)}{dx}u(x,t)
+\end{equation}
+
+Le long de la caractéristique \(dx = cdt\), la variation de \(u\) est régie par (équation \ref{eq:compatibility}) :
+\begin{equation}
+    cdu = - u\frac{dc}{dx}dx \Longrightarrow cdu + udc = 0 \Longrightarrow d\left(cu\right) = 0
+\end{equation}
+\(\Longrightarrow cu\) est conservé le long de la caractéristique. \\
+On définit pour la suite la fonction \(v\left( x,t \right) \triangleq c\left( x \right)u\left( x,t \right)\).
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Condition limite.png}
+\end{figure}
+Soit la caractéristique \(\Gamma = \left\{ \begin{matrix}
+x\left( s \right) = s,\ \ \ \ s > 0 \\
+t\left( s \right) = 0 \\
+\end{matrix} \right.\ \) avec la CI \(u\left( s,0 \right) = f\left( s \right)\).\\
+En A, \(u\) est déterminé par la CI et l'EDO le long de la caractéristique qui émane d'un certain \(s\).\\
+En B, \(u\) est déterminé par la condition limite \(h\left( \tau \right)\) et l'EDO le long de la caractéristique qui émane d'un certain \(\tau\).
+
+Il faut donc une condition initiale ET une condition limite pour résoudre le problème en tout point.
+
+\section{Équation aux dérivées partielles d'ordre 2}
+
+\subsection{Forme générale}
+
+\begin{equation}
+    A\frac{\partial^{2}\varphi}{\partial x^{2}} + B\frac{\partial^{2}\varphi}{\partial x\partial y} + C\frac{\partial^{2}\varphi}{\partial y^{2}} = R
+\end{equation}
+
+Avec \(A,B,C,R\) fonctions (au plus) de \(x,y,\varphi,\frac{\partial\varphi}{\partial x},\frac{\partial\varphi}{\partial y}\).
+
+\subsection{Types d'EDPs du second ordre}
+
+À l'ordre 2, il faut 2 conditions initiales : \(\frac{\partial\varphi}{\partial x}\left( s \right)\) et \(\frac{\partial\varphi}{\partial y}\left( s \right)\). \\
+
+On définit les fonctions \(u\left( x,y \right) \triangleq \frac{\partial\varphi}{\partial x}\) et \(v\left( x,y \right) \triangleq \frac{\partial\varphi}{\partial y}\). \\
+
+Comment obtenir la solution en dehors de la courbe \(\Gamma\)? Comme à l'ordre 1, on développe les dérivées par rapport à \(s\) :
+
+\begin{equation}
+\begin{cases}
+    \frac{\partial}{\partial x}\left( \frac{\partial\varphi}{\partial x} \right)\frac{dx}{ds} + \frac{\partial}{\partial y}\left( \frac{\partial\varphi}{\partial x} \right)\frac{dy}{ds} = \frac{d}{ds}\left( \frac{\partial\varphi}{\partial x} \right) \\
+    \frac{\partial}{\partial x}\left( \frac{\partial\varphi}{\partial y} \right)\frac{dx}{ds} + \frac{\partial}{\partial y}\left( \frac{\partial\varphi}{\partial y} \right)\frac{dy}{ds} = \frac{d}{ds}\left( \frac{\partial\varphi}{\partial y} \right) \\
+\end{cases}
+\end{equation}
+
+On peut écrire ces équations sous forme matricielle : 
+
+\begin{equation}
+    \begin{pmatrix}
+        A & B & C \\
+        \frac{dx}{ds} & \frac{dy}{ds} & 0 \\
+        0 & \frac{dx}{ds} & \frac{dy}{ds} \\
+        \end{pmatrix}\begin{pmatrix}
+        \frac{\partial^{2}\varphi}{\partial x^{2}} \\
+        \frac{\partial^{2}\varphi}{\partial x\partial y} \\
+        \frac{\partial^{2}\varphi}{\partial y^{2}} \\
+        \end{pmatrix} = \begin{pmatrix}
+        R \\
+        \frac{d}{ds}\left( \frac{\partial\varphi}{\partial x} \right) \\
+        \frac{d}{ds}\left( \frac{\partial\varphi}{\partial y} \right) \\
+    \end{pmatrix}
+\end{equation}
+
+\begin{itemize}
+    \item Le problème est bien posé si \(\Gamma\) est telle que le déterminant de la matrice carrée ne s'annule en aucun des points de la caractéristique.
+\end{itemize}
+
+En tout point de \(\Gamma\) on chercher les directions caractéristiques \(\left( dx,dy \right)\) telles que
+
+\begin{equation}
+    \left| \begin{matrix}
+        A & B & C \\
+        dx & dy & 0 \\
+        0 & dx & dy \\
+    \end{matrix} \right| = 0
+\end{equation}
+
+\begin{itemize}
+    \item Si \(B^{2} - 4AC > 0\), EDP hyperbolique (deux caractéristiques) 
+    \item Si \(B^{2} - 4AC = 0\), EDP parabolique (une caractéristique)
+    \item Si \(B^{2} - 4AC < 0\), EDP elliptique (pas de caractéristique)
+\end{itemize}
+\subsection{Cas hyperbolique}
+Les variations des deux caractéristiques sont \(\left( dx_{1},dy_{1} \right)\) et \(\left( dx_{2},dy_{2} \right)\). Le système est soluble le long de chaque caractéristique si 
+
+\begin{equation}
+    \left| \begin{matrix}
+        A & R & C \\
+        dx & d\left( \frac{\partial\varphi}{\partial x} \right) & 0 \\
+        0 & d\left( \frac{\partial\varphi}{\partial y} \right) & dy \\
+    \end{matrix} \right| = 0 \Longrightarrow Adudy + Cdvdx = Rdydx
+\end{equation}
+
+En le point \(\left( x,y \right)\) dont on veut \(u\left( x,y \right)\), il faut donc trouver les deux caractéristiques qui se croisent (venant de deux points de \(\Gamma\) différents).
+\subsubsection{Equation d'onde}
+\begin{equation}
+    c^{2}\frac{\partial^{2}\varphi}{\partial x^{2}} - \frac{\partial^{2}\varphi}{\partial t^{2}} = 0
+\end{equation}
+\begin{equation}
+    \left| \begin{matrix}
+        c^{2} & 0 & - 1 \\
+        dx & dt & 0 \\
+        0 & dx & dt \\
+    \end{matrix} \right| = 0 \Longrightarrow c^{2}dt^{2} = dx^{2} \rightarrow \frac{dx}{dt} = \pm c
+\end{equation}
+
+Les relations \(\frac{dx}{dt}\) nous donnent les deux caractéristiques.
+
+\begin{equation}
+    \left| \begin{matrix} 
+        c^{2} & 0 & - 1 \\
+        dx & d\left( \frac{\partial\varphi}{\partial x} \right) & 0 \\
+        0 & d\left( \frac{\partial\varphi}{\partial t} \right) & dt \\
+    \end{matrix} \right| = 0 \Longrightarrow cdu\ dt = dv\ dx
+\end{equation}
+
+\begin{itemize}
+    \item Le long de \(\frac{dx}{dt} = c\), on a donc \(du - dv = 0\)
+    \item Le long de \(\frac{dx}{dt} = - c\), on a donc \(du + dv = 0\)
+\end{itemize}
+
+\underline{Factorisation de l'équation d'onde :}
+
+On peut factoriser les dérivations : 
+
+\begin{equation}
+    \left( c\frac{\partial}{\partial x} - \frac{\partial}{\partial t} \right)\left( c\frac{\partial}{\partial x} + \frac{\partial}{\partial t} \right)\varphi = 0
+\end{equation}
+
+Soient \(\left\{ \begin{matrix} 
+\xi = x - ct \\
+\eta = x + ct \\
+\end{matrix} \right.\ \). On peut donc transformer l'EDP en \(\frac{\partial}{\partial\xi}\frac{\partial}{\partial\eta}\varphi = \frac{\partial^{2}\varphi}{\partial\xi\partial\eta} = 0\). 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : fais la transformation.
+\end{itemize}
+\subsection{Cas parabolique - Équation de diffusion}
+
+\begin{equation}
+    \color{red}\boxed{\color{black}\frac{\partial}{\partial x}\left( \alpha\frac{\partial\varphi}{\partial x} \right) = \frac{\partial\varphi}{\partial t}} \color{black}
+\end{equation}
+
+\(\alpha = \alpha\left( x,\ \varphi \right) > 0\) est la diffusivité. Trouve ses unités. \\
+
+Exemple de la diffusion de la chaleur en 1D : \(\frac{\partial}{\partial x}\left( k\frac{\partial T}{\partial x} \right) = \rho c\frac{\partial T}{\partial t}\), avec \(k\) la conductibilité thermique, \(\rho\) la masse volumique et \(c\) la chaleur massique. \(\alpha = k/\rho c = \left\lbrack m^{2}/s \right\rbrack\).
+
+\underline{Cas avec \(\alpha\) constant :}
+\begin{equation}
+    \color{red}\boxed{\color{black}\alpha\frac{\partial^{2}\varphi}{\partial x^{2}} = \frac{\partial\varphi}{\partial t}}\color{black}
+\end{equation}
+
+La méthode des caractéristiques ne fonctionne pas dans ce cas, car elles sont dégénérées.
+
+Il faut deux conditions : 
+
+\begin{itemize}
+    \item  Condition initiale : \(\varphi\left( s,0 \right) = f\left( s \right)\)
+    \item Condition limite : 
+    \begin{itemize} 
+        \item [$\bullet$] Condition de Dirichlet : \(\varphi\left( 0,t \right) = h\left( t \right)\)
+        \item [$\bullet$] Condition de Neumann : \(\frac{\partial\varphi}{\partial x}\left( 0,t \right) = h\left( t \right)\)
+        \item [$\bullet$] Condition de Robin, ou mixte : \(\varphi\left( 0,t \right) + l\frac{\partial\varphi}{\partial x}\left( 0,t \right) = h\left( t \right)\)
+    \end{itemize}
+\end{itemize} 
+\underline{En domaine non borné ou périodique :}
+
+L'intégrale de \(\varphi\) est conservée au cours du temps : \(\frac{d}{dt}\left( \int_{a}^{b} \varphi dx \right) = 0\), signifiant dans notre exemple que la chaleur est conservée. \\
+Les bornes sont \(a = + \infty;\ b = - \infty\) dans le cas non borné et \(a = 0;b = L\) dans le cas périodique.\\
+Toutefois, \(\frac{d}{dt}\left( \int_{a}^{b}{\frac{\varphi^{2}}{2}dx} \right) < 0 \rightarrow \) l'énergie diminue au cours du temps.\\
+
+\underline{Fonction de Green :} \\
+Exemple : \(\varphi\left(s,0\right) = \varphi_{0}\exp{( - s^{2}/b^{2})}\) en milieu non borné. 
+
+\begin{equation}
+    \varphi(x,t) = \varphi_{0}\frac{b}{\sqrt{b^{2} + 4\alpha t}}\exp\left(-\frac{x^{2}}{b^{2} + 4\alpha t} \right) \Longrightarrow Q = \int_{-\infty}^{+\infty} \varphi dx = \varphi_{0}b\sqrt{\pi}
+\end{equation}
+Lorsque \(b \rightarrow 0\), il y a diffusion d'une quantité de chaleur \(Q\) finie, en un point dimensionnel : on a donc une gaussienne infiniment pointue car l'intégrale est finie et non nulle (à peu près un delta de Dirac). Dans ce cas, 
+\begin{equation}
+    \varphi\left( x,t \right) = \frac{Q}{\sqrt{4\pi\alpha t}}\exp\left( - \frac{x^{2}}{4\alpha t} \right)
+\end{equation}
+
+Cette solution s'appelle la fonction de Green. 
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : on a une singularité lorsqu'une gaussienne est infiniment pointue, comme dans ce cas-ci.
+\end{itemize}
+\underline{En domaine non borné :}\\
+Soit \(\varphi\left( s,0 \right) = f\left( s \right) \rightarrow dQ\left( s \right) = f\left( s \right)ds\)
+\begin{equation}
+    \Longrightarrow \varphi\left( x,t \right) = \frac{1}{\sqrt{\pi 4\alpha t}}\int_{- \infty}^{+ \infty}{\exp\left( - \frac{\left( x - s \right)^{2}}{4\alpha t} \right)f\left( s \right)ds} = \int_{- \infty}^{+ \infty}{G\left( \left| x - s \right|,t \right)f\left( s \right)ds}
+\end{equation}
+
+Avec \(G\left( r,t \right)\) la fonction de Green (exponentielle \(\times\) sqrt).
+
+La fonction \(\varphi\) est donc de la forme \(\color{red}\boxed{\color{black}\varphi = G*f}\color{black}\) (= convolution, simplification de l'écriture). \\
+On peut suivre le même raisonnement pour des fonctions 2D et 3D, et arriver au même résultat \(\varphi = G*f\). \\
+\underline{Fonction périodique :}
+
+\begin{equation}
+    \varphi\left( s,0 \right) = \varphi_{0}\sin\left( \frac{\pi s}{L} \right)
+\end{equation}
+
+On essaye avec \(\varphi\left( x,t \right) = g\left( t \right)\sin\left( \frac{\pi x}{L} \right)\) (séparation des variables). En remplaçant dans l'EDP, on trouve la fonction \(\varphi\left( x,t \right)\).
+
+\subsubsection{Cas 2D}
+\begin{equation}
+    \color{red}\boxed{\color{black}\alpha\nabla^{2}\varphi = \frac{\partial\varphi}{\partial t}}\color{black}
+\end{equation}
+
+En coordonnées polaires, on a \(\alpha\frac{1}{r}\frac{d}{dr}\left( r\frac{\partial\varphi}{\partial r} \right) = \frac{\partial\varphi}{\partial t}\) et donc \(\varphi\left( r,t \right) = \frac{Q}{\pi 4\alpha t}\exp\left( - \frac{r^{2}}{4\alpha t} \right)\) avec \(r^{2} = x^{2} + y^{2}\). La solution ne dépend pas de \(\theta\) car la diffusion est symétrique. À noter qu'il n'y a plus la racine carrée, car on a deux dimensions spatiales.\\
+\subsubsection{Cas 3D}
+
+\begin{equation}
+    \alpha\frac{1}{r^{2}}\frac{d}{dr}\left( r^{2}\frac{\partial\varphi}{\partial r} \right) = \frac{\partial\varphi}{\partial t} \Longrightarrow \varphi\left( r,t \right) = \frac{Q}{\left( \pi 4\alpha t \right)^{3/2}}\exp\left( - \frac{r^{2}}{4\alpha t} \right)
+\end{equation}
+
+La généralisation à \(n\) dimensions est donc \(\color{red} \boxed{\color{black}\varphi\left( r,t \right) = \frac{Q}{\left( \pi 4\alpha t \right)^{n/2}}\exp\left( - \frac{r^{2}}{4\alpha t} \right)} \color{black}\), avec \(r^2 = \sum_{i=1}^nx_i^2\).
+\subsection{Cas elliptique -- Équation de Laplace}\label{sec:laplace}
+L'équation de Laplace est de la forme \(\color{red}\boxed{\color{black}\nabla^{2}\varphi = 0} \color{black}\). Elle est de deux (ou plus) variables spatiales \(x,y\) et non plus une spatiale et une temporelle.
+L'équation de Laplace est un cas particulier de l'équation de Poisson : \(\color{red}\boxed{\color{black}\nabla^{2}\varphi = R\left( x,y \right)}\color{black}\). La solution est de la forme 
+\begin{equation}
+    \varphi\left( x,y \right) = \frac{Q}{2\pi}\log\left( \frac{r}{L} \right)
+\end{equation}
+
+Avec \(r^{2} = x^{2} + y^{2}\). Il s'agit de la solution fondamentale de l'équation de Poisson. La solution vérifie la propriété suivante : 
+
+\begin{equation}
+    \int_{\Omega}^{}{\nabla^{2} \varphi dxdy } = \oint_{\partial\Omega}^{}{\frac{\partial\varphi}{\partial n}dl\left( s \right)} = Q
+\end{equation}
+
+Pour un \(R\left( x,y \right)\) générique, on a donc : \(dR\left( x',y' \right) = R\left( x',y' \right)dx'dy' = Q\).
+
+\subsubsection{Équation de Laplace en 2D}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Laplace 2D.png}
+\end{figure}
+Les conditions \(u = 0\) sont des conditions homogènes. La dernière condition est donc non homogène.\\
+! Il n'y a pas de conditions initiales.\\
+\underline{Hypothèses :} 
+\begin{itemize}
+    \item Domaine simple (rectangle,\ldots) 
+    \item Conditions limites (CL) homogènes dans au moins une direction
+\end{itemize}
+\begin{itemize}
+    \item [$\Longrightarrow$] On peut utiliser la séparation des variables : \(u\left( x,y \right) = X\left( x \right)Y\left( y \right)\).
+\end{itemize}
+
+Si on injecte cette forme de solution dans l'EDP : 
+\begin{equation}
+    \frac{d^{2}X}{dx^{2}}Y\left( y \right) + \frac{d^{2}Y}{dy^{2}}X\left( x \right) = 0 \Longleftrightarrow \frac{X''}{X} + \frac{Y''}{Y} = p\left( x \right) + q\left( y \right) = 0
+\end{equation}
+
+\begin{equation}
+    \left\{ \begin{matrix}
+    \frac{d}{dx}\left( p\left( x \right) + q\left( y \right) \right) = p'\left( x \right) = 0 \\
+    \frac{d}{dy}\left( p\left( x \right) + q\left( y \right) \right) = q'\left( y \right) = 0 \\
+    \end{matrix} \right.\  \Longrightarrow \left\{ \begin{matrix}
+    p\left( x \right) = \lambda = cste\  \\
+    q\left( y \right) = - \lambda = cste \\
+    \end{matrix} \right.\
+\end{equation}
+
+\begin{equation}
+    \color{red}\boxed{\color{black}\frac{X''}{X} = - \frac{Y''}{Y} = \lambda}\color{black}
+\end{equation}
+
+On a donc deux EDOs du second ordre à résoudre, une de chaque variable : 
+\begin{equation}
+    \begin{cases}
+        X'' - \lambda X = 0 \\
+        X\left( 0 \right) = X\left( L \right) = 0 \\
+    \end{cases}
+\end{equation}
+C'est un problème aux valeurs propres. Ce problème possède des solutions non triviales pour des valeurs discrètes de \(\lambda\) (voir plus loin). Il faut déterminer ces valeurs, sur base du signe de \(\lambda\) : 
+
+\begin{enumerate}
+    \item \(\lambda = k^{2} > 0\) : 
+\end{enumerate}
+\begin{equation}
+    X'' - k^{2}X = 0
+\end{equation}
+
+On pose \(X\left( x \right) = e^{\alpha x}\). En remplaçant et en utilisant les CL, on trouve \(X\left( x \right) = 0\). Solution triviale.
+
+\begin{enumerate}
+    \def\labelenumi{\arabic{enumi})}
+    \setcounter{enumi}{1} 
+    \item \(\lambda = 0\) : 
+\end{enumerate}
+\begin{equation}
+    X'' = 0
+\end{equation}
+
+Par les CL, \(X\left( x \right) = 0\). Solution triviale. 
+
+\begin{enumerate}
+    \def\labelenumi{\arabic{enumi})}
+    \setcounter{enumi}{2}
+    \item \(\lambda = - k^{2} < 0\) :
+\end{enumerate}
+\begin{equation}
+    X'' + k^{2}X = 0
+\end{equation}
+
+On pose \(X = e^{\alpha x}\). En remplaçant, on trouve \(X\left( x \right) = A\cos kx + B\sin kx\). \\
+Avec les conditions initiales, on a \(B = 0 \rightarrow\) Solution triviale. \\
+
+\(\sin kL = 0 \rightarrow k_{n} = \frac{n \pi}{L},\ n\mathbb{\in N \Longrightarrow}X_{n}\left( x \right) = B_{n}\sin\left( k_{n}x \right)\). Les valeurs propres sont donc
+
+\begin{equation}
+    \lambda_{n} = \  - \left( \frac{n \pi}{L} \right)^{2}
+\end{equation}
+\underline{Trouver \(Y\left( y \right)\ \):} \\
+
+\(\forall X_{n},\ Y_{n}\), il faut trouver \(Y_{n}\left( y \right)\) : \(Y'' = - \lambda_{n}Y\). On construit des fonctions \(u_{n} = X_{n}Y_{n}\) qui satisfont l'EDP et les CL homogènes \(Y_{n}'' = k_{n}^{2}Y_{n}\).
+
+\begin{equation}
+    Y_{n}\left( y \right) = C_{n}\cosh\left( k_{n}y \right) + D_{n}\sinh\left( k_{n}y \right) \Longrightarrow u_{n}\left( x,y \right) = X_{n}\left( x \right)Y_{n}\left( y \right)
+\end{equation}
+\begin{equation}
+    = B_{n}\sin\left( k_{n}x \right)\left\lbrack C_{n}\cosh\left( k_{n}y \right) + D_{n}\sinh\left( k_{n}y \right) \right\rbrack
+\end{equation}
+
+Grâce aux CL, les \(C_n\) sont nuls et on simplifie en \(u_{n}\left( x,y \right) = D_{n}\sin\left( k_{n}x \right)\sinh\left( k_{n}y \right)\). \\
+!! \(u_{n}\) satisfait l'EDP linéaire et ses CL homogènes en \(x = 0\), \(x = L\) et \(y = 0\). \\
+Par principe de superposition, on peut écrire la solution \(u\left( x,y \right)\) de l'EDP :
+
+\begin{equation}
+    u\left( x,y \right) = \sum_{n = 1}^{\infty}{D_{n}\sin\left( k_{n}x \right)\sinh\left( k_{n}y \right)}
+\end{equation}
+
+CL non homogène en \(y = H\) : \(u\left( x,H \right) = f\left( x \right)\), fonction arbitraire.
+
+\begin{equation}
+    u\left( x,H \right) = \sum_{n = 1}^{\infty}{D_{n}\sin\left( k_{n}x \right)\sinh\left( k_{n}H \right)} = f\left( x \right)
+\end{equation}
+
+On pose \(E_{n} = D_{n}\sinh\left( k_{n}H \right) = cste\). Les fonctions propres \(\sin\left( k_{n}x \right)\) forment une base pour les fonctions définies sur l'intervalle \(\lbrack 0;L\lbrack\). Il faut donc "reprojeter" les fonctions dans la base : multiplier par \(\sin\left( k_{n}x \right)\), puis intégrer \(\int_{0}^{L}{\ldots dx}\) :
+
+\begin{equation}
+    \int_{0}^{L}{\sum_{n = 1}^{\infty}{E_{n}\sin\left( k_{n}x \right)\sin\left( k_{m}x \right)}dx} = \int_{0}^{L}{f\left( x \right)\sin\left( k_{m}x \right)dx}
+\end{equation}
+
+\begin{itemize}
+    \item Si \(k_{m} \neq k_{n}\), l'intégrale des sinus \(= 0\)
+    \item Si \(k_{m} = k_{n}\), \(\int_{0}^{L}{\ldots dx} = L\)
+\end{itemize}
+
+\begin{itemize}
+    \item [$\Rightarrow$] Les sinus forment une base orthonormée.
+\end{itemize}
+
+Si \(n = m\), on a \(E_{m}\int_{0}^{L}{{sin^2}\left( k_{m}x \right)dx} = \int_{0}^{L}{f\left( x \right)\sin\left( k_{m}x \right)dx} = E_{m}\frac{L}{2}\) 
+
+\begin{equation}
+    E_{m} = \frac{2}{L}\int_{0}^{L}{f\left( x \right)\sin\left( k_{m}x \right)dx}
+\end{equation}
+
+On trouve donc\footnote{Ne pas oublier de simplifier les \(k_{n}\).}
+
+\begin{equation}
+    \color{red} \boxed{\color{black}u\left( x,y \right) = \sum_{n = 1}^{\infty}{\frac{2}{L}\left( \int_{0}^{L}{f\left( x \right)\sin\left( k_{n}x \right)dx} \right)\sin\left( k_{n}x \right)\frac{\sinh\left( k_{n}x \right)}{\sinh\left( k_{n}H \right)}}} \color{black}
+\end{equation} 
+\section{Équation de Laplace en coordonnées polaires}
+\subsection{Définition générale du problème aux valeurs propres}
+\begin{equation}
+    \frac{d}{dx}\left( p\left( x \right)\frac{d\varphi}{dx} \right) + q\left( x \right)\phi\left( x \right) + \lambda \sigma \left( x \right)\phi\left( x \right) = 0
+\end{equation}
+\begin{equation}
+    \sigma\left( x \right)\mathcal{L}\left( \phi \right) + \lambda \sigma \left( x \right)\phi\left( x \right) = 0
+\end{equation}
+
++ conditions aux limites homogènes et \(p\left( x \right),\ \sigma\left( x \right) > 0\). \(\mathcal{L}\left( \phi \right)\) est un opérateur linéaire avec des CL homogènes auto-adjoint. 
+
+Auto-adjoint signifie que \(\forall u,v,\ \left\langle u\mathcal{,L}\left( v \right) \right\rangle = \left\langle \mathcal{L}\left( u \right),\ v \right\rangle\). \\
+
+\underline{Preuve du caractère auto-adjoint :}\\
+
+Si on définit l'opérateur différentiel \(\mathcal{L}\left( \phi \right) = \frac{1}{\sigma\left( x \right)}\left\lbrack \frac{d}{dx}\left( p\left( x \right)\frac{d \varphi}{dx} \right) + q\left( x \right)\phi\left( x \right) \right\rbrack\), et le produit scalaire \(\left\langle u,v \right\rangle = \int_{a}^{b}{u\left( x \right)v\left( x \right)\sigma\left( x \right)dx}\),
+avec la fonction \(\sigma\left( x \right)\) la fonction de poids, il est possible de prouver le caractère auto-adjoint de l'opérateur par développement mathématique.\\
+
+Ce problème est également appelé problème de Sturm-Liouville régulier.
+
+\subsection{Équation de Laplace en coordonnées polaires}
+
+L'équation (elliptique) de Laplace \(\nabla^{2}u = 0\) sous forme polaire s'écrit :
+
+\begin{equation}
+    \frac{\partial^{2}u}{\partial r^{2}} + \frac{1}{r}\frac{\partial u}{\partial r} + \frac{1}{r^{2}}\frac{\partial^{2}u}{\partial\theta^{2}} = 0 \Longleftrightarrow r^{2}\frac{\partial^{2}u}{\partial r^{2}} + r\frac{\partial u}{\partial r} + \frac{\partial^{2}u}{\partial\theta^{2}} = 0
+\end{equation}
+
+Par la méthode de séparation de variables, on a donc \(u\left( r,\theta \right) = R\left( r \right)\Theta\left( \theta \right)\) et l'équation de Laplace se réécrit 
+
+\begin{equation}
+    r^{2}R''\Theta + rR'\Theta + R\Theta'' = 0 \Longrightarrow \frac{\Theta''}{\Theta} = - \frac{r^{2}R'' + rR'}{R} = \lambda
+\end{equation}
+
+\begin{enumerate}
+    \def\labelenumi{\arabic{enumi})}
+    \item \(\lambda = 0\) :
+\end{enumerate}
+
+\begin{equation}
+    \Theta'' = 0 \Longrightarrow \Theta = A_{0} + B_{0}\theta
+\end{equation}
+
+\begin{equation}
+    rR'' + R' = 0 \Longrightarrow R = C_{0} + D_{0}\log\left( r \right)
+\end{equation}
+
+\begin{enumerate}
+    \def\labelenumi{\arabic{enumi})}
+    \setcounter{enumi}{1}
+    \item \(\lambda = + k^{2}\) :
+\end{enumerate}
+
+
+Solution triviale : \(\Theta,R = 0\)
+
+\begin{enumerate}
+    \def\labelenumi{\arabic{enumi})}
+    \setcounter{enumi}{2}
+    \item \(\lambda = - k^{2}\) :
+\end{enumerate}
+\begin{equation}
+    \Theta'' + k^{2}\Theta = 0 \Longrightarrow \Theta = A\cos\left( k \theta \right) + B\sin\left( k \theta \right)
+\end{equation}
+\begin{equation}
+    r^{2}R'' + rR' - k^{2}R = 0 \Longrightarrow R = C\left( \frac{r}{L} \right)^{k} + D\left( \frac{r}{L} \right)^{- k}
+\end{equation}
+
+Avec \(L\) une longueur caractéristique du problème. Cette EDO est l'équation d'Euler. 
+
+\subsection{Application au cercle}
+Appliquons cette solution au cercle centré en \(0\) et de rayon \(a\).\\
+La solution est périodique en \(\theta\) et régulière en \(r = 0\) (pour éviter une singularité). \\
+La périodicité se traduit par les conditions \(\left\{ \begin{matrix}
+k_{n} = n\ ,\ n\mathbb{\in N \rightarrow}\lambda < 0 \\
+B_{0} = 0 \rightarrow \lambda = 0 \\
+\end{matrix} \right.\ \) \\
+
+\(B_{0} = 0\) car le cercle prend une forme hélicoïdal si ce n'est pas le cas.\\
+La régularité se traduit par la condition \(\left\{ \begin{matrix}
+D_{0} = 0 \rightarrow \lambda = 0 \\
+D = 0 \rightarrow \lambda < 0 \\
+\end{matrix} \right.\ \) 
+\begin{equation}
+    \Longrightarrow u\left( r,\theta \right) = A_{0} + \sum_{n = 1}^{\infty}{r^{n}\left(A_{n}\cos\left( n \theta \right) + B_{n}\sin\left( n \theta \right)\right)}
+\end{equation}
+
+Si on pose \(A_{n} = a_{n}/a^{n}\) et \(B_{n} = b_{n}/a^{n}\), la solution devient
+
+\begin{equation}
+    u\left( r,\theta \right) = A_{0} + \sum_{n = 1}^{\infty}{\left( \frac{r}{a} \right)^{n}\left( a_{n}\cos\left( n \theta \right) + b_{n}\sin\left( n \theta \right) \right)}
+\end{equation}
+
+Enfin, il reste la condition non homogène de Dirichlet sur le bord \(x = a\). En projetant \(u\left( a,\theta \right) = f\left( \theta \right)\) dans les fonctions propres du problème de Sturm-Liouville, on obtient
+
+\begin{equation}
+    u\left( a,\theta \right) = f\left( \theta \right) = A_{0} + \sum_{n = 1}^{\infty}\left( a_{n}\cos\left( n \theta \right) + b_{n}\sin\left( n \theta \right) \right) 
+\end{equation}
+\begin{equation}
+    \Longrightarrow \int_{0}^{2\pi}{f\left( \theta \right)d \theta} = A_{0}2\pi \Longrightarrow A_{0} = \frac{1}{2\pi}\int_{0}^{2\pi}{f\left( \theta \right)d \theta}
+\end{equation}
+
+Par projection, 
+\begin{equation}
+    \int_{0}^{2\pi}{\cos\left( n \theta \right)f\left( \theta \right)d \theta} = a_{n}\int_{0}^{2\pi}{\cos^{2}\left( n \theta \right)}d\theta = a_{n}\pi
+\end{equation}
+
+\begin{equation}
+    \int_{0}^{2\pi}{\sin\left( n \theta \right)f\left( \theta \right)d \theta} = b_{n}\int_{0}^{2\pi}{\sin^{2}\left( n \theta \right)}d\theta = b_{n}\pi 
+\end{equation}
+
+Et on trouve donc les valeurs de \(a_{n}\) et \(b_{n}\) :
+
+\begin{equation}
+    \begin{cases}
+        a_{n} = \frac{1}{\pi}\int_{0}^{2\pi}{\cos\left( n \theta \right)f\left( \theta \right)d \theta} \\
+        b_{n} = \frac{1}{\pi}\int_{0}^{2\pi}{\sin\left( n \theta \right)f\left( \theta \right)d \theta} \\
+    \end{cases}
+\end{equation}
+\subsection{Propriétés}
+\underline{Théorème de la moyenne (périmètre) :}\\
+Soit \(U_c\) la valeur de la fonction \(u\left( x,y \right)\) au centre du domaine. Par les valeurs trouvées précédemment, on a \(U_{c} = U\left( 0,\theta \right) = A_{0} = \frac{1}{2\pi}\int_{0}^{2\pi}{f\left( \theta \right)d \theta} = \frac{1}{2\pi a}\oint_{\partial\mathcal{C}}^{}udl\).\\
+
+La fonction \(u\) prend donc comme valeur au centre du domaine la valeur moyenne de \(u\) sur le périmètre du cercle (\(\partial\mathcal{C}\)).\\
+\newline
+\underline{Théorème de la moyenne (surface) :}\\
+\begin{equation}
+    \int_{\mathcal{C}}^{}u\ ds = \int_{0}^{2\pi}{\int_{0}^{a}{u\left( r,\theta \right)rdr}d \theta} = \pi a^{2}A_{0} = \pi a^{2}U_{c} \Longrightarrow U_{c} = \frac{1}{\pi a^{2}}\int_{\mathcal{C}}^{}uds
+\end{equation}
+\underline{Théorème du maximum ou du minimum :}\\
+
+\(u\) ne peut pas être un maximum/minimum en un point intérieur, la valeur maximale/minimale est atteinte sur \(\partial\Omega\). \(\Longrightarrow u\) n'aura pas non plus un maximum/minimum local dans
+\(\Omega\). \\
+Démonstration par l'absurde :\\
+Soit un maximum local de \(u\) en \(c\left( x,y \right) \in \Omega\backslash\partial\Omega.\) Il existe donc un voisinage \(V\) où \(p\left( X,Y \right) \in V\) tel que \(u\left( X,Y \right) < u\left( x,y \right) \Longrightarrow \exists\varepsilon > 0\ :\mathcal{C}_{\varepsilon} \subset V\ \). Sur \(\mathcal{C}_{\varepsilon}:\left( X,Y \right) \in \partial\mathcal{C}_{\varepsilon} \rightarrow u\left( X,Y \right) < u\left( x,y \right)\)
+
+Soit \(U\) la valeur maximale sur \(\partial\mathcal{C}_{\varepsilon}\). Par le théorème de la moyenne, \(u\left( x,y \right) = \frac{1}{2\pi\varepsilon}\oint_{\partial\mathcal{C}_{\varepsilon}}^{}udl \Longrightarrow 2\pi\varepsilon u\left( x,y \right) = \oint_{\partial\mathcal{C}_{\varepsilon}}^{}udl \leq U2\pi\varepsilon\). On a donc \(u\left( x,y \right) \leq U\), ce qui est impossible par hypothèse.\\ \newline
+\underline{Unicité de la solution :}
+
+\(u\left( x,y \right)\) est solution de \(\nabla^{2}u = 0\) dans un domaine \(\Omega\) avec \(u = \overline{u}\) sur la frontière \(\partial\Omega\), alors \(u\left( x,y \right)\) est unique. \\
+Démonstration par l'absurde :\\
+
+\(\exists v\left( x,y \right)\) solution de \(\nabla^{2}v = 0\), avec \(v = \overline{u}\) sur \(\partial\Omega\). 
+
+\begin{enumerate}
+    \def\labelenumi{\arabic{enumi})}
+    \item \(\nabla^{2}\left( u - v \right) = \nabla^{2}u - \nabla^{2}v = 0 \Longrightarrow \nabla^{2}\left( u - v \right) = 0\) dans \(\Omega\).
+    \item \(u - v = \overline{u} - \overline{u} = 0 \rightarrow u - v = 0\) sur \(\partial\Omega\). \(\Longrightarrow\) la fonction de Laplace satisfait l'équation de Laplace et a une valeur nulle sur \(\partial\Omega\).
+\end{enumerate}
+
+Par le théorème du maximum, \(u - v \leq 0\) dans \(\Omega\) et par le théorème du minimum, \(u - v \geq 0\) dans \(\Omega \Longrightarrow u - v = 0 \Longleftrightarrow u = v\).
+
+\subsection{Équation de Laplace dans un secteur d'anneau}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Laplace secteur.png}
+\end{figure}
+On avait initialement \(\Theta_{0}\left( \theta \right) = A_{0} + B_{0}\theta\)
+\(\Theta_{0}'\left( \theta \right) = B_{0} = 0\) car \(\frac{\partial u}{\partial\theta}\left( r,\beta \right) = 0\).
+
+\begin{equation}
+    u\left( r,0 \right) = 0 \Longrightarrow A_{0} = 0
+\end{equation}
+\begin{equation}
+    \Theta_{n}\left( \theta \right) = A_{n}\cos\left( k_{n}\theta \right) + B_{n}\sin\left( k_{n}\theta \right)
+\end{equation}
+et
+\begin{equation}
+        \Theta_{n}'\left( \theta \right) = - k_{n}A_{n}\sin\left( k_{n}\theta \right) + k_{n}B_{n}\cos\left( k_{n}\theta \right)
+    \end{equation}
+\begin{equation}
+    \frac{\partial u}{\partial\theta}\left( r,\beta \right) = 0 \rightarrow \cos\left( k_{n}\beta \right) = 0 \rightarrow k_{n}\beta = \left( 2n - 1 \right)\frac{\pi}{2} \Longleftrightarrow k_{n} = \left( 2n - 1 \right)\frac{\pi}{2\beta}
+\end{equation}
+
+\begin{equation}
+    u\left( r,0 \right) = 0 \rightarrow A_{n} = 0
+\end{equation}
+
+On trouve donc \(u_{n}\left( r,\theta \right) = \left\lbrack C_{n}\left( \frac{r}{a} \right)^{k_{n}} + D_{n}\left( \frac{r}{a} \right)^{- k_{n}} \right\rbrack\sin\left( k_{n}\theta \right)\).\\
+Il faut maintenant imposer la CL non homogène en \(r = a\) : 
+
+\begin{equation}
+    u\left( a,\theta \right) = 0 \Longrightarrow C_{n} + D_{n} = 0 \Longleftrightarrow C_{n} = - D_{n}
+\end{equation}
+\begin{equation}
+    u\left( r,\theta \right) = \sum_{n = 1}^{\infty}{C_{n}\left( \left( \frac{r}{a} \right)^{k_{n}} - \left( \frac{r}{a} \right)^{- k_{n}} \right)\sin\left( k_{n}\theta \right)}
+\end{equation}
+
+La suite du développement est similaire à celui en coordonnées cartésiennes.
+
+\section{Équation d'onde en 2D}
+
+Pour rappel, l'équation d'onde (parabolique) s'écrit 
+\begin{equation}
+    c^{2}\nabla^{2}u = \frac{\partial^{2}u}{\partial t^{2}}
+\end{equation}
+
+Les conditions homogènes aux frontières sont \(u = 0\), et/ou \(\frac{\partial u}{\partial n} = 0\), avec \(n\) le vecteur normal à la frontière. Les conditions initiales sont \(u\left( x,y,0 \right) = f\left( x,y \right)\) et/ou \(\frac{\partial u}{\partial t}\left( x,y,0 \right) = g\left( x,y \right)\).
+
+\subsection{Séparation des variables}
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : la méthode de séparation des variables n'est valable que sur des domaines bornés, jamais en domaine infini.
+\end{itemize}
+
+Par séparation de variables, \(v\left( x,y,t \right) = \phi\left( x,y \right)T\left( t \right) \Longrightarrow \frac{\nabla^{2}\phi}{\phi} = \frac{T''}{c^{2}T} = \lambda\) \\
+
+On veut une solution oscillante, on prendra donc \(\lambda = - k^{2}\).
+
+Dans le temps : \(T'' + k^{2}c^{2}T = 0 \Longrightarrow T\left( t \right) = A\cos\left( kct \right) + B\sin\left( kct \right)\), avec \(kc = \omega\).
+
+Sur \(\Omega\) : \(\nabla^{2}\phi + k^{2}\phi = 0\), avec les conditions aux limites sur \(\partial\Omega\) Il s'agit d'un problème de Helmholtz. 
+
+\subsection{Problème de Helmholtz}
+
+\begin{equation}
+    \nabla^{2}\phi + \lambda\phi = 0
+\end{equation}
+
+C'est un problème aux valeurs propres, et \(\nabla^{2}\) est un opérateur auto-adjoint (uniquement avec des conditions aux limites).
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : pour une valeur propre, on peut avoir plusieurs fonctions propres orthogonales entre elles, i.e. plusieurs fonctions pour une seule valeur de \(\lambda\). C'est équivalent à dire qu'il peut y avoir plusieurs vecteurs propres pour une seule valeur propre en algèbre. 
+\end{itemize}
+
+\subsection{Équation d'onde dans un rectangle}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Onde rectangle.png}
+\end{figure}
+Résolvons le problème de Helmholtz dans un domaine rectangulaire fini par séparation de variables.\\
+\begin{equation}
+    \phi\left( x,y \right) = X\left( x \right)Y\left( y \right)
+\end{equation}
+L'équation du problème de Helmholtz se réécrit donc \(X''Y + Y''X + k^{2}XY = 0 \Longrightarrow \frac{X''}{X} + \frac{Y''}{Y} + k^{2} = 0 \rightarrow \frac{X''}{X} = - k^{2} - \frac{Y''}{Y} = \lambda\).
+
+Or, par les CL homogènes en \(x\), on a \(\lambda = - l^{2}\) pour \(\frac{X''}{X} = \lambda\), si on veut des solutions non triviales \(\Longrightarrow X\left( x \right) = C\cos\left( lx \right) + D\sin\left( lx \right)\). Par les CL \(X\left( 0 \right) = X\left( L \right) = 0\), \(l_{n} = \frac{n \pi}{L} \Longrightarrow X_{n}\left( x \right) = D_{n}\sin\left( \frac{n \pi}{l}x \right)\). \\
+
+Or, par les CL homogènes en \(y\), on a \(\lambda = \ l^{2}\) pour \(\frac{Y''}{Y} = \lambda - k^{2}\), si on veut des solutions non triviales. On pose \(\lambda - k^{2} = l^{2} - k^{2} = \gamma = - p^{2}\). \(\Longrightarrow Y'' + pY = 0 \rightarrow Y_{m}\left( y \right) = F_{m}\sin\left( \frac{m \pi}{H}y \right),\ p_{m} = \frac{m \pi}{H}\), par raisonnement similaire à \(x\). \(k_{mn}^{2} = p_{m}^{2} + l_{n}^{2} = \left( \frac{m \pi}{H} \right)^{2} + \left( \frac{n \pi}{L} \right)^{2}\).\\
+
+On trouve donc \(\phi_{mn}\left( x,y \right) = D_{n}F_{m}\sin\left( \frac{m \pi}{H}y \right)\sin\left( \frac{n \pi}{L}x \right) = G_{mn}\sin\left( \frac{m \pi}{H}y \right)\sin\left(\frac{n \pi}{L}x \right)\).
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : \(\int_{0}^{L}{\int_{0}^{H}{\phi_{mn}\left( x,y \right)\phi_{m'n'}'\left( x,y \right)dy}dx} = 0\). Les \(\phi_{mn},\phi_{m'n'}'\) sont orthogonaux.
+\end{itemize}
+
+Retournons au problème d'onde initial : 
+
+\begin{equation}
+    u\left( x,y,t \right) = \sum_{n = 1}^{\infty}{\sum_{m = 1}^{\infty}{G_{mn}\sin\left( \frac{n \pi}{L}x \right)\sin\left( \frac{m \pi}{H}y \right)\left( A_{mn}\cos\left( k_{mn}ct \right) + B_{mn}\sin\left( k_{mn}ct \right) \right)}}
+\end{equation}
+
+On pose \(G_{mn} = 1\)\footnote{Cela est possible car ils sont multipliés par \(A_{mn}\) ou \(B_{mn}\) dans chaque terme.}. Les conditions initiales vont finalement nous donner les valeurs des paramètres restant :
+\begin{equation}
+    u\left( x,y,0 \right) = f\left( x,y \right) \\
+    \frac{\partial u}{\partial t}\left( x,y,0 \right) = g\left( x,y \right) \\
+\end{equation}
+Il faut ensuite reprojeter les CI dans la base des \(\phi_{mn}\), comme nous l'avons fait précédemment. \\
+On obtient alors
+
+\begin{equation}
+    \begin{cases}
+        A_{mn} = \frac{4}{LH}\int_{0}^{L}{\int_{0}^{H}{f\left( x,y \right)\phi_{mn}\left( x,y \right)dy}dx} \\
+        B_{mn} = \frac{1}{k_{mn}c}\frac{4}{LH}\int_{0}^{L}{\int_{0}^{H}{g\left( x,y \right)\phi_{mn}\left( x,y \right)dy}dx}\\
+    \end{cases}
+\end{equation}
+
+Le \(4/LH\) vient du fait que \(\int_{0}^{L}{\int_{0}^{H}{\left( \phi_{mn}\left( x,y \right) \right)^{2}dy}dx} = LH/4\). 
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : les \(\phi_{mn}\) et les \(\phi_{nm}\) ont la même vap \(\lambda\), elles oscillent donc à la même fréquence. 
+\end{itemize}
+
+\subsection{Équation d'onde en coordonnées polaires}
+
+\begin{equation}
+    c^{2}\nabla^{2}u = \frac{\partial^{2}u}{\partial t^{2}} \Longleftrightarrow c^{2}\left( \frac{1}{r}\frac{\partial}{\partial r}\ \left( r\frac{\partial u}{\partial r} \right) + \frac{1}{r^{2}}\frac{\partial^{2}u}{\partial\theta^{2}} \right) = \frac{\partial^{2}u}{\partial t^{2}}
+\end{equation}
+
+Les conditions initiales sont \(\left\{ \begin{matrix} u\left( r,\theta,0 \right) = f\left( r,\theta \right) \\ \frac{\partial u}{\partial t}\left( r,\theta,0 \right) = g\left( r,\theta \right) \\
+\end{matrix} \right.\ \)
+
+Par séparation de variables, \(v = \phi\left( r,\theta \right)T\left( t \right),\ \phi\left( r,\theta \right) = R\left( r \right)\Theta\left( \theta \right)\). 
+
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width=\textwidth]{img/Onde polaire.png}
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    L'équation en \(t\) est \(T'' + k^{2}c^{2}T = 0\), comme pour le rectangle. La solution est \(T\left( t \right) = A\cos\left( kct \right) + B\sin\left( kct \right)\).\\
+    En \(\phi\), on a \(\nabla^{2}\phi + k\phi = 0 \Longleftrightarrow \frac{1}{r}\frac{\partial}{\partial r}\ \left( r\frac{\partial\phi}{\partial r} \right) + \frac{1}{r^{2}}\frac{\partial^{2}\phi}{\partial\theta^{2}} + k^{2}\phi = 0\). \\
+    La CL est \(\phi\left( a,\theta \right) = 0\). Par une seconde méthode de séparation de variables, on a
+    \(\phi\left( r,\theta \right) = R\left( r \right)\Theta\left( \theta \right) \Longrightarrow r\left( rR' \right)'\Theta + R\Theta'' + k^{2}r^{2}R \Theta = 0 \Longrightarrow \frac{r^{2}R''}{R} + k^{2}r^{2} = - \frac{\Theta''}{\Theta} = \lambda\).
+\end{minipage}
+
+\begin{minipage}{.7 \textwidth}
+    \begin{itemize}
+        \item \underline{Cas \(\lambda = m^{2}\) :}
+    \end{itemize}
+    \begin{equation}
+        \Theta_{m}'' + m^{2}\Theta = 0 \Longrightarrow \Theta_{m}\left( \theta \right) = C_{m}\cos\left( m \theta \right) + D_{m}\sin\left( m \theta \right)
+    \end{equation}
+    
+    \begin{itemize}
+        \item [$\rightarrow$] Remarque : le problème est périodique en \(\theta\) sur \(\lbrack 0,2\pi\lbrack\).
+        \item [$\rightarrow$] Remarque : si le domaine est un secteur avec des conditions homogènes en \(\theta\), \(\Theta_{m}\left( \theta \right) = D_{m}\sin\left( \frac{m \pi}{\beta}\theta \right)\).
+    \end{itemize}    
+\end{minipage}
+\begin{minipage}{.3 \textwidth}
+    \includegraphics[width=\textwidth]{img/Onde polaire secteur.png}
+\end{minipage}
+
+\begin{equation}
+    rR_{m}'' + R_{m}' + \left( k^{2}r - m^{2}/r \right)R_{m} = 0
+\end{equation}
+
+Il s'agit d'un problème de Sturm-Liouville : \(\left( rR_{m}' \right)' - \frac{m^{2}}{r}R_{m} + k^{2}rR_{m} = 0\). \\
+Posons le changement de variables : \(z = kr\) et \(R_{m}\left( r \right) = f_{m}\left( z \right) \rightarrow z^{2}f_{m}'' + zf_{m}' + \left( z^{2} - m^{2} \right)f_{m} = 0\). C'est une EDO de Bessel d'ordre \(m\). Les solutions sont \(Y_{m}\left( z \right)\) et \(J_{m}\left( z \right)\).
+
+\begin{itemize}
+    \item \underline{Cas \(\lambda = 0\) :}
+\end{itemize}
+
+\begin{equation}
+    \Theta_{0}'' = 0 \Longrightarrow \Theta_{0} = D_{0}
+\end{equation}
+\begin{equation}
+    r\left( rR_{0}' \right)' + k^{2}r^{2}R_{0} = 0
+\end{equation}
+
+Posons le même changement de variable que pour \(\lambda = m^{2}\). On obtient \(z^{2}f_{0}'' + zf_{0}' + z^{2}f_{0} = 0\), l'EDO de Bessel d'ordre \(0\). Les solutions sont \(Y_{0}\left( z \right)\) et \(J_{0}\left( z \right)\). \\
+
+Revenons au problème initial : puisque \(0 \leq r \leq a\), les \(Y_{m}\) et \(Y_{0}\) ne font pas partie de la solution.
+\begin{equation}
+    \phi_{m}\left( r,\theta \right) = J_{m}\left( kr \right)\left( C_{m}\cos\left( m \theta \right) + D_{m}\sin\left( m \theta \right) \right)
+\end{equation}
+\begin{equation}
+    \phi_{0}\left( r,\theta \right) = J_{0}\left( kr \right)D_{0} = \phi_{0}\left( r \right)
+\end{equation}
+
+Il faut maintenant imposer les CL en \(r\) : \(\phi_{0}\left( a,\theta \right) = 0 \Longleftrightarrow J_{m}\left( ka \right) = 0\), avec \(k_{mn}a = z_{mn}\), et \(z_{mn}\) la
+\(n\)ième racine de \(J_{m}\). \\
+La deuxième CL est \(\phi_{0}\left( a \right) = 0 \Longleftrightarrow J_{0}\left( ka \right) = 0\),
+avec \(k_{0n}a = z_{0n}\), et \(z_{0n}\) la \(n\)ième racine de \(J_{0}\).
+
+La solution générale est \(u\left( r,\theta,t \right) = u_{0}\left( r,t \right) + \sum_{m = 1}^{\infty}{u_{m}\left( r,\theta,t \right)}\), avec
+
+\begin{equation}
+    \begin{cases}
+        u_{0}\left( r,t \right) = \sum_{n = 1}^{\infty}{J_{0}\left( k_{0n}r \right)({\widetilde{A}}_{0n}\cos\left( k_{0n}ct \right) + {\widetilde{B}}_{0n}\sin \left( k_{0n}ct \right)} \\
+        u_{m}\left( r,\theta,\ t \right) = \sum_{n = 1}^{\infty}{J_{m}\left( k_{mn}r \right)({\widetilde{C}}_{mn}\cos\left( m \theta \right) + {\widetilde{D}}_{mn}\left( m \theta \right)({\widetilde{A}}_{0n}\cos\left( k_{0n}ct \right) + {\widetilde{B}}_{0n}\left( k_{0n}ct \right)}\\
+    \end{cases}
+\end{equation}
+
+
+Pour le cas simple \(u\left( r,\theta,0 \right) = f\left( r \right)\) et \(\frac{\partial u}{\partial t}\left( r,\theta,0 \right) = 0\), on trouve les coefficients facilement.
+
+\subsection{Fonctions de Bessel}
+
+\subsubsection{Fonctions de Bessel du premier type}
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width=\textwidth]{img/Bessel 1.png}
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    Les fonctions de Bessel du premier type \(J_{m}\) ont un comportement régulier à l'origine et oscillant partout. Elles possèdent des racines.\\
+
+    A retenir : \(J_0(0) = 1\)
+\end{minipage}\\
+\subsubsection{Fonctions de Bessel du second type}
+\begin{minipage}{.6\textwidth}
+    Les fonctions de Bessel du second type \(Y_{m}\) ont un comportement singulier à l'origine : \(Y_{0}\left( x \right)\sim\log{(x/2)}\) et \(Y_{m}\sim x^{- m}\). Pour \(x \gg 0\), elles ont un comportement oscillant et ont des racines.
+    \begin{itemize}
+        \item [$\rightarrow$] Remarque : si l'origine fait partie du domaine, on peut les exclure des solutions.
+    \end{itemize}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width=2.36806in,height=1.79861in]{img/Bessel 2.png}
+\end{minipage}
+
+Un problème est axisymétrique lorsqu'il ne dépend pas de \(\theta\). Dans ce cas, on peut s'intéresser au mode 0.
+
+La fréquence propre d'une membrane est \(w_{mn} = k_{mn}c\)
+
+
+\section{Équation de diffusion (chaleur)}
+
+La densité de flux de chaleur \(q\) se définit comme \(q = - k\nabla T = \left\lbrack W/m^{2} \right\rbrack\) (Loi de Fourier), avec \(k = \left\lbrack W/mK \right\rbrack\) la conductivité thermique et \(T\) la température. 
+
+L'équation \(\rho c\frac{\partial T}{\partial t} = - \nabla q\) est donnée. \(\rho\) est la masse volumique et \(c = \left\lbrack J/kgK \right\rbrack\) la chaleur massique/spécifique. Par ces deux équations, nous avons
+
+\begin{equation}
+    \rho c\frac{\partial T}{\partial t} = \nabla \cdot \left( k\nabla T \right)
+\end{equation}
+Avec \(\rho,c\) des fonctions de \(T\) et \(k\) fonction de \(T,x\).\\
+Si les propriétés physiques sont constantes (sinon pas de solution analytique),\\
+
+\begin{equation}
+    \frac{\partial T}{\partial t} = \frac{k}{\rho c}\ \nabla^{2}T
+\end{equation}
+
+On définit la diffusivité \(\alpha \triangleq k/\rho c = \left\lbrack m^{2}/s \right\rbrack\).
+
+Si on ajoute un terme source, l'équation est 
+
+\begin{equation}
+    \rho c\frac{\partial T}{\partial t} = k\nabla^{2}T + Q\left( x,y \right) \Longleftrightarrow \frac{\partial T}{\partial t} = \alpha\nabla^{2}T + S\left( x,y \right)
+\end{equation}
+
+\subsection{Cas 1D}
+
+\begin{equation}
+    \frac{\partial T}{\partial t} = \alpha\frac{\partial^{2}T}{\partial x^{2}} + S\left( x \right)
+\end{equation}
+
+Sur un domaine rectangulaire, il faut une CI \(T\left( x,0 \right)\) et des CL sur chaque bord :
+
+\begin{equation}
+    \begin{cases}
+        T = T_{0} \\
+        q = - k\frac{\partial T}{\partial x} = q_{0} \\
+        q = h\left( T - T_{\infty} \right) \Longleftrightarrow l\frac{\partial T}{\partial x} + \left( T - T_{\infty} \right) = 0 \\
+    \end{cases}
+\end{equation}
+
+\(h\) est le coefficient de transfert, et \(T_{\infty}\) la température extérieure créant un flux de chaleur. \\
+On peut définir la fonction \(u \triangleq T - T_{\infty}\) pour que la condition de Robin devienne homogène : \(l\frac{\partial u}{\partial x} + u = 0\).
+
+\begin{itemize}
+\item [$\rightarrow$] Remarque : un problème multivarié peut être simplifié par un problème à moins de variables s'il est uniforme dans certaines directions. E.g. le flux de chaleur à travers un mur ne dépend que de la direction normale au mur, la température dans un barreau isolé sur les côtés ne dépend que de la position dans la longueur du barreau,\ldots{}
+\end{itemize}
+
+\subsection{Équation de diffusion 1D dans un domaine borné}
+
+\begin{equation}
+    \frac{\partial u}{\partial t} = \alpha\frac{\partial^{2}u}{\partial t^{2}} + S\left( x \right),\ 0 \leq x \leq L
+\end{equation}
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : \(u\) est la généralisation de la fonction de température.
+\end{itemize}
+CI : \(u\left( x,0 \right) = f\left( x \right)\) \\
+Pour \(t > 0\), on a des CL de Dirichlet, Neumann ou Robin, constantes dans le temps.\\
+La solution peut s'écrire sous la forme d'une somme :
+\begin{equation}
+    u\left( x,t \right) = u_{SR}\left( x,t \right) + u_{ST}\left( x,t \right)
+\end{equation}
+
+\(u_{SR}\left( x \right)\) est la solution de régime : solution de l'équation \(0 = \alpha\frac{d^{2}u_{SR}}{dx^{2}} + S\left( x \right)\). Si \(S\left( x \right) = 0\), \(u_{SR}\left( x \right)\) est une droite.
+
+\(u_{ST}\left( x,t \right)\) est la solution transitoire : solution de l'équation \(\frac{\partial u_{ST}}{\partial t} = \alpha\frac{\partial^{2}u_{ST}}{\partial x^{2}}\).
+
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(\lim_{t \rightarrow \infty}u_{ST} = 0\).
+\end{itemize}
+\subsubsection{Méthode de séparation de variable pour la solution \(u_{ST}\)}
+\begin{equation}
+    u\left( x,t \right) = X\left( x \right)T\left( t \right)
+\end{equation}
+\begin{equation}
+    XT' = \alpha X"T \Longrightarrow 1/\alpha\ T'/T\  = X''/X = \lambda
+\end{equation}
+- Cas \(\lambda = 0\) : \(T' = 0 \rightarrow T = cste \Rightarrow\) Solution de régime.
+
+\begin{equation}
+    X'' = 0 \rightarrow X\left( x \right) = A_{0} + B_{0}x = u_{SR}\left( x \right)
+\end{equation}
+- Cas \(\lambda = - k^{2}\) : 
+
+\begin{equation}
+    X'' + k^{2}X = 0 \rightarrow X\left( x \right) = A\cos\left( kx \right) + B\sin\left( kx \right)
+\end{equation}
+Il faut déterminer les \(k_{n}\) par les CL homogènes : \(X_{n}\left( x \right) = A_{n}\cos\left( k_{n}x \right) + B_{n}\sin\left( k_{n}x \right)\) 
+
+\begin{equation}
+    \frac{1}{\alpha}\frac{T_{n}'}{T_{n}} = - k_{n}^{2} \rightarrow T_{n}\left( t \right) \propto e^{- \alpha k_{n}^{2}t}
+\end{equation}
+
+\begin{equation}
+    \Longrightarrow u_{ST}\left( x,t \right) = \sum_{n = 1}^{\infty}{X_{n}\left( x \right)T_{n}\left( t \right)} = \sum_{n = 1}^{\infty}{\left( A_{n}\cos\left( k_{n}x \right) + B_{n}\sin\left( k_{n}x \right) \right)e^{- \alpha k_{n}^{2}t}}
+\end{equation}
+Exemple pour une CI \(u\left( x,0 \right) = f\left( x \right)\) et des CL homogènes en \(x\) de Dirichlet :
+
+\begin{equation}
+    u_{SR}\left( x \right) = u_{0}\left( 1 - \frac{x}{L} \right)\text{\ si\ S}\left( x \right) = 0
+\end{equation}
+Exemple pour une CI \(u\left( x,0 \right) = f\left( x \right)\) et des CL homogènes en \(x\) de Neumann :\\
+
+Il n'y a pas de flux entrant, ni sortant, on a donc un système isolé. \\
+
+Si \(S\left( x \right) = 0\),
+\begin{equation}
+    u_{SR}\left( x \right) = A_{0}
+\end{equation}
+\(u_{ST}\left( x,t \right)\) avec des CL homogènes : 
+
+\begin{equation}
+    \left\{ \begin{matrix}
+    X'\left( 0 \right) = 0 \rightarrow B = 0 \\
+    X'\left( L \right) = 0 \rightarrow - Ak\sin\left( kL \right) = 0 \\
+    \end{matrix} \right.\  \Longrightarrow k_{n} = \frac{n \pi}{L},\ n \in \mathbb{N}^{*}
+\end{equation}
+
+\begin{equation}
+    u_{ST}\left( x,t \right) = \sum_{n = 1}^{\infty}{A_{n}\cos\left( k_{n}x \right)e^{\alpha k_{n}^{2}t}}
+\end{equation}
+
+\begin{equation}
+    \Longrightarrow u\left( x,t \right) = A_{0} + \sum_{n = 1}^{\infty}{A_{n}\cos\left( k_{n}x \right)e^{\alpha k_{n}^{2}t}}
+\end{equation}
+
+Si \(u\left( x,0 \right) = f\left( x \right)\), \(\left\{ \begin{matrix}
+A_{0} = \frac{1}{L}\int_{0}^{L}{f\left( x \right)dx} \\
+A_{n} = \frac{2}{L}\int_{0}^{L}{f\left( x \right)\cos\left( k_{n}x \right)dx} \\
+\end{matrix} \right.\ \) par projection.
+
+\subsection{Équation de la diffusion 2D dans un rectangle, sans terme source}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Diffusion rectangle.png}
+\end{figure}
+\begin{equation}
+    \frac{\partial u}{\partial t} = \alpha\nabla^{2}u = \alpha\left( \frac{\partial^{2}u}{\partial x^{2}} + \frac{\partial^{2}u}{\partial y^{2}} \right)
+\end{equation}
+La CI est \(u\left( x,y,0 \right) = f\left( x,y \right)\).\\
+Par séparation de variables, \(u\left( x,y,t \right) = X\left( x \right)Y\left( y \right)T\left( t \right)\).
+\begin{equation}
+    XYT' = \alpha\left( X''YT + XY''T \right) \Longrightarrow \frac{T'}{\alpha T} = \frac{X''}{X} + \frac{Y''}{Y} = \lambda
+\end{equation}
+De nouveau, \(u\left( x,y,t \right) = u_{SR}\left( x,y,t \right) + u_{ST}\left( x,y,t \right)\).\\
+
+\subsubsection{Cas \(\lambda = 0\) (= solution de régime)}
+\begin{equation}
+    \nabla^{2}u_{SR} = S\left( x \right)
+\end{equation}
+Il s'agit de l'équation de Laplace si \(S\left( x \right) = 0\), et de l'équation de Poisson sinon.
+
+La résolution a été faite précédemment :
+\begin{equation}
+    u_{SR}\left( x,y \right) = 4u_{0}\sum_{\begin{matrix}
+    n = 1 \\
+    \text{impair} \\
+    \end{matrix}}^{\infty}{\frac{1}{n \pi}\sin\left( \frac{n \pi x}{L} \right)\frac{\sinh\left( \frac{n \pi y}{L} \right)}{\sinh\left( \frac{n \pi y}{H} \right)}}
+\end{equation}
+\subsubsection{Cas \(\lambda = - k^{2}\) (= solution transitoire)}
+\begin{equation}
+    \frac{X''}{X} + \frac{Y''}{Y} = - k^{2}
+\end{equation}
+Avec \(\left\{ \begin{matrix}
+\frac{X''}{X} = - p^{2} \\
+\frac{Y''}{Y} = - q^{2} \\
+\end{matrix} \right.\ ,\ k^{2} = p^{2} + q^{2}\)
+
+\begin{equation}
+    X'' + p^{2}X = 0 \rightarrow X\left( x \right) = A\cos\left( px \right) + B\sin\left( px \right)
+\end{equation}
+
+Par les CL homogènes en \(x\), \(A = 0,\ p_{n} = \frac{n \pi}{L},\ n \in \mathbb{N}^{*}\).
+
+\begin{equation}
+    \Longrightarrow X_{n}\left( x \right) = B_{n}\sin\left( p_{n}x \right)
+\end{equation}
+
+\begin{equation}
+    Y'' + q^{2}Y = 0 \rightarrow Y\left( y \right) = C\cos\left( qx \right) + D\sin\left( qx \right)
+\end{equation}
+
+Par les CL homogènes en \(y\), \(A = 0,\ q_{m} = \frac{m \pi}{H},\ m \in \mathbb{N}^{*}\).
+
+\begin{equation}
+    \Longrightarrow Y_{m}\left( y \right) = D_{m}\sin\left( q_{m}y \right)
+\end{equation}
+
+\begin{equation}
+    u_{ST}\left( x,y,t \right) = \sum_{n = 1}^{\infty}{\sum_{m = 1}^{\infty}{A_{mn}\sin\left( p_{n}x \right)\sin\left( q_{m}y \right)e^{-\alpha k_{mn}^{2}t}}},\ k_{mn}^{2} = p_{n}^{2} + q_{m}^{2}
+\end{equation}
+Finalement,
+\begin{equation}
+    u\left( x,y,t \right) = u_{SR}\left( x,y \right) + \sum_{m,n}^{}{A_{nm}\sin\left( p_{n}x \right)\sin\left( q_{m}y \right)e^{-\alpha k_{mn}^{2}t}}
+\end{equation}
+Par la CI, 
+\begin{equation}
+    u\left( x,y,0 \right) = f\left( x,y \right) \Longrightarrow \sum_{m,n}^{}{A_{nm}\sin\left( p_{n}x \right)\sin\left( q_{m}y \right)} = f\left( x,y \right) - u_{SR}\left( x,y \right)
+\end{equation}
+Cela permet de déterminer les \(A_{nm}\) par projection. 
+
+\subsection{Solution en domaine semi-infini, sans terme source}
+\[0 \leq x < \infty\]
+
+\begin{itemize}
+    \item CI : \(T\left( x,0 \right) = T_{1}\)
+    \item CL : \(T\left( 0,t \right) = T_{0},\ \forall t > 0\)
+\end{itemize}
+
+On définit \(u\left( x,t \right) = T\left( x,t \right) - T_{1}\) :
+
+\begin{itemize}
+    \item CI : \(u\left( x,0 \right) = 0\)
+    \item CL : \(u\left( 0,t \right) = T_{0} - T_{1} = u_{0}\forall t > 0\)
+\end{itemize}
+
+On doit résoudre \(\frac{\partial u}{\partial t} = \alpha\frac{\partial^{2}u}{\partial x^{2}}\), mais il n'y a pas de longueur \(L\). \\
+On va poser \(\eta = x/\sqrt{\alpha t}\) adimensionnel. En remplaçant dans l'EDP initial, on obtient une EDO : 
+
+\begin{equation}
+    f''\left( \eta \right) + \frac{1}{2}\eta f'\left( \eta \right) = 0
+\end{equation}
+On trouve \(w\left( \eta \right) = f'\left( \eta \right) = w\left( 0 \right)e^{\frac{- \eta^{2}}{4}} \rightarrow f\left( \eta \right) = f'\left( 0 \right)\ \int_{0}^{\eta}{e^{- s^{2}/4}ds} + f\left( 0 \right)\)\\
+Par la CL, \(f\left( 0 \right) = u_{0}\) : \(f\left( \eta \right) = f'\left( 0 \right)\ \int_{0}^{\eta}{e^{- s^{2}/4}ds} + u_{0}\). \\
+Puisque \(\lim_{\eta \rightarrow \infty}{f\left( \eta \right)} = 0\), \(w\left( 0 \right)\int_{0}^{\infty}{e^{- s^{2}/4}ds} + u_{0} = 0\). \\
+L'intégrale vaut \(\sqrt{\pi}\). On trouve donc \(w\left( 0 \right) = - \frac{1}{\sqrt{\pi}}u_{0}\).\\
+Si on modifie l'intégrale de \(f\left( \eta \right)\), on trouve finalement
+
+\begin{equation}
+    f\left( \eta \right) = u_{0}\left( 1 - \frac{2}{\sqrt{\pi}}\int_{0}^{\frac{\eta}{2}}{e^{- \nu^{2}}d \nu} \right)
+\end{equation}
+
+La fonction erreur est la fonction \(\text{erf}\left( x \right) \triangleq \frac{2}{\sqrt{\pi}}\int_{0}^{\frac{x}{2}}{e^{- \nu^{2}}d \nu}\). \\
+On peut également définir la fonction erreur complémentaire : 
+\(\text{erfc}\left( x \right) \triangleq 1 - \text{erf}\left( x \right)\), qui tend vers 0 quand \(x \rightarrow \infty\).
+
+On a finalement 
+
+\begin{equation}
+    \color{red}\boxed{\color{black}u\left( x,t \right) = u_{0}\text{erfc}\left( \frac{x}{2\sqrt{\alpha t}} \right)}\color{black}
+\end{equation}
+
+\chapter{Analyse complexe}
+\section{A savoir faire à la fin}
+\begin{itemize}
+    \item définir une fonction complexe;
+    \item dans la définition des limites et dérivées, quelle est la différence entre une fonction réelle et complexe?
+    \item définir une série potentielle;
+    \item expliquer avec des mots le concept de borne géométrique;
+    \item définir une fonction analytique;
+    \item expliquer le principe des zéros isolés;
+    \item définir une homotopie;
+    \item donner le logarithme complexe;
+    \item définir une fonction multiforme;
+    \item donner la forme générale d'une puissance de complexe;
+    \item donner la forme générale des séries de Laurent;
+    \item expliquer l'intérêt des indices et résidus;
+    \item définir de manière informelle une singularité et donner les trois types.
+\end{itemize}
+\section{Définitions et premiers concepts}
+
+\subsection{Définitions}
+Évidemment, \(i^{2} = - 1\). Mais pourquoi ?\\
+Partons de \(\mathbb{R}^{2}\) : \(\left( x,y \right)\), et définissons deux opérations :
+\begin{itemize}
+    \item Addition : \(\left( x,y \right) + \left( u,v \right) = \left( x + u,y + v \right)\) (// addition de vecteurs).
+    \item Multiplication : \(\left( x,y \right)*\left( u,v \right) = (xu - yv,\ xv + yu)\) 
+\end{itemize}
+On peut vérifier qu'elles respectent :
+\begin{itemize}
+    \item Associativité, Commutativité, Distributivité
+    \item \(\left( 0,0 \right)\) est le neutre pour l'addition 
+    \item \(\left( 1,0 \right)\) est le neutre pour la multiplication
+    \item \(\forall\ \left( x,y \right) \neq 0,\ \exists\left( u,v \right)\text{tq}\ \left( u,v \right)*\left( x,y \right) = \left( 1,0 \right)\) 
+\end{itemize}
+
+Les nombres \(x,y\) sont des réels :
+\(\left( x,y \right) = x\left( 1,0 \right) + y\left( 0,1 \right)\). Si le premier doublet est équivalent au nombre \(1\), on peut dire que le second est équivalent au nombre \(i\), et on peut vérifier que \(i^{2} = - 1\).
+
+! Il n'y a pas d'ordre sur les complexes. Plus précisément, toute notion d'ordre qu'on peut définir ne bénéficierait pas des propriétés habituelles.
+
+\subsection{Modules et conjugués}
+La représentation cartésienne d'un nombre complexe est \(z = x + iy\). Son conjugué est défini comme \(\overline{z} \coloneqq x - iy\), et son module \(\left| z \right|^{2} = z*\overline{z} = x^{2} + y^{2}\).\\
+\underline{Propriétés du module :}
+
+\begin{itemize}
+    \item Si \(\left| z \right| = 0,\ z = 0\).
+    \item \(\left| z + w \right| \leq \left| z \right| + \left| w \right|\)
+    \item \(\left| \alpha z \right| = \alpha\left| z \right|\), si \(\alpha \geq 0\)
+    \item \(\left| zw \right| = \left| z \right||w|\)
+\end{itemize}
+La représentation polaire d'un nombre complexe est \(z = \left| z \right|\left( \cos\theta + i\sin\theta \right)\), avec 
+\(\left\{ \begin{matrix}
+\cos\theta = x/|z| \\
+\sin\theta = y/|z| \\
+\end{matrix} \right.\ \)
+
+\subsection{Fonctions complexes}
+
+Comment représenter \(f\left( z \right)\)?\\
+Une fonction \(\mathbb{C \rightarrow C}\) est un objet quadridimensionnel dans notre monde réel.
+
+\begin{itemize}
+    \item On peut faire une fonction pour la partie réelle et une autre pour la partie imaginaire, ou les courbes de niveau de ces deux fonctions. 
+    \item On peut représenter la façon dont la fonction transforme une forme (grille,\ldots) en une autre : On observe que les angles droits de la grille restent des angles droits, pour les fonctions naturellement complexes (la variable est le nombre complexe).
+\end{itemize}
+
+\subsection{Limites et dérivées}
+\underline{Limites :}\\
+Grâce au module, on peut définir une notion de limite : 
+\(\lim_{z \rightarrow z_{0}}{f\left( z \right)} = w\ \) si \(\forall\epsilon > 0,\ \exists\delta\) tel que \(\forall z \in Domf,\ \left| z - z_{0} \right| < \delta,\ z \neq z_{0}\), on a \(\left| f\left( z \right) - w \right| \leq \epsilon\)\\
+! Dans les complexes, on a des limites dans toutes les directions : on a un cercle de rayon \(\delta\) autour du point \(z_{0}\). Cela fonctionne donc comme une fonction bivariée.\\
+Si \(z_{0} \in Domf\) ouvert, si \(\lim_{z \rightarrow z_{0}}{f\left( z \right)}\exists\), alors
+\(\lim_{\begin{matrix} 
+\delta > 0 \\
+\delta \rightarrow 0 \\
+\end{matrix}}{f\left( z_{0} + \delta w \right)} = \lim_{z \rightarrow z_{0}}{f\left( z \right)}\forall w\mathbb{\in C}\).
+
+Cette propriété permet de calculer la limite plus simplement si on sait qu'elle existe, d'identifier une valeur potentielle afin de prouver l'existence de la limite, ou de prouver que la limite n'existe pas si
+les résultats sont différents pour des \(w\) différents.
+
+\underline{Dérivées :}
+
+Si la dérivée de la fonction \(f\left( z \right)\) existe, elle est
+définie par 
+
+\begin{equation}
+    \color{red}\boxed{\color{black}f'\left( z \right) = \lim_{\delta \rightarrow 0}\frac{f\left( z + \delta \right) - f\left( z \right)}{\delta}} \color{black} = \lim_{w \rightarrow z}\frac{f\left( w \right) - f\left( z \right)}{w - z} 
+\end{equation}
+
+\begin{itemize}
+    \item Théorème : les règles de composition, produit, division, réciproque,\ldots{} s'appliquent.
+    \item [$\rightarrow$] Remarque : la fonction conjuguée n'est pas dérivable.
+\end{itemize}
+\underline{Conditions de dérivabilité :}
+
+Séparation entre les parties réelle et imaginaire :
+\begin{equation}
+    f\left( z \right) = f\left( x + iy \right) = \text{Re}\left( f\left( x + iy \right) \right) + i\ \text{Im}\left( f\left( x + iy \right) \right) = u\left( x,y \right) + i\ v\left( x,y \right)
+\end{equation}
+Calculons \(\lim\frac{f\left( z \right)\delta - f\left( z \right)}{\delta}\) et utilisons la propriété des limites : \\
+
+Si \(f'\left( z \right)\ \exists\), alors \(f'\left( z \right) = \lim_{\delta \rightarrow 0\ }\frac{f\left( z + \delta \right) - f\left( z \right)}{\delta} = \lim_{\delta \rightarrow 0}\frac{f\left( z + \delta i \right) - f\left( z \right)}{\delta i}\), avec \(\delta\mathbb{\in R}\). \\
+Condition nécessaire d'existence de \(f'\left( z \right)\) : les deux limites existent et sont égales\footnote{Voir syllabus p14 pour la preuve.}. \\
+Cela nous donne les conditions de Cauchy-Riemann (C-R) :
+
+\begin{equation}
+    \color{red}\boxed{\color{black}\left\{ \begin{matrix}
+    \frac{\partial u}{\partial x}\left( x,y \right) = \frac{\partial v}{\partial y}\left( x,y \right) \\
+    \frac{\partial v}{\partial x}\left( x,y \right) = - \frac{\partial u}{\partial y}\left( x,y \right) \\
+    \end{matrix} \right.\ } \color{black}
+\end{equation}
+
+Conséquence, si \(f:A\left( \text{ouvert} \right)\mathbb{\rightarrow C}\) est dérivable, alors elle satisfait Cauchy-Riemann, et si \(u,v\) ont des dérivées partielles continues, et \(f\) satisfait C-R, alors \(f\) est dérivable. \\
+Si \(f\) est dérivable, on a 
+\begin{equation}
+    \frac{\partial^{2}u}{\partial x^{2}} + \frac{\partial^{2}u}{\partial y^{2}} = \frac{\partial}{\partial x}\ \left( \frac{\partial u}{\partial x} \right) + \frac{\partial}{\partial y}\ \left( \frac{\partial u}{\partial y} \right) = \frac{\partial^{2}v}{\partial x\partial y} - \frac{\partial^{2}v}{\partial x\partial y} = 0
+\end{equation}
+
+On en déduit que les parties réelle et imaginaire de \(f\) sont deux solutions de l'équation de Laplace (voir section \ref{sec:laplace}).
+
+\section{Séries potentielles}
+
+Une série potentielle est définie comme : \(\sum_{n \geq 0}^{}{a_{n}\left( z - b \right)^{n}}\).\\
+L'hypothèse de borne géométrique (HG) signifie qu'il existe des réels \(t\in ]0,1[\), \(C>0\) et \(\rho >0\) tels que, pour tout \(n\in \mathbb{N}\), \(|a_n|\rho^n \le Ct^n\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : si \(n = 0\), on utilise la convention \(z^{0} = 1\ \forall z\), même si \(z = 0\).
+\end{itemize}
+Faisons l'hypothèse que la série a une borne géométrique \(\rho\). Alors \(\exists\ 0 \leq t < 1,\exists\ C > 0\) tel que \(\left| a_{n} \right|\rho^{n} \leq Ct^{n}\ \ \forall n\). Soit la boule \(B\left( 0,\rho \right)\), \(z \in B\).\\
+Si \(f\) satisfait la borne géométrique, pour \(\rho > 0\), alors \(\sum_{n \geq 0}^{}{\left| a_{n}z^{n} \right| < \infty}\). On a une convergence absolue, et donc simple. \\
+
+Soit \(S\left( z \right) = \lim_{N \rightarrow \infty}{\sum_{n = 0}^{N}{a_{n}\left( z - b \right)^{n}}}\)
+exacte et bien définie. \\
+\(\sum_{n \geq 0}^{}\left| a_{n}z^{n} \right| \rightarrow S\left( z \right)\)
+de façon uniforme sur \(B\left( 0,\rho \right)\).\\
+
+Preuve : 
+\begin{align}
+    \left| S\left( z \right) - \ \sum_{n = 0}^{N}{a_{n}\left( z - b \right)^{n}} \right| &= \left| \sum_{n = N + 1}^{\infty}{a_{n}z^{n}} \right| &\leq \sum_{n = N + 1}^{\infty}{\left| a_{n} \right|\left| z^{n} \right|} &\leq \sum_{n = N + 1}^{\infty}{\left| a_{n} \right|\rho^{n}} &\leq \sum_{n = N + 1}^{}{Ct^{n}} &\leq C\frac{t^{n + 1}}{1 - t} \rightarrow 0
+\end{align}, indépendamment de \(z\).
+
+\subsection{Dérivées de séries potentielles}
+
+\begin{equation}
+    \color{red} \boxed{\color{black} \left( \sum_{n \geq 0}^{}{a_{n}z^{n}} \right)' = \sum_{n \geq 1}^{}{n\ a_{n}z^{n - 1}}}\color{black}
+\end{equation}
+
+Si \(\sum_{n \geq 0}^{}{a_{n}z^{n}}\)satisfait HG, alors \(\sum_{n \geq 1}^{}{a_{n}z^{n - 1}}\) satisfait HG (mais pas forcément pour une même valeur de \(t\)), et est la dérivée de la première somme.\\
+
+Corollaire : \(S\left( z \right) = \lim_{N \rightarrow \infty}{\sum_{n = 0}^{N}{a_{n}z^{n}}}\) est continue, et infiniment dérivable (par récurrence). 
+
+\subsection{Borne géométrique}
+Soit $G_S$ l'ensemble des $\rho$ satisfaisant la borne géométrique avec $t=1$. 
+\begin{equation}
+    G_S = {\rho : \exists C : |a_n| \rho^n < C, \forall n}
+\end{equation}
+
+Soit $R$ le rayon de convergence de la série potentielle : $R = sup(G_S)$. C'est le plus grand $\rho$ qui satisfait la borne géométrique pour $t=1$. \\
+
+Si $\rho < R$, alors $\rho$ satisfait la borne géométrique pour un certain $t$. Alors la série converge de façon uniforme vers une fonction infiniment dérivable sur $B(z_0,\rho), \forall \rho <R$, et on peut définir une fonction limite de la série sur $B(z_0,R)$. \\
+
+\underline{Preuve :}
+
+Prenons $\rho < R$ et $\rho'\in G_S : \rho < \rho' < R$ (par définition du suprémum $R$). Par définition, $\exists C : |a_n|\rho^{'n} \leq C \forall n$. 
+
+\begin{equation}
+    |a_n| \rho^{'n} \leq C \Longleftrightarrow |a_n| \rho^n \left(\frac{\rho'}{\rho}\right)^n \leq C \Longleftrightarrow |a_n| \leq C \left(\frac{\rho}{\rho'}\right)^n \leq C
+\end{equation}
+Car $\frac{\rho}{\rho'} \leq 1$ par hypothèse et compte comme un $t$ dans la borne géométrique. \\
+
+- Si $|z-z_0| > R$, alors la série potentielle ne converge pas. Elle diverge pour tout nombre complexe en dehors et la boule ouverte $B(z_0,R)$. \\
+Preuve : \\
+
+Par définition du rayon de convergence $R$, si $|z - z_0| > R$, il n’existe aucun $C$ tel que $|a_n| |z-z_0|^n$ pour tout n. En d’autre termes, la suite $|a_n| |z-z_0|^n = |a_n (z-z_0)^n|$ ne converge pas. Or si la série géométrique convergeait, nous aurions nécessairement $\lim_{n\rightarrow \infty}{a_n z^n} = 0$, et donc $\lim_{n\rightarrow \infty}{|a_n z^n|} = 0$
+
+\subsection{Fonctions analytiques}
+Soit la fonction $f : A \rightarrow \mathbb{C}$ est analytique si $\forall z_0 \in A : \exists$ rayon $R$ et une série telle que $f(z) = \sum_n {a_n|z-z_0|^n}, \forall z \in B(z_0,R)$. L'ensemble $A$ est ouvert. \\
+
+Les fonctions analytiques sont préservées par les opérations habituelles.
+
+\subsection{Principe des zéros isolés}
+\underline{Définition : }
+Soit la fonction $f : A \rightarrow \mathbb{C} : $ \\
+\begin{itemize}
+    \item $z_0$  est un zéro isolé si $f(z_0) = 0$ et si $\exists \varepsilon > 0$ : $f(z) \neq 0$ $\forall z \neq z_0$, $z \in B(z_0,\varepsilon) \cap A$. Cela signifie qu'il existe une boule ouverte de rayon \(\varepsilon\) dans laquelle la fonction est non nulle. 
+    \item $z_0$ est un zéro non isolé si $\forall \varepsilon$ $\exists z \in B(z_0,\varepsilon) : f(z) = 0$.
+\end{itemize}
+
+Théorème : Si $A$ est connexe\footnote{Rappelle-moi ce que signifie connexe.}, si $f : A \rightarrow \mathbb{C}$ est analytique, alors soit $f(z)=0  \forall z$, soit tous les zéros de $f$ sont isolés. \\
+
+Lemme : Soit $z_0 \in A$. Si $f$ est analytique et $f(z_0) = 0$, alors si $z_0$ n'est pas isolé, $f \equiv 0$ sur $B(z_0,R)$, avec $R$ le rayon de convergence. \\
+
+Preuve : prenons un zéro $z_0 : f(z_0) = 0$. Comme $f$ est analytique, $\exists R : f(z) = \sum_n {a_n (z-z_0)^n}$ 
+
+$\forall z \in B(z_0,R)$. 
+\begin{itemize}
+    \item Soit tous les $a_n$ sont nuls et $f(z) = 0$
+    \item Soit les $a_n$ ne sont pas tous nuls, et
+\end{itemize}
+
+Soit $m \neq 0$ le plus petit indice tel que $a_m \neq 0$. 
+
+\begin{equation}
+    f(z) = \sum_{n \geq 0} {a_n (z-z_0)^n} = \sum_{n \geq m} {a_n (z-z_0)^n} = \sum_{n \geq 0} {a_{n+m} (z-z_0)^{n+m}} 
+\end{equation}
+\begin{equation}
+    = (z-z_0)^m \sum_{n \geq 0} {a_{n+m} (z-z_0)^n} = (z-z_0)^m g(z)
+\end{equation}
+La série potentielle a le même rayon de convergence que la fonction initiale. \\
+
+Sur $B(z_0,\varepsilon)$, $f(z) = g(z) (z-z_0)^m \neq 0$ si $z \neq z_0$.\\
+
+\underline{Corollaires : }
+\begin{itemize}
+    \item Si $f$ est analytique et si $f(z_0) \neq 0$, alors les zéros de $f$ sont isolés.
+    \item Si $f-g$ a un zéro non isolé, alors $f\equiv g$.
+\end{itemize}
+
+\section{Intégrale complexe}
+\subsection{Définition}
+
+Soit un chemin $\gamma : [a,b] \rightarrow \mathbb{C}$ continu et dérivable. 
+
+\begin{equation}
+    \color{red}\boxed{\color{black}\int_{\gamma} {f(z)dz} \coloneqq \int_a^b {f(\gamma(t)) }\gamma'(t) dt}\color{black}
+\end{equation}
+Par extension, 
+\begin{equation}
+    \int_{\gamma} {fdz} = \sum_i {\int_{\gamma_i} {f(z)dz}}
+\end{equation}
+avec $\gamma = \cup_i {\gamma_i}$ dérivable sur $\gamma_i$. \\
+
+\underline{Propriétés :}
+\begin{itemize}
+    \item L'intégrale complexe est linéaire : $\int(\alpha f + \beta g) = \alpha \int f + \beta \int g$ si elles existent.
+    \item Additivité : Si $\gamma = \gamma_1 \cup \gamma_2$, $\int_{\gamma} f = \int_{\gamma_1} f + \int_{\gamma_2} f$. Si $f(z) \leq M$ sur $\gamma$, $|\int_{\gamma} f| \leq M l(\gamma)$, avec $l(\gamma) = \int_a^b {|\gamma'(t)|dt}$ la longueur du chemin.
+    \item L'intégrale est une suite de fonctions continues qui convergent vers $f$ de façon uniforme sur $\gamma$ : $\int_{\gamma} f = \lim_{n \rightarrow \infty } {\int_{\gamma} f_n}$.
+\end{itemize}
+
+\subsection{Intégrale d'une dérivée}
+
+Proposition : Soit la fonction $F : A \rightarrow \mathbb{C}$, soit $\gamma$ un chemin $[a,b] \rightarrow A$ continu et dérivable, soit la fonction $F$ dérivable au sens complexe : $F' = f$. Alors 
+\begin{equation}
+    \int_{\gamma} f(z)dz = F(\gamma(b)) - F(\gamma(a))
+\end{equation}
+
+Preuve : 
+\begin{equation}
+    \int_{\gamma} f(z) dz = \int_a^b f(\gamma(t)) \gamma'(t) dt = \int_a^b (F(\gamma(t)))'dt = F(\gamma(b)) - F(\gamma(a))
+\end{equation}
+
+La valeur de l'intégrale de la fonction $f$ est donc indépendante du chemin si $\exists F : F' = f$.\\
+
+\underline{Corollaire :} Si $f$ est la dérivée d'une fonction $F$ sur $A$, et $\gamma$ est un chemin fermé ($\gamma(b) = \gamma(a)$, alors l'intégrale de $f(z)$ est nulle sur $[a,b]$. 
+
+\section{Primitivation}
+
+Dans les complexes, de nombreux chemins relient deux points, et rien ne garantit a priori que la primitive sera identique pour tout chemin. \\
+
+\underline{Lemme de Goursat : } Soit l'ensemble \(A\) ouvert et soit la fonction \(f : A \rightarrow \mathbb{C}\) dérivable sur \(A\). Soit un triangle \(\Delta \subset A\). \(\int_{\partial\Delta}{f} = 0\).
+
+\subsection{Théorème de primitivation}
+\underline{Définition :} un ensemble \(A\) est étoilé par rapport à \(z_0\) si \(\forall z\in A\), le segment \([z_0z] \subset A\). Un ensemble étoilé par rapport à tous ses points est connexe.\\
+
+Si \(f\) est dérivable sur \(A\) ouvert et étoilé par rapport à \(z_0\), on peut définir
+\begin{equation}
+    F(z) = \int_{[z_0z]}{f(w)dw}
+\end{equation}
+dérivable sur \(A\), et \(F'=f\).\\
+
+\underline{Propriétés : }
+\begin{itemize}
+    \item \(\int_{\gamma}{f} = 0\) si \(\gamma \in A\) fermé (comme en analyse 2).
+    \item Si \(F\) est dérivable, elle admet une primitive. Par récursivité, \(f\) est infiniment primitivable sur \(A\)\footnote{Explique}.
+\end{itemize}
+
+\section{Homotopie}
+
+Un ensemble \(A\) est simplement connexe si il est ouvert et s'il ne contient pas de "trous" (=point \(a\not \in A\) que l'on peut entourer par une courbe incluse dans l'ensemble). \\
+\underline{Théorème :} Si \(A\) est simplement connexe, le théorème de primitivation fonctionne encore.
+
+\subsection{Homotopie}
+
+Deux chemins \(\gamma_1, \gamma_2\) sont homotopes dans \(A\) si on peut déformer continument \(\gamma_2\) vers \(\gamma_1\) sans sortir de \(A\) et sans modifier les extrémités (si les chemins ne sont pas fermés).\\
+
+\underline{Théorème :} Si la fonction \(f\) est dérivable et si les chemins \(\gamma_0, \gamma_1\) sont homotopes dans l'ensemble ouvert \(A\), alors \(\int_{\gamma_0}{f} = \int_{\gamma_1}{f}\).
+
+\section{Représentations}
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : il n'existe pas d'exemple de fonction dérivable, mais pas analytique.
+\end{itemize}
+
+On déduit de cette remarque que si une fonction est définie sur un ensemble ouvert \(f : A \rightarrow \mathbb{C}\) et dérivable sur son domaine, alors elle est analytique.
+
+\subsection{Formule intégrale de Cauchy}
+\begin{equation}
+    \color{red}\boxed{\color{black} f(z) = \frac{1}{2\pi i} \int_{\partial B(0,r)} \frac{f(w)}{w-z} dw} \color{black}
+\end{equation}
+Soit la fonction \(f\) dérivable sur un ensemble \(A\) ouvert. Alors \(f\) est analytique et infiniment dérivable et \(\color{red}\boxed{\color{black}f = \sum a_n (z-z_0)^n} \color{black} \forall z\in B(z_0,R)\), avec \(R\) le plus grand rayon tel que \(B(z_0,R) \subseteq A\).
+
+\subsection{Théorème de Liouville}
+
+Si la fonction \(f : \mathbb{C} \rightarrow \mathbb{C}\) est dérivable et bornée, alors elle est constante.
+
+\section{Fonctions multiformes}
+\subsection{Logarithme complexe}
+Pour tout \(z \in \mathbb{C}, \log(z) \coloneqq {w \in \mathbb{C} \ | \ exp(w) = z}\). Le logarithme complexe est une fonction multiforme, i.e. il existe plusieurs valeurs de \(w\) pour un seul \(z\).
+
+Pour tout \(z \in \mathbb{C} \setminus \{0\}, \color{red}\boxed{\color{black} \log(z) = \ln{(|z|)} + i \text{arg}(z)}\color{black}\), et \(log(0) = \emptyset\).\\
+
+\underline{Propriétés :}
+\begin{itemize}
+    \item Pour tout \(z,w\in \mathbb{C} \ \{0\}, log(zw) = log(z) + log(w)\).
+    \item Si \(U\) est un ouvert non vide de \(\mathbb{C} \setminus \{0\}\) et si \(log_U : U \rightarrow \mathbb{C}\) est une détermination continue de \(log\) sur \(U\), alors \(log_U\) est dérivable et, pour tout \(z \in U\),
+\end{itemize}
+\begin{equation}
+    log_U'(z) = \frac{1}{z}
+\end{equation}
+
+\subsection{Fonctions multiformes}
+Une fonction multiforme \(F\) est un triplet \((A,B,G)\) où 
+\begin{itemize}
+    \item \(A\) est un ensemble appelé l'ensemble de départ de \(F\).
+    \item \(B\) est un ensemble appelé l'ensemble d'arrivée de \(F\).
+    \item \(G\) est un sous-ensemble de \(A\times B\) appelé le graphe de \(F\).
+\end{itemize}
+
+Si \(F\coloneqq (A,B,G)\) est une fonction multiforme, alors
+\begin{itemize}
+    \item L'image de \(x\in A\) par \(F\) est \(F(x) \coloneqq {y \in B \ |\ (x,y) \in G}\)
+    \item L'image de \(X \subseteq A\) par \(F\) est \(F(X) \coloneqq \cup_{x\in X} F(x)\)
+    \item L'image de \(F\) est \(F(A)\)
+    \item Le domaine de \(F\) est \(dom F \coloneqq {x \in A \ | \ F(x) \neq \emptyset}\)
+    \item Une détermination/branche de \(F\) sur \(X \subseteq dom F\) est une fonction \(f : X \rightarrow B\) telle que, pour tout \(x \in X, f(x) \in F(X)\). Une détermination est donc une fonction uniforme incluse dans une fonction multiforme.
+\end{itemize}
+
+\underline{Fonction argument :}\\
+
+L'argument est la fonction multiforme 
+\begin{equation}
+    \text{arg} : \mathbb{C} \rightarrow \mathbb{R} : z \rightarrow \left\{\theta \in \mathbb{R} | \exp{(i\theta)} = \frac{z}{|z|}\right\}
+\end{equation}
+
+Pour tout intervalle \(I \subseteq \mathbb{R}\), l'ensemble \(\text{arg}(z) \cap I\) contient exactement un élément quel que soit \(z \in \mathbb{C} \ \{0\}\) ssi \(I\) est semi-ouvert et de longueur \(2\pi\), auquel cas cet élément est noté \(\text{arg}_I(z)\). En particulier, la fonction 
+\begin{equation}
+    \text{arg}_I : \mathbb{C} \setminus \{0\} \rightarrow \mathbb{R} : z \rightarrow \text{arg}_I(z)
+\end{equation}
+ est une détermination de \(arg\) sur \(\mathbb{C} \setminus \{0\}\).
+
+\begin{itemize}
+    \item [$\rightarrow$] Aucune détermination de \(arg\) n'est continue. L'impossibilité de construire une détermination d'une fonction multiforme continue sur son domaine est due à l'existence d'un point de branchement/de ramification, e.g. 0 et \(2\pi\)) sur le cercle. Les fonctions sinus et cosinus prennent des valeurs identiques en ces points.
+\end{itemize}
+
+\subsection{Point de branchement et coupure}
+
+Un point \(z\in \mathbb{C}\) est appelé point de branchement de \(F : \mathbb{C}\rightarrow \mathbb{C}\) si
+\begin{itemize}
+    \item \(\exists r \in ]0,\infty[ \ : B_{*}(z,r) \subseteq dom F\)
+    \item \(F\) possède une détermination continue sur toute boule ouverte incluse dans  \(B_{*}(z,r)\)
+    \item Pour tout \(\rho \in\ ]0,r[\), aucune détermination de \(F\) sur \(\partial B(z,\rho)\) n'est continue.
+\end{itemize}
+
+Si \(z\) est un point de branchement de \(F : \mathbb{C} \rightarrow \mathbb{C}\) et si \(f\) est une détermination de \(F\) sur \(B_{*}(z,r)\), alors l'ensemble des points de discontinuité de \(f\) est appelé la coupure de \(f\) pour \(z\).\\
+
+\underline{Propriétés :}
+
+\begin{itemize}
+    \item Pour tout \(z,w\in \mathbb{C} \setminus \{0\}, \text{arg}(zw) = \text{arg}(z) + \text{arg}(w)\)
+    \item [$\rightarrow$] L'égalité dans cette proposition est une égalité entre sous-ensembles de \(\mathbb{C}\). Elle ne devient pas une égalité entre éléments de \(\mathbb{C}\) si \(arg\) est remplacé par une détermination.
+\end{itemize}
+
+\subsection{Puissances complexes}
+Pour tout \(a\in \mathbb{C}\) et pour tout \(z \in \mathbb{C} \ \{0\}\), 
+\begin{equation}
+    z^{a} \coloneqq \exp(a \log(z))
+\end{equation}
+
+Si \(a \in \mathbb{R}\), alors 
+\begin{equation}
+    z^{a} = |z|^{a} \exp(ia \text{arg}(z))
+\end{equation}
+Soit \( z \in \mathbb{C} \setminus \{0\}\) et soit \(a \in \mathbb{C}\). L'ensemble \(z^{a}\) :
+\begin{itemize}
+    \item contient exactement un élément si \(a \in \mathbb{Z}\);
+    \item contient exactement \(q\) éléments si \(a = p/q\) pour \(p, q\) entiers \(p\neq 0, q>1\) premiers entre eux;
+    \item est infini sinon.
+\end{itemize}
+\underline{Propriétés :}\\
+Pour chaque \(a,b\in \mathbb{C}\) et \(z,w \in \mathbb{C}\setminus \{0\}\), 
+\begin{itemize}
+    \item \(z^{a+b} = z^{a}z^b\)
+    \item \((zw)^{a} = z^{a}w^{a}\)
+    \item \((z^{a})^b = z^{ab}\)
+\end{itemize}
+
+\subsection{Construire une détermination de fonction multiforme}
+\begin{enumerate}
+    \item Déterminer les points de branchements de \(F\). 
+    \item Définir les coupures et les déterminations de \(F\) correspondantes.
+\end{enumerate}
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : Pour une fonction non définie en \(a\) et en \(b\), on prend \(u(x,y) = A + B \text{Arg}(x+iy-a) + C \text{Arg}(x+iy-b)\).
+\end{itemize}
+
+\section{Résolution de problèmes de Dirichlet par l'analyse complexe}
+Soient \(A'\) un ensemble ouvert non vide de \(\mathbb{C}\), \(f : A'\rightarrow \mathbb{C}\) une fonction holomorphe et \(A \coloneqq \{ (x,y) \in \mathbb{R}^2\ | \ x+iy \in A'\}\). Définissons les fonctions 
+\begin{equation}
+    \begin{cases}
+        u : A \rightarrow \mathbb{R} : (x,y) \rightarrow Re(f(x+iy))\\
+        v : A \rightarrow \mathbb{R} : (x,y) \rightarrow Im(f(x+iy))\\
+    \end{cases}
+\end{equation}
+
+Par les conditions de Cauchy-Riemann, \(f\) est analytique. Dès lors, \(f\) et \(f'\) sont holomorphes, et les fonctions \(u,v\) sont infiniment dérivables, tout comme \(f\).
+
+\subsection{Fonctions harmoniques et holomorphes}
+Si \(A'\) est un ensemble ouvert non vide de \(\mathbb{C}, f : A' \rightarrow \mathbb{C}\) une fonction holomorphe et \(A \coloneqq \{(x,y) \in \mathbb{R}^2 \ |\ x + iy \in A'\}\), alors les fonctions \(u,v\) de la section précédente sont harmoniques.\\
+
+\underline{Résoudre un problème de Dirichlet :}\\
+Résoudre un problème de Dirichlet équivaut à trouver une fonction \(u : A \rightarrow \mathbb{R}\) continue et harmonique sur \(A\), qui vérifie certaines conditions sur les valeurs qu'elle prend (souvent définie par parties).\\
+
+\underline{Proposition :}\\
+Si \(A'\) est un ensemble ouvert non vide simplement connexe de \(\mathbb{C}, A \coloneqq \{(x,y) \in \mathbb{R}^2 \ |\ x+iy\in A'\}\) et \(u : A\rightarrow \mathbb{R}\) est une fonction harmonique, alors il existe une fonction \(f : A \rightarrow \mathbb{C}\) holomorphe et telle que, \(\forall (x,y) \in A\), 
+\begin{equation}
+    \text{Re}(f(x+iy)) = u(x,y)
+\end{equation}
+En particulier, \(u\) est infiniment différentiable.\\
+
+\underline{Proposition :}\\
+
+Soient \(A\) et \(C\) deux ensembles ouverts non vides de \(\mathbb{C}\). Si \(u : A \rightarrow \mathbb{R}\) est harmonique, \(f : C \rightarrow \mathbb{C}\) est holomorphe, et \(f(C) = A\), alors \(u \circ f\) est harmonique.
+
+\subsection{Transformations conformes}
+
+Si l'ensemble \(A\) est ouvert non vide de \(\mathbb{C}\) et \(f : A \rightarrow \mathbb{C}\) est holomorphe et injective, \(f'\) ne s'annule pas. 
+
+Une fonction holomorphe sur un ouvert non vide dont la dérivée ne s'annule pas en un point de cet ensemble est dite conforme en ce point.\\
+
+\underline{Définitions :}
+\begin{itemize}
+    \item Soit \(z \in \mathbb{C}\). Une courbe passant par \(z\) est une fonction \(\gamma : [a,b] \rightarrow \mathbb{C}\), avec \(a,b\in \mathbb{R}\) tels que \(a < b\), dérivable et telle que \(\gamma^{-1}(\{z\}) = {t}\), avec \(t \in ]a,b[\) et \(\gamma'(t) \neq 0\).
+    \item Pour tout \(i \in \{0,1\}\), soit \(\gamma_i\) une courbe passant par \(z \in \mathbb{C}\) avec \(\gamma_i^{-1}({z}) = {t_i}\). Tout élément de \(\angle(\gamma_0,\gamma_1,z) \coloneqq \text{arg}\left(\frac{\gamma_1'(t_1)}{\gamma_0'(t_0)}\right)\) est appelé angle entre \(\gamma_0\) et \(\gamma_1\) en \(z\).
+    \item Soit un ensemble \(A\) ouvert non vide de \(\mathbb{C}\) et soit \(z \in \mathbb{C}\). Une fonction \(f : A \rightarrow \mathbb{C}\) est dite conforme en \(z\) si, pour toute paire \((\gamma_0, \gamma_1)\) de courbes passant par \(z, f\circ \gamma_0\) et \(f\circ \gamma_1\) sont des courbes passant par \(f(z)\) et \(\angle (f\circ\gamma_0, f\circ \gamma_1, f(z) = \angle(\gamma_0, \gamma_1,z)\). De plus, \(f\) est appelée une transformation conforme si elle est conforme en tout point de \(A\).
+\end{itemize}
+
+Soit \(A\) un ensemble ouvert non vide de \(\mathbb{C}\) et soit \(z \in A\). Si \(f : A \rightarrow \mathbb{C}\) est dérivable en \(z\) et \(f'(z)\neq 0\), alors \(f\) est conforme en \(z\).\\
+
+\underline{Théorème :} \(\forall A \subset \mathbb{C}, A \neq \mathbb{C}\) ouvert non vide et simplement connexe, il existe une fonction \(f : A \rightarrow B(0,1)\) bijective et holomorphe et dont la réciproque \(f^{-1}\) est holomorphe. 
+
+\section{Série de Laurent}
+\underline{Définition :} Un anneau est \(A(z_0,r,s) = B(z_0,r) \setminus B[z_0,s]\)\footnote{Parenthèses pour boule ouverte et crochets pour boule fermée.}.\\
+
+\underline{Théorème :} Soit \(f : A(z_0,r,s) \rightarrow \mathbb{C}\) holomorphe. Alors \(\forall z\in A(z_0,r,s),\)
+\begin{equation}
+    \color{red}\boxed{\color{black}f(z) = \sum_{n\geq0}{a_n (z-z_0)^n} + \sum_{n\leq-1}{a_n (z-z_0)^n}}\color{black}
+\end{equation}
+avec 
+\begin{equation}
+    a_n = \frac{1}{2\pi i} \int_{\partial B(z_0,\rho)}{\frac{f(w)}{(w-z_0)^{n+1}}dw}, \rho \in (r,s)
+\end{equation}
+et ce développement est unique. La convergence est uniforme sur tout ensemble compact de \(A(z_0,r,s)\).
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : \(e^z = \sum_{n\geq 0} {\frac{z^n}{n!}}\)
+    \item [$\rightarrow$] Remarque : la fonction \(f(z) = \frac{1}{z}\) est sa propre série de Laurent.
+\end{itemize} 
+
+\subsection{Indices et résidus}
+Soient la fonction \(f : A(z_0, r,s) \rightarrow \mathbb{C}\) et le chemin fermé \(\gamma \subset A(z_0,r,s)\). 
+\begin{equation}
+    \int_{\gamma}{f}dz = \int_{\gamma}{\sum_{k = -\infty}^{+\infty}{a_k(z-z_0)^kdz}}
+\end{equation}
+Par convergence uniforme, il est possible de sortir la somme et les coefficients de l'intégrale. Ensuite, l'intégrale \(\int_{\gamma}{(z-z_0)^k} = 0\) (sauf pour \(k = -1\) car \(\gamma\) est fermé). 
+\begin{equation}
+    \int_{\gamma}{f(z)dz} = a_{-1} \int_{\gamma}{\frac{1}{z-z_0}dz} = 2\pi i \cdot \color{blue}\boxed{\color{black}a_{-1}}\color{black} \cdot \color{green}\boxed{\color{black}\frac{1}{2\pi i} \int_{\gamma}{\frac{1}{z-z_0}dz}}\color{black}
+\end{equation}
+Les termes encadrés sont appelés \(\color{blue}\boxed{\color{black}res(f,z_0)}\color{black}\) et \(\color{green}\boxed{\color{black} ind(\gamma,z_0)}\color{black}\).\\
+
+\underline{"Théorème informel" :} \(\text{ind}(\gamma,z_0)\) est le nombre de tours que fait \(\gamma\) autour du point \(z_0\) dans le sens trigonométrique -- horaire. C'est toujours un entier.\\
+
+\underline{Théorème des résidus :} Soit la fonction définie sur un ensemble ouvert non vide, sauf certains points \(f : A \setminus \{c_1,...,c_n\} \rightarrow \mathbb{C}\) holomorphe. Soit la courbe \(\gamma\) fermée dans \(A \setminus \{c_1,...,c_n\}\). 
+\begin{equation}
+    \color{red}\boxed{\color{black}\int_{\gamma}{f(z)dz} = 2\pi i \sum_{k=1}^{n}{\text{res}(f,c_k)\cdot \text{ind}(\gamma, c_k)}}\color{black}
+\end{equation}
+
+\underline{Lemme :} Si \(f : A\setminus \{c\} \rightarrow \mathbb{C}\) est holomorphe sur \(A\), si \(f\) est bornée autour de \(c\), alors \(f\) peut être prolongée de façon holomorphe en \(c\).
+
+\(\exists \Tilde{f} : A \rightarrow \mathbb{C}\) continue sur \(A\) et holomorphe sur \(A \setminus \{c\}\).
+
+\section{Singularités}
+Soit un ensemble  \(A\) ouvert. Le point \(c\) est une singularité isolée de \(A\) si 
+\begin{itemize}
+    \item \(A \cup \{c\}\) est ouvert
+    \item \(c \not \in A\)
+    \item \(\exists r : A(c,r,0) \subset A\)
+\end{itemize}
+
+Le point \(c\) est une singularité de la fonction \(f\) s'il est une singularité du domaine de cette fonction.
+
+\subsection{Classification}
+
+\begin{enumerate}
+    \item Singularité apparente : Pas de puissances négatives dans la série de Laurent autour de la singularité.
+    \item Pôle : Nombre fini de puissances négatives dans la série de Laurent autour du pôle.
+    \item Singularité essentielle : Infinité de puissances négatives dans la série de Laurent autour de la singularité.
+\end{enumerate}
+
+\subsection{Singularité apparente}
+Puisqu'il n'y a pas de puissances négatives dans la série de Laurent, le terme \(a_{-1} =0\).\\
+
+\underline{Théorème :} Les conditions suivantes sont équivalentes pour une singularité \(c\) de la fonction \(f\) holomorphe : 
+\begin{itemize}
+    \item \(\lim_{z\rightarrow c}{f(z)}\text{ } \exists\)
+    \item \(f\) est bornée autour de \(c\)
+    \item \(c\) est une singularité apparente de \(f\)
+    \item \(f\) peut être prolongée de façon holomorphe en \(c\)
+    \item \(lim_{z\rightarrow c}{f(z)(z-c)} = 0\)
+\end{itemize}
+
+\subsection{Pôle}
+
+Un pôle est d'ordre \(n\) si le plus petit coefficient non nul est \(a_{-n}\) : \(n\ |\ a_{-n} \neq 0, a_{-k} = 0\ \forall k>n\). \\
+
+\underline{Lemme :} \(c\) est un pôle d'ordre \(n\) si \(c\) est une singularité apparente pour \((z-c)^nf(z)\), mais pas pour \((z-c)^{n-1}f(z)\). \\
+
+\underline{Corollaire :} \(c\) est un pôle d'ordre \(n\) pour \(f\) ssi les trois conditions suivantes (équivalentes) sont satisfaites pour \(n\), mais pas pour \(n-1\) :
+\begin{itemize}
+    \item \(lim_{z\rightarrow c} {(z-c)^nf(z)} \ \exists\)
+    \item \(lim_{z\rightarrow c} {(z-c)^{n+1}f(z)} = 0\)
+    \item \((z-c)^n f(z)\) est bornée autour de \(c\)
+\end{itemize}
+\underline{Corollaire :} Un pôle est d'ordre \(n\) ssi \(\lim_{z\rightarrow c}{(z-c)^nf(z)}\) existe et \(\neq 0\).
+\end{document}

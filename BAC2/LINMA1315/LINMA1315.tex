@@ -1,0 +1,871 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{amsfonts}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\renewcommand{\contentsname}{Table des matières}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=1]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LINMA1315 Compléments d'analyse \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2022-2023 - Q2}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+\chapter{Introduction}
+Note : les démonstrations sont dans les slides.
+
+\section{Ensembles finis et infinis}
+
+Il existe des ensembles finis (e.g. \(\{1,2,3\}\)) ou infinis (e.g. \(\mathbb{N}, \mathbb{R}\),...). 
+\begin{itemize}
+    \item \(\mathbb{N}\) : Ensemble des naturels sans \(0\), infini dénombrable.
+    \item \(\mathbb{N}_0\) : Ensemble des naturels avec \(0\), infini dénombrable.
+    \item \(\mathbb{Q}\) : Ensemble des rationnels, infini dénombrable.
+    \item \(\mathbb{R}\) : Ensemble des réels, pas infini dénombrable.
+    \item \(\mathbb{R}^n\) : Ensemble des réels dans \(n\) dimensions. On ne peut pas le visualiser tel quel, mais on peut exprimer chacun de ses éléments graphiquement : les abscisses sont les entiers correspondant à la dimension, et les ordonnées la valeur que prend l'élément dans cette dimension.
+    \item \(\mathbb{R}^{\mathbb{N}}\) : Ensemble des fonctions de \(\mathbb{N}\) vers \(\mathbb{R}\). Il peut être vu comme l'ensemble des suites infinies de réels. On peut généraliser : \(A^B\) est l'ensemble des fonctions de \(B\) vers \(A\).
+    \item [\(\rightarrow\)] Remarque : \(\left|A^B\right| = \left| A\right|^{\left|B\right|} \).
+    \item \(n^X \coloneqq \{0,1,...,n-1\}^X\) : Ensemble des fonctions de l'ensemble quelconque \(X\) vers \(\{0,1,...,n-1\}\).
+    \item \(l^2(\mathbb{N}) = \left \{ a \in \mathbb{R}\text{ } |\text{ } \lVert a \rVert_2 \coloneqq \sqrt{\sum_{i=1}^{\infty}{|a_i|^2}} < \infty\right \}\), avec \(a\) une suite de réels.
+    \item \(l^{\infty}(\mathbb{N})\) : Ensemble des suites à valeurs réelles qui sont bornées.
+\end{itemize}
+Soit \(I = [a,b]\).
+\begin{itemize}
+    \item \(C(I)\) : Ensemble des fonctions continues sur \(I\) et à valeurs réelles.
+\end{itemize}
+\section{Norme du maximum}
+Pour une fonction \(f : I \rightarrow \mathbb{R}\), la norme du maximum, ou norme infinie est définie telle que : 
+\begin{equation}
+    \lVert f \rVert_{\infty} \coloneqq \max_{x\in I}{|f(x)|}
+\end{equation}
+Cette norme du maximum existe pour autant que \(I\) soit un ensemble fermé et borné.
+
+Soit la suite de réels \(a\). La norme du maximum de cette suite est 
+\begin{equation}
+    \lVert a\rVert_{\infty} \coloneqq \sup_{i}{|a_i|}
+\end{equation}
+\section{Théorème des valeurs extrêmes}
+\underline{Domaine de dimension finie :}\\
+Soit l'ensemble \(I = [a,b]\) fermé et borné. La fonction \(\Phi\), définie et continue sur \(I\), atteint ses valeurs extrêmes (i.e. supremum et infimum) sur \(I\).\\
+
+\underline{Domaine de dimension infinie :}\\
+On peut prouver que \(\inf_{a\in F}{\left(||a||_{\infty}\right)} = 1\), et que \(\min_{a\in F}{\left( \lVert a\rVert_{\infty}\right)} \text{ } \nexists\), avec \(F\) le domaine de dimension infinie de la suite \(a\). Le minimum n'existe pas, même si la suite est continue et \(F\) est fermé et borné, i.e. si la suite respecte les conditions du théorème en domaine de dimension finie.\\
+
+En domaine de dimension infinie, le théorème des valeurs extrêmes se réécrit comme suit : \\
+Si la fonction objectif est continue sur un ensemble \textbf{compact}, alors les valeurs extrêmes de la fonction seront atteintes sur son domaine.
+
+\chapter{Topologie}
+Une topologie sur un ensemble \(X\) est une partie de \(\mathcal{P}(X)\) dont les éléments sont appelés ouverts de \(X\) et qui satisfait les propriétés suivantes : 
+\begin{itemize}
+    \item \(\emptyset\) et \(X\) sont des ouverts.
+    \item Toute intersection finie d'ouverts est un ouvert.
+    \item Toute union d'ouvert est un ouvert.
+\end{itemize}
+Un espace topologique est une paire \((X,\mathcal{T})\) où \(X\) est un ensemble et \(\mathcal{T}\) une topologie sur \(X\).
+\section{Bornes}
+Soit le sous-ensemble \(X \subseteq \mathbb{R}\). 
+\begin{itemize}
+    \item \(m\) est un minorant de \(X\) si \(m \le x\) \(\forall x\in \mathbb{R}\).
+    \item \(m\) est l'infimum de \(X\) si, si \(m,y\le x\) \(\forall x \in \mathbb{R}\), alors \(y\le m\). C'est donc "le plus grand" des minorants de \(X\).
+    \item \(M\) est un majorant de \(X\) si \(m \ge x\) \(\forall x\in \mathbb{R}\).
+    \item \(M\) est le supremum de \(X\) si, si \(M,y\ge x\) \(\forall x \in \mathbb{R}\), alors \(y\ge M\). C'est donc "le plus petit" des majorants de \(X\).
+    \item [\(\rightarrow\)] Remarque : les notions de supremum et d'infimum n'ont de sens que pour les ensembles bornés.    
+\end{itemize}
+\section{Suites}
+Une suite de réels est une fonction de \(\mathbb{N}\) vers \(\mathbb{R}\). La suite \(a\) se note \(a\), \((a_n)\), ou encore \((a_n)^{\infty}_{n=1}\).\\
+
+Une sous-suite est obtenue en supprimant certains éléments, i.e. une sous-suite de la suite \((a_n)\) est \(\left(a_{n_k}\right)_{k=1}^{\infty}\), où \((n_k)_{k=1}^{\infty}\) est une suite strictement croissante.\\
+
+\(x^* \in \mathbb{R}\) est la limite de la suite \((x_n)\) si 
+\begin{equation}
+    \forall \varepsilon>0 : \exists N : \forall n\ge N : \left|x_n-x^*\right|<\varepsilon
+\end{equation}
+\begin{itemize}
+    \item La limite inférieure de \((x_n)\) est \(\lim_{n\rightarrow \infty}{\inf x_n} \coloneqq \lim_{n\rightarrow \infty}{\left(\inf_{k\ge n}{x_k}\right)} = \sup_{n\ge 1} {\left(\inf_{k\ge n}{x_k}\right)}\)
+    \item La limite supérieure de \((x_n)\) est \(\lim_{n\rightarrow \infty}{\sup x_n} \coloneqq \lim_{n\rightarrow \infty}{\left(\sup_{k\ge n}{x_k}\right)} = \inf_{n\ge 1} {\left(\sup_{k\ge n}{x_k}\right)}\)
+\end{itemize}
+L'ensemble des réels étendus est \(\Bar{\mathbb{R}} \coloneqq \mathbb{R} \cup \{-\infty,\infty\}\).\\
+
+Si l'ensemble \(X\) n'a pas d'infimum/suprémum, alors \(\inf X = -\infty\), \(\sup X = \infty\).\\
+
+De même pour les notions de limite : 
+\begin{equation}
+    \lim_{n\rightarrow \infty}{x_n} = \infty \text{ si } \forall \nu : \exists N : \forall n \ge N : x_n > \nu
+\end{equation}
+\subsection{Séries}
+Une suite \((x_n)_{n\in \mathbb{N}}\) de nombres réels est dite sommable si la suite \(\left(\sum_{k=0}^nx_k\right)_{n\in \mathbb{N}}\) converge. La limite \(n\rightarrow\infty\) de cette suite est appelée somme de la série de terme \(x_n\). Par définition, la série converge si la suite est sommable.
+\subsection{Critères de convergence des séries}
+Soit \(\sum_{n=0}^{\infty}\) la série de la suite de nombre réels \((x_n)_{n\in \mathbb{N}}\)
+\begin{itemize}
+    \item telle que, pour tout \(n\in \mathbb{N}\), \(x_n\neq 0\). Si \(\alpha\coloneqq \lim_{n\rightarrow \infty}\sup \frac{|x_{n+1}|}{|x_n|} <1\), alors la série converge.
+    \item Si \(\beta\coloneqq \lim_{n\rightarrow \infty}\inf\frac{|x_{n+1}|}{|x_n|} >1\), alors la série diverge.
+    \item Si \(\gamma\coloneqq \lim_{n\rightarrow\infty}\sup \sqrt[n]{|x_n|} <1\), alors la série converge. Si \(\gamma >1\), alors la série diverge.
+    \item Soit \(f:[0,\infty) \rightarrow \mathbb{R}\) une fonction décroissante et positive. La série \(\sum_{n=0}^{\infty} f(n)\) converge ssi \(\int_0^{\infty}f(x)dx < \infty\).
+\end{itemize}
+\section{Espace métrique}
+Un espace métrique est un ensemble \(X\) lié à une fonction distance \(d\) \(:\) \(X\times X \rightarrow [0,\infty)\) telle que, pour des points quelconques \(x,y,z\in X\), ces trois conditions sont respectées : 
+\begin{itemize}
+    \item Séparation : \(d(x,y) = 0 \Longleftrightarrow x = y\)
+    \item Symétrie : \(d(x,y) = d(y,x)\)
+    \item Inégalité triangulaire : \(d(x,z) \le d(x,y) + d(y,z)\)
+    \item [\(\rightarrow\)] Remarque : la distance euclidienne est \(d(x,y) = \sqrt{\sum_{i}{\left(x_i y_i\right)^2}}\)
+\end{itemize}
+Un espace est appelé pseudométrique si la première condition devient \(x = y \Longrightarrow d(x,y) =0\).\\
+
+Dans un espace métrique \((X,d)\), une suite \((x_n)_{n\in\mathbb{N}}\) est dite :
+\begin{itemize}
+    \item bornée ssi \(\sup_{n\in \mathbb{N}} d(x_n,x_0) \le \infty\).
+    \item convergente ssi \(\exists x\in X\) tel que, \(\forall \varepsilon >0\), \(\exists N\in \mathbb{N}\) tel que \(\forall n\ge N\), \(d(x_n,x)\le \varepsilon\).
+\end{itemize}
+Un espace métrique \(X\) est dit connexe si les seules parties de \(X\) ouvertes et fermées sont \(X\) et \(\emptyset\)/ Il est dit connexe par arcs si \(\forall x,y\in X\), \(\exists \gamma :[0,1] \rightarrow X\) telle que \(\gamma(0) = x\) et \(\gamma(1)=y\)/, avec \(\gamma\) une application continue.
+\section{Définitions de topologie}
+\begin{itemize}
+    \item Un ensemble fermé est tel que son complémentaire est un ouvert.
+    \item L'adhérence \(\Bar{U}\) de l'ensemble \(U\) est l'intersection de tous les fermés contenant \(U\), i.e. le plus petit fermé contenant \(U\).
+    \item L'intérieur \(U^{\circ}\) de l'ensemble \(U\) est l'union de tous les ouverts contenant \(U\), i.e. le plus grand ouvert contenu dans \(U\). 
+    \item L'extérieur d'un ensemble est l'intérieur de son complémentaire.
+    \item La frontière \(\partial U\) de l'ensemble \(U\) est l'ensemble des points qui ne sont ni intérieurs ni extérieurs à \(U\). 
+    \item Une boule ouverte autour de \(x\) de rayon \(r>0\) est l'ensemble \(B_r(x) \coloneqq \left\{y\in X | d(x,y) <r\right\}\).
+    \item Un point intérieur \(x\) de l'ensemble \(U\) est tel que \(U\) contient une boule ouverte de rayon \(r>0\) centrée en \(x\).
+    \item Un voisinage de \(x\) est un ensemble contenant une boule ouverte centrée en \(x\).
+    \item Un point limite de l'ensemble \(U\) est un point tel qu'il existe au moins un point dans \(B_r(x) \cap U\) distinct de \(x\).
+    \item Un point isolé est tel qu'il existe un voisinage de \(x\) qui ne contient aucun autre point de \(U\).
+    \item Un point \(x\) est un point frontière si tout voisinage de \(x\) contient au moins un point de \(U\) et un point de \(\Bar{U}\).
+    \item Un ensemble ouvert est tel que tous ses points sont intérieurs. La famille \(\mathcal{O}\) des ensembles ouverts vérifie les propriétés suivantes :
+    \begin{itemize}
+        \item [\(\bullet\)] \(\emptyset, X \in \mathcal{O}\)
+        \item [\(\bullet\)] \(\mathcal{O}_1,\mathcal{O}_2 \in \mathcal{O} \Longrightarrow \mathcal{O}_1 \cap \mathcal{O}_2 \in \mathcal{O}\)
+        \item [\(\bullet\)] \(\{\mathcal{O}_{\alpha}\} \subseteq \mathcal{O} \Longrightarrow \cup_{\alpha}{\mathcal{O}_{\alpha}} \in \mathcal{O}\)
+    \end{itemize}
+    \item [\(\rightarrow\)] Remarque : l'ouverture relative d'ensemble existe. Par exemple, dans la proposition \(X\subseteq U \subseteq \mathbb{R}^2\), Il est possible que \(X\) soit ouvert par rapport à \(U\), mais pas par rapport à \(\mathbb{R}^2\).
+    \item Un ensemble fermé est un ensemble dont le complément est ouvert. Il vérifie les propriétés suivantes : 
+    \begin{itemize}
+        \item [\(\bullet\)] \(X \setminus \left (\cup_{\alpha}{U_{\alpha}}\right) = \cap_{\alpha}{\left(X \ U_{\alpha}\right)}\)
+        \item [\(\bullet\)] \(X \setminus \left (\cap_{\alpha}{U_{\alpha}}\right) = \cup_{\alpha}{\left(X \ U_{\alpha}\right)}\)
+    \end{itemize}
+    \item L'adhérence d'un ensemble est l'ensemble composé de l'ensemble initial et de sa frontière. L'adhérence de \(U\) se note \(\Bar{U}\). 
+    \item Une boule fermée de rayon \(r\) centrée en \(x\) est \(\Bar{B}_r(x) \coloneqq \left \{y\in X|d(x,y)\le r\right\}\). 
+    \item [\(\rightarrow\)] Remarque : \(\Bar{B_r(x)} \subseteq \Bar{B}_r(x)\).
+\end{itemize}
+\section{Convergence}
+Une suite \((x_n)^{\infty}_{n=1}\in X^{\mathbb{N}}\) converge vers un \(x \in X\) si \(\lim_{n\rightarrow\infty}{d(x,x_n)} = 0\). \\
+
+Un ensemble \(U\) est fermé séquentiellement si toute suite convergente dans \(U\) a sa limite dans \(U\).\\
+
+Une suite de Cauchy est telle que
+\begin{equation}
+    \forall \varepsilon >0, \exists N\in \mathbb{N} : d(x_n,x_m) \le \varepsilon, \text{   } n,m\ge N
+\end{equation}
+Toute suite convergente est de Cauchy, mais toute suite de Cauchy ne converge pas. Cependant, toute suite de Cauchy est bornée.\\
+
+Un ensemble est dit complet si toute les suites de Cauchy qu'il contient sont convergentes. \\
+
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : pour prouver qu'une suite converge dans un espace métrique complet, il suffit de prouver qu'elle est de Cauchy.
+\end{itemize}
+
+Un ensemble \(U\subseteq X\) est dense si \(\Bar{U} = X\). \(X\) est dit séparable si il contient un ensemble dense dénombrable.\\
+
+Propriété : Soit \(X\) un espace métrique séparable. Tout sous-ensemble \(Y\) de \(X\) est aussi séparable.
+
+\chapter{Fonctions}
+Soit la fonction \(f\) \(: X\rightarrow Y : x\rightarrow f(x)\), avec \(X\) le domaine et \(Y\) le codomaine.\\
+
+Nous utilisons les conventions suivantes : 
+\begin{itemize}
+    \item \(f(U) \coloneqq \{f(x)|x\in U\}\) pour \(U \subseteq X\).
+    \item \(f^{-1}(V) \coloneqq\{x|f(x)\in V\}\) pour \(V\subseteq Y\).
+\end{itemize}
+\section{Définitions}
+\begin{itemize}
+    \item L'ensemble \(Im(f)\coloneqq f(X)\) est appelé l'ensemble image de la fonction \(f\), et \(X\) est son domaine.
+    \item Une fonction \(f\) est dite injective si \(\forall y\in Y\), il existe au plus un \(x\in X\) tel que \(f(x)=y\).
+    \item Une fonction \(f\) est dite sujective si \(Im(f) = Y\). 
+    \item Une fonction \(f\) est bijective si elle est injective et surjective.
+    \item Une fonction \(f\) entre deux espaces métriques \(X\) et \(Y\) est dite continue en un point \(X\) si 
+\end{itemize}
+\begin{equation}
+    \forall \varepsilon >0, \exists \delta >0\text{ } : \text{ } d_X(x,y) < \delta \Longrightarrow d_Y\left(f(x),f(y)\right) < \varepsilon
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les inégalités de cette définitions peuvent être stricte ou non strictes. Elle est équivalente à dire \(f\left(B_{\delta}(x)\right) \subseteq \Bar{B}_{\varepsilon}\left(f(x)\right)\).
+    \item Une fonction continue en chacun de ses points est dite continue. 
+    \item Une fonction \(f\) est dite isométrique si \(d_Y\left(f(x),f(y)\right) = d_X(x,y)\) et toute isométrie est continue.
+\end{itemize}
+\section{Propriétés}
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        f^{-1}\left(\cap_{\alpha} V_{\alpha}\right) = \cap_{\alpha}f^{-1}\left(V_{\alpha}\right)
+    \end{equation}
+    \begin{equation}
+        f\left(\cap_{\alpha} U_{\alpha}\right) \subseteq \cap_{\alpha}f\left(U_{\alpha}\right)
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        f^{-1}(Y\setminus V) = X \setminus f^{-1}(V)
+    \end{equation}
+    \begin{equation}
+        f(X) \setminus f(U) \subseteq f(X\setminus U)
+    \end{equation}
+\end{minipage}
+\begin{itemize}
+    \item Si \(d_Y\left(f(x),f(y)\right) \le k d_X(x,y)\text{ } \forall x,y\in X\), alors \(f\) est continue. 
+    \item Soient deux espaces métriques \(X,Y\). Les relations suivantes sont équivalentes :
+    \begin{itemize}
+        \item [\(\bullet\)] \(f\) est continue en \(x\).
+        \item [\(\bullet\)] \(f(x_n) \rightarrow f(x)\) lorsque \(x_n \rightarrow x\).
+        \item [\(\bullet\)] Pour tout voisinage \(V\) de \(f(x)\), la préimage \(f^{-1}(V)\) est un voisinage de \(x\).
+    \end{itemize}
+    \item Soit \(f \text{ : } X\rightarrow Y\) est continue ssi \(\forall U \subseteq Y\) ouvert (resp. fermé), \(f^{-1}(U)\) est un ouvert (resp. fermé) de \(X\).
+\end{itemize}
+\section{Topologie des produits}
+Soient deux espaces métriques \(X,Y\). \(X\times Y\) avec la distance \(d\left(x_1,y_1),(x_2,y_2\right)\) est un espace métrique.\\
+
+Une suite \((x_n,y_n)\) converge vers \((x,y)\) si \(x_n\rightarrow x\) et \(y_n\rightarrow y\). \\
+
+Par l'inégalité triangulaire
+\begin{equation}
+    |d(x_n,y_n) - d(x,y)| \le d(x_n,x) + d(y_n,y)
+\end{equation}
+on voit que \(d : X\times X\rightarrow\mathbb{R}\) est continue.
+\section{Compacité}
+\begin{itemize}
+    \item Le recouvrement de l'ensemble \(Y\subseteq X\) est une famille d'ensembles \(\{U_{\alpha}\}\) telle que \(Y \subseteq \cup_{\alpha}U_{\alpha}\).
+    \item Un recouvrement est ouvert si tous les \(U_{\alpha}\) sont ouverts.
+    \item Tout sous-ensemble de \(\{U_{\alpha}\}\) qui recouvre toujours \(Y\) est appelé un sous-recouvrement.
+    \item Un rafinement \(\{V_{\beta}\}\) du recouvrement \(\{U_{\alpha}\}\) est un recouvrement tel que pour tout \(\beta\), il existe un \(\alpha\) tel que \(V_{\beta} \subseteq U_{\alpha}\). 
+    \item Un recouvrement est dit fini localement si tout point possède un voisinage qui intersecte un nombre fini d'ensemble dans le recouvrement.
+    \item Un sous-ensemble \(K\subset X\) est dit compact si tout recouvrement ouvert de \(K\) possède un nombre fini de sous-recouvrements. 
+    \item Un ensemble est relativement compact si son adhérence est compacte.
+    \item Soit \(X\) un espace topologique.
+    \begin{itemize}
+        \item [\(\bullet\)] L'image continue d'un ensemble compact est compacte.
+        \item [\(\bullet\)] Tout sous-ensemble fermé d'un compact est compact.
+        \item [\(\bullet\)] Si \(X\) est Hausdorff, tout ensemble compact dans \(X\) est fermé.
+        \item [\(\bullet\)] L'union finie d'ensembles compacts est compacte.
+        \item [\(\bullet\)] Si \(X\) est Hausdorff, toute intersection d'ensembles compacts est compacte.
+    \end{itemize}
+    \item Un sous-ensemble \(K \subseteq X\) est dit séquentiellement compact si toute suite dans \(K\) possède une sous-suite convergente dont la limite appartient à \(K\).
+    \item [\(\rightarrow\)] Remarque : dans les espaces métriques, les termes "compact" et "séquentiellement compact" sont équivalents.
+    \item Un espace métrique \(X\) compact est complet et séparable.
+    \item Dans \(\mathbb{R}^n\), un ensemble est compact ssi il est borné et fermé.
+    \item Toute suite bornée dans \(\mathbb{R}^n\) admet une sous-suite convergente.
+    \item Soit \(X\) un ensemble compact. Toute fonction continue \(f :X\rightarrow\mathbb{R}^n\) atteint un maximum et un minimum.
+\end{itemize}
+\chapter{Espaces de Banach et de Hilbert}
+\section{Série de Fourier}
+Soit la fonction \(f : [-p/2;p/2] \rightarrow \mathbb{R}\). On voudrait que 
+\begin{equation}
+    f(x) = \sum_{k\in \mathbb{Z}} c_k e^{ik\frac{2\pi}{p}x} \Longrightarrow \lim_{k\rightarrow \infty}\sum_{k=-K}^Kc_k e^{ik\frac{2\pi}{p}x} = f(x)
+\end{equation}
+Afin que la notion de limite ait du sens, il faut définir un espace métrique \((\mathcal(F),d)\), où \(\mathcal{F}\) est l'espace admissible de fonctions.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : la fonction \(f\) est une série de Fourier, et ses parties réelle et imaginaire ont \(k\) périodes sur l'intervalle \([-p/2;p/2]\).
+    \item [\(\rightarrow\)] Remarque : le contenu fréquentiel d'une fonction est sa décomposition en série de Fourier.
+\end{itemize}
+\subsection{Applications - EDP}
+En EDP, la solution de l'équation de la chaleur est une série de Fourier.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(\partial_tu\equiv \frac{\partial u}{\partial t}\) et \(\partial_{xy}u\equiv \frac{\partial^2 u}{\partial x\partial y}\).
+\end{itemize}
+\subsection{Applications - Ajustement de courbes}
+Soient les points \((x_i,y_i), i=1,...,n\) tels que \(x_i < x_{i+1}\) et \(y_i<y_{i+1}\) \(\forall i\). Il est possible de trouver une fonction \(f\) qui approche au mieux ces points : 
+\begin{equation}
+    \min_{f\in \mathcal{F}}\sum_{i=1}^n|y_i-f(x_i)|^2 + \lambda \int\left(f''(x)\right)^2dx
+\end{equation}
+avec \(\mathcal{F}\) l'espace des fonctions admissibles, \(f\) la fonction objectif, et \(\lambda\) un paramètre qui évite les variations abruptes dans \(f\), i.e. si \(\lambda\) est très grand, \(f\) sera proche d'une droite et \(f\) est libre si \(\lambda\) est proche de 1.
+\section{Espace de Banach}
+\subsection{Définitions}
+Soit l'intervalle \(I = [a,b]\in \mathbb{R}\) un intervalle compact. Soit \(C(I)\) l'ensemble des fonctions continues sur \(I\), à valeurs réelles (ou complexes). 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : il est important que \(I\) soit fermé.
+\end{itemize}
+Utilisons comme norme la norme du maximum.\\
+
+Un espace vectoriel normé \(X\) est un espace vectoriel sur \(\mathbb{R}\) muni d'une fonction norme 
+\begin{equation}\label{eq:1}
+    \lVert \cdot \rVert \text{ } :X\rightarrow \mathbb{R}_{\ge0}\text{ } : f\rightarrow \lVert f\rVert
+\end{equation}
+telle que \(\forall f,g\in X,\) \(\forall \alpha \in \mathbb{R}\) : 
+\begin{itemize}
+    \item \(f\) est définie positive : \(\lVert f\rVert > 0\) si \(f\neq 0\)
+    \item Homogénéité positive :\(\lVert \alpha f\rVert = |\alpha|\lVert f \rVert\)
+    \item Inégalité triangulaire : \(\lVert f+g\rVert \le \lVert f \rVert + \lVert g\rVert\)
+    \item [\(\rightarrow\)] Remarque : l'espace vectoriel \(X\) muni de la distance \(d(f,g) \coloneqq\lVert f-g\rVert\) est un espace métrique.
+\end{itemize}
+L'inégalité triangulaire inverse est 
+\begin{equation}
+    \left|\lVert f\rVert - \lVert g\rVert\right| \le \lVert f-g\rVert
+\end{equation}
+Un espace normé est une paire \((X,\lVert\cdot\rVert)\) où \(X\) est un espace vectoriel réel et \(\lVert\cdot \rVert\) une norme sur \(X\).\\
+
+Un espace de Banach est un espace vectoriel normé complet.
+\subsection{Convexité}
+Soit \(X\) un espace vectoriel réel. Une partie \(C\) de \(X\) est dite convexe si, \(\forall x,y\in C\) et \(\lambda \in ]0,1[\), \(\lambda x + (1-\lambda)y \in C\). Soit \(C\subseteq X\).\\
+
+Une fonction \(F:C\rightarrow \mathbb{R}\) est dite convexe si \(\forall x,y\in C\) distincts et \(\lambda \in ]0,1[\), \(F\left(\lambda x+(1-\lambda)y\right) \le lambda F(x) + (1-\lambda) F(y)\). \(F\) est stricement convexe si l'inégalité est stricte. 
+\subsection{Théorèmes}
+La norme telle que définie à l'équation \ref{eq:1} est une fonction continue.\\
+
+Soit \(F\text{ } : X\rightarrow \mathbb{R}\). Si \(\left|F(x)-F(\Hat{x})\right| \le d(x,\Hat{x})\), \(\forall x,\Hat{x}\in X\), alors \(F\) est continue.\\
+
+L'espace des suites \(l^1(\mathbb{N}\) muni de la norme \(\lVert\cdot \rVert_1\) est un espace de Banach.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : un ensemble de suite muni de la norme \(\lVert\cdot \rVert_p\) est un espace de Banach pour tout \(p \in [1,\infty)\). Si \(p<1\), il y a un problème de connexité.
+\end{itemize}
+\(C(I)\), avec la norme \(\lVert \cdot \rVert_{\infty}\), est un espace de Banach, car \(C(I)\) est un espace vectoriel complet, et \(\lVert \cdot \rVert_{\infty}\) est une norme. 
+\subsection{Connexité}
+Soit la fonction \(\phi \text{ } X \rightarrow \mathbb{R}\), avec \(X\) un espace vectoriel. Cette fonction est connexe ssi
+\begin{equation}
+    \phi(\lambda x+(1-\lambda)\Hat{x}) \le \lambda \phi(x) + (1-\lambda)\phi(\Hat{x}), \text{  } \forall \lambda \in [0,1], \forall x,\Hat{x}\in X
+\end{equation}
+et \(\phi\) est strictement connexe si l'inégalité est stricte.\\
+
+Théorème : la fonction norme est une fonction connexe.
+\subsection{Espaces vectoriels normés particuliers}
+Soit \(1\le p< \infty\). L'espace vectoriel 
+\begin{equation}
+    l^p = \left\{u:\mathbb{N} \rightarrow \mathbb{R} : \sum_{n=0}^{\infty} |u(n)|^p<\infty\right\}
+\end{equation}
+est muni de la norme 
+\begin{equation}
+    \lVert u\rVert_p = \left(\sum_{n=0}^{\infty} |u(n)|^p\right)^{1/p}
+\end{equation}
+L'espace vectoriel 
+\begin{equation}
+    l^{\infty} = \left\{u:\mathbb{N} \rightarrow \mathbb{R} : \sup_{n\in \mathbb{N}} |u(n)|<\infty\right\}
+\end{equation}
+est muni de la norme 
+\begin{equation}
+    \lVert u\rVert_\infty = \sup_{n\in \mathbb{N}} |u(n)|
+\end{equation}
+\subsection{Span}
+Soit \(\delta^n = (\delta_{n,m})_{m\in \mathbb{N}}\) le delta de Kronecker. \(\delta^n \in l^p(\mathbb{N})\).\\
+
+Soit \(\{u_n\}_{n\in mathcal{N}} \subset X\). Le sous-espace vectoriel engendré par cette suite est 
+\begin{equation}
+    span\{u_n\}_{n\in \mathcal{N}} \coloneqq \left\{\sum_{j=1}^m{\alpha_ju_{n_j}}| n_j \in \mathbb{N}, \alpha_j \in \mathbb{R}, m\in \mathbb{N}\right\}
+\end{equation}
+C'est l'ensemble des combinaisons linéaires finies des \(u_n\). \\
+
+Le support d'une suite de fonctions est l'adhérence de l'ensemble des points auxquels la fonction prend des valeurs non nulles.\\
+
+Un ensemble est totoal si son span est dense dans \(X\).\\
+
+Un ensemble vectoriel normé est séparable s'il contient un ensemble dense dénombrable.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : pour \(1\le p<\infty\), l'ensemble \(\{\delta^i\}\subset l^p(\mathbb{N})\) est total et dénombrable, donc \(l^p(\mathbb{N})\) est séparable pour \(1\le p< \infty\).
+\end{itemize}
+\subsection{Lissage}
+Soit \(\{u_n\}_n\) une suite de fonctions continues non négatives sur \([-1,1]\) telle que \(\forall \delta >0\), \(\int_{|x|\le 1}u_n(x)dx = 1\) et \(\int_{\delta \le |x|\le 1}u_n(x)dx \xlongrightarrow[n\rightarrow\infty]{ } 0\). Alors \(\forall f\in C\left([-1/2,1/2]\right)\) telle que \(f(-1/2) = f(1/2)=0\) : \(f_n (x) \coloneqq\int_{-1/2}^{1/2}u_n(x-y)f(y)dy \xlongrightarrow[n\rightarrow \infty]{\text{uniforme}} f(x)\).\\
+- \underline{Théorème de Weierstraß :}\\
+
+L'ensemble des polynôme est dense dans \(C(I)\). De plus, les polynômes \(x^i\) sont totaux dans \(C(I)\) et \(C(I)\) est donc séparable.
+
+\section{Espaces de Hilbert}
+\subsection{Définitions}
+\begin{itemize}
+    \item Soit \(\mathcal{H}\) un espace vectoriel sur \(\mathbb{R}\). Une fonction \(<\cdot, \cdot> : \mathcal{H} \times \mathcal{H} \rightarrow \mathbb{R}\) est un produit scalaire si elle est 
+    \begin{itemize}
+        \item [\(\bullet\)] bilinéaire : linéaire pour chaque membre.
+        \item [\(\bullet\)] symétrique : \(<f,g> = <g,f>\), \(\forall f,g\in \mathcal{H}\).
+        \item [\(\bullet\)] définie positive : \(<f,f>\) \( > 0\) si \(f\neq 0\).
+    \end{itemize}
+    \item [\(\rightarrow\)] Remarque : on en déduit que \(<f,f> > 0 \Longleftrightarrow f\neq 0\) et \(<f,f> \ge 0\) \(\forall f\).
+    \item Un espace à produit scalaire (préhilbertien) est un espace vectoriel muni d'un produi scalaire.
+    \item Un espace à produit scalaire muni de la norme \(\lVert f\rVert \coloneqq \sqrt{<f,f>}\) est un espace vectoriel normé, et donc un espace métrique pour \(d(f,g) \coloneqq \lVert f-g\rVert\).
+    \item Un espace de Hilbert est un espace à produit scalaire complet (= Banach avec produit scalaire). 
+    \item Soient deux fonctions \(f,g\in \mathcal{H}\). Elles sont orthogonales si \(<f,g> =0\), et prallèles si l'une est multiple de l'autre.
+    \item Soit \(I = [a,b]\). Dans \(C(I)\), on peut définir le produit scalaire suivant : \(<f,g> \coloneqq \int_a^bg(x)f(x)dx\).
+    \item L'espace \(\mathcal{L}^2_{cont}(I)\) est \(C(I)\) muni du produit scalaire défini ci-dessus. Cet ensemble est séparable, mais pas complet (donc pas de Hilbert).
+    \item \(\lVert f\rVert^2 \coloneqq \sqrt{\int_a^bg(x)f(x)dx}\).
+    \item [\(\rightarrow\)] Remarque : \(\lVert f\rVert_2 \le \sqrt{b-a}\lVert f\rVert_{\infty}\), i.e. la norme du maximum est plus forte que les autres.
+\end{itemize}
+\subsection{Théorème de Pythagore}
+Soient deux fonctions \(f,g\in \mathcal{H}\). Si \(f\perp g\), alors 
+\begin{equation}
+    \lVert f+g\rVert^2 = \lVert f\rVert^2 + \lVert g\rVert^2
+\end{equation}
+\subsection{Projection}
+Soient les vecteurs \(f,u\in\mathcal{H}\), avec \(u\) unitaire. On peut décomposer \(f\) en deux vecteurs \(f_{//},f_{\perp}\) tels que 
+\begin{equation}
+    \begin{cases}
+        f_{//} = \alpha u\text{, } \alpha\in \mathbb{R}\\
+        <f_{\perp},u>=0\\
+        f = f_{//} + f_{\perp}\\
+    \end{cases}
+\end{equation}
+Le seul couple de vecteurs satisfaisant ces critères sont 
+\begin{equation}
+    f = \color{red}\left[\color{black}<u,f> u\color{red}\right] \color{black} + \color{blue}\left[\color{black}f - <u,f>u\color{blue}\right]\color{black} = \color{red}f_{//}\color{black} + \color{blue}f_{\perp}\color{black}
+\end{equation}
+\(f_{//}\) est la projection de \(f\) sur \(\mathbb{R}u\coloneqq\{\alpha u|\alpha\in \mathbb{R}\}\)\footnote{Ensemble des points réels appartenant à la droite engendrée par \(u\).}.
+\subsection{Théorème de Cauchy-Schwarz}
+Soit \(\mathcal{H}\) un espace à produit scalaire. Alors \(\forall f,g\in \mathcal{H}:\)
+\begin{equation}
+    |<f,g>| \le \lVert f\rVert \lVert g\rVert
+\end{equation}
+avec l'égalité ssi \(f\) et \(g\) sont parallèles.\\
+
+- \underline{Conséquences :}
+\begin{itemize}
+    \item \(\mathcal{H} \times \mathcal{H} \rightarrow \mathbb{R} : f,g \rightarrow <f,g>\) est continue.
+    \item \(\lVert \cdot \rVert \coloneqq \sqrt{<\cdot,\cdot>}\) satisfait l'inégalité triangulaire.
+\end{itemize}
+\subsection{Théorème de Jordan-von Neumann}
+Soit \(\lVert\cdot\rVert\) une norme. Alors il existe \(<\cdot,\cdot>\) telle que \(\lVert\cdot\rVert = \sqrt{<\cdot,\cdot>}\) ssi
+\begin{equation}
+    \forall f,g\text{, } \lVert f+g\rVert^2 + \lVert f-g\rVert^2 = 2\lVert f\rVert^2 + 2 \lVert g\rVert^2
+\end{equation}
+C'est la règle du parallélogramme (somme des côtés² == somme des diagonales²).\\
+
+Dans ce cas, on retrouve le produit scalaire à partir de la norme : 
+\begin{equation}
+<f,g> = \frac{1}{4}\left(\lVert f+g\rVert^2 - \lVert f-g\rVert^2\right)
+\end{equation}
+\subsection{Compacité}
+La boule unité fermée d'un espace de Banach \(X\), i.e. 
+\begin{equation}
+    \Bar{B}_1(0) = \{f\in X|\lVert f\rVert \le 1\}
+\end{equation}
+est compacte ssi \(X\) est de dimension finie.
+\chapter{Opérateurs linéaires}
+\section{Définition}
+Si \(X\) et \(Y\) sont des espaces vectoriels sur \(\mathbb{C}\), \(A:\mathcal{D}(A)\subset X\rightarrow Y\) est un opérateur linéaire lorsque, pour tout \(x_0,x_1\in \mathcal{D}(A), \lambda_0,\lambda_1\in \mathbb{C}\), on a
+\begin{equation}
+    \lambda_0x_0+\lambda_1x_1\in \mathcal{D}(A) \Longrightarrow A(\lambda_0x_0+\lambda_1x_1) = \lambda_0Ax_0 + \lambda_1Ax_1
+\end{equation}
+\section{Opérateur linéaire borné}
+\(A\) est borné lorsque 
+\begin{equation}
+    \lVert A \rVert = \sup_{f\in \mathcal{D}(A) \lVert f\rVert_X = 1} \lVert Af\rVert_Y < \infty
+\end{equation}
+\section{Opérateurs continus et bornés}
+Soit \(A : \mathcal{D}(A)\subset X \rightarrow Y\) un opérateur linéaire. Les propriétés suivantes sont équivalentes (voir démonstration \ref{CB}) :
+\begin{itemize}
+    \item \(A\) est borné,
+    \item l'image de \(\mathcal{D}(A) \cap \Bar{B}_1(0)\) est bornée,
+    \item l'image de tout sous-ensemble borné de \(\mathcal{D}(A)\) est borné,
+    \item \(A\) est continu en \(0\),
+    \item \(A\) est continu sur \(\mathcal{D}(A)\),
+    \item \(A\) est uniformément continu sur \(\mathcal{D}(A)\),
+    \item \(A\) est lipschitzien.
+\end{itemize}
+Si \(A:\mathcal{D}(A)\subseteq X\rightarrow Y\) est un opérateur linéaire et si \(\dim\mathcal{D}(A)<\infty\), alors \(A\) est borné. 
+\section{Prolongement continu d'un opérateur linéaire}
+Si \(A:\mathcal{D}(A)\rightarrow Y\) est borné, si \(\mathcal{D}(A)\) est dense dans \(X\), et si \(Y\) est complet, alors \(A\) admet un prolongement continu unique à \(X\) tout entier.
+\section{Espace des applications linéaires}
+On définit\footnote{La fonction \(\lVert \cdot \rVert\) est une norme sur \(\mathcal{L}(X,Y)\).} \(\mathcal{L}(X,Y)\coloneqq \{A:X\rightarrow Y|A\text{ est linéaire et } \lVert A\rVert <\infty\}\).\\
+Si \(Y\) muni de \(\lVert\cdot\rVert_Y\) est complet, alors \(\mathcal{L}(X,Y)\) muni de \(\lVert\cdot\rVert\) est complet.
+\section{Espace dual}
+On définit\footnote{La fonction \(\lVert\cdot\rVert\) est une norme sur \(X^*\).} \(X^* \coloneqq \mathcal{L}(X,\mathbb{C})=\{A:X\rightarrow \mathbb{C}|A \text{ est linéaire et }\lVert A\rVert <\infty\}\).\\
+
+L'espace \(X^*\) muni de \(\lVert\cdot\rVert\) est complet.
+\chapter{Bases, projection et représentation du dual dans les espaces de Hilbert}
+\section{Bases d'espaces vectoriels normés}
+\begin{itemize}
+    \item Pour une base d'un espace de dimension finie, voir cours LEPL1101 Algèbre.
+    \item Une base est de Hamel si tout vecteur s'écrit comme une combili finie de vecteurs de base. Elle est, en général, non dénombrable (toujours si l'espace vectoriel est complet).
+    \item Une base est de Schauer si tout vecteur s'écrit comme une combili infinie de vecteurs de base. Une telle base n'existe pas pour tout les espaces normés. 
+\end{itemize}
+\subsection{Ensemble orthonormé}
+Un ensemble \(\{u_j\}_{j\in J}\) dans \(\mathcal{H}\) est un ensemble orthonormé lorsque 
+\begin{equation}
+    \langle u_J,u_K\rangle = 
+    \begin{cases}
+        1 \text{ si } j=k\\
+        0 \text{ si } j\neq k\\
+    \end{cases}
+\end{equation}
+\subsection{Décomposition orthogonale}
+Les relations suivantes sont vraies aussi bien dans le cas fini que le cas infini, mais il faut que \(J\) soit fini dans le cas fini. 
+Si \(\{u_j\}_{j\in J}\) est une famille orthonormée, alors pour tout \(f\in \mathcal{H}\),
+\begin{itemize}
+    \item \(f_{\|} \coloneqq \sum_{j\in J} \langle u_j,f\rangle u_j\) et \(f_{\perp} \coloneqq f- f_{\|}\) existent.
+    \item \(\langle f_{\|},f_{\perp}\rangle = 0\)
+    \item \(\lVert f\rVert^2 = \lVert f_{\|}\rVert^2 + \lVert f_{\perp}\rVert ^2\)
+    \item \(\lVert f_{\|}\rVert^2 = \sum_{j\in J} |\langle u_j,f\rangle|^2\)
+    \item \(\forall j\in J\), \(\langle f_{\perp},u_j\rangle = 0\)
+    \item Si \(\Hat{f}\) est limite de combili de \(\{u_j\}_{j\in J}\), alors \(\lVert\Hat{f}-f\rVert^2\ge \lVert f_{\|} - f\rVert^2\)
+\end{itemize}
+\subsection{Inégalité de Bessel}
+Dans le cas fini, si \(\{u_j\}_{j\in \mathbb{N}}\) est une famille orthonormée, alors pour tout \(f\in \mathcal{H}\), 
+\begin{equation}
+    \sum_{j\in J} |\langle u_j,f\rangle|^2 \le \lVert f\rVert^2
+\end{equation}
+\subsection{Somme des carrés pour un ensemble orthonormé infini}
+Soit \(\{u_j\}_{j\in J}\) un ensemble orthonormé dans \(\mathcal{H}\). Si \(K\subseteq J\) est fini, par l'inégalité de Bessel, 
+\begin{equation}
+    \sum_{j\in K} |\langle u_j,f\rangle|^2 \le \lVert f\rVert^2
+\end{equation}
+\begin{equation}
+    \sum_{j\in J} |\langle u_j,f\rangle|^2 = \sup{\sum_{j\in K} |\langle u_j,f\rangle|^2|K\subseteq J \text{ fini}}\le \lVert f\rVert^2 < +\infty
+\end{equation}
+Il existe \(K_n \subseteq J\) finis tels que \(\lim_{n\rightarrow \infty} \sum_{j\in K_n} |\langle u_j,f\rangle|^2 = \sum_{j\in J} |\langle u_j,f\rangle|^2\)
+\section{Base orthonormée}
+\(\{u_j\}_{j\in \mathbb{N}}\) est une base orthnormée lorsque pour tout \(f\in \mathbb{N}\), 
+\begin{equation}
+    f = \sum_{j\in J} \langle u_j,f\rangle u_j
+\end{equation}
+avec \(J\) un ensemble infini dénombrable.
+\subsection{Base orthonormée de \(l^2(\mathbb{N})\)}
+On définit 
+\begin{equation}
+    \delta_k^n \coloneqq
+    \begin{cases}
+        1 \text{ si } k=n\\
+        0 \text{ sinon}
+    \end{cases}
+\end{equation}
+Si \(a \in l^2(\mathbb{N})\), alors 
+\begin{equation}
+    \left\lVert \sum_{j=1}^n \langle \delta^j,a\rangle \delta^j -a\right\rVert^2_2 = \sum_{j=n+1}^\infty |a_j|^2 \rightarrow 0\text{, }n\rightarrow \infty
+\end{equation}
+\subsection{Caractérisation des bases orthonormées}\label{Cbo}
+Soit \(\{u_j\}_{j\in J}\) un ensemble orthonormé de \(\mathcal{H}\) espace de Hilbert. On a équivalence entre
+\begin{itemize}
+    \item \(\{u_j\}_{j\in J}\) est un ensemble orthonormé maximal, i.e. n'est plus orthonormé si on ajoute un vecteur.
+    \item pour tout \(f\in \mathcal{H}\), \(f=\sum_{j\in j}\langle u_j,f\rangle u_j\).
+    \item pour tout \(f\in \mathcal{H}\), \(\lVert f\rVert^2 = \sum_{j\in J} |\langle u_J,f\rangle|^2\).
+    \item \(\{f\in \mathcal{H}| \forall j\in J, \langle u_j,f\rangle =0\} = \{0\}\).
+\end{itemize}
+Théorème : tout espace de Hilbert admet une base.\\
+
+Si \(\mathcal{H}\) est séparable, on utilise la technique de Gram-Schmidt de LEPL1101 et l'axiome du choix sinon.
+\section{Projection orthogonale}
+Soit \(M\) un sous-espace vectoriel fermé de \(\mathcal{H}\) espace de Hilbert. Il existe \(P_M\in Lin(\mathcal{H},\mathcal{H})\)\footnote{\(Lin(X,Y)\equiv \) application linéaire de l'espace \(X\) vers l'espace \(Y\)} tel que 
+\begin{itemize}
+    \item Pour tout \(f\in \mathcal{H}\), \(P_M f\in M\).
+    \item Pour tout \(f\in \mathcal{H}\) et \(g\in M\), \(\langle f-P_Mf, g\rangle = 0\).
+    \item Pour tout \(g\in M\), \(\lVert P_Mf-f\rVert\le \lVert g-f\rVert\).
+    \item Pour tout \(f\in M\), \(p_Mf = f\).
+\end{itemize}
+\subsection{Lemme de Riesz}
+Soit \(\mathcal{H}\) un espace de Hilbert et \(l\in \mathcal{H}^{*} = Lin(\mathcal{H}, \mathbb{C})\), alors il existe \(g\in \mathcal{H}\) tel que pour tout \(f\in \mathcal{H}\), 
+\begin{equation}
+    l(f) = \langle g,f\rangle 
+\end{equation}
+\chapter{Séries de Fourier}
+\section{Base de Fourier}
+Soit le produit scalaire 
+\begin{equation*}
+    \int_{-\pi}^{\pi} f^{*}(x)g(x)dx
+\end{equation*}
+Si on définit les vecteurs de unitaires \(e_k(x) = \frac{e^{ikx}}{\sqrt{2\pi}}\), on a 
+\begin{equation}
+    \int_{-\pi}^{\pi} e_k^{*}(x)e_l(x) dx = \delta_{k,l}
+\end{equation}
+Cela signifie que les vecteurs \(e_k(x)\) forment un ensemble orthonormé (et une base).
+\section{Séries de Fourier et noyau de Dirichlet}
+Soit la fonction \(f\) périodique que l'on veut idéalement réécrire sous la forme 
+\begin{equation}
+    f(x) = \sum_{k\in \mathbb{z}} \Hat{f}_k e^{ikx}\qquad \Hat{f}_k \int_{-\pi}^{\pi} e^{-iky}f(y)dy
+\end{equation}
+Définissons la somme partielle \(S_n(f)(x)\):
+\begin{equation}
+    S_n(f)(x) \coloneqq \sum_{k=-n}^n \Hat{f}_k e^{ikx} = \frac{1}{2\pi} \int_{-\pi}^{\pi} D_n(x-y)f(y)dy
+\end{equation}
+avec \(D_n(x)\) le noyau de Dirichlet défini tel que
+\begin{equation}
+    D_n(x) \coloneqq \sum_{k=-n}^{n} e^{ikx} = \frac{\sin{\left((n+\frac{1}{2})x\right)}}{\sin{(x/2)}}
+\end{equation}
+On observe que les coefficients \(D_n(x)\) sont pairs et périodiques de période \(2\pi\). De plus, leur intégrale sur une période vaut \(2\pi\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(D_n(0) = 2n+1\)
+\end{itemize}
+\subsection{Théorème de la divergence des séries de Fourier}
+Il existe une fonction \(f : \mathbb{R} \rightarrow \mathbb{C}\) de période \(2\pi\) continue telle que la suite \(\left(S_n(f)(0)\right)_{n\in \mathbb{N}}\) n'est pas bornée, i.e. ne converge pas ni ne converge absolument.
+\begin{equation}
+    \int_{-\pi}^{\pi} |D_n(x)| dx \rightarrow \infty
+\end{equation}
+\section{Sommes moyennées et noyau de Féjer}
+Les sommes partielles ont des frontières brusques : on prend tous les éléments, puis plus aucun. On va alors définir la moyenne des \(n\) premières sommes afin que chaque terme de celles-ci ait une pondération différente dans la moyenne, selon le nombre de fois qu'il est pris.
+\begin{equation}
+    \Bar{S}_n(f)(x) \coloneqq \frac{1}{n} \sum_{k=0}^{n-1} S_k(f)(x) = \frac{1}{2\pi} \int_{-\pi}^{\pi} F_n(x-y)f(y)dy
+\end{equation}
+avec \(F_n(x)\) le noyau de Féjer défini tel que 
+\begin{equation}
+    F_n(x) \coloneqq \frac{1}{n} \sum_{k=0}^{n-1} D_k(x) = \frac{1}{n} \left(\frac{\sin{(nx/2)}}{\sin{x/2}}\right)^2
+\end{equation}
+et donc toujours positif. Il est, de plus, pair et périodique de période \(2\pi\). Son intégrale sur une période vaut \(2\pi\) :
+\begin{equation*}
+    \int_{-\pi}^{\pi} F_n(x) dx = \int_{-\pi}^{\pi} |F_n(x)| dx = 2\pi
+\end{equation*}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(F_n(0) = n\)
+\end{itemize}
+\subsection{Convergence des sommes de Féjer}
+Par périodicité de \(F_n\) et \(f\), 
+\begin{equation}
+    \Bar{S}_n(f)(x) = \frac{1}{2\pi} \int_{-\pi}^{\pi}F_n(x-y)f(y)dy = \frac{1}{2\pi} \int_{-\pi}^{\pi}F_n(z)f(x-z)dz
+\end{equation}
+Puisque \(\int_{-\pi}^{\pi} F_n(z)dz = 2\pi\) et \(F_n \ge 0\),
+\begin{equation}
+    \left| \Bar{S}_n (f)(x) - f(x)\right| \le \frac{1}{2\pi} \int_{-\pi}^{\pi} F_n(z) |f(x-z)-f(x)|dz
+\end{equation}
+\begin{equation}
+    \le \frac{1}{2\pi} \left(\int_{-\delta}^{\delta} F_n(z) |f(x-z)-f(x)|dz + \int_{-\pi}^{-\delta} F_n(z) |f(x-z)-f(x)|dz + \int_{\delta}^{\pi} F_n(z) |f(x-z)-f(x)|dz\right) 
+\end{equation}
+\begin{equation}
+    \le \sup_{z\in [-\delta, \delta]} |f(x-z)-f(x)| + \frac{2\lVert f\rVert_{\infty}}{n \sin^2{(\delta/2)}}
+\end{equation}
+Dans \(\mathcal{L}^2\), la moyenne des sommes partielles converge donc vers la fonction \(f\) :
+\begin{equation}
+    \left\lVert\Bar{S}_n(f) - \sum_{k\in \mathbb{z}} \langle e^{ikx},f\rangle e^{ikx}\right\rVert_2 \rightarrow 0
+\end{equation}
+et donc si \(f\) est continue et périodique, alors 
+\begin{equation}
+    \color{red}\boxed{\color{black}f = \sum_{k\in \mathbb{Z}} \langle e^{ikx},f\rangle e^{ikx}}\color{black}
+\end{equation}
+où les vecteurs \(e_k(x)\) forment une base orthonormée.
+\subsection{Théorème}
+A partir des propriétés de la projection orthogonale du point \ref{Cbo}, on déduit le théorème suivant : \\
+
+Ces propriétés sont équivalentes :
+\begin{itemize}
+    \item \(\{e^{ikx}\}_{k\in \mathbb{N}}\) est un ensemble orthonormé maximal de \(\mathcal{L}^2[-\pi,\pi]\)
+    \item Pour tout \(f\in \mathcal{L}^2[-\pi,\pi]\), \(\lim_{n\rightarrow\infty} \lVert S_n(f) - f\rVert_2 = 0\)
+    \item Pour tout \(f\in \mathcal{L}^2[-\pi,\pi]\), \(\sum_{k\in \mathbb{Z}} |\Hat{f}_k|^2 = \frac{1}{2\pi} \int_{-\pi}^{\pi} |f(x)|^2dx\)
+    \item Si \(f\in \mathcal{L}^2[-\pi,\pi]\) et \(\int_{-\pi}^{\pi} e^{-ikx}f(x)dx = 0\) pour tout \(k\in \mathbb{N}\), alors \(f=0\)
+\end{itemize}
+\chapter{Théorie de la mesure}
+\section{Contenu de Jordan}
+\begin{minipage}{.5\textwidth}
+    Soit \(\mathcal{S}^n\) l'ensemble des rectangles semi-fermés, soit \(\|R| = \prod_{i} (b_i-c_i)\) le volume de \(R = ]c_1,b_1] \times \ldots\times]c_n,b_n] \). \\
+
+On définit le contenu de Jordan intérieur par 
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+\begin{center}
+    \includegraphics[width = .7\textwidth]{img/Jordan.png}
+\end{center}
+\end{minipage}
+\begin{equation}
+    J_{*}(A) = \sup{\left\{ \sum_{j=1}^m|R_j| | \cup_{j=1}^m R_j \subseteq A \text{ et } R_i \in \mathcal{S}^n \text{ disjoints}\right\}}
+\end{equation}
+et le contenu de Jordan extérieur par 
+\begin{equation}
+    J^{*}(A) = \inf{\left\{ \sum_{j=1}^m|R_j| | \cup_{j=1}^m R_j \supseteq A \text{ et } R_i \in \mathcal{S}^n \text{ disjoints}\right\}}
+\end{equation}
+Un ensemble \(A \subset \mathbb{R}^n\) est dit mesurable au sens de Jordan lorsque \(J_{*}(A) = J^{*}(A)\). 
+\subsection{Contenus de Jordan des rationnels}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : dans \(\mathbb{Q}\), les rectangles de \(\mathcal{S}^n\) sont des intervalles.
+\end{itemize}
+\begin{minipage}{.5\textwidth}
+    Si 
+    \begin{equation}
+        \cup_{j=1}^m]a_j,b_j] \subseteq [0,1]\cap \mathbb{R}
+    \end{equation}
+    alors \(a_j = b_j\), car il n'existe pas d'intervalle contenant uniquement des rationnels.
+    \begin{equation}
+        \sum_{j=1}^m (b_j-a_j) = 0 \Longrightarrow J_{*}(\mathbb{Q}\cap [0,1]) = 0
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Si 
+    \begin{equation}
+        \cup_{j=1}^m]a_j,b_j] \supseteq [0,1]\cap \mathbb{R}
+    \end{equation}
+    alors \(\cup_{j=1}^m]a_j,b_j] \supseteq [0,1]\), car \([0,1] \supseteq [0,1] \cap \mathbb{Q}\).
+    \begin{equation}
+        \sum_{j=1}^m (b_j-a_j) \ge 1 \Longrightarrow J^{*}(\mathbb{Q}\cap [0,1]) \ge 1
+    \end{equation}
+\end{minipage}
+\begin{center}
+    \includegraphics[width = \textwidth]{img/CSV.png}
+\end{center}
+Cela signifie que les rationnels prennent de la place dans les réels, mais qu'ils ne contiennent rien.
+\subsection{Ensembles de Cantor-Smith-Volterra} 
+Soit l'intervalle \(C_0 = [0,1]\) sur les réels. On crée la suite d'ensembles \(\{C_n\}_{n\in \mathbb{N}}\) avec \(c_1 = C_0\) auquel on retir une certaine proportion \(x\) au milieu de l'intervalle, et on fait ça pour chaque \(c_n\).
+\begin{equation}
+    C = \cap_{k=0}^\infty C_k
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(C_\infty\) n'est pas vide car il contient au moins les bornes 0 et 1.
+    \item \(C_k\) est une réunions de \(2^k\) intervalles fermés de longueur \(c_k/2^k\), avec \((c_k)_{k\le 0}\) strictement positive, strictement décroissante, avec \(c_0 =1\).
+    \item \(C_k \subset C_{k-1}\) et \(\partial C_k \supset \partial C_{k-1}\)
+\end{itemize}
+On peut prouver que 
+\begin{equation}
+    J_{*}(C) = 0 \qquad J^{*} = \lim_{k\rightarrow \infty}c_k
+\end{equation}
+L'ensemble de CSV n'est pas dénombrable. En effet, si \((a_n)_{n\in \mathbb{N}}\) est une suite de points de \(C\), on pose \(I_0 = C_0\). Pour \(n\in \mathbb{N}\), on prend \(I_n\) un intervalle composant \(I_{n-1}\cap C_n\) tel que \(a_n \notin I_n\) et on prend \(x_n \in I_n\). \((x_n)_{n\in \mathbb{N}}\) converge vers un point n'appartenant pas à \(\{a_n | n\in \mathbb{N}\}\).
+\section{Mesure de Lebesgue}
+On définit la mesure de Lebesgue extérieure d'un ensemble \(A \subseteq \mathbb{R}^n\) comme
+\begin{equation}
+    \lambda^{n,*}(A) = \inf{\left\{ \sum_{j=1}^{\color{red}\infty\color{black}}|R_j| | \cup_{j=1}^{\color{red}\infty\color{black}} R_j \supseteq A \text{ et } R_i \in \mathcal{S}^n\right\}}
+\end{equation}
+\begin{equation}
+    \lambda^{1,*}([0,1]) = 1 \qquad \lambda^{1,*}(\mathbb{Q}) = 0
+\end{equation}
+\section{Définitions de \(\sigma\)-algèbre et mesure}
+Une \(\sigma\)-algèbre est un ensemble de sous-ensembles, \(\sigma\) pour dénombrable.\\
+
+\(\Sigma\subseteq \mathfrak{B}(X)\) est une \(\sigma\)-algèbre lorsque 
+\begin{itemize}
+    \item \(\emptyset \in \Sigma\)
+    \item si pour \(j \in \mathbb{N}, A_j \in \Sigma\), alors \(\cap_{j\in \mathbb{N}} A_j \in \Sigma\)
+    \item si \(A\in \Sigma, X\setminus A \in \Sigma\)
+\end{itemize}
+Par conséquent, \(\cup_{j\in \mathbb{N}} \in \Sigma\).\\
+
+\(\mu : \Sigma \rightarrow [0,\infty]\) est une mesure lorsque 
+\begin{itemize}
+    \item \(\mu(\emptyset) = 0\)
+    \item Si pour \(j \in \mathbb{N}, A_j \in \Sigma\) et \(A_i \cap A_j = \emptyset\) pour \(i \neq j\), alors
+\end{itemize}
+\begin{equation}
+    \mu\left(\cup_{j\in \mathbb{N}} A_j\right) = \sum_{j\in \mathbb{N}} \mu(A_j)
+\end{equation}
+Par conséquent, si \(A,B \in \Sigma\) et \(A \subseteq B\), alros \(\mu(A) \le \mu(A) + \mu(B\setminus A) = \mu(B)\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les intersections et réunions sont dénombrables.
+\end{itemize}
+Soit \(\mathfrak{B}(X)\) la plus grande \(\sigma\)-algèbre existant sur l'ensemble  \(X\). \\
+La plus petite \(\sigma\)-algèbre existant sur \(X\) est \(\Sigma = \{\emptyset, X\}\).\\
+\subsection{\(\sigma\)-algèbre borélienne}
+On définit \(\mathcal{B}\) comme la plus petite \(\sigma\)-algèbre contenant tous les ouverts\footnote{et donc tous les fermés, car ce sont les complémentaires des ouverts.}.
+\subsection{Mesure de Dirac}
+\begin{equation}
+    \sigma : \mathfrak{B}(X) \rightarrow [0,\infty] : A \rightarrow \mu(A) = \begin{cases}
+        1 \text{ si } x\in A\\
+        0 \text{ sinon}\\
+    \end{cases}
+\end{equation}
+\subsection{Mesure de Lebesgue}
+L'idée de la mesure de Lebesgue est de définir pour \(A \in \mathfrak{B}(\mathbb{R}^n)\), \(\lambda^n(A) = \lambda^{n,*}(A)\). Cependant, cela n'est pas possible. \\
+
+La solution est de définir pour \(A \in \mathcal{B}(\mathbb{R}^n)\), \(\lambda^n(A) = \lambda^{n,*}(A)\). Et le théorème : \\
+
+\(\lambda^n\) est une mesure sur \(\mathcal{B}(\mathbb{R}^n)\).
+\subsection{Ensembles négligeables}
+Si \(\mu : \Sigma \rightarrow [0,\infty]\) est une mesure, l'ensemble \(A \in \Sigma\) est négligeable lorsque \(\mu(A) = 0\). \\
+
+\(A \subset \mathbb{R}^n\) est négligeable si \(\lambda^{n,*}(A)=0\).
+\begin{itemize}
+    \item Si \(A \subset \mathbb{R}^n\) est dénombrable, \(A\) est négligeable : \(\lambda^1(A) = \sum_{a\in A} \lambda^1(\{a\}) = 0\).
+    \item Les ensembles de Cantor ne sont jamais dénombrables.
+\end{itemize}
+\chapter{Intégration}
+\section{Fonction Borel-mesurable}
+La fonction \(f:X\rightarrow Y\) est Borel-mesurable lorsque, pour tout \(A \in \mathcal{B}(Y)\), \(f{-1}(A) \in \mathcal{B}(X)\), i.e. l'image inverse de tout ensemble est borélien. 
+\subsection{Propriétés}
+\begin{itemize}
+    \item Composée : Si \(f:X\rightarrow Y\) et \(g:X\rightarrow Y\) sont Borel-mesurables, alors \(g\circ f:X\rightarrow Z\) est Borel-mesurable.
+    \item Ouverts : la fonction \(f :X\rightarrow Y\) est Borel-mesurable ssi pout tout \(A\subseteq Y\) ouvert, \(f^{-1}(A) \in \mathcal{B}(X)\).
+    \item Continuité : si \(f:X\rightarrow Y\) est continue, alors \(f\) est Borel-mesurable.
+    \item Composantes : la fonction \(f =(f_1,f_2) :X\rightarrow \mathbb{R}^2\) est Borel-mesurbale ssi \(f_1,f_2\) sont Borel-mesurables.
+    \item Opérations : si \(f,g : X\rightarrow \mathbb{R}\) sont Borel-mesurables, alors \(f+g\), \(fg\), \(\max(fg)\), \(\min(f,g)\) sont Borel-mesurables.
+    \item Limite ponctuelle d'une suite de fonctions Borel-mesurables : si pour tout \(n\in \mathbb{N}\) la fonction \(f_n:X\rightarrow Y\) est Borel-mesurable, si \(Y\) est un espace métrique et si \((f_n)_{n\in \mathbb{N}}\) converge ponctuellement (donc en tout point) vers \(f\), alors \(f\) est Borel-mesurable.
+    \item [\(\rightarrow\)] Remarque : l'image inverse de la fonction \(f\) peut s'écrire \(f^{-1}(A) = \cup_{i\in \mathbb{N}}\cup{j\in \mathbb{N}} \cap_{n=j}^{\infty} f^{-1}_n(A_i)\), i.e. la réunion sur les ensmebles \(A_i\) des réunions des suites d'intersection d'images inverses.
+\end{itemize}
+\section{Intégrale de fonctions simples}
+\(s:X\rightarrow \mathbb{R}\) est une fonction simple lorsque \(s\) est mesurable et qu'il existe \(p\in \mathbb{N}\) et \(\alpha_1,...\alpha_p\in \mathbb{R}\) tels que pour tout \(x\in X\), \(s(x)\in \{\alpha_1,...\alpha_p\}\).\\
+
+Pour la fonction simple \(s:X\rightarrow [0,\infty)\), on définit 
+\begin{equation}
+    \color{red}\boxed{\color{black}\int_A sd\mu \coloneqq \sum_{j=1}^p\alpha_j \mu\left(A\cap s^{-1}\left(\{\alpha_j\}\right)\right) \in [0,\infty]}\color{black}
+\end{equation}
+On pose la convention \(0\times \infty = 0\) (mais pas dans le cas d'une limite).
+\subsection{Propriétés}
+\begin{itemize}
+    \item \(\int_Asd\mu = \int_{\xi} \xi_asd\mu\) où on pose \(\xi_A(x) = \begin{cases}
+        1\text{ si }x\in A\\
+        0 \text{ sinon}\\
+    \end{cases}\)
+    \item Si \(A\subseteq B\) sont mesurables et si \(s\ge 0\), alors \(\int_A sd\mu \le \int_B sd\mu\)
+    \item Si \((A_n)_{n\in \mathbb{N}}\) sont mesurables et disjoints, alors \(\int_{\cup_{n\in \mathbb{N}}A_n}sd\mu = \sum_{n\in \mathbb{N}} \int_{A_n} sd\mu\)
+    \item Soit \(\alpha\) un scalaire. Alors \(\int_A \alpha sd\mu = \alpha \int_A sd\mu\)
+    \item \(\int_A(s+t)d\mu = \int_A sd\mu + \int_A td\mu\)
+    \item Si \(s\le t\), alors \(\int_A sd\mu \le \int_A td\mu\)
+\end{itemize}
+\section{Intégrale de fonctions positives}
+Si \(f:X\rightarrow [0,\infty]\) est Borel-mesurable, on définit
+\begin{equation}
+    \color{red}\boxed{\color{black}\int_A fd\mu \coloneqq \sup\left\{\int_A sd\mu\text{ | }s:X\rightarrow [0,\infty[ \text{ est une fonction simple et }s\le f\right\}}\color{black}
+\end{equation}
+\subsection{Propriétés}
+L'intégrale de fonctions positives vérifie les mêmes propriétés que l'intégrale de fonctions simples.
+\section{Intégrale de fonctions réelles}
+La fonction Borel-mesurable \(f:X\rightarrow\mathbb{R}\) est intégrable sur l'ensemble \(A\subset X\) lorsque 
+\begin{equation}
+    \int_A f^+d\mu < \infty \qquad \int_Af^-d\mu < \infty
+\end{equation}
+où on définit 
+\begin{equation*}
+    \int_A fd\mu = \int_A f^+ d\mu - \int_A f^- d\mu \qquad f = f^+-f^- \qquad f^+ = \max{(f,0)} \qquad f^- = \max{(-f,0)}
+\end{equation*}
+\subsection{Propriétés}
+Si \(f : X\rightarrow \mathbb{R}\) est Borel-mesurable, \(f\) est intégrable ssi \(|f|\) est intégrable.
+\section{Intégrale d'une fonction complexe}
+\(f :X\rightarrow \mathbb{C}\) est intégrable sur l'ensemble \(A \subset X\) lorsque les fonctions \(Re(f)\) et \(Im(f)\) sont intégrables sur \(A\). On définit
+\begin{equation}
+    \int_A fd\mu = \int_A Re(f) d\mu + i\int_A Im(f) d\mu
+\end{equation}
+\subsection{Presque partout}
+Une propriété est vraie presque partout dans \(A\subseteq X\) lorsqu'il existe \(E\subseteq A\) mesurable tel que sa mesure est nulle et si la propriété est vraie dans \(A\setminus E\).
+\subsection{Propriétés}
+\begin{itemize}
+    \item Si \(f:X\rightarrow \mathbb{C}\) est Borel-mesurable, \(f\) est intégrable ssi \(|f|\) (ici le module!) est intégrable.
+    \item Les intégrales de fonctions réelles et complexes vérifient les mêmes propriétés que l'intégrale de fonctions simples.
+    \item \(\left|\int_A fd\mu\right| \le \int_A |f|d\mu\)
+    \item \(\int_A |f+g|d\mu\le \int_A |f|d\mu + \int_A |g| d\mu\)
+    \item Si \(f:X\rightarrow \mathbb{R}\) est mesurable et si \(f=0\) presque partout sur \(A\), alors \(f\) est intégrable et \(\int_A fd\mu =0\).
+    \item Si \(f\ge 0\) et si \(int_A fd\mu =0\), alors \(f=0\) presque partout.
+\end{itemize}
+\section{Limite d'intégrale et intégrale de limite}
+\subsection{Théorème de convergence monotone}
+Soit la fonction \(f_n:X\rightarrow \mathbb{C}\). Si, pour tout \(n\in \mathbb{N}\), \((f_n)_{n\in \mathbb{N}}\) converge ponctuellement vers \(f\) et s'il existe \(g :X\rightarrow [0,\infty[\) intégrable sur \(A\) telle que pour tout \(n\in \mathbb{N}\), \(|f_n|\le g\), alors \(f\) est intégrable et 
+\begin{equation}
+    \color{red}\boxed{\color{black}\lim_{n\rightarrow \infty}\int_A f_nd\mu = \int_A fdu}\color{black} = \int_A \lim_{n\rightarrow \infty} f_n d\mu
+\end{equation}
+Réciproque : Soit la fonction \(f_n :X\rightarrow[0,\infty[\). Si, pour tout \(n\in \mathbb{N}\), \((f_n)_{n\in \mathbb{N}}\) converge ponctuellement vers \(0\) et si \(\lim_{n\rightarrow\infty}\int_A f_Nd\mu= 0\), alors il existe \(g:X\rightarrow [0,\infty[\) intégrable sur \(A\) et une suite \((n_k)_{k\in \mathbb{N}}\) dans  \(\mathbb{N}\) strictement croissante telle que pour tout \(k\in \mathbb{N}\), \(|f_{n_k}| \le g\).
+\end{document}

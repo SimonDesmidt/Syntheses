@@ -1,0 +1,802 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{pythonhighlight}
+\usepackage[]{titletoc}
+\usepackage{empheq}
+\usepackage{gensymb}
+\usepackage{textcomp}
+\usepackage{titlesec}
+\usepackage{mathpazo}
+\usepackage{xfrac}
+\usepackage{textcomp}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{tabularray}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage[skins]{tcolorbox}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\tabitem}{~~\llap{\textbullet}~~}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\renewcommand{\contentsname}{Table des matières}
+
+% Define a new tcolorbox style with a red border and transparent interior
+\tcbset{
+    redbox/.style={
+        enhanced,
+        colframe=red,
+        colback=white,
+        boxrule=1pt,
+        sharp corners,
+        before skip=10pt,
+        after skip=10pt,
+        box align=center,
+        width=\linewidth-2pt, % Adjust the width dynamically
+    }
+}
+\newcommand{\boxedeq}[1]{
+\begin{tcolorbox}[redbox]
+    \begin{align}
+        #1
+    \end{align}
+\end{tcolorbox}
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.25]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LMECA1451 Fabrication mécanique \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2023-2024 - Q2}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\chapter{Technologies d'usinage}
+L'usinage est un procédé de fabrication par transformation et mise en forme. 
+\section{Modes de coupes}
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/Perçage.png}
+        \caption{Perçage}
+        \label{fig:perçage}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/Tournage.png}
+        \caption{Tournage}
+        \label{fig:tournage}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/Fraisage.png}
+        \caption{Fraisage}
+        \label{fig:fraisage}
+    \end{subfigure}
+    \caption{Modes de coupe}
+    \label{fig:modes_de_coupe}
+\end{figure}
+Il existe d'autres techniques d'usinage, comme la rectification, la découpe par jet d'eau, la découpe laser, ou encore la découpe par électro-érosion (i.e. coupe à fil).
+\subsection{Paramètres de la coupe}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Coupe.png}
+    \caption{Paramètres de la coupe}
+\end{figure}
+La vitesse de coupe (ou de rotation) s'exprime en \([mm/min]\) ou \([t/min]\). La profondeur de passe est l'épaisseur enlevée à la pièce \([mm]\) et l'avance est le déplacement de l'outil pour un tour de la pièce \([mm/t]\).
+\subsection{Tournage}
+Il existe deux types de tournage : le tour parallèle et le tour vertical. On utilise en général un tour parallèle, le tour vertical étant plus adapté aux pièces volumineuses avec une vitesse de rotation plus faible. 
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.5\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/Tour_parallèle.png}
+        \caption{Tour parallèle}
+        \label{fig:tour_par}
+    \end{subfigure}
+    \begin{subfigure}[b]{.5\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/Tour_vertical.png}
+        \caption{Tour vertical}
+        \label{fig:tour_vertical}
+    \end{subfigure}
+\end{figure}
+Le montage de la pièce sur le tour peut varier : 
+\begin{itemize}
+    \item En l'air : la pièce est fixée sur un mandrin (pour les pièces courtes).
+    \item Entre pointes : la pièce est fixée entre un entraîneur frontal et une pointe (pour les pièces longues).
+    \item Mixte : la pièce est fixée dans le mandrin, mais maintenue par la pointe. Ce montage est hyperstatique, tandis que les deux autres sont isostatiques.
+\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Opérations_tournage.png}
+    \caption{Opérations de tournage}
+    \label{fig:op_tournage}
+\end{figure}
+\subsection{Perçage}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Perceuse.png}
+    \caption{Perceuse}
+    \label{fig:perceuse}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Outils_perceuse.png}
+    \caption{Outils pour perceuse}
+    \label{fig:outil_perceuse}
+\end{figure}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : à noter que les dents de la broche sont de plus en plus larges.
+\end{itemize}
+\subsection{Fraiseuse}
+\begin{figure}
+    \centering
+    \includegraphics{img/Fraiseuse.png}
+    \caption{Fraiseuse verticale}
+    \label{fig:fraiseuse}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Fraisage_roulant.png}
+    \caption{Fraisage en opposition (droite) et fraisage en avalant (gauche)}
+    \label{fig:types_fraisage}
+\end{figure}
+\begin{itemize}
+    \item Le fraisage en opposition est un mouvement de coupe opposé à l'avance de la pièce. Il écarte la pièce de la table et a une moins bonne précision dimensionnelle que le fraisage en avalant.
+    \item Le fraisage en avalant augmente le mouvement d'avance. Il plaque la pièce sur la table et a une meilleure précision dimensionnelle.
+\end{itemize}
+\subsection{Meule de rectification}
+Les meules de rectification ont pour but d'améliorer l'état de surface des pièces. Une rectifieuse cylindrique est un tour parallèle ou une fraiseuse sur lequel l'outil est une meule de rectification 
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/Rectifieuse_tour.png}
+        \caption{Rectifieuse sur tour parallèle}
+        \label{fig:rectifieuse_tour}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+    \centering
+        \includegraphics[width = \textwidth]{img/Rectifieuse_fraiseuse.png}
+        \caption{Rectifieuse sur fraiseuse}
+        \label{fig:rectifieuse_fraiseuse}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/Rectifieuse_meule.png}
+        \caption{Rectifieuse sans centre}
+        \label{fig:rectifieuse_centreless}
+    \end{subfigure}
+\end{figure}
+\chapter{Usinage}
+\section{Mécanique de la coupe orthogonale}
+La zone primaire de cisaillement est la zone où a lieu la déformation, et donc la formation du copeau, tandis que la zone secondaire de cisaillement est la zone de contact. C'est donc là qu'a lieu la production de chaleur due au frottement. 
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/Copeau.png}
+        \caption{Cisaillement du copeau}
+        \label{fig:copeau}
+    \end{subfigure}
+    \begin{subfigure}[b]{.5\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/Copeau_angles.png}
+        \caption{Définition des angles}
+        \label{fig:copeau_angles}
+    \end{subfigure}
+\end{figure}
+\begin{itemize}
+    \item \(\varphi\) : angle de cisaillement
+    \item \(\alpha\) : angle de coupe orthogonale
+    \item \(\theta\) : angle de dépouille
+    \item Angle de l'outil : angle de taillant
+    \item \(t_c\) : épaisseur du copeau (se mesure perpendiculairement aux surfaces)
+    \item \(t_0\) : épaisseur de passe
+\end{itemize}
+On définit également le rapport de coupe : \(r = t_0/t_c\). S'il est inférieur à 1, il y a écrasement de la matière. \\
+
+Par trigonométrie, on peut calculer des relations entre \(\alpha,\varphi\) et \(r\) : 
+\begin{equation}
+    r = \frac{\sin \varphi}{\cos(\varphi-\alpha)} \qquad \tan \varphi = \frac{r \cos \alpha}{1-r\sin \alpha}
+\end{equation}
+\subsection{Déformation de cisaillement}
+La déformation est définie ici comme la longueur cisaillée par unité de longueur de copeau. On peut donc l'exprimer de la manière suivante : 
+\begin{equation}
+    \varepsilon_{12} = \tan(\varphi- \alpha)+\cot\varphi \qquad \varphi = \arctan \left(\frac{r\cos \alpha}{1-r\sin \alpha}\right)
+\end{equation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/déformation_copeau.png}
+    \caption{Déformation de cisaillement du copeau}
+    \label{fig:cisaillement_copeau}
+\end{figure}
+\subsection{Forces de coupe}
+On définit le coefficient de frottement comme suit : \(\mu = F/N = \tan \beta\).
+\begin{itemize}
+    \item \(F_s\) est la force de cisaillement
+    \item \(F_n\) est la force normale à \(F_s\)
+    \item \(F_c\) est la force de coupe appliquée par l'outil
+    \item \(F_t\) est la force tangentielle
+    \item \(F\) est la force de frottement
+    \item \(N\) est la force normale
+    \item \(\beta\) est l'angle entre la force appliquée par l'outil et sa normale
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Cercle.png}
+    \caption{Ensemble des forces}
+    \label{fig:cercle_forces}
+\end{figure}
+On détermine cette valeur par trigonométrie, en mesurant la force de coupe \(F_c\) et \(F_t\) et l'angle \(\alpha\) choisi préalablement.
+\subsection{Contrainte de cisaillement}
+On peut également déterminer la valeur de la contrainte de cisaillement \( sigma_{12} = F_s/A_s\).\\
+Toujours par trigonométrie, on trouve la formule suivante :
+\begin{equation}
+    \sigma_{12} = \left(\frac{F_c\cos \varphi - F_t \sin\varphi}{t_0l_c}\right) \sin \varphi \sim [MPa]
+\end{equation}
+A noter que cette valeur ne dépend que de paramètres mesurables ou prédéterminés. 
+\subsection{Puissance de coupe}
+La puissance est le produit d'une force par une vitesse. La vitesse de coupe est donc 
+\begin{equation}
+    P_c = F_c \cdot v_c
+\end{equation}
+La puissance fournie par la machine est, avec \(\eta\) le coefficient de rendement,
+\begin{equation}
+    P_f = P_c/\eta
+\end{equation}
+Finalement, l'énergie de coupe par unité de volume de matière \([J/m^3]\) est le rapport entre la puissance de coupe et le volume coupé par unité de temps : 
+\begin{equation}
+    E_c = \frac{P_c}{v_Ct_0l_c} = \frac{F_c}{t_0l_c}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : elle dépend intrinsèquement de la matière.
+\end{itemize}
+\subsection{Relation de Merchant}
+Afin d'augmenter l'efficacité des machines, on veut minimiser la contrainte de cisaillement, et donc favoriser un grand angle \(\varphi\). Pour cela,
+\begin{equation}
+    \frac{\partial \sigma_{12}}{\partial \varphi} = 0\Longrightarrow \varphi = 45\degree +\frac{\alpha -\beta}{2}
+\end{equation}
+Cela se fait sous hypothèse que \(\beta\) est un angle constant dépendant uniquement du couple matériau/outil et donc indépendant de \(\alpha\).
+\section{Conditions de coupe}
+\subsection{Types de copeaux}
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.25\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/Copeau_continu.png}
+        \caption{Copeau continu}
+        \label{fig:c_continu}
+    \end{subfigure}
+    \begin{subfigure}[b]{.25\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/Arête_raportée.png}
+        \caption{Arête rapportée}
+        \label{fig:arete_rapportee}
+    \end{subfigure}
+    \begin{subfigure}[b]{.25\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/Copeau_segmenté.png}
+        \caption{Copeau segmenté}
+        \label{fig:c_segmente}
+    \end{subfigure}
+    \begin{subfigure}[b]{.25\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/Copeau_discontinu.png}
+        \caption{Copeau discontinu}
+        \label{fig:c_discontinu}
+    \end{subfigure}
+\end{figure}
+\begin{center}
+\begin{tblr}{
+  colspec = {X[c,h]X[c]X[c]X[c]},
+  stretch = 0,
+  rowsep = 6pt,
+  hlines = {1pt},
+  vlines = {1pt},
+}
+    \hline
+     & Copeau continu & Copeau discontinu \\ \hline
+    Conditions & \tabitem Matériau dutile & \tabitem Matériau moins ductile\\ 
+    & \tabitem Vitesse de coupe élevée & \tabitem Inclusions dures\\ 
+    & \tabitem Peu de frottement entre l'outil et le copeau & \tabitem Vibrations de la machine \\ 
+    & \tabitem Angle de coupe élevé & \tabitem Utilisation d'un fluide de coupe/brise copeau \\ 
+    & & \tabitem Vitesse de coupe faible \\
+    & & \tabitem Angle de coupe faible ou négatif\\ \hline
+    Avantages & Bon état de surface & \\ \hline
+    Problèmes & \tabitem Enroulement du copeau autour de l'outil &  Surface irrégulière\\ 
+    & \tabitem Sécurité de l'opérateur & \\ 
+    & \tabitem Arrêt fréquent de la machine &\\ \hline
+    Solution & \tabitem Matière moins ductile & \\
+    & \tabitem Brise copeau & \\ \hline
+\end{tblr}
+\end{center}
+\subsection{Elévation de température}
+Si la vitesse de coupe augmente, la température du copeau augmente (plus de frottement) et celle de la pièce diminue (temps de contact plus faible). Les conséquences d'une augmentation de la température sont les suivantes : 
+\begin{itemize}
+    \item La résistance thermique de l'outil diminue et donc sa longévité aussi.
+    \item L'outil se dilate thermiquement et la précision dimensionnelle diminue.
+    \item Il apparaît des changements au niveau des microstructures de la pièce, ce qui change les propriétés mécaniques. 
+\end{itemize}
+\subsection{Outils de coupe}
+La durée de vie des outils de coupe dépend de la vitesse de coupe, de la dureté de la pièce à usiner et de la présence de secondes phases. Voici les propriétés souhaitées pour un bon outil :
+\begin{itemize}
+ \item Dureté élevée, y compris à chaud.
+ \item Résistance au fluage\footnote{A haute température, les déformations augmentent, malgré que la charge ne change pas.}.
+ \item Bonne ténacité et résistance à l'impact.
+ \item Résistance aux chocs thermiques.
+ \item Inerte pour la pièce.
+ \item Résistance à l'usure.
+\end{itemize}
+\subsection{Etats de surface}
+La rugosité est un facteur important à prendre en compte lors de la fabrication de pièces. En effet, une rugosité élevée diminue la résistance à la fatigue de la pièce et peut conduire au non-respect des tolérances. C'est pourquoi certaines pièces sont rectifiées après avoir été usinées. 
+\subsection{Fluide de coupe}
+Les fluides de coupe sont utilisés dans les buts suivants :
+\begin{itemize}
+    \item Réduire la friction entre l'outil et la pièce, et donc l'usure de l'outil.
+    \item Refroidir la zone de coupe et donc augmenter la résistance de l'outil.
+    \item Réduire les forces de coupes et donc diminuer l'énergie consommée.
+    \item Evacuer les copeaux.
+    \item Sectionner les copeaux afin qu'ils soient discontinus.
+    \item Protéger la machine de la corrosion.
+\end{itemize}
+Un fluide de coupe pénètre par action capillaire dans le réseau d'aspérités de la pièce.
+\subsection{Usinabilité}
+L'usinabilité désigne la capacité d'un matériau à être usiné (catégories de 1 à 5). Elle dépend de la qualité des états de surface, de la durée de vie de l'outil et des forces et puissances nécessaires. 
+\chapter{Physique de la déformation plastique et du durcissement des métaux}
+\section{Structure des métaux}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Structure_metaux.png}
+    \caption{Structure des métaux}
+    \label{fig:str_metaux}
+\end{figure}
+\subsection{Défauts du réseau cristallin}
+Il existe différents types de défauts dans un réseau cristallin : ils peuvent être ponctuels ou linéaires. 
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/defaut_ponctuel.png}
+        \caption{Défauts ponctuels}
+        \label{fig:def_point}
+    \end{subfigure}
+    \begin{subfigure}[b]{.45\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/defaut_lineaire.png}
+        \caption{Défauts linéaires}
+        \label{fig:def_line}
+    \end{subfigure}
+\end{figure}
+On note \(\rho\) la densité de dislocation. Il s'agit de la longueur totale des lignes de dislocation. 
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/Joints_De_grains.png}
+        \caption{Joints de grains (polycristaux)}
+        \label{fig:j_de_g}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/Macles.png}
+        \caption{Macles}
+        \label{fig:macles}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{img/Oxydation.png}
+        \caption{Oxydation}
+    \end{subfigure}
+\end{figure}
+Les dislocations et défauts ponctuels aussi bien que linéaires peuvent se déplacer dans le solide. \\ 
+La figure suivante illustre le phénomène d'annihilation de dislocation : 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/annihilation.png}
+    \caption{Annihilation des dislocations}
+    \label{fig:annihilation}
+\end{figure}
+\subsection{Ecrouissage}
+Il y a mouvement des dislocations lorsque \(\sigma_{ext}>\sigma_c\), avec \(\sigma_{ext}\) le cisaillement extérieur et \(\sigma_c\) la contrainte critique. L'écrouissage est le phénomène durant lequel le mouvement des dislocations est bloqué par des obstacles : 
+\begin{itemize}
+    \item Les autres dislocations
+    \item Les joints de grains ou joints de phase
+    \item Les macles
+    \item Les précipités
+\end{itemize}
+\subsection{Taille de grain}
+La taille des grains de polycristaux est donnée par la loi de Hall-Petch : 
+\begin{equation}
+    \sigma_Y = \sigma_0 + \frac{k}{\sqrt{d}}
+\end{equation}
+Avec \(\sigma_y\) la limite d'élasticité, \(\sigma_0\)  la limite d'élasticité pour un monocristal, \(d\) la taille de grain et \(k\) une constante.
+\subsection{Texture}
+La texture est l'orientation préférentielle des grains. Elle peut être aléatoire ou préférentielle, e.g. laminée. 
+\chapter{Assemblage}
+\section{Types d'assemblage}
+\begin{itemize}
+    \item Assemblage mécanique : non permanent.
+    \item Soudage et brasage : continuité de la nature des éléments assemblés au niveau des liaisons inter-atomiques.
+    \item collage : liaisons différentes que les matériaux de base.
+\end{itemize}
+\begin{center}
+\begin{tblr}{
+  colspec = {X[c,h]X[c]X[c]X[c]},
+  stretch = 0,
+  rowsep = 6pt,
+  hlines = {1pt},
+  vlines = {1pt},
+}
+    \hline
+    Avantages & Inconvénients\\ \hline   
+    Bonne résistance & Sécurité\\
+    Coût & Désassemblage\\
+    Etanchéité & Limitations pour certains métaux\\
+    Géométrie/structure s'y prêtant bien & Effets sur la microstructure et les propriétés mécaniques\\
+    Légèreté & Energivore\\
+    Sur le terrain (chantiers,\dots) & Main d'oeuvre qualifiée\\
+    & Distortions \\ \hline
+\end{tblr}
+\end{center}
+\subsection{Définitions}
+\begin{itemize}
+    \item Dilution : \(MB/(MA+MB)\), avec \(MB\) le matériau de base et \(MA\) le matériau d'apport. 
+    \begin{itemize}
+        \item Les procédés de fusion ont une dilution non nulle, contrairement aux procédés de brasage. 
+    \end{itemize}
+    \item Le rapport de pénétration est le rapport entre la profondeur et la largeur du bain de fusion.
+    \item L'intensité de puissance est la puissance transférée à la pièce par unité de surface \([W/mm^2]\). 
+    \item L'apport calorifique \(H\) est l'énergie transférée à la pièce par unité de longueur. C'est le rapport entre une puissance et une vitesse (\([J/mm]\)).
+\end{itemize}
+\section{Classement des procédés de soudage par fusion}
+\subsection{Soudage au gaz}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/soudage_gaz.png}
+    \caption{Soudage au gaz}
+    \label{fig:soud_gaz}
+\end{figure}
+Deux combustions ont lieu lors du soudage au gaz :
+\begin{align}
+    2C_2H_2 + 2O_2 &\rightarrow 4CO+2H_2\\
+    4CO + 2O_2 &\rightarrow4CO_2\\
+\end{align}
+La combustion primaire a lieu dans la torche, tandis que la seconde a lieu au niveau de la flamme extérieure.
+\subsection{Soudage à l'arc}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/soudage_arc.png}
+    \caption{Soudage à l'arc}
+    \label{fig:soud_arc}
+\end{figure}
+Le bain de fusion doit être protégé pour éviter des réactions chimiques inattendues. 
+\subsubsection{Avec électrode enrobée}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/electrode_enrobee.png}
+    \caption{Soudage à l'arc avec électrode enrobée}
+    \label{fig:e_enrobee}
+\end{figure}
+\subsubsection{Avec fil fusible}
+Dans ce type de soudage, le fil se débobine automatiquement et un gaz de protection est nécessaire. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/fil_fusible.png}
+    \caption{Soudage à l'arc avec fil fusible}
+    \label{fig:fil_fusible}
+\end{figure}
+\subsection{Soudage à l'arc avec fil fourré de flux}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/fil_fourré_flux.png}
+    \caption{Soudage à l'arc avec fil fourré de flux}
+    \label{fig:fff}
+\end{figure}
+Ici, le flux est dans l'électrode et le gaz de protection est optionnel.
+\subsubsection{Arc submergé}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/arc_submerge.png}
+    \caption{Soudage à l'arc submergé}
+    \label{fig:submerge}
+\end{figure}
+Dans ce type de soudage, le fil se déroule automatiquement et il n'y a besoin d'aucune protection visuelle puisque l'arc est caché. Il faut cependant éliminer la croûte de laitier solidifié après la soudure. 
+\subsubsection{Electrode réfractaire en tungstène}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/tungstène.png}
+    \caption{Soudage à l'arc sous protection gazeuse avec électrode réfractaire en tungstène}
+    \label{fig:tungstene}
+\end{figure}
+Dans ce type de soudage, l'électrode est non-consommable, la protection gazeuse en est indépendante, et il n'y a pas de masse d'apport.
+\subsubsection{Soudage au plasma}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/plasma.png}
+    \caption{Soudage au plasma}
+    \label{fig:plasma}
+\end{figure}
+Dans ce type de soudage, le gaz est ionisé pour créer du plasma. La température du gaz est d'environ 28000°C, l'intensité de puissance est donc élevée/
+\subsection{Soudage par résistance}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/soudage_resistance.png}
+    \caption{Soudage par résistance}
+    \label{fig:soud_resi}
+\end{figure}
+En soudage par résistance, il y a une fusion à l'interface et c'est le noyau qui est soudé. Ce genre de soudage peut être facilement automatisé et donc organisé à des cadences élevées. De plus, aucun gaz de protection ou flux n'est nécessaire, bien que les électrodes non consommables s'usent. Cependant, les équipements sont relativement coûteux. 
+\subsection{Soudage par fusion à haute intensité de puissance}
+\subsubsection{Par faisceau d'électrons}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/electron.png}
+    \caption{Soudage par faisceau d'électrons}
+    \label{fig:electrons}
+\end{figure}
+La source d'énergie est le faisceau d'électrons finement focalisé et de haute énergie. Ce type de soudage a un excellent rapport de pénétration.
+\subsubsection{Soudage laser}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/laser.png}
+    \caption{Soudage laser}
+    \label{fig:laser}
+\end{figure}
+Ici, la source d'énergie est le faisceau laser focalisé. Le rapport de pénétration est bon.
+\subsection{Soudage à l'état solide}
+\subsubsection{Co-laminage}\label{chap:colaminage}
+Le colaminage est un procédé de soudure deux plaques de métal par application de pression. Il s'agit simplement de laminage (voir \autoref{chap:laminage}) avec deux plaques plutôt qu'une, dans le but de les souder.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/colaminage.png}
+    \caption{Enter Caption}
+    \label{fig:enter-label}
+\end{figure}
+\subsubsection{Soudage par ultrasons}
+Le soudage par ultrasons consiste à faire traverser les deux couches de métal par des ultrasons afin de casser la couche d'oxyde de surface. Les deux plaques sont en même temps compressées afin de les souder avec un minimum d'impuretés d'oxydes. Cette méthode permet de souder des matériaux ayant une grande différence de température de fusion, car il y a peu d'échauffement.
+\begin{figure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.5\linewidth]{img/soudage_ultrason_1.png}
+        \caption{Avant}
+        \label{fig:ultrason_1}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.5\linewidth]{img/soudage_ultrason_2.png}
+        \caption{Après}
+        \label{fig:ultrason_2}
+    \end{subfigure}
+\end{figure}
+\subsubsection{Soudage par explosion}
+Les deux plaques métalliques à souder sont posées l'une sur l'autre, avec un écart de 2-3cm. Elles sont ensuite recouvertes de poudre explosive, dont la composition varie selon les métaux à souder. Lors de l'explosion de la poudre, l'air entre les deux plaques est éjecté à forte vitesse de l'espace entre les plaques, ce qui les rapproche brusquement. La chaleur générée par l'explosion permet ensuite la soudure. Le mouvement rapide de l'air permet de nettoyer la surface de contact, de supprimer toutes les éventuelles impuretés. 
+\subsubsection{Soudage par diffusion}
+slide 34
+\chapter{Forgeage}
+Le forgeage est caractérisé par une déformation (visco-)plastique à l'état solide. L'amplitude de déformation est limitée à froid, c'est pourquoi on utilise des métaux "malléables", i.e. peu résistants et ductiles, ainsi que du préchauffage\footnote{Moins intéressant, car implique de l'oxydation, plus de rugosité et une usure plus forte des outils}. Les pièces produits par forgeage sont très résistantes et anisotropes. 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/forgeage.png}
+\end{figure}
+\section{Fibrage}
+Le fibrage est l'allongement des fibres dans le métal lors du forgeage. La déformation à chaud de la pièce de métal aligne les fibres avec l'écoulement de matière; elle est donc plus résistante dans la direction de l'écoulement.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/fibrage.png}
+\end{figure}
+\section{Ecrasement}
+Le forgeage se fait toujours par écrasement, jamais par contraintes de traction. On utilise par exemple des marteaux ou des presses, mais jamais des pinces. De plus, l'écrasement se fait souvent de manière incrémentale : 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/forgeage_libre.png}
+    \caption{Forgeage libre incrémental}
+    \label{fig:forgeage_libre}
+\end{figure}
+\chapter{Moulage des métaux}
+Le moulage consiste à porter un métal à haute température pour le faire fondre, et à l'insérer dans un moule et le faire refroidir.\\
+
+La majorité du temps, le moule est constitué de sable, car il est très résistant à la chaleur, facilement modelable et de faible coût.
+\section{Avantages}
+\begin{itemize}
+    \item Adapté aux géométries complexes;
+    \item Rapide, par rapport à l'usinage;
+    \item Peu de pertes de matière première;
+    \item Petites et/ou grandes séries et tailles de pièces;
+    \item Coûts énergétique et économique par rapport à l'usinage : moins de main d'oeuvre qualifiée, mais plus de coût énergétique;
+    \item Tenue mécanique (solidité,\dots), c'est l'argument principal du moulage.
+\end{itemize}
+La tenue mécanique est liée à une microstructure fine (i.e. grains de petite taille) et homogène. Il est nécessaire de limiter les défauts afin qu'elle soit de bonne qualité. Il faut également prendre en compte les contraintes résiduelles, i.e. à l'intérieur de la pièce lorsqu'il n'y a pas de solicitation externe, qui peuvent être bénéfiques ou pas selon les besoins. 
+\subsection{Microstructure de solidification}
+La microstructure de solidification commence par la germination. Il s'agit de la création de germes dans le métal liquide, suivie de la croissance de ces germes en polycristaux, formant le réseau cristallin lié à la solidification. Après croissance, les germes forment des agrégats polycristaux, i.e. des grains ayant une orientation différente dans le réseau. \\
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/germination.png}
+    \caption{Germination et polycristaux}
+    \label{fig:germination}
+\end{figure}
+La vitesse de refroidissement influence fortement la microstructure. En effet, en cas de vitesse de refroidissement élevée (en cas de trempe,\dots), les cristaux sont beaucoup plus petits, car on a plus de cristaux de germination.
+\subsection{Progression du front de solidification}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/solidification.png}
+    \caption{Front de solidification}
+    \label{fig:solidification}
+\end{figure}
+La progression du front de solidification est ralentie par la chaleur latente de solidification.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : il faut bien différencier les composites des alliages : les alliages sont des mélanges au niveau cristallin, tandis que les composites sont des mélanges à plus haut niveau de structure. 
+\end{itemize}
+\section{Solidification d'un alliage}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Solidus.png}
+    \caption{Solidification d'un alliage}
+    \label{fig:solidus}
+\end{figure}
+Au-dessus de la ligne de liquidus, le métal est complètement liquide. Il est solide en-dessous du solidus, et sous forme pâteuse entre les deux. Les points de contact des deux courbes sont les températures de fusion des deux métaux de l'alliage. Due aux différences de températures de fusion, les premiers germes sont enrichis en élément ayant la température de fusion la plus haute, et inversement. L'objet final sera donc moins homogène, et cela diminue la tenue mécanique. Une solution est de rechauffer le solide pour homogénéiser la structure. On appelle cela un recuit d'homogénisation.
+\subsection{Composition eutectique}
+Une composition est dite eutectique lorsque les courbes de solidus et liquidus sont confondues (e.g. fonte). 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Eutectic.png}
+    \caption{Composition eutectique}
+    \label{fig:eutectic}
+\end{figure}
+\subsection{Calcul du délai de solidification}
+Le calcul du délai de solidification permet également de déterminer la longueur des dendrite, i.e. la longueur des éléments de solidification partant des parois. On sait que 
+\begin{equation}
+    Q = V\Hat{\rho}H_m \qquad Q = A\int_0^{t_s}q(t)dt
+\end{equation}
+où \(Q\) est la chaleur, \(V\) le volume, \(\Hat{\rho}\) la densité du métal liquide, \(H_m\) la chaleur latente, \(A\) la surface du moule et \(q(t)\) le flux de chaleur.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : on néglige ici la courbure du moule pour effectuer l'intégrale en une seule dimension. 
+\end{itemize}
+La solution de l'équation de la chaleur dans notre cas est la suivante : 
+\begin{equation}
+    T(x,t) = T_0+(T_M-T_0)\left(1-\frac{2}{\sqrt{\pi}}\int_{\zeta/2}^0 e^{-s^2}ds\right) \qquad \zeta = x/\sqrt{at}
+\end{equation}
+Le flux de chaleur correspondant est donc 
+\begin{equation}
+    q(x,t) = (T_m-T_0)\sqrt{\frac{\rho ck}{\pi t}}\exp{-\frac{x^2}{4at}}
+\end{equation}
+On trouve finalement le délai de solidification : 
+\begin{equation}
+    t_s \approx \frac{\pi}{4} \left(\frac{\Hat{\rho}H_m}{T_m-T_0}\right)^2 \frac{1}{\rho ck}\left(\frac{V}{A}\right)^2 
+\end{equation}
+Les paramètres avec \(\Hat{\color{white}x\color{black}}\) font référence aux constantes du métal liquide, tandis que ceux sans font référence aux propriétés du moule en sable. \\
+
+Le temps de solidification en un point du métal est proportionnel au rayon de la plus grande sphère qui rentre dans le moule centrée en ce point. La formule du délai de solidification pour déterminer le rapport entre les temps de solidification de différents points du solide, et on peut parfois modifier la géométrie de la pièce pour s'y accorder. 
+\subsection{Retrait de solidification}
+Le retrait de solidification est la déformation du matériau lors de son refroidissement. Les points chauds se refroidissant plus lentement, la contraction du matériau lors de leur solidification peut entraîner une déformation des parties de la pièce déjà solidifiées. Il apparaît donc des contraintes résiduelles dans la pièce finale. \\ 
+On définit une crique comme étant une fissure de solidification ayant lieu lorsque le retrait de solidification est empêché. 
+Prenons comme exemple une poutre métallique.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/poutre.png}
+    \caption{Illustration du retrait de solidification}
+    \label{fig:poutre}
+\end{figure}
+Les points chauds forment une droite dans l'axe de la poutre, tels qu'ils sont les centre du plus grand cercle entrant dans une section T de la poutre. Ils sont donc contenus dans la "base" de la poutre. Soit le repère tel que \(\Hat{e}_z\) est aligné avec la plus grande dimension de la poutre. \\
+Après refroidissement, il y a une contrainte résiduelle en \(\Hat{e}_z\) impliquant le risque de fissure dans le plan de normale \(\Hat{e}_z\). En effet, la partie inférieure se contracte lors du refroissement, et doit donc entraîner la partie supérieure qui s'est solidifiée plus tôt. Avant d'avoir une crique, il va y avoir du gauchissement lors de la sortie du moule : les contraintes résiduelles sont fortes, mais pas suffisamment pour entraîner des fissures. \\
+
+Afin d'éviter ce phénomène de gauchissement, on ajoute une veine de métal liquide, appelée masselotte, qui fournit du métal liquide dans le moule lorsque le métal déjà présent se contracte pendant son refroidissement. Cela contre les effets néfastes de la contraction. 
+\subsection{Défauts des pièces moulées}
+Voir syllabus
+\section{Fabrication des moules}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/moule.png}
+    \caption{Fabrication d'un moule en sable}
+    \label{fig:moule}
+\end{figure}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : Lorsqu'une pièce est creuse, on utilise des noyaux fixés à l'intérieur du moule. 
+\end{itemize}
+\section{Modèle perdu}
+Le moulage à modèle perdu est une technique utilisées pour les pièces nécessitant beaucoup d'exemplaires et de faible volume. On crée d'abord un modèle en cire que l'on recouvre de céramique. Cette céramique sera le moule final. Lors de la cuisson du moule, ou lors du coulage du métal fondu, la cire contenue dans la céramique est évacuée. Lorsque le métal est finalement solidifié, le moule en céramique est cassé pour sortir les pièces finales. 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/modele_perdu.png}
+    \caption{Moulage à modèle perdu}
+    \label{fig:mod_perdu}
+\end{figure}
+\section{Moule à usage multiple}
+Les moules à usage multiple sont généralement fait à partir d'acier ou d'un matériau réfractaire, i.e. à très haute température de fusion. 
+\begin{itemize}
+    \item Généralement utilisés pour les très grandes séries de pièces;
+    \item La géométrie doit permettre le démoulage;
+    \item Le noyau doit se désagréger;
+    \item Une pression additionnelle est parfois nécessaire pour augmenter la cadence de production ou améliorer le fini de surface.
+\end{itemize}
+\section{Moulage par injection}
+Le moulage par injection est principalement utilisé pour les polynmères.    
+\begin{figure}[H]
+    \centering
+    \includegraphics{img/Injection.png}
+    \caption{Moulage par injection}
+    \label{fig:injection}
+\end{figure}
+\section{Moulage par centrifugation}
+La centrifugation sert à s'assurer que les impuretés (moins denses que le polymère) restent proches du centre de rotation et peuvent être évacuées.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/centrifugation.png}
+    \caption{Moulage par centrifugation}
+    \label{fig:centrifugation}
+\end{figure}
+\chapter{Moulage et extrusion des polymères}
+\section{Extrudeuse pour polymères}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/extrudeuse_poly.png}
+    \caption{Extrudeuse pour polymères}
+    \label{fig:extrudeuse}
+\end{figure}
+La partie "Hopper" s'appelle la trémille d'alimentation. Elle contient le polymère sous forme de granules, qui sont fondues dans la suite de l'extrudeuse pour être ensuite utilisées souos forme de pâte visqueuse mise sous pression. L'écoulement du polymère fondu (fluide) est un écoulement de Poiseuille. Ce qui le fait avancer est donc le frottement sur le cylindre extérieur. Par la mécanique des fluides, on a l'équation suivante : 
+\begin{equation}
+    \Dot{Q} = \frac{\frac{\pi}{8}R^4}{\eta L}\Delta p
+\end{equation}
+avec \(R\) le rayon du conduit hélicoïdal et \(L\) sa longueur. Par calcul d'intégrale, on a également la formule suivante : 
+\begin{equation}
+    \Dot{Q} = \int_{R_{\text{vis}}}^{R_{\text{cyl}}} v_z 2\pi rdr
+\end{equation}
+Elle n'est correcte que si on suppose l'écoulement laminaire (sans frottement) et si le gradient de pression est constant. 
+\subsection{Point de fonctionnement}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .5\textwidth]{img/point_de_fonctionnement.png}
+    \caption{Point de fonctionnement}
+    \label{fig:pt_fonctionnement}
+\end{figure}
+Le point de fonctionnement d'une extrudeuse est la valeur de débit et de variation de pression tels que le débit dans la filière est égal à celui dans la vis.
+\chapter{Extrusion et moulage des polymères}
+\color{red} A FAIRE SUR BASE DU SYLLABUS \color{black}
+\section{Polymérisation}
+Un polymère est un composé constitué de monomères (simples ou complexes), qui sont responsables des propriétés du matériau. \\
+
+\begin{itemize}
+    \item La polymérisation est l'étape durant laquelle sont déterminées la longueur, la ramification et la composition de chaînes du polymères. 
+    \item Les polymères sont mélangés (avec des additifs) dans l'extrudeuse. Les additifs permettent de lutter contre les uv's et ont parfois une fonction de remplissage ou de renfort. 
+    \item Les polymères sont fondus dans l'extrudeuse.
+    \item Etape de solidification.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,1652 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{empheq}
+\usepackage{titlesec}
+\usepackage{mathpazo}
+\usepackage{xfrac}
+\usepackage{textcomp}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{tabularray}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage[skins]{tcolorbox}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\renewcommand{\contentsname}{Table des matières}
+
+% Define a new tcolorbox style with a red border and transparent interior
+\tcbset{
+    redbox/.style={
+        enhanced,
+        colframe=red,
+        colback=white,
+        boxrule=1pt,
+        sharp corners,
+        before skip=10pt,
+        after skip=10pt,
+        box align=center,
+        width=\linewidth-2pt, % Adjust the width dynamically
+    }
+}
+\newcommand{\boxedeq}[1]{
+\begin{tcolorbox}[redbox]
+    \begin{align}
+        #1
+    \end{align}
+\end{tcolorbox}
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.25]{imgs/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LMECA1321 Mécanique des fluides et des transferts \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2023-2024 - Q1}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{imgs/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\part{Écoulements laminaires -- V. Legat}
+\chapter{Les fluides dans la mécanique des milieux continus}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : l'expression de fluide incompressible désigne souvent un modèle de fluide incompressible et indilatabl, tandis que l'expression d'écoulement incompressible désigne un problème où le champ de vitesse est à divergence nulle.
+\end{itemize}
+\section{Lois de conservation}
+\subsection{Introduction}
+Dans ce cours, on fera toujours l'hypothèse que le milieu est continu. En mécanique des milieux continus, un point matériel est un volume élémentaire suffisamment grand afin de lisser toutes les fluctuations moléculaires et suffisamment petit afin d'être négligeable par rapport aux variations macroscopiques.\\
+Si la masse volumique \(\rho\) et la vitesse \(v\) sont deux quantités continues, alors la forme conservative de l'équation de continuité, obtenue à partir de l'équation de conservation de la masse, s'écrit :
+\begin{equation}
+    \frac{\partial \rho}{\partial t} + \frac{\partial}{\partial x}(\rho v)=0
+\end{equation}
+ou encore
+\begin{equation}
+    \frac{D\rho}{Dt} = -p\frac{\partial v}{\partial x}
+\end{equation}
+où \(\frac{D}{Dt}\) est la dérivée matérielle : \(\frac{D}{Dt} = \frac{\partial}{\partial t} + v\frac{\partial}{\partial x}\). On rappellera également que le tenseur des taux de déformation est défini par
+\begin{equation}
+    \textbf{d} = \frac{1}{2}\left(\nabla \textbf{v}^T+\nabla \textbf{v}\right)
+\end{equation}
+Afin d'écire les lois de conservation globales pour un volume matériel, il conveint d'abord de définir les grandeurs physiques nécessaires associées à un volume matériel \(V(t)\) : 
+\includepdf[pages=-, pagecommand={\thispagestyle{plain}}]{pdf/Syllabus_p3.pdf}
+On note \(\textbf{n}\) la normale unitaire sortante de \(\partial V(t)\). Les lois de conservation globales pour un volume matériel sont données par :
+\begin{multline}
+    \text{Conservation de la masse : }\frac{d\mathcal{M}}{dt}=0\\ 
+    \text{Conservation de la quantité de mouvement : } \frac{d\mathcal{P}}{dt}(t) = \textbf{F}_d(t) + \textbf{F}_c(t) \\
+    \text{Conservation du moment de la quantité de mouvement : }\frac{dN}{dt}(t) = M_d(t)+M_c(t) \\ 
+    \text{Conservation de l'énergie : } \frac{d(K+U)}{dt}(t) = P_d(t)+P_c(t) + Q_d(t)+Q_c(t)\\
+\end{multline}
+et ce \(\forall V(t)\), \(\forall\) repère inertiel (sauf la conservation de la masse, qui ne dépend pas du repère).
+\subsection{Energie potentielle}
+Soit un potentiel \(W(\textbf{x})\). On définit son énergie (=énergie potentielle) par
+\begin{equation}
+    \mathcal{W}(t) = \int_{V(t)} \rho WdV
+\end{equation}
+Puisqu'on sait que \(\textbf{g} = -\nabla W\), on trouve la loi de conservation de l'énergie potentielle :
+\begin{equation}
+    \frac{d}{dt}\int_{V(t)} \rho WdV = -\int_{V(t)} \rho \textbf{v}\cdot \textbf{g}dV
+\end{equation}
+\subsection{Formes locales}
+Les formes locales des trois équations de conservation principalement utilisées dans ce cours sont :
+\begin{align}
+    &\text{Conservation de la masse : } \frac{D\rho}{Dt} + \rho \nabla \cdot \textbf{v} = 0\\
+    &\text{Conservation de la quantité de mouvement : } \rho\frac{D\textbf{v}}{Dt} = \nabla \cdot \sigma  \rho \textbf{g}\\
+    &\text{Conservation de l'énergie interne : } \rho \frac{DU}{Dt} = \sigma :\textbf{d} + r-\nabla \cdot \textbf{q}
+\end{align}
+avec \(U\) l'énergie interne, \(\textbf{v}\) la vitesse, \(\textbf{q}\) le flux de puissance calorifique par conduction, abrégé à flux de chaleur dans la suite, et \(\sigma\) le tenseur de contraintes, que l'on peut décomposer comme suit : \(\sigma = -p\delta + \tau\).
+
+On trouve également les formes locales de conservation d'énergies potentielle et cinétique, dont la combinaison donne l'équation de conservation de l'énergie interne : 
+\begin{align}
+        &\text{Conservation de l'énergie cinétique : } \rho \frac{D}{Dt}\left(\frac{\textbf{v}\cdot\textbf{v}}{2}\right) = \nabla \cdot (\sigma \cdot \textbf{v}) + \rho \textbf{g}\cdot \textbf{v} - \sigma:\textbf{d}\\
+        &\text{Conservation de l'énergie potentielle : } \rho \frac{DW}{Dt} = -\rho \textbf{g}\cdot \textbf{v}
+\end{align}
+\subsubsection{Forme conservative}
+De la forme générale ci-dessus, on tire la forme dite conservative :
+\begin{equation}
+    \frac{\partial \rho}{\partial t} + \nabla (\rho \textbf{v}) = 0\\
+    \frac{\partial (\rho \textbf{v})}{\partial t} + \nabla (\rho \textbf{vv}) = \nabla \cdot \sigma  \rho \textbf{g}\\
+    \frac{\partial (\rho U)}{\partial t} + \nabla (\rho \textbf{v}U) = \sigma :\textbf{d} + r-\nabla \cdot \textbf{q}
+\end{equation}
+\subsection{Pression et enthalpie}
+On définit l'enthalpie massique \(H\) par \(H = U+p/\rho\) et l'enthalpie d'un volume matériel est alors
+\begin{equation}
+    \mathcal{H}(t) = \int_{V(t)} \rho HdV
+\end{equation}
+On peut alors réécrire la forme locale des équations de conservation comme ceci : 
+\begin{align}
+    \rho\frac{DH}{Dt} &= \frac{Dp}{Dt}+\tau :\textbf{d} + r-\nabla \cdot q\\
+    \rho\frac{D}{Dt}\left(W+\frac{\textbf{v}\cdot\textbf{v}}{2}\right) &= \nabla \cdot (\tau\cdot v) - v\cdot \nabla p-\tau\:\textbf{d}\\
+    \rho \frac{D}{Dt}\left(H+W+\frac{\textbf{v}\cdot\textbf{v}}{2}\right) &= \frac{\partial p}{\partial t} + \nabla \cdot (\tau \cdot v)+ r-\nabla \cdot q
+\end{align}
+\section{Lois de comportement}
+Parallèlement à l'enthalpie précédemment, on définit l'entropie \(\mathcal{S}\) d'un volume matériel \(V(t)\) à partir de l'entropie massique \(S\) :
+\begin{equation}
+    \mathcal{S}(t) = \int_{V(t)} \rho SdV
+\end{equation}
+à partir de laquelle on peut exprimer le second principe de la thermodynamique :
+\begin{equation}
+    \frac{d\mathcal{S}}{dt}\ge R_d(t) + R_c(t) \qquad \forall V(t)
+\end{equation}
+où on définit 
+\begin{equation}
+    \begin{cases}
+        \text{Apport externe radiatif d'entropie par unité de temps : } R_d(t) = \int_{V(t)} \frac{r}{T}dV\\
+        \text{Apport externe conductif d'entropie par unité de temps : } R_c(t) = \int_{\partial V(t)} \frac{q(\textbf{n})}{T}dS
+    \end{cases}
+\end{equation}
+On peut réécrire le second principe sous forme locale : 
+\begin{equation}
+    \rho \frac{DS}{Dt} \ge \frac{r}{T} - \frac{1}{T}\nabla \cdot \textbf{q} + \frac{\textbf{q}}{T^2}\cdot \nabla T
+\end{equation}
+dont on obtient, en la combinant avec l'équation de conservation de l'énergie, l'inégalité de Clausius-Duhem :
+\begin{multline}
+    \rho T \frac{DS}{Dt} - \rho \frac{DU}{Dt} \ge -\sigma :\textbf{d} + \frac{\textbf{q}}{T} \cdot \nabla T\\
+    \Longleftrightarrow \rho T \frac{DS}{Dt} - \rho \frac{DH}{Dt} + \frac{Dp}{Dt} \ge -\tau :\textbf{d} + \frac{\textbf{q}}{T} \cdot \nabla T\\
+\end{multline}
+\subsection{Modèle du fluide visqueux newtonien}
+Décomposons le tenseur des taux de déformations en une partie sphérique \(\textbf{d}^s\) et une partie déviatoire \(\textbf{d}^d\) :
+\begin{equation}
+    \textbf{d} = \textbf{d}^s+\textbf{d}^d = (\delta :\textbf{d})\frac{\delta}{3} + \left(\textbf{d} - (\delta:\textbf{d})\frac{\delta}{3}\right)
+\end{equation}
+\subsection{Ecoulement incompressible d'un fluide visqueux newtonien}
+Lorsqu'on introduit l'hypothèse d'incompressibilité et indilatabilité, on obtient le modèle suivant : 
+\begin{equation}
+    \sigma = -p\delta + 2\Hat{\mu}(p,T)\textbf{d} \qquad \textbf{q} = -\Hat{k}(p,T)\nabla T
+\end{equation}
+avec \(\Hat{\mu}(p,T)\) le coefficient de viscosité de cisaillement et \(\Hat{k}(p,T)\) le coefficient de conduction thermique du fluide. \\
+Les équations de conservation pour les écoulements incompressibles sont les suivantes :
+\boxedeq{
+    \nabla \cdot \mathbf{v} & = 0 \\
+    \rho \frac{D\mathbf{v}}{Dt} & = -\nabla p + \nabla \cdot (2\mu \mathbf{d}) + \rho \mathbf{g} \\
+    \rho c \frac{DT}{Dt} & = 2\mu (\mathbf{d}:\mathbf{d}) + r + \nabla \cdot (k\nabla T)
+}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : Dans ces équations, les seuls effets à distance sont les forces de masse (\(\textbf{g}\)) et la puissance radiative volumique (\(r\)).
+\end{itemize}
+\section{Conditions aux limites}
+\subsection{Conditions frontière}
+Pour tout fluide visqueux, le fluide est supposée coller à la paroi et on impose donc que la vitesse du fluide soit égale à la vitesse de la paroi. Il faut y ajouter une condition thermique, en prescrivant soit la température à la paroi, soit le fluw de chaleur sortant à travers celle-ci.
+\subsection{Conditions limites}
+Pour un fluide visqueux newtonien quelconque, les conditions initiales constistent à spécifier les champs de pression, de vitesse et de température au temps initial.
+\subsection{Conditions d'interface}
+On peut également introduire des conditions d'interface s'il en existe. On impose en général des conditions de continuité des vitesse, forces de contact, température et flux de chaleur.
+
+\chapter{Écoulements incompressibles établis}
+Un écoulement établi, ou complètement développé, est tel que le profil transversal de vitesse est le même quelle que soit la section transversale à l'écoulement où on mesure ce profil. Dans ce chapitre, la direction de l'écoulement est la direction \(x\).
+\section{Écoulements de Poiseuille et Couette}
+\subsection{Écoulements plans}
+Le nombre adimensionnel principal caractérisant un écoulement est le nombre de Reynolds :
+\begin{equation}
+    Re_x \coloneqq \frac{xu_m}{\nu} = \frac{\text{Effets d'inertie}}{\text{Effets visqueux}} = \frac{\text{Transport de la qtt de mvt}}{\text{ Diffusion de la qtt de mvt}}
+\end{equation}
+avec \(x\) une dimension caractéristique de l'écoulement (\(d=2h\) dans ce chapitre) et \(u_m\) la vitesse moyenne du fluide dans l'écoulement.\\
+\underline{Hypothèses :}
+\begin{itemize}
+    \item Écoulement bidimensionnel entre deux plaques planes, fixes et séparées par une distance \(d=2h\).
+    \item Écoulement établi : \(u=u(y) \Rightarrow \frac{\partial u}{\partial x} = 0\). La continuité implique \(\frac{\partial v}{\partial y} = 0\) et on a \(v=0\) à la paroi. Ces deux conditions impliquent que \(v=0\) partout.
+\end{itemize}
+\subsubsection{Profil de Poiseuille}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width = \textwidth]{imgs/Établi_conduite.png}
+    \caption{Écoulement établi entre deux plaques}
+    \label{fig:Établi}
+\end{figure}
+\underline{Conditions limites :}\\
+\begin{itemize}
+    \item Conditions frontières : \(u(-h)=u(h)=0\).
+\end{itemize}
+Considérons les deux équations de conservation de la quantité de mouvement selon \(x\) et \(y\). Par nos hypothèses, elles nous donnent :
+\begin{align}
+    \frac{\partial P}{\partial y} & = 0\\
+    0 & = -\frac{dP}{dx} + \nu \frac{d^2u}{dy^2}
+\end{align}
+Comme on a par les hypothèses que \(P=P(x)\) et \(u=u(y)\), on a :
+\begin{equation}
+    \frac{dP}{dx} = \nu \frac{d^2u}{dy^2} = C = \text{constante}
+\end{equation}
+Par les conditions frontière et par intégration, on obtient le profil de vitesse suivant :
+\begin{equation}
+    u(y) = \left(-\frac{dp}{dx}\right)\frac{h^2}{2\mu} \left(1-\left(\frac{y}{h}\right)^2\right) \qquad
+    u_c = \left(-\frac{dp}{dx}\right)\frac{h^2}{2\mu}
+\end{equation}
+avec \(u_c\) la vitesse au centre de la conduite, ici la vitesse maximale.  
+\begin{figure}[h]        
+    \centering
+    \includegraphics[width = .4\textwidth]{imgs/Poiseuille_conduite.png}
+    \caption{Écoulement de Poiseuille en conduite}
+    \label{fig:Poiseuille}
+\end{figure}
+Définissons le débit volumique, la vitesse moyenne et la contrainte de frottement à la paroi :
+\begin{equation}
+    Q = \int_A u(y)dA \qquad u_m = \frac{Q}{A} \qquad \tau_w = \mu \left.\frac{du}{dy}\right\vert_{y=\text{paroi}}
+\end{equation}
+Dans le cas d'un écoulement de Poiseuille, on a 
+\begin{equation}
+    Q = \frac{4}{3}hu_c\qquad u_m = \frac{2}{3}u_c
+\end{equation}
+Le coefficient adimensionnel de frottement, \(C_f\) est défini comme étant la contrainte de frottement divisée par la pression dynamique \(\rho u_m^2/2\) : 
+\begin{equation}
+    C_f \coloneqq \frac{\tau}{\rho u_m^2/2} = \frac{6\mu}{\rho hu_m} = \frac{6\nu}{hu_m} = \frac{12}{Re_d}
+\end{equation}
+Définissons aussi le coefficient de pertes de charge \(\lambda\) : 
+\begin{equation}\label{eq:lambda}
+    -\frac{dp}{dx} = \frac{\rho u_m^2}{2}\frac{\lambda}{d}
+\end{equation}
+Et on obtient la relation \(\lambda = 2C_f\) dans une conduite. De plus, puisque l'écoulement est laminaire, \(\lambda = 24/Re_d\).
+\subsubsection{Profil de Couette}
+\underline{Hypothèse supplémentaire :}
+\begin{itemize}
+    \item Pas de gradient de pression.
+\end{itemize}
+\begin{figure}[h]
+        \centering
+        \includegraphics[width = .3\textwidth]{imgs/Couette_conduite.png}
+        \caption{Écoulement de Couette en conduite}
+        \label{fig:Couette}
+\end{figure}
+\underline{Conditions limites :}\\
+\begin{itemize}
+    \item Conditions frontières : \(u(-h)=0\) et \(u(h) = U\).
+\end{itemize}
+On déduit de tout cela que \(\frac{d^2u}{dy^2} = 0\), et le profil de vitesse est linéaire :
+\begin{equation}
+    u(y) = \frac{U}{2}\left(1+\frac{y}{h}\right)
+\end{equation}
+\subsubsection{Combinaison linéaire}
+Une combinaison linéaire des deux écoulements présentés ci-dessus correspond au cas Poiseuille-Couette combinés\footnote{Ce n'est possible que parce que les termes non-linéaires de convection s'annulent exactement.}.\\
+\underline{Conditions limites et hypothèses :}
+\begin{itemize}
+    \item Conditions frontière : \(u(-h) = 0\) et \(u(h) = U\).
+    \item Hypothèse : il y a un gradient de pression.
+\end{itemize}
+Le profil de vitesse est alors
+\begin{equation}
+    u(y) = \left(-\frac{dp}{dx}\right)\frac{h^2}{2\mu} \left(1-\left(\frac{y}{h}\right)^2\right) + \frac{U}{2}\left(1+\frac{y}{h}\right)
+\end{equation}
+On définit finalement le paramètre adimensionnel \(\beta = \left(-\frac{dp}{dx}\right)\frac{h^2}{2\mu U}\). Le cas Couette correspond à \(\beta = 0\). On parle de pertes de charge lorsque \(\beta<0\).
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imgs/PC_canal.png}
+    \caption{Profils de vitesse pour les écoulements de Poiseuille-Couette entre deux plaques}
+\end{figure}
+\subsection{Ecoulements axisymétriques}
+Considérons maintenat un écoulement axisymétrique en conduite cylindrique de section circulaire de diamètre \(D=2R\). \\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imgs/Etabli_conduite.png}
+    \caption{Écoulement établi en conduite cylindrique}
+\end{figure}
+\underline{Hypothèses :}
+\begin{itemize}
+    \item L'écoulement est établi : \(u=u(r)\) et \(\frac{\partial u}{\partial x} = 0\).
+    \item Continuité : \(\frac{\partial}{\partial r}(rv) = 0\).
+\end{itemize}
+\underline{Conditions limites :}
+\begin{itemize}
+    \item \(v=0\) en \(r=R\) (=paroi). On a donc, avec la condition de continuité : \(v = 0\) partout.
+\end{itemize}
+Les équations de conservation de quantité de mouvement donnent alors 
+\boxedeq{\frac{\partial P}{\partial r} & = 0\\
+    0 & = -\frac{dP}{dx} + \frac{\nu}{r}\frac{d}{dr}\left(r\frac{du}{dr}\right)}
+On obtient donc le profil de vitesse suivant, avec comme condition que \(u(R) = 0\) :
+\begin{equation}
+    u(r) = \left(-\frac{dp}{dx}\right)\frac{h^2}{4\mu}\left(1-\left(\frac{r}{R}\right)^2\right)
+\end{equation}
+avec une vitesse maximale au centre de la conduite et une vitesse moyenne :
+\begin{equation}
+    u_c = \left(-\frac{dp}{dx}\right)\frac{R^2}{4\mu} \qquad u_m = \frac{1}{A}\int_A u(r)dA = \frac{u_c}{2}
+\end{equation}
+Et on peut donc réécrire le profil de vitesse comme ceci :
+\begin{equation}\label{eq:Poiseuille}
+    u(r) = 2u_m \left(1-\left(\frac{r}{R}\right)^2\right)
+\end{equation}
+Par leur définition, on trouve la contrainte de frottement à la paroi et le coefficient de frottement :
+\begin{equation}
+    \tau_w = -\mu \left.\frac{du}{dr}\right|_{r=R} = \frac{4\mu u_m}{R} \qquad C_f = \frac{\tau_w}{\rho u_m^2/2} = \frac{16}{Re_D}
+\end{equation}
+avec \(Re_D = u_mD/\nu\) le nombre de Reynolds de l'écoulement en conduite. Le coefficient de pertes de charge \(\lambda\) est alors défini par
+\begin{equation}
+    \left(-\frac{dp}{dx}\right) = \frac{\rho u_m^2}{2}\frac{\lambda}{D} \Longleftrightarrow \lambda = 4 C_f = \frac{64}{Re_D}
+\end{equation}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/Poiseuille_cylindrique.png}
+    \caption{Profil de vitesse de Poiseuille en conduite cylindrique}
+    \label{fig:P_cyl}
+\end{figure}
+On observe sur la \autoref{fig:P_cyl} que le profil de vitesse est toujours une parabole, mais il est important de noter que l'amplitude de \(u\) a changé!
+\section{Écoulements instationnaires}
+Check si à faire : pp38-51
+\chapter{Transfert de chaleur}
+Il existe trois modes de transfert de chaleur :
+\begin{itemize}
+    \item La conduction de la chaleur est la tranbsmission d'énergie, de proche en proche, par dviers mécanismes mettant en jeu des particules élémentaires. La conduction dépend exclusivement des propriétés physiques du matériau considéré.
+    \item La convection de la chaleur est la transmission d'énergie thermique par dellà une interface, généralement fluide-solide. Le mécanisme de convection fait intervenir les propriétés de conduction des deux milieux au voisinage immédiat de l'interface, et est principalement piloté par les caractéristiques de l'écoulement dans un voisinage assez étendu de l'interface.
+    \item Le rayonnement thermique est un rayonnement électromagnétique dont on ne parlera principalement pas dans ce cours. 
+\end{itemize}
+\section{Transfert de chaleur dans les solides}
+\subsection{Conduction : loi de Fourier}
+La loi de Fourier pour un matériau homogène et isotrope relie le vecteur de densité de chaleur au gradient de température : 
+\begin{equation}
+    \textbf{q} = -k\nabla T
+\end{equation}
+Le coefficient \(k =\Hat{k}(p,T)\) est la conductibilité thermique, dépendant du matériau considéré.\\
+À partir de cette loi, on peut calculer le flux de chaleur qui traverse une surface \(A\) :
+\begin{equation}
+    Q = \int_A q(\textbf{n}) dA = \int_A \textbf{q}\cdot\textbf{n}dA
+\end{equation}
+\underline{Hypothèses :}
+\begin{itemize}
+    \item Le corps est solide, indéformable, éventuellement soumis à une génération interne de densité de puissance \(r\), et supposé au repos.
+\end{itemize}
+L'équation de conservation de l'énergie interne devient alors 
+\boxedeq{\rho \frac{\partial U}{\partial t} &= r-\nabla \cdot \textbf{q}\\
+\Longleftrightarrow \frac{1}{\alpha}\frac{\partial T}{\partial t} &= \frac{r}{k} + \nabla^2T}\label{eq:temp}
+Où \(c\) est la chaleur massique et \(\alpha = k/\rho c\) est la diffusivité thermique\footnote{Cette dernière représente la facilité avec laquelle un flux de chaleur transmis à un solide se traduit, au sein de clui-ci, par un relèvement de la température.}. 
+\subsubsection{Conduction à travers une plaque plane en régime permanent}
+\underline{Hypothèses :}
+\begin{itemize}
+    \item On considère une plaque plane dont les faces latérales sont beaucoup plus grandes que son épaisseur \(L\) et ont une température connue.
+    \item On néglige les effets de bord \(\rightarrow\) problème unidimensionnel.
+\end{itemize}
+\underline{Conditions limites :}
+\begin{itemize}
+    \item Conditions frontière : \(T(x=0)=T_0\) et \(T(x=L)=T_L\).
+\end{itemize}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\linewidth]{imgs/Temp_canal.png}
+    \caption{Profil de température en canal}
+    \label{fig:Temp_canal}
+\end{figure}
+L'équation de la chaleur (\autoref{eq:temp}) se réduit à
+\begin{equation}\label{eq:temp_cond}
+    \frac{dT}{dx^2} = 0 \qquad T(x) = \frac{T_L-T_0}{L}x+T_0
+\end{equation}
+et la densité du flux de chaleur et le flux de chaleur à travers une aire latérale \(A\) sont 
+\begin{equation}
+    q=-k\frac{T_L-T_0}{L} \qquad Q = Aq = -Ak\frac{T_L-T_0}{L}
+\end{equation}
+\subsection{Convection : loi de Newton}
+On s'intéresse ici au transfert de chaleur d'une paroi à température \(T_p\) vers un fluide environnant dont la température moyenne est \(T_f\) (\(Tf<T_p\)). L'équation du flux de chaleur est 
+\begin{equation}\label{eq:newton}
+    Q = Ah(T_p-T_f)
+\end{equation}
+où \(A\) est l'aire d'échange et \(h[W/m^2K]\) est le coefficient de convection.
+\subsubsection{Plaque soumise à convection}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imgs/Temp_convection.png}
+    \caption{Plaque plane soumise à convection}
+    \label{fig:temp_convection}
+\end{figure}
+\underline{Hypothèses :}
+\begin{itemize}
+    \item Les températures aux parois sont \(T_0\) et \(T_L\).
+    \item Les températures des fluides loin des parois sont respectivement \(T_{\infty0}\) et \(T_{\infty L}\).
+\end{itemize}
+\underline{Conditions limites :}
+\begin{itemize}
+    \item Condition d'interface : le flux de conduction à l'intérieur de la plaque ets égal à celui qui sort par convection : 
+        \begin{itemize}
+            \item En \(x=0\) : \(-k\left.\frac{dT}{dx}\right|_0= h_0(T_{\infty0}-T_0)\).
+            \item En \(x=L\) : \(-k\left.\frac{dT}{dx}\right|_L= h_L(T_{\infty L}-T_L)\).
+        \end{itemize}
+\end{itemize}
+On commence par définit le nombre adimensionnel de Biot, qui permet de quantifier les effets de convection par rapport aux effets de conduction :
+\begin{equation}
+    Bi_0 = \frac{\text{Convection}}{\text{Conduction}} = \frac{h_0L}{l}\qquad Bi_L = \frac{h_LL}{k}
+\end{equation}
+et on obtient le profil de température suivant entre les plaques :
+\begin{equation}
+    T(x) = \frac{(T_{\infty L}-T_{\infty0})\left(\frac{x}{L}+\frac{1}{Bi_0}\right)}{1+\frac{1}{Bi_0}+\frac{1}{Bi_L}} + T_{\infty0}
+\end{equation}
+À noter que l'\autoref{eq:temp_cond} correpond à une convection d'intensité infinie (\(Bi\rightarrow \infty\)) aux deux faces.
+\subsubsection{Génération de chaleur dans un cylindre}
+Check si à faire : p60.
+\subsection{Résistance thermique}
+Check si à faire : pp61-65.
+\subsection{Equation de Laplace}
+Check si à faire : p65-68.
+\section{Transfert de chaleur établi}
+On considère ici les transferts de chaleur établis avec écoulement établi en conduite cylindrique. Le profil de vitesse est celui de Poiseuille (\autoref{eq:Poiseuille}).\\
+\underline{Hypothèses :}
+\begin{itemize}
+    \item On néglige la conduction de chaleur dans la direction axiale car elle est très faible par rapport à la conduction dans la direction radiale : \(\frac{\partial^2T}{\partial x^2} \ll \frac{1}{r}\frac{\partial}{\partial r}\left(r\frac{\partial T}{\partial r}\right)\).
+    \item La dissipation visqueuse est négligeable la plupart du temps dans les prpblèmes d'écoulement avec transfert de chaleur.
+    \item Les hypothèses utilisées pour trouver le profil de vitesse tiennent toujours.
+\end{itemize}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imgs/chaleur_établi.png}
+    \caption{Transfet thermique établi en conduite cylindrique}
+    \label{fig:chaleur_établi}
+\end{figure}
+L'équation de conservation de l'énergie interne se réduit alors à 
+\begin{equation}
+    \rho c u \frac{\partial T}{\partial x} = k\frac{1}{r}\frac{\partial}{\partial r}\left(r\frac{\partial T}{\partial r}\right) + \mu \left(\frac{du}{dr}\right)^2
+\end{equation}
+On définit la température moyenne \(T_m\) dans la première équation et on trouve sa valeur pour des écoulements incompressibles avec \(c\) constant : 
+\begin{equation}
+    cT_m = \frac{\int_A cT\rho udA}{\int_A \rho u dA} \qquad T_m = \frac{\int_A TudA}{u_mA}
+\end{equation}
+On définit ensuite le coefficient adimensionnel de transfert de chaleur, le nombre de Nusselt : 
+\begin{equation}
+    Nu = \frac{q_wD}{k(T_w-T_m)} = \frac{hD}{k}
+\end{equation}
+avec \(q_w\) le vecteur de densité de chaleur à la paroi.\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imgs/Bilan_thermique_conduite.png}
+    \caption{Bilan d'énergie thermique perdue/acquise par l'écoulement sur un élément différentiel de longueur \(dx\)}
+    \label{fig:Bilan_thermique_conduite}
+\end{figure}
+Par bilan local d'énergie thermique, on obtient, dans les cas de dissipation visqueuse négligeable, 
+\begin{equation}
+    \rho u_m c \frac{dT_m}{dx} = \frac{4}{D}q_w
+\end{equation}
+\subsubsection{Transfert thermique établi avec température de paroi et température moyenne linéaires et de même pente}
+\begin{figure}[h]
+  \begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{imgs/Temp_établi_conduite_<0.png}
+    \caption{Profils de température pour le transfert thermique établi en conduite cylindrique, \(\beta\le 0\)}
+    \label{fig:temp_établi_conduite_<0}
+  \end{subfigure}%
+  \begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{imgs/Temp_établi_conduite_>0.png}
+    \caption{Profils de température pour le transfert thermique établi en conduite cylindrique, \(\beta\ge 0\)}
+    \label{fig:temp_établi_conduite_>0}
+  \end{subfigure}
+\end{figure}
+Dans ce cas, \(\frac{dT_w}{dx} = \frac{dT_m}{dx} = \text{ constante } \neq 0\). On définit le paramètre adimensionnel \(\beta\), d'où on trouve une expression du nombre de Nusselt :
+\begin{equation}
+    \beta = \rho c \frac{DT_w}{dx}\frac{R^2}{\mu u_m} \qquad Nu = \frac{q_wD}{k(T_w-T_m)} = \frac{8-\beta}{\frac{5}{6}-\frac{11}{48}\beta}
+\end{equation}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imgs/Nusselt.png}
+    \caption{Nombre de Nusselt en fonction de \(\beta\)}
+    \label{fig:Nusselt}
+\end{figure}
+On remarque que 
+\begin{equation}
+    \forall \beta \qquad \frac{T-T_w}{T_m-T_w} = \frac{9}{8} \text{ en } \frac{r}{R}=\frac{1}{2}
+\end{equation}
+De plus, lorsque \(\beta\rightarrow \pm \infty\), les dissipations visqueuses sont négligeables et \(Nu = 48/11 = 4.36\). 
+\subsection{Problème de Grätz}
+Check si à faire : pp77-82
+\subsection{Nombre de Nusselt moyen}
+Check si à faire : pp82-83
+\chapter{Écoulements rampants}
+Check si à faire : pp85-91.
+Les écoulements rampants sont des écoulements lents, aussi appelés écoulements de Stokes. Les termes non-linéaires d'inertie sont supposés négligeables par rapport aux termes de gradient de pression et de diffusion. Si les grandeurs physiques des fluides considérés sont invariables, les équations de conservation de la masse et de la quantité de mouvement sont : 
+\boxedeq{\nabla \cdot \textbf{v} & = 0\\
+    \nabla p &= \mu \nabla^2\textbf{v}}
+Les écoulements de Stokes sont particuliers : la pression et le tourbillon sont des fonctions harmoniques (\(\nabla^2p=0=\nabla^2\omega\)), et la fonction de courant est une fonction bi-harmonique (\(\nabla^(\nabla^2\psi)=0\)). \\
+
+Inversement, lorsque le nombre de Reynolds est grand, le terme visqueux est négligeable et les équations de onservation sont : 
+\boxedeq{\nabla \cdot v &= 0\\
+\rho(v\cdot \nabla)v&=-\nabla p\\}
+\section{Théorie de la lubrification}
+\underline{Hypothèses :}
+\begin{itemize}
+    \item Par l'hypothèse de termes non-linéaires négligeables, \(Re_L\frac{h^2}{L^2}\ll 1\).
+\end{itemize}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{imgs/Palier_plat.png}
+    \caption{Lubrification : cas du palier plat}
+    \label{fig:plalier_plat}
+\end{figure}
+Le bloc supérieur est fixe, tandis que la plaque inférieure est mobile, à vitesse consante \(U\). L'important pour créer de la portance est que l'écart entre les deux surfaces solides ne soit pas constant. L'écart \(h(x)\) entre les deux plaques suit donc une loi linéaire en \(x\) : \(h(x) = h_0-(h_0-h_L)\frac{x}{L}\).\\
+\underline{Hypothèse : }
+\begin{itemize}
+    \item \(h(x)\ll L\) permet de valider l'hypothèse que les termes d'inertie sont négligeables :
+\end{itemize}
+\begin{align}
+    \rho U \frac{U}{L} & \ll \mu\frac{U}{h_0^2} \\
+    \frac{\rho UL}{\mu} &=\left(\frac{h_0}{L}\right)^2 \ll 1\\
+\end{align}
+\begin{itemize}
+    \item On peut dire que l'écoulement est 'presque établi' puisque la section de passage varie faiblement en \(x\). L'écoulement est donc de type Poiseuille-Couette avec gradient de pression.
+\end{itemize}
+\underline{Conditions limites :}
+\begin{itemize}
+    \item Conditions frontière : \(u(0)=U\) et \(u(h)=0\).
+\end{itemize}
+Le profil de vitesse est alors :
+\begin{equation}
+       u(y) = \left(-\frac{dp}{dx}\right)\frac{h^2}{2\mu} \frac{y}{h}\left(1-\frac{y}{h}\right) + U\left(1-\frac{y}{h}\right)
+\end{equation}
+Et on a un débit \(Q\) uniforme : 
+\begin{equation}
+    Q = \int_0^hudy = -\frac{dp}{dx}\frac{h^3}{12\mu} + \frac{Uh}{2}
+\end{equation}
+On obtient par cette expression l'équation de Reynolds en lubrification sous forme différentielle : 
+\begin{equation}
+    \frac{d}{dx}\left(h^3\frac{dp}{dx}\right) = 6\mu U \frac{dh}{dx}
+\end{equation}
+que l'on peut intégrer avec les conditions limites \(p(0)=p(L)=p_0\). On réécrit finalement le débit sous la forme 
+\begin{equation}
+    Q = U\frac{h_0h_L}{h_0+h_L}
+\end{equation}
+On trouve finalement le profil de pression : 
+\begin{equation}
+    p(h)-p_0 = \frac{6\mu UL}{h_0^2-h_L^2}\frac{(h_0-h)(h-h_L)}{h^2}
+\end{equation}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/Pression_palier.png}
+    \caption{Profils de pression pour le cas du palier plat}
+    \label{fig:pression_palier}
+\end{figure}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : le maximum n'est pas atteint au milieu du palier, le profil n'est pas une parabole!! \(h_{p_{max}} = \frac{h_0h_L}{(h_0+h_L)/2}\). 
+\end{itemize}
+La plus grande différence de pression dans le palier par rapport à l'extérieur est 
+\begin{equation}
+    p_{max}-p_0 = \frac{3}{2}\frac{\mu UL}{h_0^2}\frac{1}{h_L/h_0}\frac{1-h_L/h_0}{1+h_L/h_0}
+\end{equation}
+On définit maintenant la charge utile par unité de profondeur \(P\) et la force de cisaillement totale \(F\) de manière générale : 
+\begin{equation}
+    P = \int_0^L (p(x)-p_0)dx \qquad F = -\int_0^L\tau_w(x,0)dx
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : pour rappel, une puissance s'obtient par le produit d'une force et d'une vitesse.
+    \item [\(\rightarrow\)] Remarque : la limite pour \(h_L/h_0 \rightarrow 1\) correspond à un écoulement de Couette pur, i.e. sans gradient de pression.
+\end{itemize}
+\chapter{Couches limites laminaires}
+La condition de non glissement à la paroi est fondamentale dans les écoulements de fluides réels. En effet, le fait que le fluide adhère à la paroi entraîne une production de tourbillon à celle-ci. Le tourbillon est produit à la paroi, diffuse de la paroi vers l'écoulement, et est transporté par ce même écoulement le long de la paroi. Il s'ensuit que l'éouclement au voisinage de la paroi n'est plus irrotationnel : il contient du tourbillon. La zone proche de la paroi qui contient ce tourbillon est appelée couche limite. Elle est généralement mince, et d'autant plus mince que le nombre de Reynolds caractéristique global de l'écoulement est grand. On désigne son épaisseur par \(\delta\). \\
+\underline{Hypothèses :}
+\begin{itemize}
+    \item La couche limite est la région proche de la paroi où les effets visqueux sont aussi importants que les effets d'inertie.
+\end{itemize}
+\section{Équations de la couche limite lamminaire}
+\underline{Hypothèse : }
+\begin{itemize}
+    \item La couche limite est assez mince pour que la vitesse en dehors de la couche limite, \(u_e(x)\), puisse être approximée par la vitesse obtenue sans couche limite.
+    \item Condition de non-glissement à la paroi.
+    \item L'épaisseur locale de la couche limite est faible par rapport à la distance au début de la plaque : \(\delta \ll X\). Cela implique que la diffusion en \(x\) est négligeable par rapport à la diffusion en \(y\).
+    \item La pression ne varie pas au travers de la couche limite
+\end{itemize}
+Les équations de conservation de la quantité de mouvement sont :
+\begin{align}
+    u\frac{\partial u}{\partial x} + v\frac{\partial u}{\partial y} &= -\frac{1}{\rho}\frac{\partial p}{\partial x} + \nu \left(\frac{\partial^2u}{\partial x^2}+\frac{\partial^2u}{\partial y^2}\right)\\
+u\frac{\partial v}{\partial x} + v\frac{\partial v}{\partial y} &= -\frac{1}{\rho}\frac{\partial p}{\partial y} + \nu \left(\frac{\partial^2v}{\partial x^2}+\frac{\partial^2v}{\partial y^2}\right)\\
+\end{align}
+Par l'équation de Bernoulli et l'hypothèse sur la pression, on obtient les équations de conservation en couche limite laminaire, appelées équations de Prandtl :
+\boxedeq{\frac{\partial u}{\partial x} + \frac{\partial v}{\partial y} & = 0\\
+    u\frac{\partial u}{\partial x} + v\frac{\partial u}{\partial y} & =u_e \frac{du_e}{dx}+\nu \frac{\partial^2u}{\partial y^2}}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : on a considéré jusqu'ici que la plaque était plane, mais cette hypothèse n'est pas limitative.
+\end{itemize}
+\subsection{Approche mathématique formelle}
+On définit d'abord le nombre de Reynolds basés sur les grandeurs caractéristiques de l'écoulement (\(X,U_e\)) : \(Re=U_eX/\nu\). L'approche mathématique formelle consiste à adimensionnaliser les équations, puis observer le comportement lorsqu'on fait tendre \(Re\) vers l'infini. L'adimensionnalisation permet de comparer les différentes équations de conservation. \\
+Une première adimensionnalisation fait apparaître les équations d'Euler pour \(Re\rightarrow \infty\). C'est l'écoulement "externe" correspondant au modèle du fluide parfait. Il ne respecte pas les conditions limites. \\
+Une seconde adimensionnalisation fait apparaître la couche limite et les équations de Prandtl:\\
+
+Définissons d'abord \(\delta = Re^{-1/2}X\). Il ne s'agit pas de l'épaisseur exacte de la couche limite, mais plutôt d'un ordre de grandeur de celle-ci. L'adimensionnalisation en question est la suivante :
+\begin{equation}
+    x=Xx'\qquad y=\delta y'\qquad u=U_eu' \qquad v=Vv' \qquad p=\rho U_e^2p'
+\end{equation}
+Tous les paramètres sont connus, sauf \(V\). En utilisant l'équation de conservation de la masse, on trouve \(V=U_e/Re^{1/2}\). Ensuite, les équations de conservation de la quantité de mouvement en \(x\) sont :
+\begin{align}
+    u'\frac{\partial u'}{\partial x'}+v'\frac{\partial u'}{\partial y'} = -\frac{\partial p'}{\partial x'} +\left(\frac{1}{Re}\frac{\partial^2u'}{\partial x'^2}+\frac{\partial^2u'}{\partial y'^2}\right)& \xrightarrow{Re\rightarrow \infty} u'\frac{\partial u'}{\partial x'}+v'\frac{\partial u'}{\partial y'} = -\frac{\partial p'}{\partial x'} + \frac{\partial^2u'}{\partial y'^2}\\
+    \frac{1}{Re}\left(u'\frac{\partial v'}{\partial x'}+v'\frac{\partial v'}{\partial y'}\right)=-\frac{\partial p'}{\partial y'}+\frac{1}{Re}\left(\frac{1}{Re}\frac{\partial^2v'}{\partial x'^2}+\frac{\partial^2v'}{\partial y'^2}\right) &\xrightarrow{Re\rightarrow\infty} \frac{\partial p'}{\partial y'} =0\\
+\end{align}
+avec les conditions à la paroi \(u=v=0\) en \(y=0\).\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imgs/couche_échelle.png}
+    \caption{Schéma des échelles : couche limite, échelle intermédiaire et longueur le long de la plaque}
+    \label{fig:couche_échelle}
+\end{figure}
+Considérons maintenant la grandeur \(\zeta\) définie par \(\zeta = Re^{-1/4}X\). Il s'agit d'une échelle intermédiaire entre \(\delta\) et \(X\).\\
+On doit introduire des conditions asymptotiques de raccordement, i.e. faire le lien entre Euler et Prandtl :
+\begin{align}
+    \lim_{y/\delta \gg 1}u(X,y) &= \lim_{y/X\ll1}u_e(X,y) = u_e(X,0)=U_e\\
+    \lim_{y/\delta \gg 1}p(X,y) &= \lim_{y/X\ll1}p_e(X,y) = p_e(X,0)\\
+\end{align}
+De plus, comme \(\frac{\partial p}{\partial y}=0\) au sein de la couche limite, la pression vaut \(p_e(X,0)\) pour toute valeur de \(y\).\\
+On obtient finalement les équations régissant le développement d'une couche limite le long d'une plaque plane :
+\boxedeq{
+    \frac{\partial u}{\partial x}+\frac{\partial v}{\partial y} &=0\\
+    u\frac{\partial u}{\partial x}+v\frac{\partial u}{\partial y}& = -\frac{1}{\rho}\frac{\partial p_e}{\partial x}(x,0)+\nu \frac{\partial^2u}{\partial y^2}\\
+    \newline
+    u(x,0)&=v(x,0)=0\\
+    \lim_{y/\delta \gg1}u(x,y) &= u_e(x,0)}
+\section{Solution pour le cas $u_e$ constant}
+Si \(u_e\) est constant, cela implique que \(u_e(x,0)\frac{\partial u_e}{\partial x}(x,0)=-\frac{1}{\rho}\frac{\partial p_e(x)}{\partial x}=0\). Les équations de conservation sont donc 
+\boxedeq{\frac{\partial u}{\partial x}+\frac{\partial v}{\partial y} & = 0\\
+u\frac{\partial u}{\partial x}+v\frac{\partial u}{\partial y} & = \nu \frac{\partial^2 u}{\partial y^2}}
+Comme l'écoulement est incompressible, le champ de vitesse est déterminé par une fonction de courant \(\psi\) : \(u=\frac{\partial \psi}{\partial y}\) et \(v= -\frac{\partial \psi}{\partial x}\). Si on définit la variable admiensionnelle 
+\begin{equation}
+    \eta = y/\delta(x) \qquad \delta(x) = \left(\frac{2\nu x}{u_e}\right)^{1/2}
+\end{equation}
+la similitude de la solution requiert que
+\begin{equation}
+    \frac{u}{u_e} = g(\eta)\longrightarrow \psi=u_e\delta(x)f(\eta)
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : Le facteur 2 dans l'expression de \(\delta(x)\) n'est pas nécessaire. Puisque cette expression ne donne qu'un ordre de grandeur de l'épaisseur de la couche limite, on peut le rajouter et cela simplifie les équations pour la suite.
+\end{itemize}
+En remplaçant l'expression de la fonction de courant dans les équations de conservation, on obtient une EDO pour \(f(\eta)\) : 
+\begin{equation}
+    f''(\eta)+f(\eta)f''(\eta) = 0
+\end{equation}
+\underline{Conditions limites :}
+\begin{itemize}
+    \item Conditions frontière : \(u=0\) et \(v=0\) à la paroi \(\Longleftrightarrow f(0)=f'(0)=0\).
+    \item Condition d'interface : \(\lim_{\eta\gg 1}f'(\eta)=1\) pour respecter le raccordement avec l'écoulement d'Euler.
+\end{itemize}
+Il s'agit de l'équation de Blasius, que l'on peut résoudre numériquement. \\
+On définit maintenant la force de traînée par unité de longueur \(D\), correspondant à la force exercée par l'écoulement sur la plaque entre \(x=0\) et \(x=L\):
+\begin{equation}
+    D(L) = \int_0^L\tau_w(x)dx
+\end{equation}
+De laquelle on déduit le coefficient de frottement moyen
+\begin{equation}
+    C_{f,m}\coloneqq \frac{1}{L}\int_0^LC_f(x)dx = \frac{\tau_{moy}}{\rho u_e^2/2} = \frac{D(L)}{L\rho u_e^2/2}
+\end{equation}
+Dans le cas de la couche limite avec \(u_e\) constant, \(C_{f,m}(L)=2C_f(L)\).
+\section{Épaisseur de couche limite}
+Puisque le profil de vitesse est une fonction continue qui tend asymptotiquement vers \(u_e\), on parle souvent d'épaisseur de la couche limite à 99\%. Il s'agit de la distance à la paroi telle que \(u=0.99u_e\) : \(\delta_{0.99}(x)\). Il s'agit d'un concept peu précis, et c'est pourquoi on définit le concept d'épaisseur de déplacement \(\delta^*\). Il s'agit de la distance à la paroi telle que le débit du profil de vitesse incluant la couche limite soit le même que le débit sans couche limite pour une paroi "déplacée" de l'épaisseur \(\delta^*\).
+\begin{equation}
+    \delta^* = \int_0^\zeta\left(1-\frac{u}{u_e}\right)dy
+\end{equation}
+pour tout \(\zeta \gg\delta\).
+Dans le cas où \(u_e\) est constant, on a 
+\begin{equation}
+    \frac{\delta^*}{\delta = 1.217} \qquad \frac{\delta^*}{x}=\frac{1.721}{Re^{1/2}}
+\end{equation}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imgs/Epaisseur_déplacement.png}
+    \caption{Concept d'épaisseur de déplacement \(\delta^*\) pour une couche limite}
+    \label{fig:épaisseur_déplacement}
+\end{figure}
+On définit finalement l'épaisseur de quantité de mouvement \(\theta\). Elle correspond à la force de traînée normalisée \(D/(\rho u_e^2)\) exercée par la plaque sur le fluide entre \(x=0\) et \(x=L\).
+\begin{equation}
+    \theta = \int_0^\zeta \frac{u}{u_e}\left(1-\frac{u}{u_e}\right)dy
+\end{equation}
+De nouveau, pour le cas où \(u_e\) est constant, on obtient
+\begin{equation}
+    \frac{\theta}{\delta} = 0.470\Longrightarrow \frac{\theta}{x} =\frac{0.664}{Re^{1/2}} \Longrightarrow \frac{\theta(L)}{L}=\frac{C_{f,m}(L)}{2}
+\end{equation}
+\section{Approche intégrale pour le cas général}\label{sec:Intégrale_VK}
+On considère ici l'approche intégrale de von Karman, i.e. à partir de la conservation de la masse et de la quantité de mouvement appliquée à un volume de contrôle différentiel.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imgs/Intégrale_VK.png}
+    \caption{Approche intégrale de von Karman sur un volume de contrôle différentiel}
+    \label{fig:intégrale_VK}
+\end{figure}
+Par le bilan de débit (=conservation de la masse) et par le bilan de flux (=conservation de la quantité de mouvement en \(x\)), on obtient les définitions de \(delta^*\) et \(\theta\) comme exprimées à la section précédente, en plus de l'équation intégrale de von Karman :
+\begin{equation}
+    \frac{d}{dx}\left(\rho_eu_e^2\theta\right) + \rho_eu_e \frac{du_e}{dx}\delta^* = \tau_w \Longleftrightarrow \frac{d\theta}{dx}+\frac{1}{\rho_e}\frac{d\rho_e}{dx}\theta + \frac{1}{u_e}\frac{du_e}{dx}(2\theta+\delta^*) = \frac{C_f}{2}
+\end{equation}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item Les écoulements sont incompressibles.
+\end{itemize}
+\begin{equation}
+    \frac{d\theta}{dx}+\frac{1}{u_e}\frac{du_e}{dx}(2\theta+\delta^*)=\frac{C_f}{2}
+\end{equation}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item \(u_e\) est constant.
+\end{itemize}
+\begin{equation}
+    \frac{d\theta}{dx}=\frac{C_f}{2} \Longrightarrow \frac{\theta(L)}{L}=\frac{C_{f,m}}{2}
+\end{equation}
+\section{Couches limites thermiques}
+\underline{Hypothèses :}
+\begin{itemize}
+    \item Les écoulements sont incompressibles.
+\end{itemize}
+L'équation de conservation de l'énergie interne s'exprime alors, avec \(dU=c(T)dT\)
+\begin{equation}
+    \rho \frac{DU}{Dt} = 2\mu d_{ji}d_{ij}+\frac{\partial}{\partial x_j}\left(k\frac{\partial T}{\partial x_j}\right)
+\end{equation}
+Au sein de la couche limite, elle se réduit à
+\begin{equation}
+    \rho \left(u \frac{\partial U}{\partial x}+v\frac{\partial U}{\partial y}\right) = \mu \left(\frac{\partial u}{\partial y}\right)^2 + \frac{\partial }{\partial y}\left(k\frac{\partial T}{\partial y}\right)
+\end{equation}
+Si on additionne l'énergie de la quantité de mouvement multipliée par \(u\) à l'équation de conservation de l'énergie interne, on obtient l'équation pour l'énergie interne totale \(U_0 = U+u^2/2\) : 
+\begin{equation}
+    \rho \left(u\frac{\partial U_0}{\partial x}+v\frac{\partial U_0}{\partial y}\right) = -u\frac{dp_e}{dx}+\frac{\partial}{\partial y}\left[\mu\left(\frac{\partial }{\partial y}\left(\frac{u^2}{2}\right)+\frac{k}{\mu c}\frac{\partial U}{\partial y}\right)\right]
+\end{equation}
+Avec \(Pr=\mu c/k\) le nombre de Prandtl et \(\alpha = \nu/Pr\) la diffusivité thermique.\\
+\underline{Hypothèse :}
+\begin{itemize}
+    \item Pour les gaz, le nombre de Prandtl n'est pas fonction de \(T\), même si \(\mu,c,k\) le sont.
+    \item \(u_e\) constant.
+\end{itemize}
+L'équation devient alors
+\begin{equation}\label{eq:prandtl}
+    \rho \left(u\frac{\partial U_0}{\partial x}+v\frac{\partial U_0}{\partial y}\right) = \frac{\partial }{\partial y}\left[\mu\left(\frac{\partial }{\partial y}\left(\frac{u^2}{2}\right)+\frac{1}{Pr}\frac{\partial U}{\partial y}\right)\right]
+\end{equation}
+\subsection{Cas \(Pr=1\) et \(u_e\) constant}
+L'\autoref{eq:prandtl} se simplifie encore :
+\begin{equation}
+    \rho \left(u\frac{\partial U_0}{\partial x}+v\frac{\partial U_0}{\partial y}\right) = \frac{\partial}{\partial y}\left(\mu\frac{\partial U_0}{\partial y}\right)
+\end{equation}
+En comprant cette équation à celle de conservation de la quantité de mouvement, on constate que \(u\) et \(U_0\) vérifient la même équation. Dès lors, il doit y avoir une relation linéaire entre les deux (relation de Crocco en couche limite incompressible) :
+\begin{equation}
+    U_0 = Au+B
+\end{equation}
+Les constantes sont déterminées à partir des conditions limites.\\
+\underline{Hypothèses :}
+\begin{itemize}
+    \item Couche limite avec température constante à la paroi : \(T|_{y=0} = T_w=\) constante.
+\end{itemize}
+On peut voir que la constante \(A\) constitue le rapport entre le fluw de chaleur à la paroi et la contrainte de cisaillement à la paroi : \(A = -q_w/\tau_w\).
+La relation de Crocco devient finalement
+\boxedeq{U_0-U_w & = (U_{0e}-U_w)\frac{u}{u_e}\\
+(U-U_w)+\frac{u^2}{2} &= \left((U_e-U_w)+\frac{u_e^2}{2}\right)\frac{u}{u_e}}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item Les propriétés physiques du fluide sont constantes.
+\end{itemize}
+Dans ce cas, l'écoulement est obtenu par la solution de Blasius \(u/u_e = f'(\eta)\), et on obtient le profil de température avec la relation de Crocco :
+\begin{equation}
+    \frac{c(T-T_w}{u_e^2/2} = \left(\frac{c(T_e-T_w)}{u_e^2/2}+1\right)f'(\eta) - \left(f'(\eta)\right)^2
+\end{equation}
+Un autre cas est celui d'une couche limite sans transfert de chaleur à la paroi.\\
+\underline{Hypothèses}
+\begin{itemize}
+    \item Cas adiabatique : \(q_w=0 \rightarrow A=0 \rightarrow U_0\) constante.
+\end{itemize}
+On obtient 
+\begin{equation}
+    U-U_e = \frac{u_e^2}{2}\left(1-\left(\frac{u}{u_e}\right)^2\right) \Longrightarrow \frac{c(T-T_e)}{u_e^2/2} = 1-\left(f'(\eta)\right)^2
+\end{equation}
+En particulier, la température à la paroi est telle que 
+\begin{equation}
+    \frac{c(T_w-T_e)}{u_e^2/2}=1
+\end{equation}
+\subsection{Cas \(Pr\) général, dissipation négligeable et \(u_e,T_w\) constants}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item Le terme de dissipation visqueuse au sein de la couche limite est négligeable par rapport au terme de conduction thermique.
+\end{itemize}
+Par comparaison des ordres de grandeur, pour que la dissipation visqueuse soit négligeable par rapport à la conduction de chaleur, il faut que 
+\begin{equation}
+    PrEc \left(\frac{\delta_T}{\delta}\right)^2 \ll 1
+\end{equation}
+avec \(Ec=\frac{u_e^2}{c\Delta T}\) le nombre adimensionnel d'Eckert. Par comparaison des ordres de grandeur des termes de convection et des termes de diffusion de la température, \(\delta_T(x)\) varie comme \(x\left(\frac{u_ex}{\alpha}\right)^{-1/2}\), et donc
+\begin{equation}
+    \frac{\delta_T}{\delta}\approx \left(\frac{\alpha}{\nu}\right)^{-1/2}=\frac{1}{Pr^{1/2}}
+\end{equation}
+En comparant de nouveau les ordres de grandeur, pour que le terme de dissipation visqueuse soit négligeable par rapport au terme de conduction de la chaleur, il faut que \(Ec\ll 1\).\\
+
+L'équation de conservation de l'énergie devient
+\begin{equation}
+    \rho \left(u\frac{\partial U}{\partial x}+v\frac{\partial U}{\partial y}\right) = \frac{\partial}{\partial y}\left(k\frac{\partial T}{\partial y}\right)
+\end{equation}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item Les propriétés physiques sont constantes.
+\end{itemize}
+\begin{equation}
+    u\frac{\partial T}{\partial x} + v\frac{\partial T}{\partial y}=\frac{\nu}{Pr}\frac{\partial^2T}{\partial y^2}
+\end{equation}
+\begin{minipage}{.5\textwidth}
+    \underline{Hypothèse :}
+    \begin{itemize}
+        \item La température à la paroi est constante.
+    \end{itemize}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \underline{Conditions limites :}
+    \begin{itemize}
+        \item \(\Theta(\eta=0)=0\) et \(\lim_{\eta\rightarrow \infty} \Theta(\eta)=1\)
+    \end{itemize}
+\end{minipage}
+Le profil de température est alors :
+\begin{equation}
+    \frac{T-T_w}{T_e-T_w} = \Theta(\eta) \qquad \Theta''(\eta)+Prf(\eta)\Theta'(\eta)=0
+\end{equation}
+avec \(\Theta(\eta)\) la solution de l'équation de conservation de l'énergie développée sous forme d'EDO et \(f(\eta)\) la solution de Blasius (considérée connue).\\
+Le profil de température est alors
+\begin{equation}
+    \frac{T-T_w}{T_e-T_w} = \Theta(\eta) = \frac{\int_0^\eta\exp{\left(-Pr\int_0^\xi f(\zeta)d\zeta\right)d\xi}}{\int_0^\infty\exp{\left(-Pr\int_0^\xi f(\zeta)d\zeta\right)d\xi}}
+\end{equation}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/Profil_temp.png}
+    \caption{Profils de température pour le cas avec dissipation visqueuse négligeable, \(u_e,T_w\) constants}
+    \label{fig:Profil_temp}
+\end{figure}
+Au lieu du nombre de Nusselt, on utilise souvent le nombre de Stanton : 
+\begin{equation}\label{eq:Stanton}
+    St \coloneqq \frac{q_w}{\rho u_ec(T_w-T_e)} = \frac{Nu}{PrRe} = \frac{Nu}{Pe} \approx Pr^{-2/3}\frac{C_f}{2}
+\end{equation}
+\section{Couches limites en écoulement compressible}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : Tout le raisonnement est identique au cas incompressible, en remplaçant l'énergie interne \(U\) par l'enthalpie \(H\).
+\end{itemize}
+\chapter{Convection naturelle}
+Nous étudions dans ce chapitre la convection le long d'une plaque chaude suspendue verticalement dans l'air. \\
+\underline{Hypothèse :}
+\begin{itemize}
+    \item La pression est hydrostatique : \(p(x,y) = -\rho_0gy\)
+\end{itemize}
+Il s'agit d'une hypothèse équivalente à l'approximation de Boussinesq, qui revient à ne considérer les variations de densité du fluide que lorsqu'elles multiplient la gravité. On ne peut en effet pas négliger le terme de gravité car la variation de masse volumique est précisément la cause du phénomène de convection naturelle. \\
+L'équation de conservation de la aquantité de mouvement est 
+\boxedeq{\rho_0\left(u\frac{\partial v}{\partial x}+v\frac{\partial v}{\partial y}\right)=\mu\left(\frac{\partial^2v}{\partial x^2}+\frac{\partial^2v}{\partial y^2}\right)+\rho_0\beta(T-T_0)g}
+avec \(\beta = -\frac{1}{\rho}\frac{\partial \rho}{\partial T}\).
+\section{Convection forcée}
+En convection forcée, il est possible de découpler le problème de l'écoulement du problème thermique. A une grande distance de la paroi, les effets visqueux sont négligeables, mais ce n'est pas le cas proche de la paroi. On définit donc la frontière de la couche limite de vitesse comme le lieu géométrique pour lequel les ordres de grandeur des effets d'inertie et des effets visqueux sont identiques. De plus, le modèle de la couche limite est basé sur l'hypothèse \(\delta \ll Y\). 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/Couche_limite.png}
+    \caption{Couche limite et écoulement externe incompressible et irrotationnel}
+    \label{fig:Couche_limite}
+\end{figure}
+Comme précédemment, on introduit la variable \(\zeta\), un ordre de grandeur intermédiaire entre les distances verticale et horizontale :
+\begin{equation}
+    \frac{\delta}{\zeta} = \frac{\zeta}{Y} = \frac{1}{Re^\alpha} \qquad 0<\alpha<1/2
+\end{equation}
+On définit la couche limite thermique \(\delta_T\) comme le lieu géométrique où la conduction (diffusion de l'énergie) et la convection (transport de l'énergie) possèdent un ordre de grandeur identique. 
+\section{Nombre de Grashof}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item N'imposons plus le déplacement du fluide, mais une force de volume (gravité) dans le problème de convection forcée. Cet apport naturel se traduit, conformément à l'hypothèse de Boussinesq, en un gradient de pression \(-\frac{dp}{dy} = \beta g(T-T_0\). 
+\end{itemize}
+L'équation de conservation de l'énergie est alors la suivante :
+\begin{equation}
+    u\frac{\partial v}{\partial x}+v\frac{\partial v}{\partial y} = \beta g(T-T_0) + \nu \frac{\partial^2v}{\partial x^2}
+\end{equation}
+Dans la couche limite, l'ordre de grandeur de la vitesse est \(V=\frac{\beta g \Delta T \delta_T^2}{\nu}\) et l'épaisseur de la couche limite thermique est obtenue par égalisation des termes de conduction et de convection de l'équation de l'énergie :
+\begin{equation}
+    \frac{\delta_T}{Y} = Gr^{-1/4}Pr^{-1/4}\qquad \frac{\delta}{Y} = Gr^{-1/4}Pr^{1/4}
+\end{equation}
+où \(Gr\) est le nombre adimensionnel de Grashof. Il caractérise uen convection libre et est définit comme le produit des forces d'inertie par la force d'Archimède, divisé par le carré des forces visqueuses :
+\begin{equation}
+    Gr = \frac{\text{Inertie}\times \text{Archimède}}{(\text{Forces visqueuses})^2} = \frac{\beta \Delta T gL^3}{\nu^2}
+\end{equation}
+Dans une seconde approche, \\
+\underline{Hypothèse :}
+\begin{itemize}
+    \item La flottabilité est compensée par l'inertie du fluide, i.e. l'action de la flottabilité s'exerce dans une zone où le terme visqueux est négligeable.
+\end{itemize}
+\begin{equation}
+    V = \sqrt{\beta g \Delta TY}
+\end{equation}
+On obtient un ordre de grandeur différent, et une épaisseur de couche limite elle aussi différente :
+\begin{equation}
+    \frac{\delta_T}{Y} = Gr^{-1/4}Pr^{-1/2} \qquad \frac{\delta}{Y} = Gr^{-1/4}
+\end{equation}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/Convection_forcée.png}
+    \caption{Couches limites de vitesse et thermique en convection forcée. Courbe en ... : la flottabilité est compensée par la friction (\(Pr\ge 1\)) et la couche limite de vitesse est plus épaisse. Courbe en ... : la flottabilité est compensée par l'inertie (\(Pr<1\)) et la couche thermique est plus épaisse.}
+    \label{fig:Convection_forcée}
+\end{figure}
+\color{red} JE NE COMPRENDS PAS CETTE FIGURE\color{black}
+La couche limite de vitesse est plus épaisse que la couche limite thermique si \(Pr\ge1\), et inversement si \(Pr<1\).
+\section{Solution approchée pour la convection naturelle}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item Le nombre de Prandtl n'est pas trop différent de l'unité \(Pr\approx 1\) afin de pouvoir travailler avec des profils \(\delta_T\) et \(\delta\) semblables.
+    \item Incompressibilité.
+\end{itemize}
+\underline{Conditions limites :}
+\begin{itemize}
+    \item Conditions frontières :
+\end{itemize}
+\begin{equation}
+    \begin{cases}
+        v(\delta,y)=v(0,y)=0 \qquad \frac{\partial v}{\partial x}(\delta,y)=0 \qquad \mu \frac{\partial^2v}{\partial x^2}(0,y) = -\rho \beta g(T_w-T_0)\\
+        T(0,y) = T_wT(\delta,y) = T_0 \frac{\partial T}{\partial x}(\delta,y)=0
+    \end{cases}
+\end{equation}
+Sur base d'une intuition, nous proposons les profils suivants :
+\boxedeq{v(x,y) & = v_0(y) \frac{x}{\delta(y)}\left(1-\frac{x}{\delta(y)}\right)^2 \\
+\frac{T(x,y)-T_0}{T_w-T_0} & = \left(1-\frac{x}{\delta(y)}\right)^2}
+En intégrant sur \(x\) l'équation de conservation de la quantité de mouvement, 
+\begin{equation}
+    \int_0^\delta u\frac{\partial v}{\partial x}+v\frac{\partial v}{\partial y}dx= \beta g\int_0^\delta (T(x,y)-T_0)dx + \nu \int_0^\delta \frac{\partial^2v}{\partial x^2}dx
+\end{equation}
+Et en intégrant celle de l'énergie :
+\begin{equation}
+    \int_0^\delta u\frac{\partial T}{\partial x} +v\frac{\partial T}{\partial y}dx = \alpha \int_0^\delta \frac{\partial^2T}{\partial x^2}dx
+\end{equation}
+Par substitution des profils de vitesse et température, on obtient des EDOs pour les expression de \(v_0(y)\) et \(\delta(y)\) :
+\begin{align}\label{eq:profils}
+    \frac{1}{105}\frac{d}{dy}\left(v_0^2(y)\delta(y)\right) &= \frac{\beta g\Delta T\delta(y)}{3}+\nu \frac{v_0(y)}{\delta(y)}\\
+    \frac{1}{30}\frac{d}{dy}\left(v_0(y)\delta(y)\right)& =\frac{2\alpha}{\delta(y)}
+\end{align}
+Ces équations sont satisfaites pour des champs de la forme 
+\begin{equation}
+    \begin{cases}
+        v_0(y) = Vy^m\\
+        \delta(y) = Dy^n\\
+    \end{cases}
+\end{equation}
+Pour vérifier les deux expressions de l'\autoref{eq:profils}, on a \(m=1/2\) et \(n=1/4\). On obtient finalement l'expression de l'épaisseur de la couche limite suivante :
+\begin{equation}
+    \frac{\delta_T(y)}{y} = 3.936Pr^{-1/2}(Gr(y)^{-1/4}\left(\frac{20}{21}+Pr\right)^{1/4}
+\end{equation}
+\part{Écoulements turbulents -- G. Winkelmans}
+\chapter{Écoulements turbulents}
+\section{Transition vers la turbulence}
+Une couche limite laminaire avec vitesse externe \(u_e\) constante devient instable à certaines pertubrations de faible amplitude à partir d'une certaine valeur du nomobre de Reynolds local \(Re_{\delta^*}=u_E\delta^*/\nu \approx 400\). La relation entre ce nombre de Reynolds local et le nombre de Reynolds global \(Re_x\) est 
+\begin{equation}
+    Re_x = 0.338Re_{\delta^*}^2
+\end{equation}
+L'instabilité apparaît comme une onde qui se propage en \(x\) et qui grandit exponentiellement en \(x\): ce sont les ondes de Tollmien-Schlichting. \\
+
+Si on considère plutôt un écoulement de Poiseuille en canal, l'écoulement devient instable pour \(Re_d = u_md/\nu \approx 7.690\). Au nombre de Reynolds critique, on associe le nombre d'onde \(k=2\pi/\lambda\) du mode T-S instable (\(kd=2.04\)).
+\section{Caractéristiques générales de la turbulence}
+\begin{itemize}
+    \item Fluctutations temporelles et spatiales de grande amplitude.
+    \item Structures tourbillonnaires : la taille des tourbillons constitue un spectre continu, allant de tourbillons de taille comparable à la grandeur caractéristique de l'écoulement, à des tourbillons de taille correspondant à la "longueur de Kolmogorov", \(\eta = (\nu^3/\Bar{\epsilon})^{1/4}\).
+    \item Persistance de la turbulence : un écoulement turbulent a tendance à se maintenir.
+    \item Mélange : les tourbillons turbulents causent des transferts rapides et efficaces de masse, de quantité de mouvement et d'énergie entre les différentes zones de l'écoulement turbulent.
+\end{itemize}
+\section{Approche statistique de Reynolds}
+Pour la suite, nous considérons l'approche statistique de Reynolds pour la compréhension et modélisation des efftes moyens de la turbulence. Une grandeur physique \(\phi(x,y,z,t)\) en écoulement tubrulent complètement développé a des fluctuations rapides et de large amplitude, dues à la turbulence. On étudie donc sa valeur moyenne sur un intervalle de temps \(T\) beaucoup plus long que le temps caractéristique \(T_f\) des fluctuations turbulentes les plus lentes.
+\begin{equation}
+    \Bar{\phi} \coloneqq \lim_{T\rightarrow\infty} \frac{1}{T}\int_{t_0-T/2}^{t_0+T/2}\phi(t)dt \approx \frac{1}{T}\int_{t_0-T/2}^{t_0+T/2}\phi(t)dt \qquad T\gg T_f 
+\end{equation}
+Pour des écoulements statistiquement stationnaires, cette procédure fournira la même valeur de \(\Bar{\phi}\) quel que soit le temps \(T_0\) utilisé.\\
+On définit aussi la fluctuation \(\phi'\) de toute grandeur physique comme la différence entre sa valeur instantanée et sa valeur moyenne :
+\begin{equation}
+    \phi'\coloneqq \phi - \Bar{\phi} \Longleftrightarrow \phi = \Bar{\phi} + \phi'
+\end{equation}
+Finalement, on définit la variance et l'écart-type moyen : 
+\begin{equation}
+    \Bar{\phi'^2} = \int_{t_0-T/2}^{t_0+T/2} (\phi'(t))^2dt\qquad T\gg T_f \qquad \phi'_{rms} = \sqrt{\Bar{\phi'^2}}
+\end{equation}
+On définit également la covariance de deux fonctions \(\phi\) et \(\psi\) :
+\begin{equation}
+    \overline{\phi'\psi'} = \frac{1}{T}\int_{t_0-T/2}^{t_0+T/2} \phi'(t)\psi'(t)dt\qquad T\gg T_f
+\end{equation}
+Dont on déduit les règles suivantes : 
+\begin{align}
+    \Bar{\phi'} & = 0\\
+    \Bar{\Bar{\phi}} & = \Bar{\phi}\\
+    \overline{\Bar{\phi}\Bar{\psi}} &=\Bar{\phi}\Bar{\psi}\\
+    \overline{\phi'\Bar{\psi}} & = 0\\
+    \overline{\phi+\psi} &= \Bar{\phi} + \Bar{\psi}\\
+    \overline{\phi\psi} & = \Bar{\phi}\Bar{\psi} + \overline{\phi'\psi'}\\
+\end{align}
+Afin d'ajouter une dépendance en temps dans \(\Bar{\phi}\), on considère un écoulement turbulent avec des fluctuations turblentes de temps caractéristique \(T_f\) et des variations beaucoup plus lentes, de temps caractéristique \(T_v\) (\(T_f\ll T_v\).
+\begin{equation}
+    \Bar{\phi}(t) = \frac{1}{T}\int_{t-T/2}^{t+T/2} \phi(\tau)d\tau\qquad T_v\gg T\gg T_f
+\end{equation}
+\section{Équations moyennées de Reynolds}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item Pour la suite du chapitre, on considère uniquement des écoulements incompressibles.
+\end{itemize}
+Les équations de Navier-Stokes (= de conservation) générales sont alors 
+\boxedeq{\frac{\partial v_i}{\partial x_j} &= 0\\
+\rho \frac{Dv_i}{Dt} &= -\frac{\partial p}{\partial x_i} + \frac{\partial \tau_{ij}}{\partial x_j}\\
+\rho \frac{DU}{Dt} & =\rho c \frac{DT}{Dt}=\Phi - \frac{\partial q_j}{\partial x_j}}
+avec le tenseur des contraintes visqueuses \(\tau_{ij} = 2\mu d_{ij}\) et la fonction de dissipation \(\Phi \coloneqq \tau_{ij}d_{ij} = 2\mu d_{ij}d_{ij}\). On a également la loi de Fourier pour le flux de chaleur : \(q_j = -k\frac{\partial T}{\partial x_j}\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(\frac{\overline{\partial \phi}}{\partial x_i} = \frac{\partial \Bar{\phi}}{\partial x_i}\).
+\end{itemize}
+Pour des écoulements avec moyenne variant lentement dans le temps, on suppose que les opérateurs de moyenne et de dérivation temporelle commutent aussi : \(\frac{\overline{\partial \phi}}{\partial t} \approx \frac{\partial \Bar{\phi}}{\partial t}\).\\
+Les équations de conservation moyennées sont : 
+\boxedeq{\frac{\partial \Bar{v}_j}{\partial x_j} &= 0\\
+\rho \left(\frac{\partial \Bar{v}_i}{\partial t} + \frac{\partial}{\partial x_j}\left(\Bar{v}_i\Bar{v}_j+\overline{v_i'v_j'}\right)\right) & =-\frac{\partial \Bar{p}}{\partial x_i}+\rho g_i + \frac{\partial\Bar{\tau}_{ij}}{\partial x_j}\\
+\rho c\left(\frac{\partial \Bar{T}}{\partial t} + \frac{\partial}{\partial x_j}\left(\Bar{T}\Bar{v}_j+\overline{T'v_j'}\right)\right) & =\overline{\Phi} - \frac{\partial \Bar{q}_j}{\partial x_j}}
+On définit le tenseur de contraintes effectives additionnelles dues à la turbulence, ou tenseur de Reynolds : \(\Bar{\sigma}_{ij}^t \coloneqq -\rho \overline{v_i'v_j'}\). Sa trace est liée à l'énergie cinétique des fluctuations de turbulence \(\Bar{k}\) : 
+\begin{equation}
+    \Bar{k}\coloneqq \frac{\Bar{q}^2}{2} = \frac{\overline{v_k'v_k'}}{2} = -\frac{\Bar{\sigma}_{kk}^t}{2\rho} \Longrightarrow \Bar{\sigma}_{kk}^t = -2\rho\Bar{k}
+\end{equation}
+\section{Modèles de fermeture de type "viscosité effective de turbulence"}
+On définit la viscosité effective de turbulence \(\mu_t\), ou de manière équivalente, \(\nu_t = \mu_t/\rho\) de manière à ce que 
+\begin{equation}
+    \Bar{\tau}_{ij}^t = 2\mu_t \Bar{d}_{ij}
+\end{equation}
+Il s'agit d'un modèle isotrope simple, proposé par analogie avec le modèle newtonien pour la contrainte due à la viscosité moléculaire \(\Bar{\tau}_{ij} = 2\mu\Bar{d}_{ij}\). On peut donc écrire la contrainte effective totale comme :
+\begin{equation}
+    \Bar{\sigma}_{ij} + \Bar{\sigma}_{ij}^t = -\left(\Bar{p}+\frac{2}{3}\rho \Bar{k}\right) \delta_{ij} + 2(\mu+\mu_T)\Bar{d}_{ij}
+\end{equation}
+où le terme \(2\rho\Bar{k}/3\) constitue un terme de pression effective additionnelle à \(\Bar{p}\).\\
+
+Le flux de chaleur effectif dû à la turbulence \(\Bar{q}_j^t\) est \(\Bar{q}_j^t = -k_t \frac{\partial \Bar{T}}{\partial x_j}\), où la conductibilité thermique effective \(k_t\) est elle-même liée à la viscosité dynamique effective \(\mu_t\) : 
+\begin{equation}
+    Pr_t \coloneqq \frac{\mu_tc}{k_t} = \frac{\nu_t}{\alpha_t}
+\end{equation}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item Les modèles que nous allons considérer dans la suite de ce chapitre supposent que \(Pr_t\) est une constante.
+\end{itemize}
+Les équations de conservation moyennées deviennent
+\boxedeq{\frac{\partial \Bar{v}_j}{\partial x_j} &= 0\\
+\frac{\Bar{D}\Bar{v}_i}{Dt}& =-\frac{\partial}{\partial x_i}\left(\Bar{P}+\frac{2}{3}\Bar{k}\right)+ g_i + \frac{\partial}{\partial x_j}\left(2(\nu+\nu_t)\Bar{d}_{ij}\right)\\
+\frac{\Bar{D}\Bar{T}}{Dt} & = \frac{1}{c} (2\nu\Bar{d}_{ij}\Bar{d}_{ij}+\Bar{\epsilon}) + \frac{\partial}{\partial x_j}\left[\left(\frac{\nu}{Pr}+\frac{\nu_t}{Pr_t}\right)\frac{\partial \Bar{T}}{\partial x_j}\right]}
+
+avec la pression réduite \(\Bar{P}=\Bar{p}/\rho\), le taux de dissipation \(\Bar{\epsilon}\) et la dérivée matérielle moyenne d'une quantité \(\phi\) : 
+\begin{equation}
+    \frac{\Bar{D}\Bar{\phi}}{Dt} = \frac{\partial \Bar{\phi}}{\partial t} + \frac{\partial}{\partial x_j}(\Bar{\phi}\Bar{v}_j)
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : pour des fluides à propriétés physiques constantes, ou pour des écoulements avec des variations de température telles qu'on peut négliger la variation des propriétés du fluide, le problème de la dynamique des fluides est complètement découplé du problème de la thermique des fluides. L'inverse n'est cependant jamais vrai: la thermique des fluides dépend toujours de la dynamique des fluides.
+\end{itemize}
+\section{Écoulements turbulents en conduite ou canal}
+On étudie ici le cas des écoulements turbulents et établis en conduite ou en canal.
+\subsection{Généralités}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/Turbulent_conduite.png}
+    \caption{Écoulement établi en conduite de section circulaire : volume de contrôle utilisé pour effecture le bilan de quantité de mouvement}
+    \label{fig:Turbulent_conduite}
+\end{figure}
+\begin{itemize}
+    \item En conduite, on note \(D=2R\) le diamètre de la conduite. 
+    \item On étudie le profil de vitesse sur l'intervalle \(0\le y\le R\) puisque le profil est symétrique.
+    \item \(y=R-R\) et \(r=R-y\).
+    \item La seule contrainte de ciasillement additionnelle due à la turbulence est \(\Bar{\tau}_{xy}^t(y) = -\rho \overline{u'v'}(y)\). On la notera simplement \(\Bar{\tau}^t(y)\).
+    \item L'écoulement étant établi, le gradient de pression effective est constant : \(\frac{d\Bar{p}}{dx} = \) constante. 
+\end{itemize}
+Par le bilan de quantité de mouvement sur un volume de contrôle, on obtient les équations fondamentales
+\begin{equation}
+    \begin{cases}
+        2(\Bar{\tau}(y)+\Bar{\tau}^t(y))=-\frac{d\Bar{p}}{dx}(R-y)\\
+        2\Bar{\tau}_w = -\frac{d\Bar{p}}{dx}R\\
+    \end{cases}
+    \Longrightarrow \Bar{\tau}(y)+\Bar{\tau}^t(y) = \Bar{\tau}_w \left(1-\frac{y}{R}\right)
+\end{equation}
+Le profil de la contrainte moyenne totale est donc une ligne droite avec maximum à la paroi et zéro au centre de la conduite.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imgs/Turbulent_contrainte.png}
+    \label{fig:Turbulent_contrainte}
+\end{figure}
+Avec la définition du coefficient de frottement moyen et l'\autoref{eq:lambda}, on obtient que \(\lambda = 4C_f\) pour un écoulement en conduite de section circulaire.\\
+
+Le même type d'analyse peut être fait pour un écoulement turbulent établi entre deux plaques planes séparées par une distance \(d=2h\). De nouveau, le profil est symétrique par rapport au milieu du canal et on peut limiter notre analyse à l'intervalle \(0\le y\le h\). Par bilan sur un volume de contrôle, on obtient
+\begin{equation}
+    \begin{cases}
+        \Bar{\tau}(y)+\Bar{\tau}^t(y) = -\frac{d\Bar{p}}{dx}(h-y)\\
+        \Bar{\tau}_w = -\frac{d\Bar{p}}{dx}h\\
+    \end{cases} \Longrightarrow \Bar{\tau}(y)+\Bar{\tau}^t(y) = \Bar{\tau}_w \left(1-\frac{y}{h}\right)
+\end{equation}
+Le profil de la contrainte moyenne totale est aussi une droite. Pour la relation entre \(\lambda\) et \(C_f\), on obtient par contre \(\lambda = 2C_f\).\\
+
+Pour les écoulements en conduite dont les parois sont hydrauliquement lisses\footnote{A définir}, l'effet de la viscosité moléculaire n'est dominant que dans une toute petite région proche de la paroi (zone I, appelée sous-couche laminaire dans la suite). L'écoulement est dominé par l'effet de la viscosité effective de turbulence dans la partie complètement turbulente, appelée zone III. Il y a en plus une zone de transition entre les deux, où \(\Bar{\tau}\) et \(\Bar{\tau}^t\) sont de même ordre de grandeur, la zone II.\\
+Que ce soit en conduite ou en canal, le profil de viscosité de turbulence est défini par :
+\begin{equation}
+    \nu_t \coloneqq \frac{-\overline{u'v'}}{\frac{d\Bar{y}}{dy}}
+\end{equation}
+\subsection{Modélisation de \(\nu_t\) pour la zone proche paroi}
+Check si à faire pp160-161.
+\subsection{Profil universel de vitesse pour la zone proche de la paroi}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item L'écoulement est dans un canal ou une conduite dont les parois sont hydrauliquement lisses.
+\end{itemize}
+L'EDO pour le profil de vitesse est (remplacer \(R\) par \(h\) en canal) :
+\begin{equation}
+    \frac{1}{\rho}(\Bar{\tau}+\Bar{\tau}^t) = (\nu+\nu_t)\frac{d\Bar{u}}{dy} = \frac{\Bar{\tau}_w}{\rho}\left(1-\frac{y}{R}\right)
+\end{equation}
+On peut maintenant définir la vitesse de frottement : \(\Bar{u}_\tau = \sqrt{\frac{\Bar{\tau}_w}{\rho}}\). \\
+On définit les notations suivantes : \(\Bar{u}^+ =\Bar{u}/\Bar{u}_\tau\) et \(y^+ = y\Bar{u}_\tau/\nu\)
+La zone proche de la paroi est la zone telle que \(0\le \frac{y}{R}\le 0.15\). Elle comprend les trois zones suivantes : 
+\begin{center}
+\begin{tblr}{
+  colspec = {X[c,h]X[c]X[c]X[c]},
+  stretch = 0,
+  rowsep = 6pt,
+  hlines = {1pt},
+  vlines = {1pt},
+}
+    \hline
+    Zone I & Zone II & Zone III.a\\\hline
+    Dominance laminaire & \(\Bar{\tau}\) et \(\Bar{\tau}^t\) du même ordre de grandeur (transition)&Dominance turbulente\\\hline
+    \(\Bar{\tau}\gg \Bar{\tau}^t\) et \(\frac{y}{R}\) est très petit. & \(\Bar{\tau}\approx \Bar{\tau}^t\)& \(\Bar{\tau}\ll \Bar{\tau}^t\)\\\hline
+    \(\nu\frac{d\Bar{u}}{dy} =\Bar{u}_\tau^2\Longrightarrow \Bar{u}^+=y^+\) & & \(\nu_t\frac{d\Bar{u}}{dy}=\Bar{u}_\tau^2\)\\\hline
+     \(0\le y^+\lesssim 5\) & \(5\gtrsim y^+ \lesssim 70-90\) & \(y^+\lesssim 70-90\) jusque \(\eta = \frac{y}{R} \approx 0.15\)\\\hline
+\end{tblr}
+\end{center}
+Considérons l'approche de Prandtl. On part de l'équation
+\begin{equation}
+    \kappa y\frac{d\Bar{u}}{dy} = \Bar{u}_\tau
+\end{equation}
+avec \(\kappa\) la constante de von Karman. Par manipulations algébriques, on peut la réécrire sous la forme 
+\begin{equation}\label{eq:C}
+    \kappa y^+\frac{d\Bar{u}^+}{dy^+}=1\Longrightarrow \Bar{u}^+ = \frac{1}{\kappa}\log{y^+} + C
+\end{equation}
+Il s'agit du profil logarithmique de vitesse universel, dans le sens où tous les résultats expérimentaux sur des écoulements turbulents, aussi bien en canal qu'en conduite le vérifie dans la zone proche de la paroi.\\
+Dans la zone proche de la paroi, le profil de vitesse est exprimable en coordonées interne : \(\Bar{u}^+=f(y^+)\). C'est ce que l'on appelle la loi de la paroi ("law of the wall").\\
+Cette loi logarithmique en zone III.a correspond à l'hypothèse que la viscosité de turbulence grandit linéairement avec la distance à la paroi : 
+\begin{equation}
+    \nu_t= \kappa y\Bar{u}_\tau
+\end{equation}
+Il existe également des formules exprimant le profil de vitesse dans toute la zone proche paroi, i.e. les zones I, II et III.a. Elles sont exprimées dans le syllabus mais ne sont pas à connaître.\\
+L'analyse de résultats de simulations numériques directes récentes montre qu'il ne faut même pas négliger \(\eta = y/R\) par rapport à l'unité dans la zone turbulente proche de la paroi : les mesures montrent que 
+\begin{equation}
+    \nu_t = \kappa y \Bar{u}_\tau(1-\eta)
+\end{equation}
+Le terme \((1-\eta)\) appraît donc de chaque côté de l'équation et l'hypothèse initiale n'est pas nécessaire car ils se simplifient. La loi de la paroi est donc robuste.\\
+On définit maintenant des nouveaux nombre de Reynolds :
+\begin{equation}
+    Re_\tau = h^+ = \frac{h\Bar{u}_\tau}{\nu} \qquad Re_d = \frac{d\Bar{u}_m}{\nu}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : on différencie la zone III en partie III.a et III.b, car la turbulence est très anisotrope dans la zone proche de la paroi et est presque isotrope dans la zone proche du centre du canal.
+\end{itemize}
+Les résultats expérimentaux récents montrent également que le début de la zone III.a n'est pas parfaitement logarithmique : on observe un léger overshoot et la zone purement logarithmique n'est atteinte que lorsque \(y^+ \approx 4\sqrt{h^+}\). On peut donc considérer que la loi de la paroi est correcte pour \(4\sqrt{h^+}\le y\le 0.15h^+\).
+\subsection{Profil universel de déficit de vitesse}
+On travaille dans cette section sur le profil de vitesse universel de déficit de vitesse dans toute la zone turbulente (zone III), exprimé en terme de variable globale : 
+\begin{equation}\label{eq:déficit}
+    \frac{\Bar{u}_c-\Bar{u}}{\Bar{u}_\tau} = F(\eta)
+\end{equation}
+avec \(\Bar{u}_c\) la vitesse au centre du canal.\\
+Dans la zone III.a, le profil logarithmique et cette loi sont touts les deux vrais, c'est la zone de recouvrement. De plus, le terme \(\Bar{u}_\tau/\Bar{u}_m\) est lié au coefficient de pertes de charge : 
+\begin{equation}
+    \frac{\Bar{u}_\tau^2}{\Bar{u}_m^2} = \frac{\Bar{\tau}_w}{\rho \Bar{u}_m^2} = \frac{C_f}{2} = \begin{cases}
+        \frac{\lambda}{8} \text{ en conduite}\\
+        \frac{\lambda}{4} \text{ en canal}\\
+    \end{cases}
+\end{equation}
+L'\autoref{eq:déficit} est valable aussi bien en canal qu'en conduite, mais la fonction \(F(\eta)\) n'est, elle, pas la même dans les deux cas. \\
+De nouveau, sur base de résultats expérimentaux, von Karman a proposé la loi du milieu, i.e. une loi pour le profil de déficit de vitesse valable dans la zone III.b : 
+\begin{equation}
+    \frac{\Bar{u}_c-\Bar{u}}{\Bar{u}_\tau} \approx 7.2 (1-\eta)^2
+\end{equation}
+Enfin, il y a le modèle composite de profil universel de vitesse de type "Coles". En conduite, cela nous donne l'expression suivante :
+\begin{equation}
+    \frac{\Bar{u}}{\Bar{u}_c} = f(y^+) +G(\eta) = \left[\frac{1}{\kappa}\log{\left(\frac{y\Bar{u}_\tau}{\nu}\right)}+C\right] + \frac{\Pi}{\kappa}2\sin^2{\left(\frac{\pi}{2}\alpha\frac{y}{R}\right)}
+\end{equation}
+On appelle la fonction \(G(\eta)\) la fonction complément. On en déduit l'expression suivante pour le profil de déficit de vitesse en variable externe :
+\begin{equation}
+    \frac{\Bar{u}_c-\Bar{u}}{\Bar{u}_\tau} = -\frac{1}{\kappa}\log{\eta} + \frac{\Pi}{\kappa}2\left[\sin^2{\left(\frac{\pi}{2}\alpha\right)} - \sin^2{\left(\frac{\pi}{2}\alpha\eta\right)}\right] = F(\eta)
+\end{equation}
+En canal, le profil composite aura la même forme que ci-dessus, mais les valeurs de \(Pi\) et de \(\alpha\) seront différentes.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : en canal, la fonction complément est de faible amplitude. Elle est même négligeable en zone proche paroi en conduite, mais a une grande amplitude en zone III.b.
+\end{itemize}
+\subsection{Profil de vitesse simplifié en exposant}
+L'approche de cette section n'est fondée sur aucune base solide, mais elle est intéressante pour sa simplicité. \\
+\underline{Hypothèse :}
+\begin{itemize}
+    \item On décide de "fitter" les données expérimentales avec une loi de puissance :
+\end{itemize}
+\begin{equation}\label{eq:exposant}
+    \frac{\Bar{u}}{\Bar{u}_c} = \eta^{\frac{1}{n}}
+\end{equation}
+Il n'existe cependant pas de valeur d'exposant universelle. En effet, il dépend du coefficient de perte de charge \(\lambda = 4C_f\) : \(n\) varie entre 6 et 10 (on retient une valeur de 7).\\
+Sous cette loi, on calcule la vitesse moyenne et le flux de quantité de mouvement : 
+\begin{equation}
+    \Bar{u}_m = \frac{\int_A \Bar{u}dA}{A} \Longrightarrow \frac{\Bar{u}_m}{\Bar{u}_c} = \frac{2n^2}{(n+1)(2n+1)}
+\end{equation}
+\begin{equation}
+    \int_A \Bar{u}^2dA = \frac{(n+1)(2n+1)^2}{4n^2(n+2)} \Bar{u}_m^2A
+\end{equation}
+En comparant ces valeurs avec le profil universel \(\frac{\Bar{u_c}-\Bar{u}}{\Bar{u}_\tau}=F(\eta)\), on voit apparaître une relation entre \(n\) et \(\sqrt{\lambda}\) :
+\begin{equation}
+    n \approx 1/\sqrt{\lambda}\Longrightarrow \frac{\Bar{u}}{\Bar{u}_c} \approx \eta^{\sqrt{\lambda}}
+\end{equation}
+La loi empirique de Blasius vue précédemment nous donne une approximation du coefficient de perte de charge en conduite lisse : 
+\begin{equation}
+    \lambda \approx 0.3164Re_D^{-1/4}\Longrightarrow \frac{1}{\sqrt{\lambda}} \approx 1.778Re_D^{1/8}
+\end{equation}
+pour \(5 \text{ }10^3\le Re_D\le 5 text{ }10^4\), dont on peut déduire l'expression suivante :
+\begin{equation}
+    \frac{\Bar{u}_m}{\Bar{u}_\tau}\approx 7.00 \left(\frac{R\Bar{u}_\tau}{\nu}\right)^{1/7}
+\end{equation}
+et par l'\autoref{eq:exposant} pour \(n=7\), on a 
+\begin{equation}
+    \frac{\Bar{u}_c}{\Bar{u}_\tau} \approx 8.56\left(\frac{R\Bar{u}_\tau}{\nu}\right)^{1/7}
+\end{equation}
+\subsection{Formule générale pour les pertes de charge en conduite (lisse)}
+Nous allons ici définir la formule générale de Prandtl pour les pertes de charge en conduite hydrauliquement lisse. Si on intègre le profil universel logarithmique valable en zone III.a sur les 3 zones I, II et III.a, on obtient la loi suivante :
+\begin{equation}
+    \frac{\Bar{u}_m}{\Bar{u}_\tau} = \frac{1}{\kappa}\log{\left(\frac{R\Bar{u}_\tau}{\nu}\right)}+\left(C-\frac{3}{2\kappa}\right)
+\end{equation}
+dont on déduit une loi implicite : 
+\begin{multline}
+    \frac{1}{\sqrt{\lambda}} = \frac{1}{\sqrt{8}\kappa} \log{(Re_D\sqrt{\lambda})}+\frac{1}{\sqrt{8}}\left(C-\frac{1}{\kappa}\left(\frac{3}{2}+\log{\left(2\sqrt{8}\right)}\right)\right)\\
+    \Longrightarrow \frac{1}{\sqrt{\lambda}} = -2.0\log_{10}\left(\frac{2.51}{Re_D}\frac{1}{\sqrt{\lambda}}\right)
+\end{multline}
+Où on trouve la seconde équation en réécrivant la première puis en "fittant" sur les données expérimentales pour éliminer une partie de l'erreur. Cette formule est implicite, mais il suffit d'itérer sur le paramètre \(1/\sqrt{\lambda}\) en utilisant la formule empirique de Blasius pour choisir la première valeur.
+\subsection{Conduites hydrauliquement lisses ou rugueuses}
+On définit la rugosité par la hauteur moyenne (rms) des aspérités :
+\begin{equation}
+    \epsilon\coloneqq \left(\frac{1}{S}\int_Sh^2(x,z)dxdz\right)^{1/2}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : Dans le cas d'une surface avec une rugosité non uniformément répartie, on utilise le concept de rugosité uniforme équivalente en y associant un \(\epsilon\) équivalent.
+\end{itemize}
+L'adimensionnalisation de la rugosité est
+\begin{equation}
+    \epsilon^+ = \frac{\epsilon\Bar{u}_\tau}{\nu}
+\end{equation}
+\begin{itemize}
+    \item Si \(\epsilon^+\le 1\), la hauteur des aspérités est significativement plus petite que la hauteur caractéristique qu'aurait une zone I de type sous-couche laminaire. Celle-ci peut donc exister près de la paroi et le régime est dit hydrauliquement lisse.
+    \item Si \(\epsilon^+\ge70\), la hauteur des aspérités est plus grande que la hauteur caractéristique qu'auraient une zone I suivie d'une zone II. L'écoulement est alors turbulent partout (que zone III) et le régime est dit hydrauliquement rugueux.
+\end{itemize}
+Le profil de vitesse logarithmique dans la zone III en hydrauliquement lisse peut se réécrire en fonction de la rugosité : 
+\begin{equation}
+    \frac{\Bar{u}}{\Bar{u}_\tau} = \frac{1}{\kappa}\log{\left(\frac{y}{\epsilon}\right)}+B
+\end{equation}
+En hydrauliquement rugueux, on y ajoute une fonction complément :
+\begin{equation}
+    \frac{\Bar{u}}{\Bar{u}_\tau} = \left[\frac{1}{\kappa}\log{\left(\frac{y}{\epsilon}\right)}+B\right] + \frac{\Pi}{\kappa}2\sin^2{\left(\frac{\pi}{2}\alpha \frac{y}{R}\right)}
+\end{equation}
+et le profil de déficit de vitesse est donc
+\begin{equation}
+    \frac{\Bar{u}_c-\Bar{u}}{\Bar{u}_\tau} = -\frac{1}{\kappa}\log{\eta} + \frac{\Pi}{\kappa}2\left[\sin^2{\left(\frac{\pi}{2}\alpha\right)} - \sin^2{\left(\frac{\pi}{2}\alpha\eta\right)}\right]
+\end{equation}
+i.e. le même que dans le cas hydrauliquement lisse.
+\subsection{Formule générale pour les pertes de charge en conduite (rugueux)}
+Le profil de vitesse pour les écoulements turbulents en conduite hydrauliquement rugueuse se détermine de nouveau en intégrant le profil logarithmique sur toute la section.
+\begin{equation}
+    \sqrt{\frac{8}{\lambda}} = \frac{1}{\kappa}\log{\left(\frac{R}{\epsilon}\right)}+\left(B-\frac{3}{2\kappa}\right)
+\end{equation}
+Comme pour le cas lisse, on modifie les valeurs des paramètres pour correspondre aux valeurs expérimentales : 
+\begin{equation}
+    \frac{1}{\sqrt{\lambda}} = -2.0\log_{10}\left(\frac{\epsilon/D}{3.71}\right)
+\end{equation}
+\subsection{Formule générale des pertes de charge en conduite}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/Pertes_de_charge.png}
+    \caption{Pertes de charge en conduite, avec régime hydrauliquement lisse (inférieure), mixte (milieu) et rugueux (supérieur)}
+    \label{fig:Pertes_de_charge}
+\end{figure}
+La formule empiruque de Blasius est une bonne formule pour \(5\text{ }10^3\le Re_D\le 5\text{ }10^4\). On note cependant que, à rugosité fixée, le coefficient de perte de charge des écoulements turbulents n'a pas un comportement monotone décroissant à mesure que le nombre de Reynolds augmente. Une formule générale (hydrauliquement lisse et rugueux, mais pas pour la zone mixte) a été proposée par Colebrook  :
+\begin{equation}
+    \frac{1}{\sqrt{\lambda}} = -2.0\log_{10}\left(\frac{2.51}{Re_D}\frac{1}{\sqrt{\lambda}} + \frac{\epsilon/D}{3.71}\right)
+\end{equation}
+Le diagramme de Moody exprime la formule de Prandtl du coefficient de pertes de charge.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/Moody.png}
+    \caption{Diagramme de Moody : coefficient de pertes de charge en conduite en fonction de \(Re_D\)}
+    \label{fig:Moody}
+\end{figure}
+\section{Couches limites turbulentes}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item On considère uniquement les couches limites avec une vitesse externe \(\Bar{u}_e\) constante, et donc \(d\Bar{p}_e/dx=0\)
+\end{itemize}
+\subsection{Profils universels de vitesse}
+On considère d'abord le cas avec paroi hydrauliquement lisse : comme c'est un écoulement non établi avec paroi, on aura une zone proche de la paroi, i.e. \(0\le y/\delta\le 0.15\), avec l'épaisseur \(\delta\) effective de la couche limite. \\
+La contrainte totale n'est plus une droite, mais elle est uniforme dans la zone proche de la paroi : \(\Bar{\tau}(y)+\Bar{\tau}^t(y) \approx \Bar{\tau}_w\). La viscosité effective de turbulence varie selon \(y\) : \(\nu_t = \kappa y\Bar{u}_\tau\), et on a donc les mêmes résultats qu'en conduite ou canal pour le profil de vitesse universel exprimé en variable interne dans la zone proche de la paroi : 
+\begin{equation}
+    \frac{\Bar{u}}{\Bar{u}_\tau} = f\left(\frac{y\Bar{u}_\tau}{\nu}\right) \qquad \Bar{u}^+=f(y^+)
+\end{equation}
+Pour la partie turbulente, i.e. la zone III, le profil de déficit de vitesse est 
+\begin{equation}
+    \frac{\Bar{u}_e-\Bar{u}}{\Bar{u}_\tau} = F(\eta)
+\end{equation}
+avec \(\delta\) l'épaisseur effective de la couche limite et \(\eta=y/\delta\). L'épaisseur effective de couche limite turbulente est définie telle que, en \(y=\delta\) et avec le modèle mathématique utilisé pour le profil de \(\Bar{u}\) utilisé dans la suite, on obtient une pente nulle pour le profil : \(\Bar{u}=\Bar{u}_e\) en ce \(y\) et \(\Bar{u}(y>\delta)=\Bar{u}_e\).\\
+En couche limite, n'ayant pas de vitesse de débit, on définit le coefficient de frottement à partir de la vitesse externe : 
+\begin{equation}
+    \frac{\Bar{u}}{\Bar{u}_e} = 1-\sqrt{\frac{C_f}{2}}F(\eta)
+\end{equation}
+Le profil de vitesse peut aussi s'écrire sous la forme 
+\begin{equation}
+    \frac{\Bar{u}}{\Bar{u}_e} = \Bar{u}^+=f(y^+)+\Tilde{G}(\Tilde{\eta})\qquad \Tilde{G}(\Tilde{\eta}) = \frac{\Pi}{\kappa}2\sin^2{\left(\frac{\pi}{2}\Tilde{\eta}\right)}
+\end{equation}
+où \(\Tilde{\eta}=y/\Tilde{\delta}\), avec \(\Tilde{\delta}\) est la position de \(y\) telle que la fonction complément \(\Tilde{G}\) est maximale. En zone III turbulente, cela donne donc
+\begin{equation}
+    \Bar{u}^+ =\left[\frac{1}{\kappa}\log{y^+}+C\right]+\frac{\Pi}{\kappa}2\sin^2{\left(\frac{\pi}{2}\Tilde{\eta}\right)}
+\end{equation}
+\subsection{Profil de vitesse simplifié en exposant}
+Le profil de vitesse simplifié en exposant pour la zone turbulente des couches limites est 
+\begin{equation}
+    \frac{\Bar{u}}{\Bar{u}_e} = \left(\frac{y}{\delta}\right)^{1/n}=\eta^{1/n}
+\end{equation}
+Il mène à 
+\begin{equation}
+    \frac{\Bar{u}_e-\Bar{u}}{\Bar{u}_\tau} = \frac{\Bar{u}_e}{\Bar{u}_\tau}\left(1-\eta^{1/n}\right) = \sqrt{\frac{2}{C_f}}\left(1-\eta^{1/n}\right)
+\end{equation}
+L'équation intégrale de von Karman est valable aussi bien en écoulements laminaires que turbulents. Si \(\Bar{u}_e\) est constant (hypothèse de base de ce chapitre), elle se réduit à 
+\begin{equation}
+    \frac{d\theta}{dx} = \frac{C_f}{2}
+\end{equation}
+Si l'on pose \(n=7\), on a l'équation 
+\begin{equation}
+    \frac{7}{72}\frac{d\delta}{dx}\approx \frac{C_f}{2}
+\end{equation}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item On suppose que la loi empirique de Blasius peut être partiellement utilisée dans le contexte des couches limites.
+\end{itemize}
+On obtient donc avec Blasius et von Karman :
+\begin{equation}
+    \frac{7}{72}\frac{d\delta}{dx}\approx 0.0233\left(\frac{\Bar{u}_e\delta}{\nu}\right)^{-1/4}
+\end{equation}
+Ce qui conduit à, avec \(Re_x = \frac{\Bar{u}_ex}{\nu}\) :\\
+\begin{minipage}{.5\textwidth}
+    \begin{align}
+        \frac{\delta}{x}&\approx \frac{0.382}{Re_x^{1/5}}\\
+        \frac{\delta^*}{x}&\approx \frac{0.0477}{Re_x^{1/5}}\\
+        \frac{\theta}{x}&\approx \frac{0.0371}{Re_x^{1/5}}
+    \end{align}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{align}
+        C_f &\approx \frac{0.0594}{Re_x^{1/5}}\\
+        C_{f,m} &\approx \frac{0.0742}{Re_x^{1/5}}
+    \end{align}
+\end{minipage}
+De plus, on avait également le résultat général suivant en couche limite avec \(\Bar{u}_e\) constant :
+\begin{equation}
+    \frac{C_{f,m}}{2}=\frac{\theta}{x}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : ce modèle est correct pour \(Re_x<10^7\), i.e. \(Re_\delta<1.5 \text{ }10^5\).
+    \item [\(\rightarrow\)] Remarque : selon ce modèle, une couche limite turbulente (\(x^{4/5}\) grandit beaucoup plus vite qu'une couche limite laminaire (\(x^{1/2}\)).
+\end{itemize}
+\subsection{Coefficient de frottement en hydrauliquement lisse}
+On sait que \(\frac{\Bar{u}_e}{\Bar{u}_\tau} = \sqrt{\frac{2}{C_f}}\), donc 
+\begin{equation}
+    \sqrt{\frac{2}{C_f}} = \frac{1}{\kappa}\log_{10}\left(\frac{\delta \Bar{u}_e}{\nu}\sqrt{\frac{C_f}{2}}\right) + C+ G(1)
+\end{equation}
+Pour la suite, on utilisera une variable purement arbitraire qui permet uniquement de simplifier les notations : \(z \coloneqq \sqrt{\frac{2}{C_f}}\). On a donc
+\begin{equation}\label{eq:z}
+    z = \frac{1}{\kappa}\log\left(Re_\delta \frac{c}{z}\right)
+\end{equation}
+avec \(c=\exp{(\kappa(C+G(1))}\). Une approximation en loi de puissance de cette relation est 
+\begin{equation}
+    z \approx e Re_\delta^{1/12}
+\end{equation}
+avec \(e\approx 10\). A partir de l'équation intégrale de von Karman, on a alors
+\begin{equation}
+    \frac{d\theta}{dx}=\frac{C_f}{2}\approx \frac{1}{e^2 Re_\delta^{1/6}}
+\end{equation}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item On suppose que \(\theta/\delta\) reste constant.
+    \item On pose que \(n=7\).
+\end{itemize}
+On obtient alors \\
+\begin{minipage}{.5\textwidth}
+    \begin{align}
+        \frac{\delta}{x}\approx \frac{0.162}{Re_x^{1/7}}\\
+        \frac{\delta^*}{x}\approx \frac{0.0203}{Re_x^{1/7}}\\
+        \frac{\theta}{x}\approx \frac{0.0158}{Re_x^{1/7}}
+    \end{align}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{align}
+        C_f &\approx \frac{0.0271}{Re_x^{1/7}}\\
+        C_{f,m}&\approx \frac{0.0316}{Re_x^{1/7}}
+    \end{align}
+\end{minipage}
+Selon ce modèle, la couche limite grandit comme \(x^{6/7}\). Ce résultat est bon jusque \(Re_x<10^9\), i.e. \(Re_\delta \approx 8\text{ }10^6\).\\
+On peut maintenant déterminer les rapports suivants :
+\begin{align}
+    \frac{\delta^*}{\delta} &= \frac{1}{z}\int_0^1F(\eta)d\eta = \frac{a}{z}\\
+    \frac{\delta^*-\theta}{\delta} &= \frac{1}{z^2}\int_0^1F^2(\eta)d\eta = \frac{b}{z^2}\\
+\end{align}
+Cela implique que 
+\begin{equation}\label{eq:rapport}
+    \frac{\theta}{\delta} = \frac{a}{z}-\frac{b}{z^2}
+\end{equation}
+avec \(a\) et \(b\) des paramètres adimensionnels.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : des valeurs typiques de \(z\) sont \(20\le z\le 40\).
+\end{itemize}
+L'\autoref{eq:z} est une relation implicite, que l'on peut réécrire de manière explicite :
+\begin{equation}
+    Re_\delta = \frac{z}{c}e^{\kappa z}
+\end{equation}
+De plus, par l'\autoref{eq:rapport}, l'équation intégrale de von Karman sous forme différentielle s'écrit :
+\begin{equation}
+    Re_x = \frac{a}{c\kappa^2}\left[\left(Z^2-2Z+2\right)e^Z-2\right] -\frac{b}{c\kappa}\left[\left(Z-2\right)e^Z+2\right]
+\end{equation}
+avec \(Z=\kappa z\). Il s'agit d'une relation implicite et exacte. 
+\subsection{Coefficient de frottement en hydrauliquement rugueux}
+Considérons le profil de vitesse pour les couches limites turbulentes hydrauliquement rugueuses, i.e. \(\epsilon^+\ge70\). Le profil composite de Coles évalué en \(y=\delta\) s'écrit sous la forme :
+\begin{equation}
+    \frac{\delta}{\epsilon} = \frac{1}{c}e^{\kappa z}
+\end{equation}
+On peut l'introduire dans l'équation intégrale de von Karman, et elle devient
+\begin{equation}
+    \frac{d\theta}{dx} = \frac{\kappa^2}{\log^2(c\delta/\epsilon)}
+\end{equation}
+Et on trouve l'expression suivante pour \(n=7\) :
+\begin{equation}
+    \frac{x}{\epsilon} \approx \frac{0.578}{c}\left(c\frac{\delta}{\epsilon}\right)\left[\log^2\left(c\frac{\delta}{\epsilon}\right) -2\log\left(c\frac{\delta}{\epsilon}\right)+2\right]
+\end{equation}
+\section{Profils de température et transfert de chaleur}
+On considère ici les profils de température correspondant aux profils de vitesse en conduite ou canal, et aux couches limites.
+\subsection{Couche limite avec \(Pr=1\)}
+\underline{Hypothèses :}
+\begin{itemize}
+    \item Couche limite turbulente avec \(\Bar{u}_e\) constante et \(Pr=1\).
+\end{itemize}
+Les équations de conservation sont 
+\boxedeq{\frac{\partial \Bar{u}}{\partial x} + \frac{\partial \Bar{v}}{\partial y} & = 0\\
+    \Bar{u}\frac{\partial \Bar{u}}{\partial x}+\Bar{v}\frac{\partial\Bar{u}}{\partial y} &= \frac{\partial}{\partial y}\left((\nu+\nu_t)\frac{\partial \Bar{u}}{\partial y}\right)\\
+    \Bar{u}c\frac{\partial \Bar{T}}{\partial x} + \Bar{v}c\frac{\partial \Bar{T}}{\partial y} & =(\nu+\nu_t)\left(\frac{\partial \Bar{u}}{\partial y}\right)^2+c\frac{\partial}{\partial y}\left(\left(\frac{\nu}{Pr}+\frac{\nu_t}{Pr_t}\right)\frac{\partial \Bar{T}}{\partial y}\right)}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item \(Pr_t=1\) (raisonnable pour les écoulements turbulents).
+\end{itemize}
+L'équation de l'énergie se réduit et on observe qu'il doit y avoir une relation linéaire entre \(\Bar{u}\) et \(c\Bar{T}+\frac{\Bar{u}^2}{2}\) :
+\begin{equation}
+    c\Bar{T} + \frac{\Bar{u}^2}{2} = A\Bar{u}+B
+\end{equation}
+Ceci est la généralisation de la loi de Crocco en écoulement turbulent.\\
+\underline{Conditions limites :}
+\begin{itemize}
+    \item Condition limite : La température à la paroi est constante : \(\Bar{T}|_{y=0} = \Bar{T}_w=\) constante.
+    \item Condition de raccordement : La relation de Crocco est vérifiée pour le couple \((\Bar{T}_e,\Bar{u}_e)\).
+\end{itemize}
+La relation de Crocco devient :
+\begin{equation}
+    c(\Bar{T}-\Bar{T}_w) + \frac{\Bar{u}^2}{2} = \left(c(\Bar{T}_e-\Bar{T}_w)+\frac{\Bar{u}_e^2}{2}\right)\frac{\Bar{u}}{\Bar{u}_e}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : la constante \(A\) représente le rapport entre le flux de chaleur à la paroi et la contrainte de cisaillement à la paroi.
+\end{itemize}
+Par la définition du nombre de Stanton à l'\autoref{eq:Stanton}, on a 
+\begin{equation}
+    St = \left(1-\frac{\Bar{u}_e^2/2}{c(\Bar{T}_w-\Bar{T}_e)}\right)\frac{C_f}{2}
+\end{equation}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item La dissipation est négligeable dans l'écoulement : \(Ec\ll 1\).
+\end{itemize}
+Le profil de temmpérature est 
+\begin{equation}
+    \frac{\Bar{T}-\Bar{T}_w}{\Bar{T}_e-\Bar{T}_w} = \frac{\Bar{u}}{\Bar{u}_e}\Longrightarrow St=\frac{C_f}{2}
+\end{equation}
+De plus,
+\begin{equation}
+    Nu \coloneqq \frac{\Bar{q}_wx}{k(\Bar{T}_w-\Bar{T}_e)} = RePrSt
+\end{equation}
+A noter que, en couche limite, toutes les grandeurs dépendent de \(x\), sauf \(Pr\), qui est une propriété du fluide.
+\subsection{Couche limite hydrauliquement lisse avec \(Pr\ge0.5\) et dissipation négligeable}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item On considère ici un \(Pr\ge0.5\) général en couche limite telle que la dissipation est négligeable.
+    \item [\(\rightarrow\)] Remarque : les couches limites turbulentes sont telles que l'épaisseur du profil de température \(\delta_T\) est essentiellement la même que l'épaisseur du profil de vitesse \(\delta\), car la couche limite est dominée par les effets liés à la turbulence et les grandeurs caractéristiques globales sont aussi dominées par la turbulence.
+\end{itemize}
+PAr évaluation des ordres de grandeur des termes des équations de conservation, on obtient la condition suivante découlant de l'hypothèse :
+\begin{equation}
+    PrEc\ll 1\qquad Ec\ll 1
+\end{equation}
+Puisque la paroi est lisse, il y a une sous-couche laminaire, suivie d'une zone de transition et d'une couche turbulente. En zone proche paroi, \(\Bar{q}\approx \Bar{q}_w\). De plus, \(\nu_t\gg \nu\) en zone III.a du profil de vitesse implique que \(\alpha_t\gg\alpha\), et cette zone sera également une zone III.a du point de vue thermique. Toutefois, la fin de la zone I en thermique est en \(y^+ \approx 5/Pr^a\), avec \(a \approx 0.35\). \\
+
+En zone I thermique, puisque \(\alpha\gg\alpha_t\), le profil de température est 
+\begin{equation}
+    \Bar{T} = \Bar{T}_w - Pr \frac{\Bar{q}_w}{\rho c \Bar{u}_\tau} \frac{y\Bar{u}_\tau}{\nu}
+\end{equation}
+Dont on détermine une température de référence, parallèlement à la vitesse de frottement pour le profil de vitesse : la température de transfert est 
+\begin{equation}
+    \Bar{T}_\tau \coloneqq =\frac{\Bar{q}_w}{\rho c\Bar{u}_\tau}
+\end{equation}
+Et le profil devient en zone I :
+\begin{equation}
+    \frac{\Bar{T}_w-\Bar{T}}{\Bar{T}_\tau} \eqqcolon \Bar{T}^+ = Pr y^+
+\end{equation}
+Dans la zone III.a thermique, \(\alpha_t\gg\alpha\) et \(\nu_t = \kappa y\Bar{u}_\tau\). Donc, par la loi de Fourier,
+\begin{equation}
+    -\kappa y\frac{\partial \Bar{T}}{\partial y} = Pr_t \Bar{T}_\tau\Longrightarrow \Bar{T}^+ = \frac{Pr_t}{\kappa}\log y^++ A(Pr_t,Pr)
+\end{equation}
+Donc, pour \(Pr_t=1\), la pente du profil universel de température est la même que la pente du profil universel de vitesse. On définit la loi de la paroi pour le profil de température comme étant le profil \(\Bar{T}^+ = g(y^+,Pr,Pr_t)\) avec les zones I, II et III.a.\\
+
+Pour les fluides tels que \(Pr_t \ge 0.5\), une bonne approximation de la fonction \(A(Pr)\) est 
+\begin{equation}
+    A(Pr) \approx 13(Pr^{2/3}-1)+C
+\end{equation}
+Avec \(C\) la consante du profil universel de vitesse (voir \autoref{eq:C}). On propose ensuite un profil composite valable pour toute la zone III :
+\begin{equation}
+    \Bar{T}^+ = \frac{Pr_t}{\kappa}\log y^++A(Pr_t,Pr)+G(\eta)
+\end{equation}
+avec la même fonction complément \(G(\eta)\) que celle obtenue pour le profil composite de vitesse. On peut finalement réécrire le nombre de Stanton sous la forme suivante (seconde expression avec l'expression de \(A(Pr)\)) :
+\begin{equation}
+    St = \frac{1}{1+(A-C)\sqrt{\frac{C_f}{2}}} \frac{C_f}{2} \approx \frac{1}{1+13(Pr^{2/3}-1)\sqrt{\frac{C_f}{2}}} \frac{C_f}{2}
+\end{equation}
+\subsection{Couche limite hydrauliquement rugueuse avec \(PR\ge0.5\) et dissipation négligeable}
+Si les parois sont hydrauliquement rugueuses, il n'y a pas de zones I et II; seul le nombre \(Pr_t\) importe. On a donc en zone III :
+\begin{equation}
+    \Bar{T}^+ = \frac{Pr_t}{\kappa}\log\left(\frac{y}{\epsilon}\right)) + A(Pr_t)+G(\eta)
+\end{equation}
+Le nombre de Stanton se réécrit également : \(St = C_f/2\).
+\subsection{Conduite hydrauliquement lisse avec \(Pr\ge0.5\) et dissipation négligeable}
+\underline{Hypothèse :}
+\begin{itemize}
+    \item On considère ici un \(Pr\ge0.5\) général en conduite telle que la dissipation est négligeable.
+    \item \(PrEc\ll1\) et \(Ec\ll1\)
+\end{itemize}
+La température moyenne est définie par 
+\begin{equation}
+    \Bar{T}_m\Bar{u}_mA \coloneqq \int_A \Bar{T}\Bar{u}dA
+\end{equation}
+Dans la zone proche paroi, \(\Bar{q}\approx \Bar{q}_w\). Cela implique que 
+\begin{equation}
+    \Bar{T}^+=Pry^+
+\end{equation}
+En supposant que \(Pr_t=1\), en zone III.a,
+\begin{equation}
+    \Bar{T}^+ =\frac{1}{\kappa}\log y^+ +A(Pr)
+\end{equation}
+En conduite, le nombre de Stanton est défini par :
+\begin{equation}
+    St = \frac{\Bar{q}_w}{\rho \Bar{u}_mc(\Bar{T}_w-\Bar{T}_m)} = \frac{\lambda/8}{1+(A-C)\sqrt{\frac{\lambda}{8}}}\approx \frac{\lambda/8}{1+13(Pr^{2/3}-1)\sqrt{\frac{\lambda}{8}}}
+\end{equation}
+De plus, en conduite,
+\begin{equation}
+    NBu \coloneqq \frac{\Bar{q}_wD}{k(\Bar{T}_w-\Bar{T}_m} = Re_DPrSt
+\end{equation}
+\subsection{Conduite hydrauliquement rugueuse avec \(Pr\ge0.5\) et dissipation négligeable}
+\underline{Hypothèses :}
+\begin{itemize}
+    \item La dissipation étant négligeable, \(Ec\ll 1\).
+    \item \(Pr_t=1 \Longrightarrow \Bar{T}^+=\Bar{u}^+\).
+\end{itemize}
+\begin{equation}
+    St = \frac{\lambda}{8} \qquad Nu = Re_DPr\frac{\lambda}{8}
+\end{equation}
+\chapter{Fonction de courant - A ajouter dans la bonne section}
+Pour les écoulements incompressibles, i.e. \(\nabla \cdot \textbf{v}=0\), il existe toujours une fonction \(\psi\) telle que \(v=\nabla \times \psi\). Cette fonction s'appelle fonction de courant. Par définition du vecteur tourbillon, \(\omega = \nabla \times \textbf{v}\), et \(\nabla \cdot \omega = 0\). Donc, pour les écoulements incompressibles, 
+\begin{equation}
+    \nabla^2\textbf{v} = -\nabla \times \omega\qquad \nabla^2\psi = -\omega
+\end{equation}
+\begin{equation}
+    \omega = \frac{\partial v}{\partial x}-\frac{\partial u}{\partial y} = \frac{1}{r}\frac{\partial}{\partial r}(ru_\theta) - \frac{1}{r}\frac{\partial u_r}{\partial \theta}
+\end{equation}
+\part{Unités et nombres adimensionnels}
+\chapter{Unités de paramètres et quantités}
+\begin{itemize}
+    \item Masse volumique : \(\rho = [kg/m^3]\)
+    \item Viscosité dynamique (= de cisaillement) : \(\mu = [kg/(ms)]\)
+    \item Viscosité cinématique : \(\nu = \frac{\mu}{\rho} = [m/s^2]\)
+    \item Pression dynamique : \(P = \frac{p}{\rho} = [m^2/s^2]\)
+    \item Conductibilité thermique : \(k = [W/(mK)]\)
+    \item Chaleur massique : \(c = [J/(kgK)]\)
+    \item Diffusivité thermique : \(\alpha = \frac{k}{\rho c} = [m/s^2]\)
+    \item Tenseur de contraintes : \(\sigma = [N/m^2]\)
+    \item Contrainte de cisaillement : \(\tau = [N/m^2]\)
+    \item Taux de déformation : \(d = [s^{-1}]\)
+    \item Densité de chaleur : \(q = [W/m^2]\)
+    \item Flux de chaleur : \(Q = W\)
+    \item Fonction de courant : \(\psi = [m^2/s]\)
+    \item Vecteur tourbillon : \(\omega = [s^{-1}]\)
+    \item Epaisseur de déplacement, de quantité de mouvement ou de couche limite : \(\delta = [m]\)
+    \item Puissance radiative volumique : \(r = [W/m^3]\)
+    \item Débit volumique : \(Q = m^3/s\)
+    \item Coefficient de frottement et de pertes de charge : \(\lambda = [-]\)
+    \item Coefficient de convection : \(h = [W/(m^2K)]\)
+    \item Rugosité : \(\epsilon = [mm]\)
+    \item Fonction de dissipation : \(\Psi = [W/m^3]\)
+    \item Coefficient de dilatation thermique : \(\beta = -\frac{1}{\rho}\frac{\partial \rho}{\partial T} = [K^{-1}\)
+\end{itemize}
+\chapter{Nombre adimensionnels}
+\subsection{Reynolds}
+\begin{equation}
+    Re = \frac{\text{Forces d'inertie}}{\text{Forces de viscosité}} = \frac{u x}{\nu}
+\end{equation}
+\subsection{Péclet}
+\begin{equation}
+    Pe = \frac{\text{Energie transportée}}{\text{Energie diffusée}} = \frac{\rho c U\Delta T/L}{k\Delta T/L^2} = \frac{\rho c UL}{k}
+\end{equation}
+\subsection{Prandtl}
+\begin{equation}
+    Pr = \frac{\text{Convection}}{\text{Conduction}} = \frac{c\mu}{k} = \frac{Pe}{Re}
+\end{equation}
+\subsection{Eckert}
+\begin{equation}
+    EcPr = \frac{\text{Dissipation visqueuse}}{\text{Diffusion}} = \frac{\mu U^2}{k\Delta T}
+\end{equation}
+\subsection{Nusselt}
+\begin{equation}
+    Nu = \frac{\text{Flux de chaleur à la paroi}}{\text{Flux de chaleur diffusé dans l'écoulement}} = \frac{q_w}{k\Delta T/D}
+\end{equation}
+\subsection{Biot}
+\begin{equation}
+    Bi = \frac{\text{Flux de chaleur à la paroi}}{\text{Flux de chaleur diffusé dans le solide}}
+\end{equation}
+\subsection{Stanton}
+\begin{equation}
+    St = \frac{\text{Transfert de chaleur}}{\text{convection}} = \frac{q_w}{\rho u_e c\Delta T}
+\end{equation}
+\subsection{Grashof}
+\begin{equation}
+    Gr = \frac{\text{Inertie} \times \text{Archimède}}{(\text{Forces visqueuses})^2} = \frac{\beta\Delta T gL^3}{\nu^2}
+\end{equation}
+\end{document}

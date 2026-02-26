@@ -1,0 +1,1196 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[english]{babel}
+\usepackage{libertine}
+\usepackage[super]{nth}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand{\niton}{\not\owns}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.2]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LEPL1109 Statistics and data science \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Academic year 2023-2024 - Q1}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+\chapter{Reminders}
+\section{Random variable}
+A random variable is a measurable function from the sample space \(\Omega\) to the set of real numbers \(\mathbb{R}\), \(X:\Omega \rightarrow \mathbb{R}\). We denote it by a capital letter and its realization by a lowercase letter : \(X(\omega) =x\).
+\begin{itemize}
+    \item The state space of a rv \(X\) is the set of all possible values of the rv : \(\{x\in \mathbb{R}|x=X(\omega),\omega \in \Omega\}\).
+    \item A rv is called discrete if its state space has a finite or countable number of elements.
+    \item A rv is called continuous if it takes arbitrary real values between a minimum and a maximum. The state is either an interval of \(\mathbb{R}\), or \(\mathbb{R}\).
+\end{itemize}
+\section{Probability distribution}
+The probability mass function (pmf) \(p(x)\) of a discrete random variable \(X\) is a function that associates to all values \(x\) of \(X\) a probability : \(p(x) = P(X=x)\). If \(x\) is in the range of \(X\), then \(p(x)>0\) and \(p(x)=0\) if not. Furthermore, \(\sum_ip(x_i) = 1\).
+\section{Probability density function}
+Let \(X\) be a continuous random variable. The probability density function (pdf) of \(X\) is the function \(f(x)\ge 0\) such that for any \(I\subset \mathbb{R}\), we have \(P(X\in I) = \int_If(x)dx\).
+\section{Cumulative distribution function}
+The cumulative distribution function \(F(x)\) of a random variable \(X\) indicate for each possible value of \(x\) the probability that \(X\) takes the value equal or less than x : \(F(x) = P(X\le x)\). The pdf is therefore the x-derivative of the cdf.
+\section{Expectation}
+The expectation of a rv \(X\) is noted \(\mathbb{E}(X) = \mu_X\). If \(X\) is a discrete rv, then 
+\begin{equation}
+    \mu_X = \sum_{x\in range(X)} xp(x)
+\end{equation}
+If \(X\) is continuous with a density \(f(x)\), the expectation of \(X\) is 
+\begin{equation}
+    \mu_X = \int_{-\infty}^{\infty}xf(x)dx
+\end{equation}
+\subsection{Properties}
+\begin{itemize}
+    \item \(\mathbb{E}(X+Y) = \mathbb{E}(X)+\mathbb{E}(Y)\)
+    \item \(\mathbb{E}(aX+b) = a\mathbb{E}(X)+b\)\footnote{This is due to the properties of the integral.}
+\end{itemize}
+\subsection{Composition}
+The expected value of a real-valued function \(h\) of a discrete rv \(X\) is 
+\begin{equation}
+    \mathbb{E}(h(X)) = \sum_{x\in range(X)}h(x)p(x)
+\end{equation}
+If \(X\) is continuous with a density \(f(x)\), the expectation of \(h(X)\) is 
+\begin{equation}
+    \mathbb{E}(h(X)) = \int_{-\infty}^{\infty}h(x)f(x)dx
+\end{equation}
+\begin{itemize}
+    \item \(\mathbb{E}(h(X)) \neq h(\mathbb{E}(x))\)
+    \item \(\mathbb{E}(XY) \neq \mathbb{E}(X)\mathbb{E}(Y)\)
+\end{itemize}
+\section{Variance}
+The variance of a random variable \(X\) is denoted by \(\mathbb{V}(X) = \sigma^2_X\) and is defined as \(\mathbb{V}(X) = \mathbb{E}\left((X-\mu_X)^2\right)\). The standard deviation is \(\sigma_X = \sqrt{\mathbb{V}(X)}\).
+\subsection{Properties}
+If \(X\) and \(Y\) are two rv and \(a,b\in \mathbb{R}\),
+\begin{itemize}
+    \item \(\mathbb{V}(X) = \mathbb{E}(X^2) - \mathbb{E}^2(X)\)
+    \item \(\mathbb{V}(a) = 0\)
+    \item \(\mathbb{V}(a+bX) = b^2\mathbb{V}(X)\)
+    \item \(\mathbb{V}(X+Y) = \mathbb{V}(X) + \mathbb{V}(Y)\) is true iif X and Y are independent.
+    \item [\(\rightarrow\)] N.B. : \(\mathbb{E}(X^2) = \int_{-\infty}^{\infty}x^2f_Xdx\)
+\end{itemize}
+\section{Law of Large Numbers}
+Let \(X_{i=1,...,n}\) be a sequence of uncorrelated rv's with the same expectation \(\mu_X = \mathbb{E}(X_i)\) and variance \(\sigma_X^2\). When \(n\rightarrow \infty\), the sample mean \(\Bar{X}_n = \frac{1}{n}\sum_{i=1}^nX_i\) converges in probability to \(\mu_X\).
+\section{Quantiles of a distribution}
+Let \(p\) be a probability between 0 and 1 and \(X\) be a rv. The number \(q_p\) that satisfies the relation \(P(X\le q_p)=p\) is the quantile of ordre \(p\) for \(X\). If \(X\) is continuous and if its cdf \(F(x)\) is invertible, then \(q_p = F^{-1}(p)\).|
+\section{Function of random variables}
+Let \(X\) be a continuous rv with density \(f_X(x)\). The pdf of \(Y = a+bX\) is given by
+\begin{equation}
+    f_Y(y) = \frac{1}{|b|}f_X\left(\frac{y-a}{b}\right)
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B. : The Gamma function is defined by \(\Gamma :\mathbb{Z}\rightarrow\mathbb{Z} : z \rightarrow (z-1)!\).
+\end{itemize}
+\chapter{Independence and linear dependence}
+\section{Independant random variables}
+Two rv's \(X\) and \(Y\) are independent \(X \independent Y\) if for every \(A,B\in \mathbb{R}\), we have \(P(X\in A,Y\in B) = P(X\in A)P(Y\in B)\).\\
+The consequences are the following : 
+\begin{itemize}
+    \item \(p(x,y) = p_X(x)p_Y(y)\) when the rv's are discrete
+    \item \(f(x,y) = f_X(x)f_Y(y)\) when the rv's are continuous
+    \item \(\mathbb{C}(X,Y) = \mathbb{C}(Y,X)\)
+    \item \(\mathbb{C}(X,X) = \mathbb{V}(X)\) and \(\mathbb{C}(a,X) = 0\text{  } \forall a\in \mathbb{R}\)
+    \item if \(X\independent Y\), then \(C(X,Y) = 0\)
+    \item \(\mathbb{C}(aX+bY,Z) = a\mathbb{C}(X,Z) + b\mathbb{C}(Y,Z)\)
+    \item \(\mathbb{V}(aX+bY) = a^2\mathbb{V}(X) + b^2\mathbb{V}(Y) + 2ab\mathbb{C}(X,Y)\)
+\end{itemize}
+\section{Covariance}
+Let \(X,Y\) be rv's. The covariance between them is 
+\begin{equation}
+    \sigma_{XY} = Cov(X,Y) = \mathbb{E}\left((X-\mu_X)(Y-\mu_Y)\right) = \mathbb{E}(XY) - \mathbb{E}(X)\mathbb{E}(Y)
+\end{equation}
+If we observe \(n\) outcomes \((x_k)_{k=1,...,n}\) and \((y_k)_{k=1,...,n}\) of rv's \(X,Y\), the empirical covariance is estimated as follows : 
+\begin{equation}
+    \sigma_{XY} \approx s_{XY} = \frac{1}{n-1}\sum_{n=1}^n(x_i-\Bar{x})(y_i-\Bar{y}).
+\end{equation}
+If \(\mathbb{C}>0\), then the rv's move in the same direction, and they move in opposite directions if \(\mathbb{C}<0\).
+\section{Correlation}
+The correlation is a measure of the linear dependence between two rv's easier to interpret than \(\sigma_{XY}\) because it has no unit and is in \([-1,1]\). \\
+
+Let \(X,Y\) be rv's. The correlation between them is defined as 
+\begin{equation}
+    \rho_{XY} = \frac{\mathbb{C}(X,Y)}{\sqrt{\mathbb{V}(X)\mathbb{V}(Y)}} = \frac{\sigma_{XY}}{\sigma_X\sigma_Y}
+\end{equation}
+\begin{itemize}
+    \item \(\rho_{XY}\) is scale invariant.
+    \item \(-1\le \rho{XY} \le 1\)
+    \item If \(\rho_{XY}=1\), then \(Y= a+bX\) with \(b\in\mathbb{R}^+\).
+    \item If \(\rho_{XY}=-1\), then \(Y= a+bX\) with \(b\in\mathbb{R}^-\).
+\end{itemize}
+If we observe \(n\) outcomes \(x_1,...,x_n\) and \(y_1,...,y_n\) of the rv's, the correlation is estimated by the empirical correlation : 
+\begin{equation}
+    \rho_{XY}\approx r_{XY} = \frac{\frac{1}{n-1}\sum_{i=1}^n(x_i-\Bar{x})(y_i-\Bar{y})}{\sqrt{\frac{1}{n-1}\sum_{i=1}^n(x_i-\Bar{x})^2}\sqrt{\frac{1}{n-1}\sum_{i=1}^n(y_i-\Bar{y})^2}}
+\end{equation}
+\chapter{Normal random variable and Central Limit Theorem}
+\section{Normal distribution}
+A rv \(X\) follows a normal distribution if its density is given by the following function :
+\begin{equation}
+    f(x) = \frac{1}{\sigma \sqrt{2\pi}}\exp{\left(-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2\right)}
+\end{equation}
+where \(\mu\in \mathbb{R},\sigma\in \mathbb{R}^+\) are parameters\footnote{\(\mu = \mathbb{E}(X)\) and \(\sigma^2 = \mathbb{V}(X)\)}. We note \(X \sim N(\mu,\sigma^2)\).\\
+
+The moment generating function is defined by the relation \(\frac{\partial^n m_X(t)}{\partial t^n}|_{t=0} = \mathbb{E}(X^n)\). Therefore, for a normal distribution, it is given by
+\begin{equation}
+    m_X(t) \coloneqq \mathbb{E}(e^{tX}) = \exp{\left(\mu t+\frac{1}{2}t^2\sigma^2\right)}
+\end{equation}
+\subsection{Standardization}
+\begin{itemize}
+    \item If \(X\sim N(\mu,\sigma^2)\), then for any \(a,b\neq0\), \(a+bX\) is a normal rv \(N(a+b\mu, b^2\sigma^2)\).\\
+    \item If \(X\sim N(\mu_X,\sigma_X^2)\) and \(Y\sim N(\mu_Y,\sigma_Y^2)\) and the covariance is \(\sigma_{XY} = \mathbb{C}(X,Y)\), then 
+\end{itemize}
+\begin{equation}
+    aX+bY \sim N(a\mu_x+b\mu_y, a^2\sigma_x^2+b^2\sigma_Y^2+2ab\sigma_{XY})
+\end{equation}
+\begin{itemize}
+    \item If \(X\sim N(\mu_X,\sigma_X^2)\), then \(\frac{X-\mu}{\sigma} \sim Z = N(0,1)\) and 
+\end{itemize}
+\begin{equation}
+    P(X\le x) = P\left(Z\le\frac{x-\mu}{\sigma}\right)
+\end{equation}
+\section{Central Limit Theorem}
+Let \(X_1,...,X_n\) be a sequence of independent identically distributed (iid) rv's (not following any particular distribution) with \(\mathbb{E}(X_i) = \mu\) and \(\mathbb{V}(X_i) = \sigma^2\). As \(n\rightarrow \infty\),
+\begin{equation}
+    Z_n = \sqrt{n} \frac{\Bar{X}_n-\mu}{\sigma}\rightarrow Z \sim N(0,1) \Longleftrightarrow P(Z_n\le z) \rightarrow P(Z\le z) \text{  }\forall z
+\end{equation}
+This means that, for a large \(n\), the distribution of the mean \(\Bar{X}_n\) and the sum \(S_n = \sum_{i=1}^nX_i\) may be approached by a normal distribution 
+\begin{equation}
+    \begin{cases}
+        \Bar{X}_n \sim N(\mu, \sigma^2/n)\\
+        S_n \sim N(n\mu,n\sigma^2)\\
+    \end{cases}
+\end{equation}
+\section{Chi-square distribution}
+The chi-square (\(\chi^2\)) distribution with \(n\) degrees of freedom is the distribution of a sum of squares of \(n\) independent standard normal \(N(0,1)\) rv's.\\
+
+A rv \(X\) defined on \(\mathbb{R}^+\) follows a \(\chi^2\)-distribution of parameter \(n\) when its density is given by 
+\begin{equation}
+    \frac{1}{2^{n/2} \Gamma(n/2)}x^{n/2-1}\exp{-x/2}
+\end{equation}
+Its expectation is \(n\) and its variance is \(2n\).
+\section{Student's T}
+Let \(Z\) and \(Y\) be two independent rv \(Z\sim N(0,1)\) and \(Y\sim\chi^2_n\). Then we define \(T_n = \frac{Z}{\sqrt{Y/n}}\) as the Student's T rv with \(n\) degrees of freedom. Its density is 
+\begin{equation}
+    f_{T_n}(t) = \frac{\Gamma(\frac{n+1}{2}}{\sqrt{n\pi}\Gamma(n/2)} \left(1+\frac{t^2}{2}\right)^{-\frac{n+1}{2}} \text{ with } t\in \mathbb{R}
+\end{equation}
+\chapter{Estimation}
+The collection of rv's \(X_i\) is called a random sample of size \(n\) if they have the same probability distribution \(f(x|\theta)\)\footnote{\(\theta\) being a vector of parameters : \(\theta \in \Theta\)} and are mutually independent.
+\section{Estimator}
+If we assume that \(X_i\sim N(\mu,\sigma)\), then \(\sigma = (\mu,\sigma)\in \Theta = \mathbb{R}^2_+\) and we have to estimate the parameters \(\mu,\sigma\). \\
+
+An estimator of \(\theta\), generically denoted by \(\Hat{\theta}\), is any function \(h(\cdot)\) of the random sample  \(\Hat{\theta} = h(X_1,...,X_n)\in \Theta\) used to estimate \(\theta\). \\
+
+An estimate of \(\theta\) is an observed value of this estimator calculated from the observed sample \(x_1,...x,_n\) : \(\Hat{\theta}_{obs} = h(x_1,...,x_n)\in \Theta\). µ
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B. : the estimator is a function of \(n\) random variables and therefore is also a random variable.
+\end{itemize}
+\section{Bias}
+\(\Hat{\theta}\) is an unbiased estimator of \(\theta\) if 
+\begin{equation}
+    \mathbb{E}(\Hat{\theta}) = \mathbb{E}(h(X_1,...,X_n)) = \theta
+\end{equation}
+The bias is the difference between the expectation and the real unknown value : \(B(\Hat{\theta}) = \mathbb{E}(\Hat{\theta} - \theta)\). \\
+
+The mean square error (MSE) measures the average error : \(MSE(\Hat{\theta}) = \mathbb{E}\left(\left(\Hat{\theta}-\theta\right)^2\right)\). \\
+
+We can also define the bias-variance with the following relation : 
+\begin{equation}
+    MSE(\Hat{\theta}) = B^2(\Hat{\theta})+\mathbb{V}(\Hat{\theta})
+\end{equation}
+\section{Method of moments}
+We observe \(x_1,...,x_n\) realizations of \(X_{1:n}\). We think that \(X_{1:n}\) have the same pdf \(f(x|\theta)\) as \(X\). In order to estimate \(\theta \in \mathbb{R}^d\), we match the \(d\) moments with the \(d\) empirical moments
+\begin{equation}
+    \mu_k(\theta) = M_k \Longleftrightarrow \mathbb{E}\left(X^k\right) = \frac{1}{n}\sum_{i=1}^nX_i^k \text{  } k=1,...,d
+\end{equation}
+The value of the estimator converges to the true value when \(n\rightarrow \infty\). Other than that, we do not know much about it, but we can say that the moment estimators are easy to construct, though do not always possess the best statistical properties.
+\section{Likelihood maximization}
+Let us consider a random sample \(X_{1:n}\sim X\). We think that \(X\) has a pdf \(f(x|\theta)\). We know that 
+\begin{equation}
+    P(x\le X\le x+dx)\approx f(x|\theta)dx
+\end{equation}
+Since \(X_{1:n}\) are independent, the probability to observe realizations \(x_{1:n}\) is 
+\begin{equation}
+    P(x_i\le X_i\le x_i+dx\text{  }\forall i) = \prod_{k=1}^nf(x_k|\theta)dx
+\end{equation}
+The probability that the observed sample has been generated by the model is then proportional to the likelihood function
+\begin{equation}
+    L(x_i|\theta) \coloneqq \prod_{k=1}^nf(x_k|\theta)
+\end{equation}
+The maximum likelihood estimator (MLE) of \(\theta\) is the value which maximises the likelihood of the observed sample : \(\Hat{\theta} = \arg \max_\theta L(x_i|\theta)\).\\
+
+In practice, \(\Hat{\theta}\) is found by deriving (wrt \(\theta\)) the log-likelihood function 
+\begin{equation}
+    I(x_i|\theta) = \sum_{k=1}^n\ln{\left(f(x_k|\theta)\right)}
+\end{equation}
+A MLE is asymptotically without bias and asymptotically normal.
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B. : In order to compare the likelihood maximization and the method of moments, calculate both and use the one with the biggest likelihood.
+\end{itemize}
+The MLE for a discrete rv is \(\Hat{\theta} = \arg\{\max_\theta I(x_i|\theta)\), where \(I(.)\) is the summ of log of the pmf : 
+\begin{equation}
+    I(x_i|\theta) = \sum_{i=1}^n\ln{(p(x_k|\theta))}
+\end{equation}
+\chapter{Empirical mean and standard deviations - Properties}
+\section{Properties of \(\Bar{X}\) and \(S^2\)}
+Let us consider \(n\) rv's \(X_{i=1:n}\sim X\) and denote \(\mu = \mathbb{E}(X)\) and \(\sigma^2= \mathbb{V}(X)\). The CLT states that whatever the distribution of \(X_i\), the empirical mean tends to a normal : 
+\begin{equation}
+    \Bar{X} \sim N(\mu,\frac{\sigma^2}{n}) \qquad \frac{\Bar{X}-\mu}{\sqrt{\sigma^2/n}} \sim N(0,1)
+\end{equation}
+The confidence interval for \(mu\) (or \(\sigma\)) at level \(1-\alpha\) (often 5\%) is an interval \([\mu_L,\mu_U]\) such that \(\mu\) is in this interval with a probability \(1-\alpha\). 
+\begin{equation}
+    P\left(z_{\alpha/2}\le \frac{\Bar{X}-\mu}{\sqrt{\sigma^2/n}}\le z_{1-\alpha/2}\right) = 1-\alpha \qquad \qquad z_{\alpha/2} = -z_{1-\alpha/2}
+\end{equation}
+As seen before, \(S^2 = \frac{1}{n-1}\sum_{i=1}^n(X_i-\Bar{X})^2\) is an unbiased estimator of \(\mathbb{V}(X)\). If \(X_i \sim N(\mu,\sigma^2)\), \(S^2\) and \(\Bar{X}\) are independent and then 
+\begin{equation}
+    (n-1)\frac{S^2}{\sigma^2} = \sum_{i=1}^n \left(\frac{X_i-\Bar{X}}{\sigma}\right)^2 \sim \chi^2_{n-1}
+\end{equation}
+\textbf{If \(X\sim N(\mu,\sigma^2)\)}, \(S^2\) is an estimator of \(\sigma\). Since \((n-1)\frac{S^2}{\sigma^2}\sim \chi^2_{n-1}\), we infer that the \(1-\alpha\) confidence interval for \(\sigma\) is 
+\begin{equation}
+    \left[\frac{n-1}{\chi^2_{n-1,1-\alpha/2}}S^2;\frac{n-1}{\chi^2_{n-1,\alpha/2}}S^2\right]
+\end{equation}
+\textbf{If \(X_i\sim N(\mu,\sigma^2)\)}, then the following ratio is a Student's T rv : \(\frac{\Bar{X}-\mu}{\sqrt{S^2/n}} \sim t_{n-1}\). In that case, the confidence interval for \(\mu\) is 
+\begin{equation}
+    \left[\Bar{X}-t_{n-1,1-\alpha/2} \sqrt{S^2/n};\Bar{X}+t_{n-1,\alpha/2} \sqrt{S^2/n} \right]
+\end{equation}
+\subsection{Two populations}
+We consider two iid normal samples : 
+\begin{equation*}
+    \begin{cases}
+        X_1 = \{X_{1,1},...,X_{1,n_1}\} \sim N(\mu_1,\sigma^2_1) \Rightarrow \Bar{X}_1\sim N(\mu_1,\sigma^2_1/n_1)\\
+        X_2 = \{X_{2,1},...,X_{2,n_2}\} \sim N(\mu_2,\sigma^2_2) \Rightarrow \Bar{X}_2\sim N(\mu_2,\sigma^2_2/n_2)\\
+    \end{cases}
+\end{equation*}
+By the properties of normal rv's, 
+\begin{equation}
+    \Bar{X}_1-\Bar{X}_2 \sim N\left(\mu_1-\mu_2,\frac{\sigma_1^2}{n_1} + \frac{\sigma^2_2}{n_2}\right) \Longrightarrow \frac{(\Bar{X}_1-\Bar{X}_2) - (\mu_1-\mu_2)}{\sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma^2_2}{n_2}}} \sim N(0,1)
+\end{equation}
+We define the unbiased estimators \(S_1^2,S_2^2\) as before for the two populations and the following ratio is therefore a Fisher-Snedecor rv : \(\frac{S_1^2\sigma_2^2}{S_2^2\sigma_1^2} \sim F_{n_1-1,n_2-1}\).\\
+
+If the two populations have the same variance, an unbiased "pooled" estimator of this variance is 
+\begin{equation}
+    S^2_{pool} = \frac{(n_1-1)S_1^2 + (n_2-1)S_2^2}{n_1+n_2-2}
+\end{equation}
+i.e. \(\mathbb{E}(S_{pool}^2) = \sigma^2\) and \((n_1+n_2-2)S^2_{pool}/\sigma^2\sim \chi^2_{n_1+n_2-2}\).\\
+
+Furthermore, still with \(\sigma_1=\sigma_2\), 
+\begin{equation}
+    \frac{(\Bar{X}_1-\Bar{X}_2) - (\mu_1-\mu_2)}{S_{pool}\sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}
+\end{equation}
+\chapter{Hypothesis testing - one population}
+A hypothesis is a claim about a parameter \(\theta\) of a random sample. The null hypothesis is denoted by \(H_0 = \theta \in \Theta_0\) and states the assertion to be tested. The alternative hypothesis is \(H_1 = \theta\in \Theta_1\).\\
+
+A statistical test is a procedure during which, based on some observations sampled from the probability distribution, we will make our decision of accepting or rejecting \(H_0\).\\
+\begin{center}
+\begin{tabular}{c||c|c}
+      & \multicolumn{2}{c}{Reality} \\ \hline
+     Decisions & \(H_0\) is true & \(H_1\) is true \\ \hline \hline
+     Accept \(H_0\) & Correct & Type 2 error (= false negative)\\\hline
+     Reject \(H_0\) & Type 1 error (false positive) & Correct \\
+\end{tabular}
+\end{center}
+The probability of making a type 1 error is called the significance level of the test and is usually denoted as \(\alpha\) : \(P(\text{Type 1 error}) = \alpha\).\\
+The decision to reject the null hypothesis is based on a test statistic \(T(\cdot)\). Given a sample \(\textbf{X} = \{X_1,...X_n\}\) of observations, \(T(\textbf{X}) :\mathbb{R}^n\rightarrow\mathbb{R}\). \(T(\textbf{X})\) is such that its distribution is known.
+\begin{enumerate}
+    \item For a chosen \(\alpha\), we determine a rejection region \(R_{\alpha}\subset \mathbb{R}\), such that \(P(\text{Type 1 error}) = \alpha\).
+    \item We calculate \(t=T(\textbf{x})\) the observed value of \(T(\textbf{X})\).
+    \item Decision
+    \begin{itemize}
+        \item If \(t\in R_\alpha\), then reject \(H_0\).
+        \item If \(t\notin R_\alpha\), then do not reject \(H_0\).
+    \end{itemize}
+\end{enumerate}
+\section{Single mean test}
+We cibsuder a iid sample \(X_1,...,X_n \sim N(\mu,\sigma^2)\) with unknown variance. We test \(H_0 : \mu = \mu_0\) agaisnt three alternatives (with a different \(R_\alpha\) for each) : 
+\begin{enumerate}
+    \item \(H_1 : \mu > \mu_0\)
+    \item \(H_1 : \mu < \mu_0\)
+    \item \(H_1 : \mu \neq \mu_0\)
+\end{enumerate}
+A good choice for the test statistic is the Student's T : \(T(\textbf{X}) = \frac{\Bar{X}-\mu_0}{\sqrt{S^2/n}} \sim t_{n-1}\). \\
+
+If \(t=T(\textbf{X})\), the observed value of the Student's statistic, is "too far" from the mean of the student's distribution, it is likely that \(H_0\) is false. We find a critical value \(c\) under the assumption that \(H_0\) is true : 
+\begin{enumerate}
+    \item \(P(T(\textbf{X})>c|H_0 \text{ is true}) = \alpha\)
+    \item \(P(T(\textbf{X})<c|H_0 \text{ is true}) = \alpha\)
+    \item \(P(T(\textbf{X})>c\text{ or }T(\textbf{X})< -c|H_0 \text{ is true}) = \alpha\)
+\end{enumerate}
+the critical values are the \(\alpha\), \(1-\alpha\) or \((\alpha/2,1-\alpha/2)\) quantiles of the Student's t.\\
+We reject \(H_0\) at the level \(\alpha\) if \(T(\textbf{X}) = \sqrt{n}\frac{\Bar{x}-\mu_0}{s}\)
+\begin{enumerate}
+    \item \(H_1 : \mu>\mu_0 \qquad T(\textbf{x}) > t_{n-1,1-\alpha}\)
+    \item \(H_1 : \mu<\mu_0 \qquad T(\textbf{x}) < t_{n-1,\alpha}\)
+    \item \(H_1 : \mu\neq\mu_0 \qquad T(\textbf{x}) < t_{n-1,\alpha/2}\) or \(T(\textbf{x})>t_{n-1,1-\alpha/2}\)
+    \item [\(\rightarrow\)] N.B. : if the variance \(\sigma^2\) is known and the \(x_i\) are gaussian\footnote{Gaussian means that they follow a normal distribution.}, then we use the test statistic \(T(\textbf{X}) = \frac{\Bar{X}-\mu_0}{\sigma/\sqrt{n}}\sim Z = N(0,1)\).
+\end{enumerate}
+\section{Single variance test}
+We consider a iid sample \(X_1,...,X_n\sim N(\mu,\sigma^2)\) with unknown variance. We test \(H_0 : \sigma^2 = \sigma^2_0\) against three alternatives :
+\begin{enumerate}
+    \item \(H_1: \sigma^2 \neq \sigma^2_0\)
+    \item \(H_1: \sigma^2 > \sigma^2_0\)
+    \item \(H_1: \sigma^2 < \sigma^2_0\)
+\end{enumerate}
+A good choice for the test statistic is the \(\chi^2\) test : 
+\begin{equation}
+    T(\textbf{X}) = (n-1)\frac{S^2}{\sigma^2_0} \sim \chi_{n-1}^2
+\end{equation}
+We work the same way we did for the single mean test and we find the following conditions :
+\begin{enumerate}
+    \item \(H_1 : \sigma^2 \neq \sigma^2_0 \qquad T(\textbf{x}) < \chi_{n-1,\alpha/2}\) ou \(T(\textbf{x}) > \chi^2_{n-1,1-\alpha/2}\)
+    \item \(H_1 : \sigma^2 > \sigma^2_0 \qquad T(\textbf{x}) > \chi_{n-1,1-\alpha}\)
+    \item \(H_1 : \sigma^2 < \sigma^2_0 \qquad T(\textbf{x}) < \chi_{n-1,\alpha}\)
+\end{enumerate}
+\section{P-value}
+The \(P\)-value is the smallest level of significance for which the data indicate rejection of the null hypothesis.\\
+
+Let \(T(\textbf{X})\) be a test statistic such that small values of \(T\) give evidence that \(H_0\) is wrong. For a given sample \(\textbf{x}\), the p-value is :
+\begin{equation}
+    p(\textbf{x}) = P(T(\textbf{X})<T(\textbf{x})|H_0\text{ is true})
+\end{equation}
+
+Let \(T(\textbf{X})\) be a test statistic such that high values of \(T\) give evidence that \(H_0\) is wrong. For a given sample \(\textbf{x}\), the p-value is :
+\begin{equation}
+    p(\textbf{x}) = P(T(\textbf{X})>T(\textbf{x})|H_0\text{ is true})
+\end{equation}
+Let \(T(\textbf{X})\) be a test statistic symmetric around zero such that high and small values of \(T\) give evidence that \(H_0\) is wrong. For a given sample \(\textbf{x}\), the p-value is :
+\begin{equation}
+    p(\textbf{x}) = 2P(T(\textbf{X})>|T(\textbf{x})||H_0\text{ is true})
+\end{equation}
+A small p-value indicates that \(H_0\) is very unlikely. A high p-value informs us that \(H_0\) is likely.
+\section{Comparison of two means}
+We consider two iid populations with the same variance : 
+\begin{equation}
+    \begin{cases}
+        \textbf{X}_1 = \{X_{1,1},...,X_{1,n_1}\}\sim N(\mu_1,\sigma^2)\Rightarrow \Bar{X}_1 \sim N(\mu_1,\sigma^2/n_1)\\
+        \textbf{X}_2 = \{X_{1,2},...,X_{1,n_2}\}\sim N(\mu_2,\sigma^2)\Rightarrow \Bar{X}_2 \sim N(\mu_2,\sigma^2/n_2)\\
+    \end{cases}
+\end{equation}
+We test if the two samples have the same means, or more generically : \(H_0:\mu_1-\mu_2 = \delta\), with \(\delta\) a value that we choose, against 
+\begin{enumerate}
+    \item \(H_1 : \mu_1 - \mu_2 > \delta\)
+    \item \(H_1 : \mu_1 - \mu_2 < \delta\)
+    \item \(H_1 : \mu_1 - \mu_2 \neq \delta\)
+\end{enumerate}
+\subsection{The variance is known}
+If we remember the properties of a normal rv, \(\Bar{X}_1-\Bar{X}_2 \sim N(\mu_1-\mu_2,\frac{\sigma^2}{n_1}+ \frac{\sigma^2}{n_2})\). We therefore use the following test statistics : 
+\begin{equation}
+    T(\textbf{X}_1,\textbf{X}_2) = \frac{(\Bar{X}_1-\Bar{X}_2)-\delta}{\sigma\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}\sim N(0,1)
+\end{equation}
+We reject \(H_0 : \mu_1-\mu_2 = \delta\) at the level \(\alpha\) if 
+\begin{enumerate}
+    \item \(H_1 :\mu_1-\mu_2>\delta \qquad T(\textbf{x}_1,\textbf{x}_2)>z_{1-\alpha}\)
+    \item \(H_1 :\mu_1-\mu_2<\delta \qquad T(\textbf{x}_1,\textbf{x}_2)<z_{\alpha}\)
+    \item \(H_1 :\mu_1-\mu_2\neq \delta \qquad T(\textbf{x}_1,\textbf{x}_2)<z_{\alpha/2}\) or \(T(\textbf{x}_1,\textbf{x}_2) > z_{1-\alpha/2}\)
+\end{enumerate}
+where \(z_\alpha\) is the \(\alpha\)-percentile of a \(Z\sim N(0,1)\).
+\subsection{The variance is unknown}
+We use the test statistics
+\begin{equation}
+    T(\textbf{X}_1,\textbf{X}_2) = \frac{(\Bar{X}_1-\Bar{X}_2)-\delta}{S_{pool}\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}\sim T_{n_1+n_2-2}
+\end{equation}
+We reject \(H_0 : \mu_1-\mu_2 = \delta\) at the level \(\alpha\) if 
+\begin{enumerate}
+    \item \(H_1 :\mu_1-\mu_2>\delta \qquad T(\textbf{x}_1,\textbf{x}_2)>t_{n_1+n_2-2,1-\alpha}\)
+    \item \(H_1 :\mu_1-\mu_2<\delta \qquad T(\textbf{x}_1,\textbf{x}_2)<t_{n_1+n_2-2,\alpha}\)
+    \item \(H_1 :\mu_1-\mu_2\neq \delta \qquad T(\textbf{x}_1,\textbf{x}_2)<t_{n_1+n_2-2,\alpha/2}\) or \(T(\textbf{x}_1,\textbf{x}_2) > t_{n_1+n_2-2,1-\alpha/2}\)
+\end{enumerate}
+where \(t_{n_1+n_2-2,\alpha}\) is the \(\alpha\)-percentile of a Student's T.
+\section{Comparison of two variances}
+We consider two iid populations with different variances : 
+\begin{equation}
+    \begin{cases}
+        \textbf{X}_1 = \{X_{1,1},...,X_{1,n_1}\}\sim N(\mu_1,\sigma^2_1)\\
+        \textbf{X}_2 = \{X_{1,2},...,X_{1,n_2}\}\sim N(\mu_2,\sigma^2_2)\\
+    \end{cases}
+\end{equation}
+We test if the two samples have the same means, i.e. \(H_0:\sigma_1=\sigma_2\) against 
+\begin{enumerate}
+    \item \(H_1 : \sigma_1 \neq \sigma_2\)
+    \item \(H_1 : \sigma_1 > \sigma_2\)
+    \item \(H_1 : \sigma_1 < \sigma_2\)
+\end{enumerate}
+We use the test statistics 
+\begin{equation}
+    T(\textbf{X}_1,\textbf{X}_2) = \frac{S_1^2}{S_2^2}\sim F_{n_1-1,n_2-1}
+\end{equation}
+with \(F\) Fisher's test. We reject \(H_0 : \sigma_1=\sigma_2\) at the level \(\alpha\) if 
+\begin{enumerate}
+    \item \(H_1 :\sigma_1 \neq \sigma_2 \qquad T(\textbf{x}_1,\textbf{x}_2)<F_{n_1-1,n_2-1,\alpha/2}\) or \(T(\textbf{x}_1,\textbf{x}_2) > F_{n_1-1,n_2-1,1-\alpha/2}\)
+    \item \(H_1 :\sigma_1 > \sigma_2 \qquad T(\textbf{x}_1,\textbf{x}_2)>F_{n_1-1,n_2-1,1-\alpha}\)
+    \item \(H_1 :\sigma_1 < \sigma_2 \qquad T(\textbf{x}_1,\textbf{x}_2)<t_{n_1-1,n_2-1,\alpha}\)
+\end{enumerate}
+where \(F_{n_1-1,n_2-1,\alpha}\) is the \(\alpha\)-percentile of a Fisher.
+\chapter{Linear regression}
+We observe \(n\) realizations \(Y_i\) that is related to \(k\) factors \((x_{i,1},...,x_{i,k})^T\) for \(i=1,...,n\). We postulate the following linear relation : 
+\begin{equation}\label{eq1}
+    Y_i = \beta_0+\beta_1x_{i,1}+...+\beta_kx_{i,k}+\epsilon_i \qquad i=1,...,n
+\end{equation}
+where \(\epsilon_i\sim N(0,\sigma^2\) is the noise of the system. In matrix notations, we have 
+\begin{equation}
+    \textbf{Y} = \begin{pmatrix}
+        Y_1\\
+        \vdots\\
+        Y_n
+    \end{pmatrix} \qquad 
+    \beta = \begin{pmatrix}
+        \beta_0\\
+        \vdots\\
+        \beta_k
+    \end{pmatrix} \qquad 
+    \textbf{X} = \begin{pmatrix}
+        1 & x_{1,1} & \cdots & x_{1,k}\\
+        \vdots & \vdots & \ddots & \vdots\\
+        1 & x_{n,1} & \cdots & x_{n,k}
+    \end{pmatrix} \qquad
+    \epsilon = \begin{pmatrix}
+        \epsilon_1\\
+        \vdots\\
+        \epsilon_n
+    \end{pmatrix}
+\end{equation}
+\(\textbf{Y} and \epsilon\) are \(n\) vectors, \(\beta\) is a \(k+1\) vector and \(X\) is a \(N\times (k+1)\) matrix. We call the \(\beta_j\) the regression coefficients.\\
+We can reformulate the equation \autoref{eq1} as \(\textbf{Y} = \textbf{X}\beta + \epsilon\).\\
+
+The best \(\Hat{Y}\) prediction of \(Y\) for a given value of \(\textbf{x} = (1,x_1,...,x_k)^T\) is 
+\begin{equation}
+    \Hat{Y} = \mathbb{E}(Y|\textbf{x}) = \textbf{x}^T\beta
+\end{equation}
+However, \(\beta, \sigma^2\) are unknown. We denote by \(\Hat{beta}\) and \(\Hat{\sigma}^2\) their estimates, whose values we determine by a method of estimation, such as the likelihood maximization. \\
+
+With this method of estimation, we find that, for \(\theta = (\beta,\sigma)\),
+\begin{equation}
+    I(\theta) \propto -\sum_{i=1}^n(y_i-x_i^T\beta)^2
+\end{equation}
+which is the least squares equation. 
+\section{Least square minimization}
+The estimate \(\Hat{\beta}\) of \(\beta\) minimizes the sum of squared errors (SSE) : 
+\begin{equation}
+    \Hat{\beta} = \arg_\beta \min\sum_{i=1}^n(y_i-x_i^T\beta)^2 \Longrightarrow \Hat{\beta} = (\textbf{X}^T\textbf{X})^{-1}\textbf{X}^T\textbf{y}
+\end{equation}
+Furthermore, the best prediction of \(Y_i\) for a vector of factor \(\textbf{x}_i\) is 
+\begin{equation}
+    \Hat{\textbf{y}}_i = \textbf{x}_i^T\Hat{\beta} \qquad i=1,...,n \Longleftrightarrow \Hat{\textbf{y}} =\textbf{X}\Hat{\beta} = \textbf{H}y
+\end{equation}
+with \(\Hat{y} = (y_1,...,y_n)^T\) and \(H = \textbf{X}(\textbf{X}^T\textbf{X})^{-1}\textbf{X}^T\) the hat matrix\footnote{The hat matrix is symmetric (\(\textbf{H} = \textbf{H}^T\)) and idempotent (\(\textbf{HH} = \textbf{H}\)).}.
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B. : these values for the estimators are correct only under the hypothesis that the data are gaussian. If it is not the case, they have different values, but we can still use the least squares minimization.
+\end{itemize}
+\subsection{Simple linear regression}
+In a simple regression, we only have one explanatory factor \((k=1)\) and the equation is \(Y_i = \beta_0+\beta_1x_i+\epsilon_i\). Then 
+\begin{equation}
+    \left\{\beta_0,\beta_1\right\} = \arg_{\beta}\min\sum_{i=1}^n(y_i-\beta_0-\beta_1x_i)^2 
+\end{equation}
+Of which we can derive 
+\begin{equation}
+    \begin{cases}
+        \Hat{\beta}_1 = \frac{\sum_{i=1}^n(x_i-\Bar{x})(y_i-\Bar{y})}{\sum_{i=1}^n(x_i-\Bar{x})^2} = \frac{S_{xy}}{S_{xx}}\\
+        \Hat{\beta}_0 = \Bar{y}-\Hat{\beta_1}\Bar{x}
+    \end{cases}
+\end{equation}
+We can see that \(\Hat{\beta}_1\) is proportional to the correlation coefficient between \(X\) and \(Y\).
+\subsection{Goodness of fit}
+Let us note \(\Hat{y}_i = \Hat{\textbf{x}_i^T\Hat{\beta}}\). Then
+\begin{equation}
+    \sum_{i=1}^n(y_i-\Bar{y})^2 = \sum_{i=1}^n(y_i-\Hat{y}_i)^2 + \sum_{i=1}^n(\Hat{y}_i-\Bar{y})^2 \Longleftrightarrow SSTotal  = SSError + SSRegression
+\end{equation}
+Where \(SST = (n-1)S_Y^2\), \(SSE\) is the noise, and \(SSR\) is proportional to the variance explained by the model.\\
+
+Let us defined \(R^2\in [0,1]\) the proportion of the variance explained by the model : \(R^2 = \frac{SSR}{SSR} \Longleftrightarrow 1-R^2 = \frac{SSE}{SST}\). The closer \(R^2\) is to unity, the better is the model.
+\section{Properties of regression coefficients}
+\begin{itemize}
+    \item \(\Hat{\beta}\) is an unbiased Gaussian estimator of \(\beta\), i.e. \(\mathbb{E}(\Hat{\beta}) = \beta\) : \(\Hat{\beta} \sim N\left(\beta,\sigma^2(\textbf{X}^T\textbf{X})^{-1}\right)\)
+    \item An unbiased estimator of \(\sigma^2\) is 
+\end{itemize}
+\begin{equation}
+    \Hat{\sigma}^2 = \frac{1}{n-(k+1)} (\textbf{Y}-\textbf{X}\Hat{\beta})^T(\textbf{Y}-\textbf{X}\Hat{\beta}) = \frac{SSE}{n-(k+1)} \Longrightarrow (n-(k+1)) \frac{\Hat{\sigma}^2}{\sigma^2} = \frac{SSE}{\sigma^2} \sim \chi^2_{n-(k+1)}
+\end{equation}
+which is a chi-square variable with \(n-(k+1)\) degrees of freedom. 
+\section{Simple linear regression}
+\(\Hat{\beta}_0\) and \(\Hat{\beta}_1\) are unbiased estimators. If \(\Bar{x^2} = \frac{1}{n}\sum_{i=1}^nx_i^2\), their variances are 
+\begin{equation}
+    \mathbb{V}(\Hat{\beta}_0) = \frac{\sigma^2\Bar{x^2}}{S_{xx}} \qquad \mathbb{V}(\Hat{\beta}_1) = \frac{\sigma^2}{S_{xx}} \qquad \mathbb{C}(\Hat{\beta}_0,\Hat{\beta}_1) = \frac{-\sigma^2\Bar{x}}{S_{xx}}
+\end{equation}
+where \(S_{xx} = \sum_{i=1}^n(x_i-\Bar{x})^2\). Since \(\epsilon\sim N(0,\sigma^2)\), 
+\begin{equation}
+    \Hat{\beta}_0 \sim N(\beta_0,\frac{\sigma^2\Bar{x^2}}{S_{xx}}\qquad \Hat{\beta}_1 \sim N(\beta_1,\frac{\sigma^2}{S_{xx}} \qquad (n-2)\frac{\Hat{\sigma}^2}{\sigma^2} = \frac{SSE}{\sigma^2}\sim \chi_{n-2}^2
+\end{equation}
+In practice, \(\sigma^2\) is unknown and we replace it by \(\Hat{\sigma}^2\). In consequence, \(\Hat{\beta}_0\) and \(\Hat{\beta}_1\) become Student's T.
+\section{Test of the significance of linear regression}
+From properties of \(S^2\), if \(\beta_1=...=\beta_k = 0\), the normalized SST is a chi-square rv with \(n-1\) degrees of freedom.
+\begin{equation}
+    \frac{SST}{\sigma^2} = \frac{1}{\sigma^2} \sum_{i=1}^n(Y_i-\Bar{Y})^2 \sim \chi^2_{n-1}
+\end{equation}
+and the normalized SSE is a chi-square rv with \(n-(k+1)\) degrees of freedom.
+\begin{equation}
+    \frac{SSE}{\sigma^2} = \frac{1}{\sigma^2} \sum_{i=1}^n(Y_i-\Hat{Y}_i)^2 \sim \chi^2_{n-(k+1)}
+\end{equation}
+Since \(SST = SSE+SSR\) and as a \(\chi^2_n\) rv is a sum of \(n\) rv's,
+\begin{equation}
+    \frac{SSR}{\sigma^2} = \frac{1}{\sigma^2} \sum_{i=1}^n(\Hat{Y}_i-\Bar{Y})^2 \sim \chi^2_k
+\end{equation}
+Therefore, if \(\beta_1=...=\beta_k=0\), the next ratio is a Fisher rv :
+\begin{equation}
+    F^* = \frac{MSR}{MSE} = \frac{SSR/k}{SSE/(n-(k+1))} \sim F_{k,n-(k+1)}
+\end{equation}
+If \(F^*\) is "too small", then the assumption of linearity between \(Y\) and \(\textbf{X}\) must be rejected. \\
+
+The significance test of regression is \(\begin{cases}
+    H_0 : \beta_1 = ...=\beta_k = 0\\
+    H_1 : \beta_j\neq 0 \text{ for some }j\in \{1,...,k\}
+\end{cases}\), with the test statistics \(F^*\) above.\\
+Reject \(H_0\) at a confidence level \(\alpha\)
+\begin{itemize}
+    \item if \(F^*>F_{k,n-(k+1),1-\alpha}\);
+    \item if the p-value \(p_{val} = P(F^*<F_{k,n-(k+1)})\) is lower than \(\alpha\).
+\end{itemize}
+\subsection{Tests of regression coefficients}
+Let \(c_{j,j}\) be the \(j^{th}\) diagonal element of \((\textbf{X}^T\textbf{X})^{-1}\). Estimators \(\Hat{\beta}\) of linear regression coeffients are Student's T rv : 
+\begin{equation}
+    \frac{\Hat{\beta}_j-\beta_j}{\Hat{\sigma}\sqrt{c_jj}} \sim t_{n-(k+1)}
+\end{equation}
+We use this result to test the significance of each \(\beta_j\) : \(H_0:\beta_j = \beta_{j,0}\) against three alternatives : 
+\begin{enumerate}
+    \item \(H_1 :\beta_j > \beta_{j,0}\)
+    \item \(H_1 :\beta_j < \beta_{j,0}\)
+    \item \(H_1 :\beta_j\neq\beta_{j,0}\)
+\end{enumerate}
+with the test statistics \(T_j^*=\frac{\Hat{\beta}_j-\beta_{j,0}}{\Hat{\sigma}\sqrt{c_{jj}}}\sim t_{n-(k+1)}\). We reject \(H_0\) at the level \(\alpha\) if 
+\begin{enumerate}
+    \item \(H_1 :\beta_j > \beta_{j,0}\qquad T_j^*>t_{n-(k+1),1-\alpha}\)
+    \item \(H_1 :\beta_j < \beta_{j,0}\qquad T_j^*<t_{n-(k+1),\alpha}\)
+    \item \(H_1 :\beta_j\neq\beta_{j,0}\qquad T_j^*<t_{n-(k+1),\alpha/2}\) or \(T_j^*>t_{n-(k+1),1-\alpha/2}\)
+\end{enumerate}
+And we find a \(1-\alpha\) confidence interval as follows : 
+\begin{equation}
+    \beta_j \in \left[\Hat{\beta}_j+t_{n-(k+1),\alpha/2} \Hat{\sigma}\sqrt{c_jj};\Hat{\beta}_j+t_{n-(k+1),1-\alpha/2} \Hat{\sigma}\sqrt{c_jj}\right]
+\end{equation}
+or, as the Student's T is symmetric, 
+\begin{equation}
+    \beta_j \in \left[\Hat{\beta}_j-t_{n-(k+1),1-\alpha/2} \Hat{\sigma}\sqrt{c_jj};\Hat{\beta}_j+t_{n-(k+1),1-\alpha/2} \Hat{\sigma}\sqrt{c_jj}\right]
+\end{equation}
+In case of simple linear regression , we have \(c_{0,0} = \frac{\Bar{x^2}}{S_{xx}}\) and \(c_{1,1} = \frac{1}{S_{xx}}\) and the confidence interval is 
+\begin{equation}
+    \beta_1 \in [\Hat{\beta}_1-t_{n-(k+1),1-\alpha/2}\Hat{\sigma}\sqrt{S_{xx}^{-1}}; \Hat{\beta}_1+t_{n-(k+1),1-\alpha/2}\Hat{\sigma}\sqrt{S_{xx}^{-1}}]
+\end{equation}
+For \(\beta_0\), we test \(H_0:\beta_0 = \beta_{0,0}\) against \(H_1:\beta_0\neq\beta_{0,0}\) with the test statistics \(T_0^* = \frac{\Hat{\beta_0}-\beta_{0,0}}{\Hat{\sigma}\sqrt{\Bar{x^2}S_{xx}^{-1}}} \sim t_{n-2}\). The confidence interval is 
+\begin{equation}
+    \beta_0 \in [\Hat{\beta}_0-t_{n-(k+1),1-\alpha/2}\Hat{\sigma}\sqrt{\Bar{x^2}S_{xx}^{-1}}; \Hat{\beta}_1+t_{n-(k+1),1-\alpha/2}\Hat{\sigma}\sqrt{\Bar{x^2}S_{xx}^{-1}}]
+\end{equation}
+\subsection{Prediction interval}
+For a model \(Y = \beta_0+\beta_1X+\epsilon\), the prediction for an unobserved value \(X = x_0\) is \(\Hat{y}_0 = \Hat{\beta}_0+\Hat{\beta}_1 x_0\). The prediction interval for \(Y_0\) at level \(\alpha\) is provided by 
+\begin{equation}
+    [\Hat{y}_0-S_{pred}t_{n-2,1-\alpha/2}; \Hat{y}_0+S_{pred}t_{n-2,1-\alpha/2}]
+\end{equation}
+where \(S_{pred}^2 = \Hat{\sigma}^2\left(1+\frac{1}{n}+\frac{(x_0-\Bar{x})^2}{S_{xx}}\right)\)
+\section{Analysis of Variance (ANOVA)}
+ANOVA is used to compare the means of \(n\) different sets of data. To compare these, we will set \(n-1\) binary (or dummy) variables 
+\begin{equation}
+    X_i = \begin{cases}
+        1\text{ if the data is from set }i\\
+        0 \text{ otherwise }\\
+    \end{cases}
+\end{equation}
+We now have \(Y = \beta_0 + \sum_i\beta_iX_i + \epsilon\) and our hypothesis is \(
+\begin{cases}
+    H_0: \beta_i = 0\qquad \forall i\\
+    H_1: \exists i,\qquad \beta_i\neq 0\\
+\end{cases}\)
+\chapter{Data science - Supervised learning}
+\section{Introduction}
+\begin{itemize}
+    \item We write a set of indexed elements as : \(\{a_i\}_{i=1}^N \equiv \{a_i:1\le i\le N\}\).
+    \item Most of the time, the elements are in a \(p\)-dimensional space : \(a_i\in \mathbb{R}^p\).
+    \item The letter \(N\) is always the size of a (data)set.
+    \item Matrices and vectors with \(N\) rows are written in bold : \(\textbf{X}, \textbf{u},\dots\)
+    \item We write \([N] \coloneqq \{1,\dots,N\}\).
+    \item \(I(a\neq b) = 1\) if \(a \neq b\) and \(0\) otherwise.
+\end{itemize}
+\subsection{Regression vs Classification}
+The most common supervised learning tasks are regression and classification. Both are doing predictions, but on different objects.
+\begin{itemize}
+    \item Regressions predict ordered values (=quantitative), continuous or discrete.
+    \item Classifications predict classes or categories (= qualitative).
+    \item [\(\rightarrow\)] N.B.: for binary data, there is no distinction between regression and classification.
+\end{itemize}
+To turn classification into a regression, we use dummy variables: from the classes \(\mathcal{G} = \{g_1,\dots,g_k\}\), we create the vectors \(e_k\coloneqq (0,\dots,0,1,0,\dots,0)^T \in \mathbb{R}^K\), where the 1 is the \(k\)-th component.
+\section{Modeling}
+We have the features (=inputs) \(X = (x_1,\dots,x_p)^T\in \mathbb{R}^p\) and the outcome (=labels) \(Y\), quantitative or qualitative. We assume that \(X\) and \(Y\) are related. This means that there exists a function \(f:\mathbb{R}^p\rightarrow \mathbb{R}\) such that 
+\begin{itemize}
+    \item For a regression, \(Y=f(X)+\varepsilon\), for some rv \(\varepsilon\), the noise.
+    \item For a binary classification, \(P(Y=f(X)) = 1-\eta\) and \(P(Y\neq f(X)) = \eta\), for a misclassification error \(0\le \eta \le 1\).
+\end{itemize}
+The objective is to find a reliable estimate \(\Hat{f}\) of \(f\) for doing predictions of (a sampling of) \(Y\) given (a sampling of) \(X\).
+\begin{itemize}
+    \item Training stage:
+    \begin{enumerate}
+        \item Get a representative data set \(\mathcal{T}\) of your task, i.e. a sampling of \((X,Y)\), a set of \(N\) measured pairs of \(\{\)"input","label"\(\}\): \(\mathcal{T} \coloneqq \{(x_i,y_i)\}_{i=1}^N\subset \mathbb{R}^p\times \mathbb{R}\).
+        \item Clean, preprocess and transform the data.
+        \item Train/fit a machine learning model, i.e. find the model parameters.
+    \end{enumerate}
+    \item Prediction stage:
+    \begin{enumerate}
+        \item Clean/preprocess/transform the new/independent data.
+        \item Apply the model on them to make predictions.
+    \end{enumerate}
+\end{itemize}
+\section{Multivariate linear modeling}
+\subsection{Definition}
+Given a vector of inputs \(X = (X_1,\dots,X_p)^T\), we want to predict the output \(Y\), assuming the linear model 
+\begin{equation}
+    \Hat{Y} = f_{\Hat{\beta}}(X) \coloneqq \sum_{j=1}^pX_j\Hat{\beta}_j = \textbf{X}^T\Hat{\beta}
+\end{equation}
+with the coefficients \(\Hat{\beta} = (\Hat{\beta}_1,\dots, \Hat{\beta}_p)^T\).\\
+This model is linear; bias free, i.e. \(\Hat{\beta}_0 = 0\); and global/parametric.\\
+
+Geometrically, the problem is to fit a hyperplane through the data (\(\equiv\) finding an optimal \(\Hat{\beta}\)).
+\subsection{Fitting}
+Given the training set \(\mathcal{T} \coloneqq \{(x_i,y_i)\}_{i=1}^N\subset \mathbb{R}^p\times \mathbb{R}\), we pick \(\Hat{\beta}\) as the minimizer of the empirical risk
+\begin{equation}
+    \Hat{R}(\beta)\coloneqq \frac{1}{N}\sum_{i=1}^N (y_i-x_i^T\beta)^2 = \frac{1}{N}(\textbf{y}-\textbf{X}\beta)^T (\textbf{y}-\textbf{X}\beta)
+\end{equation}
+The solution to this problem is given by \(\Hat{\beta} \coloneqq (\textbf{X}^T\textbf{X})^{-1}\textbf{X}^T\textbf{y}\), and we have the predictions \(\Hat{y} = \textbf{X}\Hat{\beta} = \textbf{Hy}\), with \(\textbf{H} \coloneqq \textbf{X}(\textbf{X}^T\textbf{X})^{-1}\textbf{X}^T\textbf{y}\), the hat matrix.
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: for this solution to exist, we need \(N>p\) and \(\textbf{X}^T\textbf{X}\) invertible.
+\end{itemize}
+\section{Classification with a linear model}
+Let \(\mathcal{T} = \{(x_i,y_i)\}_{i=1}^N\subset \mathbb{R}^2\times \{0,1\}\), with the classes
+\begin{enumerate}
+    \item label \(y_i = 1\): \(x_i\sim N(\mu_1,\sigma^2\textbf{I})\)
+    \item label \(y_i = 0\): \(x_i\sim N(\mu_2,\sigma^2\textbf{I})\)
+\end{enumerate}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: \(N(\mu,\sigma^2\textbf{I}) \sim c_\sigma \exp{\left(-\frac{\lVert x-\mu\rVert^2}{2\sigma^2}\right)}\), with \(x,\mu\in \mathbb{R}^2\), \(\sigma>0\) and \(c_\sigma \coloneqq (2\pi\sigma^2)^{-p/2}\).
+\end{itemize}
+\subsection{LS regression}
+Least-square regression (LS) provides a continuous \(\Hat{Y}\), but \(Y \in \{0,1\}\) in our example. We define a threshold \(\tau>0\) and, for \(x\in \mathbb{R}^2\), the estimated class \(\Hat{G}\) of \(x\) is 
+\begin{equation}
+    \Hat{G}(x) = \mathcal{B}_\tau(\textbf{x}^T\Hat{\beta}) \coloneqq\begin{cases}
+        1 \text{ if } (\textbf{x}^T\Hat{\beta})>\tau\\
+        0 \text{ if } (\textbf{x}^T\Hat{\beta})\le \tau\\
+    \end{cases}
+\end{equation}
+Thus, a LS classifier is a LS regression combined to a binary conversion \(\mathcal{B}_\tau\).
+\subsection{k-Nearest Neighbors Method}
+Given a number of neighbors \(k\in \mathbb{N}\), we first define \(N_k(x)\) the set of \(j\) closest points to \(x\) in \(\{x_i\}_{i=1}^N\subset \mathbb{R}^p\).\\
+In \(k\)-Nearest Neighbors regression, the value \(\Hat{Y}(x)\) assigned to \(x\) is the average of the points' label in \(N_k(x)\).
+\begin{equation}
+    \Hat{Y}(x) = \frac{1}{k}\sum_i y_i
+\end{equation}
+This method works with a local average and is non-parametric.\\
+
+A \(k\)-NN classifier is a \(k\)-NN regression combined to a binary conversion \(\mathcal{B}_\tau\).\\
+However, this classifier is not always good, as the error on the test set isn't monotonously decreasing with \(N/k\) increasing. \\
+
+In this method, there are regions in which we can move the points it contains without changing the solution. Theses zones are the parameters of the method and there are \(N/k\) of them.\\
+\begin{center}
+\begin{tabular}{c|c|c|c|c|c}
+     & Assumptions & Accuracy & Stability & Number of parameters & Time complexity \\
+    LS & Strong (linear) & Low & High & \(p\) & Large\\
+    k-NN & Mild & Low/high & High/Low & \(\approx N/k\) & Low\\
+\end{tabular}
+\end{center}
+\section{Models for Supervised Learning}
+The SL objective is using an algorithm \(\mathcal{A}\) to learn a prediction function \(\Hat{f}\) from a dataset \(\mathcal{T}=\{(x_i,y_i)\}_{i=1}^N\). This means that \(\Hat{Y}=\Hat{f}(X)\) predicts \(Y=f(X)\) if \(\mathcal{T}\) samples well \((X,Y)\). It is however impossible to solve this problem without assumptions; we assume that \(f\in \mathcal{F}\), with \(\mathcal{F}\) a restricted class of functions. There are two types of function class \(\mathcal{F}\):
+\begin{itemize}
+    \item parametric: \(\mathcal{F}\coloneqq\{f_\beta :\beta\in \mathcal{B}\}\), with \(\beta\) in the parameter set \(\mathcal{B}\).
+    \item nonparametric: \(\mathcal{F}\) can be non explicitly described (e.g. k-NN).
+\end{itemize}
+In both cases, \(\mathcal{F}\) depends on hyper-parameters \(\gamma\).
+\subsection{Parametric models}
+Let us assume a parametric model with parameters \(\beta = (\beta_0,\dots, \beta_)^T\). Learning the function \(f \coloneqq \{f_\beta(X) \coloneqq \beta^T\varphi(X):\beta\in \mathbb{R}^{p+1}\}\) is minimizing a cost function \(l\) over \(\mathcal{T}\), e.g. the squared loss.
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.:\(p\) is a hyperparameter.
+\end{itemize}
+These models are easy to optimize and are applicable to any dimensions, but we need to avoid overfitting and a good feature vector \(\varphi\) for good parameters.
+\subsection{Non-parametric models}
+In those models, we make no explicit assumption on the function form of \(f\), but implicit assumption. For example, in k-NN, we assume that \(\mathcal{F}\) is the piecewise constant functions. \\
+These models can fit a larger set of unknown functions \(f\) and are very flexible, but we need much more data and are less interpretable. 
+\subsection{Model accuracy}
+A good model \(\Hat{f}\) is such that, on a new input \(x\) with label \(y\), we get a small predicition error, i.e. \(\Hat{f}(x) \approx y\). We define the risk for \(Y = f(X)+\varepsilon\) :
+\begin{equation}
+    R(\Hat{f}) \coloneqq \mathbb{E}\left((Y-\Hat{f}(X))^2\right) = \left(f(X)-\Hat{f}(X)\right)^2 + \mathbb{V}(\varepsilon)
+\end{equation}
+The only reducible term is the first one, as we cannot influence \(\varepsilon\), the noise.\\
+
+To assess the accuracy in practice, we have two tools:
+\begin{itemize}
+    \item Mean Squared Error (MSE) for regressions: \(MSE = 1/N \sum_{i=1}^N\left(y_i-\Hat{f}(x_i)\right)^2\).
+    \item Misclassification error rate (Err) for classifications: \(Err = 1/N\sum_{i=1}^NI(y_i\neq \Hat{f}(x_i))\).
+    \item Both are empirical risks, i.e. obtained from \(\Hat{R}(\Hat{f}) \coloneqq 1/N \sum_{i=1}^Nl(y_i,\Hat{f}(x_i))\).
+\end{itemize}
+\section{Resampling methods}
+Resampling methods are repeatedly drawing samples (at random) from a training set, and refitting a model of interest on the set of these samples. This is done for model assessment, i.e. evaluate the model's performance, and for model selection, i.e. select (hyper-)parameters or improve the feature space.
+\begin{center}
+    \includegraphics[width = \textwidth]{img/Resampling.png}
+\end{center}
+\subsection{Validation set approach}
+The ideal objective in supervised learning is to reduce the error of a machine learning method on new observations, i.e. the test error. However, new observations (= test dataset) are often not available. We can then hold out a subset of the training set from the fitting process and apply the fitted machine learning method (MLM) to the held out data. To do this, we randomly divide the available data into a training set and a validation set, on which we estimate the test error. Mathematically, this means that, to have a 50\%/50\% split, 
+\begin{enumerate}
+    \item Given a number \(N\) of observations, a model \(\Hat{f}\), and a random permutation function \(\pi:[N]\rightarrow [N]\), we form
+    \begin{itemize}
+        \item a training set \(\mathcal{T}_{tr} = \{(x_{pi(i)}, y_{pi(i)})\}_{i=1}^{N/2}\)
+        \item a validation set \(\mathcal{T}_{v} = \{(x_{pi(i)}, y_{pi(i)})\}_{i=N/2+1}^N\)
+    \end{itemize}
+    \item We fit \(\Hat{f}\) on \(\mathcal{T}_{r}\) and compute the validation error (MSE or Err). 
+\end{enumerate}
+The drawbacks of this method are that the estimate of the test error rate is variable, and the training set uses only half of the observations.
+\subsection{Leave-one-out cross-validation}
+The LOOCV approach is to use a training set of size \(N-1\) and a validation set of size 1. There are thus \(N\) possible configurations and we use them all. Mathematically, for each \(i\in\{1,\dots,N\}\), 
+\begin{enumerate}
+    \item Define \(\mathcal{T}_i \coloneqq \{(x_j,y_j):j\in [N], j\neq i\}\) for \(1\le i\le N\).
+    \item Fit the model on \(\mathcal{T}_i\) and get \(\Hat{f}_i\).
+    \item Compute the prediction error (MSE or Err).
+\end{enumerate}
+In LOOCV, the test error estimation is an average of all the prediction errors:
+\begin{equation}
+    \begin{cases}
+        CV_{(N)} = \frac{1}{N}\sum_{i=1}^N MSE_i\\
+        CV_{(N)} = \frac{1}{N}\sum_{i=1}^N Err_i\\
+    \end{cases}
+\end{equation}
+This method provides a better test error estimate and it is easier to detect optimal parameters, but it is very time-consuming.
+\subsection{K-Fold Cross Validation}
+The K-Fold CV is the same method as LOOCV, but with a validation set of size \(K\) instead of \(1\). It is mathematically very similar to LOOCV:
+\begin{enumerate}
+    \item Create the \(K\) folds: \(Fold_i\subset [N]\), with \(|Fold_i| = N/K\), \(\cup_{i=1}^K Fold_i = [N]\).
+    \item For each split \(i \in \{1,\dots, K\}\), fit the model on \(\mathcal{T}_i \coloneqq \{(x_j,y_j):j\notin Fold_i\}\) and get \(\Hat{f}_i\); then compute the prediction error on \(i\)-th fold \(\mathcal{T}_i\).
+\end{enumerate}
+In KFCV, the test error estimate is an avergae on all splits:
+\begin{equation}
+    \begin{cases}
+        CV_{(K)} = \frac{1}{K}\sum_{i=1}^K MSE_i\\
+        CV_{(K)} = \frac{1}{K}\sum_{i=1}^K Err_i\\
+    \end{cases}
+\end{equation}
+It is very similar to LOOCV, but is much faster to compute.
+\section{Classification methods}
+An algorithm performing classification is called a classifier, and it often predicts the probabilities that the outcome is in each category. A decision is made from these probabilities afterwards.
+\subsection{Linear classification methods}
+Given the \(Q\) labels \(\mathcal{G}=\{g_1,\dots, g_Q\}\) and an input space \(\mathbb{R}^p\), we classify the data by dividing \(\mathbb{R}^p\) in \(Q\) regions, delineated by linear boundaries. The \(q\)-th boundary is \(\{x:\delta_q(x)=0\}\), i.e. a plane, given a discriminant function \(\delta_q(x)\).
+\subsubsection{Logistic regression in 1D}
+Let be a binary class problem in 1D: \(Y = G\in\{g_1=0,g_2=1\}\), with \(X\in \mathbb{R}\). The logistic regression models the probability that \(Y=1\) or \(0\) given \(X=x\), i.e. \(h(x)\coloneqq p(Y=1|X=x)\). we use the logistic function, with \(\beta = (\beta_0,\beta_1)^T\)
+\begin{equation}
+    h(X) = h_{\beta}(X) \coloneqq S(\beta_0+\beta_1X)\coloneqq \frac{\exp{(\beta_0+\beta_1X)}}{1+\exp{(\beta_0+\beta_1X)}}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: \(p(Y=0|X=x) = 1-h(x)\).
+\end{itemize}
+Note that the logistic regression is not a classifier, because \(p(Y|X)\in [0,1]\). The logistic classifier would be the logistic regression coupled to a binary conversion. Given a probability threshold \(0\le p^*\le1\), the estimated class \(\Hat{G}(x)\) of \(x\in \mathbb{R}\) reads
+\begin{align}
+    \Hat{G}(x) & = \begin{cases}
+        1\text{ if } p(Y=1|X=x)\ge p^*\\
+        0\text{ otherwise}
+    \end{cases}
+    = \begin{cases}
+        1\text{ if } \log \frac{p(Y=1|X=x)}{p(Y=0|X=x})\ge \tau^* \coloneqq \log \frac{p^*}{1-p^*}\\
+        0\text{ otherwise}
+    \end{cases}\\
+    & = \begin{cases}
+         1\text{ if }\beta_0+\beta_1x\ge\tau^*\\
+         0\text{ otherwise}
+     \end{cases}
+\end{align}
+\(\Hat{G}\) splits \(\mathbb{R}\) according to the sign of \(\delta(x) \coloneqq \beta_0+\beta_1x-\tau^*\).\\
+
+For \(p\) inputs \(X_1,\dots,X_p\in \mathbb{R}\) instead of one \(X\in \mathbb{R}\), we generalize the model to 
+\begin{equation}
+    X = (X_0=1,X_1,\dots, x_p)^T \in \mathbb{R}^{p+1}\qquad \beta = (\beta_0,\beta_1,\dots, \beta_p)^T\in \mathbb{R}^{p+1}
+\end{equation}
+so that 
+\begin{equation}
+    h(X) = h_\beta(X) \coloneqq \frac{\exp{(\sum_{i=0}^p\beta_iX_i})}{1+\exp{(\sum_{i=0}^p\beta_iX_i)}} = \frac{\exp{(\beta^TX)}}{1+\exp{(\beta^TX)}} = S(\beta^TX)
+\end{equation}
+We call \(\beta_0\) the intercept and \((\beta_1,\dots,\beta_p)^T\) the direction in \(\mathbb{R}^p\). 
+\subsubsection{Fitting the logistic regression model}
+\begin{enumerate}
+    \item \(Y|X\) is binary and \(p(Y=1|X=x)=h_\beta(x)\Longrightarrow Y|X\sim  Ber(h_\beta(x))\).
+    \item Under the logistic regression model, likelihood of \(Y=y\) given \(X=x\) is 
+\end{enumerate}
+\begin{equation}
+    p(Y=y|X=x) = \begin{cases}
+        h_\beta(x)\text{ if }y=1\\
+        1-h_\beta(x)\text{ if }y=0\\
+    \end{cases} = h_\beta(x)^y(1-h_\beta(x))^{1-y}
+\end{equation}
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item Given the dataset \(\mathcal{T}=\{(x_i,y_i)\}_{i=1}^N\), the likelihood of \(\mathcal{T}\) is:
+\end{enumerate}
+\begin{multline}
+    L(y_1,\dots,y_N|\beta,x_1,\dots,x_n)\coloneqq p(Y_1y=_,\dots,Y_N=y_N|X_1=x_1,\dots,X_N=x_N)\\ = \prod_{i=1}^Nh_\beta(x_i)^{y_i}(1-h_\beta(x_i))^{1-y_i}
+\end{multline}
+Maximizing \(L\) is equivalent to minimizing the negative log-likelihood \(\mathcal{L}(\beta)\), i.e.
+\begin{align}
+    \mathcal{L}(\beta) &= \mathcal{L}(\beta,\mathcal{T}) \coloneqq -\log L(y_1,\dots,y_N|\beta,x_1,\dots,x_N)\\
+    & \coloneqq - \left(\sum_{i=1}^Ny_i\log h_\beta(x_i)+(1-y_i)\log(1-h_\beta(x_i))\right)\\
+    & \coloneqq \sum_{i=1}^N\log(1+e^{\beta^Tx_i})-y_i\beta^Tx_i
+\end{align}
+Therefore, the optimal logistic parameters \(\Hat{\beta}\) is obtained from 
+\begin{equation}
+    \Hat{\beta}\coloneqq \arg\min_\beta \mathcal{L}(\beta) = \sum_{i=1}^N\log(1+e^{\beta^Tx_i})-y_i\beta^Tx_i
+\end{equation}
+\subsubsection{Performance analysis - Accuracy}
+\begin{equation}
+    Acc^{emp}(\Hat{G})\coloneqq \frac{1}{N}\sum_{i=1}^NI(y_i=\Hat{G}(x_i)) = 1-\frac{1}{N}\sum_{i=1}^NI(y_i\neq \Hat{G}(x_i))=1-Err
+\end{equation}
+\subsubsection{Performance analysis - TP/TN/FP/FN}
+Given the output \(\Hat{G}\), we define the True Positive, False Negative, False Positive and True Negative. 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/TPFN.png}
+\end{figure}
+In general, for a \(Q\)-class classification problem, these numbers are computed by the confusion matrix \(\mathcal{C}\in \mathbb{N}^{Q\times Q}\), with \(\mathcal{C}_{ij}\) the number of elements of class \(i\) classified in class \(j\). In a binary class, 
+\begin{equation}
+    \mathcal{C} = \begin{pmatrix}
+        TN & FP\\
+        FN & TP\\
+    \end{pmatrix}
+\end{equation}
+\subsubsection{Performance analysis : Confusion matrix}
+The confusion matrix is computed from the training set :
+\begin{itemize}
+    \item Use K-Fold CV, predict all \(y_i\) using the \(K-1\) folds \(\niton i\Longrightarrow\) this gives all \(\Hat{y}_i\).
+    \item use all the true/predicted label pairs \(\{(y_i,\Hat{y}_i)\}_{i=1}^N\) to compute \(\mathcal{C}\).
+\end{itemize}
+\subsubsection{Performance analysis - Precision and Recall}
+In binary classification, the precision and recall are defined as follows :
+\begin{equation}
+    Pre^{emp}(\Hat{G}) = \frac{TP}{TP+FP} \approx \frac{P(Y=1\&\Hat{G}(X)=1)}{P(\Hat{G}(X)=1)}
+\end{equation}
+It is the amount of true positives over perceived positives.
+\begin{equation}
+    Rec^{emp} (\Hat{G}) = \frac{TP}{TP+FN} \approx \frac{P(Y=1\&\Hat{G}(X)=1)}{P(Y=1)}
+\end{equation}
+It is the amount of true positives over the real positives.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/PreRec.png}
+\end{figure}
+We can now define the F1 score, that is the harmonic mean of precision and recall : 
+\begin{equation}
+    F_1 = \frac{2}{\frac{1}{\text{precision}}+\frac{1}{\text{recall}}}\in [0,1]
+\end{equation}
+We can choose the value of the parameter \(\tau^*\) depending on the level of precision and recall we want: 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Threshold.png}
+\end{figure}
+\subsubsection{Receiver Operating Curve (ROC)}
+The ROc is the plot of TPR (recall) vs FPR (1-specificity), with :
+\begin{equation}
+    TPR \coloneqq \frac{TP}{P}=\frac{TP}{TP+FN}\qquad FPR \coloneqq \frac{FP}{N}=\frac{FP}{FP+TN}
+\end{equation}
+The AUC is the area under the ROC. A good classifier has a AUC near 1\footnote{A random classifier has a AUC of 0.5.}.
+
+\section{Statistical Decision Theory}
+The objective of SDT is to explain the behaviors of models on unseen data, i.e. that is not in the initial dataset.
+\subsection{Context}
+Let \(X\in \mathbb{R}^p\) be a real-valued random input vector and \(Y\in \mathcal{Y}\), with \(\mathcal{Y}=\mathbb{R}\) for regressions and \(\mathcal{Y} = \mathcal{G}\) for classifications, be a random output value.
+
+Both are liked by a joint distribution \(p(X,Y)\) over \(\mathbb{R}^p\times \mathcal{Y}\). The training dataset is the joint sampling of \((X,Y)\) :
+\begin{equation}
+    \mathcal{T} \coloneqq \{(x_i,y_i)\}^N_{i=1}\subset \mathbb{R}^p\times \mathcal{Y}\qquad (x_i,y_i)\sim_{i.d.d.} X\times Y
+\end{equation}
+Our objective here is to find a function \(f\) to predict \(Y\), given \(X\), i.e. \(Y\approx \Hat{Y}\coloneqq f(X)\). In this model, we find \(f\) by minimizing a prediction error defined by a loss function: 
+\begin{equation}
+    l:(Y,f(X))\in \mathcal{Y}\times \mathcal{Y} \rightarrow l(Y,f(X))\in \mathbb{R}_+
+\end{equation}
+such that 
+\begin{equation}
+    Y\approx f(X) \Longleftrightarrow l(Y,f(X)) \approx 0
+\end{equation}
+\subsection{Risk}
+Given a loss function \(l\) and decision \(f\), we define the expected risk :
+\begin{equation}
+    R(f)\coloneqq \mathbb{E}l(Y,f(X)) = \int_{\mathcal{Y}}\int_{\mathbb{R}^p}l(y,f(x))p(x,y)dxdy
+\end{equation}
+The risk is defined as the expected error of the model, and the general objective is to minimize it.\\
+
+We also define the empirical risk:
+\begin{equation}
+    \Hat{R}(f)\coloneqq \frac{1}{N}\sum_{i=1}^Nl(y_i,\Hat{f}(x_i))
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: if \(N\rightarrow \infty\), \(\Hat{R}(f)\rightarrow R(f)\).
+\end{itemize}
+\subsection{Bayes risk and predictor}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Marginals.png}
+\end{figure}
+For \(p(X,Y)=p(Y,X)\), the marginals \(p(X)\) and \(p(Y)\) are 
+\begin{align}
+    p(X=x)&\coloneqq \int_\mathcal{Y}p(X=x|Y=y)dy\\
+    p(Y=y)&\coloneqq \int_{\mathbb{R}^p}p(Y=y|X=x)dx\\
+\end{align}
+and the pdf of \(Y\) conditioned on \(X\) is 
+\begin{equation}
+    p(Y|X)\coloneqq \frac{p(Y,X)}{p(X)}\le 1\Longleftrightarrow p(Y,X)=p(Y|X)p(X)
+\end{equation}
+Accordingly, Bayes' theorem reads 
+\begin{equation}
+    p(Y|X)=p(X|Y)\frac{p(Y)}{p(X)}
+\end{equation}
+Additionnally, the law of total expectation (LTE) is the following: for any rv's \(U,V\), and a function \(g(U,V)\),
+\begin{equation}
+    \mathbb{E}g(U,V) = \mathbb{E}_{U,V}g(U,V)=\mathbb{E}_U(\mathbb{E}_{V|U}(g(u,V)|U=u))
+\end{equation}
+where 
+\begin{equation}
+    \mathbb{E}_{V|U}(g(u,V)|U=u)\coloneqq \int g(u,v)p(V=v|U=u)dv
+\end{equation}
+If we apply the LTE to the risk, 
+\begin{equation}
+    R(f) = \mathbb{E}l(Y,f(X)) = \mathbb{E}_X\mathbb{E}_{Y|X}(l(Y,f(X))|X=x)
+\end{equation}
+where we define the conditional risk, depending on \(x\) and \(p(Y|X)\):
+\begin{equation}
+    r:z \in \mathbb{R}\rightarrow r(z|X=x) \coloneqq\mathbb{E}_{Y|X}(l(Y,z)|X=x)
+\end{equation}
+Finding the optimal function \(f\) is thus equivalent to find \(f\) such that for any \(x\in \mathbb{R}^p\), we get minimum conditional risk \(r(f(x)|X=x)\).\\
+
+If we know \(p(Y|X)\), the Bayes predictor is 
+\begin{equation}
+    f^*(x)\coloneqq \arg\min_{z\in \mathcal{Y}}r(z|X=x)=\arg\min_{z\in \mathcal{Y}} \mathbb{E}_{Y|X}(l(Y,z)|X=x)
+\end{equation}
+and its risk, the Bayes risk, is 
+\begin{equation}
+    R^* \coloneqq R(f^*) = \mathbb{E}_X\min_{z\in \mathbb{Y}}(l(Y,z)|X=x)
+\end{equation}
+\subsubsection{Theorem}
+For all \(f:\mathbb{R}^p\rightarrow \mathcal{Y}\), 
+\begin{equation}
+    R(f)\ge r^*
+\end{equation}
+with \(R(f)-R^*\) called the excess risk.
+\subsubsection{Example - Regression}
+For the squared loss \(l(a,b)\coloneqq (a-b)^2\), and \(\mathcal{Y}=\mathbb{R}\), the Bayes predictor (=regression function) and Bayes risk are 
+\begin{equation}
+    f^*(x)=\mathbb{E}_{Y|X}[Y|X=x]\qquad R^* = \mathbb{E}_X\mathbb{E}_{Y|X}\left[(Y-\mathbb{E}_{Y|X}[Y|X])^2|X\right]
+\end{equation}
+The optimal prediction of \(Y\) on \(x\) is thus the mean of \(Y\) conditioned to \(X=x\). It is called a conditional mean.
+\subsubsection{Example - Classification}
+For the 0/1 loss \(l(a,b) \coloneqq I(a\neq b)\), and \(\mathcal{Y} = \mathcal{G} = \{g_1,\dots,g_k\}\), the Bayes predictor (= Bayes classifier) and Bayes risk are 
+\begin{equation}
+    f^*(x) = \arg\max_{z\in \mathcal{G}}p(Y=z|X=x)\qquad R^*1-\mathbb{E}_X\max_{z\in \mathcal{G}}p(Y=z|X)
+\end{equation}
+The optimal classifier thus selects the most likely class given \(x\).\\
+\subsubsection{k-NN and Bayes}
+The Bayes classifier is optimal, by definition, for classifications with 
+\begin{equation}
+    f^*(x) = \arg\max_{z\in \mathcal{G}}p(Y=z|X=x)
+\end{equation}
+and the \(k-\)NN solution approaches \(f^*\) for \(N,k\) large and \(k/N\) small. However, the impact of the feature space dimension \(p\) is not forgotten.
+\section{Model selection and Bias-Variance tradeoff}
+\subsection{Bias-Variance decomposition}
+Let us consider the following special case:
+\begin{itemize}
+    \item A dataset \(\mathcal{T}=\{(x_i,y_i)\}_{i=1}^N\) sampled from \(p(X,Y)\) with
+\end{itemize}
+\begin{equation}
+    Y(X) = f(X)+\varepsilon \qquad \mathbb{E}(\varepsilon) = 0\qquad \mathbb{V}(\varepsilon) = \sigma_\varepsilon^2
+\end{equation}
+for a certain noise \(\varepsilon\) and a deterministic, unknown function \(f\). i.e., given \(x_i\), \(y_i = f(x_i)+\varepsilon_i\), with \(\varepsilon_i\sim_{i.d.d.}\varepsilon\).
+\begin{itemize}
+    \item An estimate \(\Hat{f}(\cdot)=f_{\Hat{\beta}}(\cdot)\) of \(f\), with \(\Hat{\beta}\) the hyperparameters trained from \(\mathcal{T}\).
+\end{itemize}
+We analyze the expected prediction error \(EPE(x_0)\) of \(\Hat{f}\) on \(x_0\notin \{x_i\}_{i=1}^N\):
+\begin{equation}
+    EPE(x_0) \coloneqq \mathbb{E}\left[(Y(x_0)-\Hat{f}(x_0))^2|X=x_0\right]
+\end{equation}
+with \(\mathbb{E}\) considered on both \(\mathcal{T}\) and \(Y\). We call the term \(Y(x_0)-\Hat{f}(x_0)\) the variability of \(f\). \\
+We know that, conditionally to \(X=x_0\), \(Y(x_0) = f(x_0)+\varepsilon_0\), and 
+\begin{equation}
+    Y(x_0)-\Hat{f}(x_0) = \varepsilon_0+(f(x_0)-\mathbb{E}(\Hat{f}(x_0))+(\mathbb{E}\Hat{f}(x_0)-\Hat{f}(x_0))
+\end{equation}
+Therefore, since, the first and last term are independent with null mean,
+\begin{equation}
+    EPE(x_0) = \mathbb{E}\left[(Y(x_0)-\Hat{f}(x_0))^2|X=x_0\right] = \sigma_\varepsilon^2 + \left(f(x_0)-\mathbb{E}\Hat{f}(x_0)\right)^2 + \mathbb{E}\left(\Hat{f}(x_0)-\mathbb{E}\Hat{f}(x_0)\right)^2
+\end{equation}
+The first term is called the noise variance, the second is the square of the bias of \(\Hat{f}(x_0)\), and the last is the variance \(\mathbb{V}_\mathcal{T}(\Hat{f}(x_0))\).
+\begin{itemize}
+    \item Irreducible term : \(\sigma_\varepsilon^2\) is the variance of the output of the new test point \(x_0\).
+    \item Reducible term : The variance is the variability with respect to the dataset.
+    \item Reducible term : The bias is the error of the model and measures how good it can be at predicting \(f\).
+    \item [\(\rightarrow\)] N.B.: the bias decreases and the variance increases when the model flexibility (\(N/k\)) increases.
+\end{itemize}
+\subsubsection{Bias-Variance tradeoff for k-NN}
+Let us consider that 
+\begin{itemize}
+    \item the positions \(\{x_i\}_{i=1}^N\subset \mathbb{R}^p\) are fixed, and \(x_0\notin \{x_i\}^N_{i=1}\);
+    \item \(\mathcal{T} = \{(x_i, Y(x_i)=f(x_i)+\varepsilon_i)\}_{i=1}^N\), with \(\varepsilon_i\sim_{i.d.d.} N(0, \sigma_\varepsilon^2)\);
+    \item \(N_k(x_0) = \{x_{(l)}\}_{l=1}^k\), the fixed \(k\) neighbors of \(x_0\).
+\end{itemize}
+\begin{enumerate}
+    \item Regarding the bias, for \(\{x_{(l)}\}_{l=1}^k\), 
+\end{enumerate}
+\begin{equation}
+    \left(\text{Bias}\Hat{f}(x_0)\right)^2 \coloneqq \left(f(x_0)-\mathbb{E}\Hat{f}(x_0)\right)^2 = \left(f(x_0)-\frac{1}{k}\sum_{l=1}^kf(x_{(l)})\right)^2
+\end{equation}
+\begin{enumerate}\setcounter{enumi}{1}
+    \item Regarding the variance,
+\end{enumerate}
+\begin{equation}
+    \mathbb{V}_\mathcal{T}(\Hat{f}(x_0)) = \mathbb{V}\left(\frac{1}{k}\sum_{l=1}^kY(x_{(l)})\right) = \frac{\sigma_\varepsilon^2}{k}
+\end{equation}
+Schematically, as the test sample has a U-shape as it is the sum of two curves:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/BVkNN.png}
+\end{figure}
+
+\chapter{Data science - Unsupervised Learning}
+\section{Introduction}
+The difference between supervised learning and unsupervised learning is that SL learns buy examples, while UL learns by observations. The goal of UL is not to do prediction, but rather to discover arrangements, clusters, patterns,etc.
+\section{Principal Component Analysis (PCA)}
+\subsection{Dimensionality Reduction Problem}
+We have \(p\) features : \(X=(X_1,\dots,X_p)^T\in \mathbb{R}^p\), sampled on \(N\) observations in \(\mathcal{X}\coloneqq \{x_i\in \mathbb{R}^p\}_{i=1}^N\). We assume that \(\sum_{i=1}^Nx_i=0\) for simplicity (centering the data).\\
+
+The dimensionality reduction problem is transforming \(\mathcal{X}\subset \mathbb{R}^p\) into \(\mathcal{X}'\subset \mathbb{R}^{p'}\), with \(p'\ll p\), where \(\mathcal{X}'\) preserves essential information about each element of \(\mathcal{X}\). \\
+This problem is solved by the PCA: it is an unsupervised algorithm to find the best axes to represent a dataset \(\mathcal{X}\), i.e. find the axes that maximize the variance of the dataset \(\mathcal{X}\).
+\subsection{Directional variance}
+Given a direction \(\varphi\coloneqq (\varphi_1,\dots,\varphi_p)^T\in \mathbb{R}^p\), with \(\lVert\varphi\rVert^2\coloneqq \sum_i\varphi^2_i=1\). We compute the projection of all points of \(\mathcal{X}\) onto \(\varphi\): 
+\begin{equation}
+    \mathcal{Z}(\varphi) = \{z_i\coloneqq \varphi^Tx_i\}^N_{i=1}\subset \mathbb{R}
+\end{equation}
+and the variance \(V\) of all projections:
+\begin{equation}
+    V(\varphi) \coloneqq \frac{1}{N}\sum_{i=1}^Nz_i^2 = \frac{1}{N}\varphi^TX^TX\varphi
+\end{equation}
+Therefore, the first principal component of \(\mathcal{X}\) is 
+\begin{equation}
+    \varphi^{(1)} = \arg\max_{\varphi:\lVert\varphi\rVert=1} \frac{1}{N}\varphi^TX^TX\varphi
+\end{equation}
+Finding the second,\dots, k-th principal component works the same way, with the additional constraint that the \(i\)-th component must be orthogonal to all the previous components, so that they are uncorrelated. \\
+
+In summary, if we compute \(p\) principal components, we get an orthonormal basis of \(\mathbb{R}^p\). This is an alternative representation of the canonical basis and it is adapted to the structure of \(\mathcal{X}\).
+\subsection{Interpretation}
+Given \(1\le k\le \min(p,N-1)\), 
+\begin{itemize}
+    \item The \(k\) first PCs of \(\mathcal{X}\) are the \(k\) axes \(\varphi^{(j)}\subset\mathbb{R}^p\).
+    \item The \(k\)-dimensional space with highest variance \(S_k\) is the vector subspace of the \(\varphi_j\). 
+    \item \(S_k\) is the closest to the observations in \(\mathcal{X}\).
+\end{itemize}
+\subsection{Inverse transform}
+The forward transform is, given an observation \(x_i\):
+\begin{equation}
+    x_i\in \mathbb{R}^p\rightarrow z_i = (z_{i,1}=\varphi_1^Tx, \dots, z_{i,k} = \varphi_k^Tx_i)^T\in \mathbb{R}^k
+\end{equation}
+Since the \(\varphi^{(j)}\) form an orthonormal basis, the scores can be pushed back to \(\mathbb{R}^p\) with 
+\begin{equation}
+    x_i\in \mathbb{R}^p\rightarrow x_i'\coloneqq \sum_{j=1}^kz_{i,j}\cdot \phi_j\in \mathbb{R}^p
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: doing the forward, then inverse transform suppresses a lot of noise.
+\end{itemize}
+To determine how many PCs to keep, we compute the proportion of the variance explained (PVE). Assuming centered data, 
+\begin{itemize}
+    \item For fixed \(j\in [p]\) and \(i\in[N]\), \(x_{ij} \rightarrow j\)-th features of the \(i\)-th sample of \(X\in \mathbb{R}^p\).
+    \item The dataset of all \(j\)-th features \(\rightarrow X_j\coloneqq \{x_{ij}\}^N_{i=1}\subset \mathbb{R}\).
+    \item The total variability of \(\mathcal{X}\) is 
+\end{itemize}
+\begin{equation}
+    V_\mathcal{X} \coloneqq \sum_{j=1}^pV_{\mathcal{X}_j} = \sum_{j=1}^p\frac{1}{N}\sum_{i=1}^Nx_{ij}^2
+\end{equation}
+We also define the PVE of every component:
+\begin{equation}
+    PVE(j) \coloneqq\frac{V(\varphi^{(j)})}{V_\mathcal{X}} \le1
+\end{equation}
+Therefore, the cumulative PVE (cPVE) as a function of \(j\) is 
+\begin{equation}
+    cPVE(j) \coloneqq\sum_{l=1}^jPVE(l)\le1
+\end{equation}
+We choose the value of the parameter \(k\) depending on the cPVE accuracy we want.\\
+
+It is important that the variables have a zero mean and are scaled before computing the PCA. 
+\section{Clustering methods}
+\subsection{Clustering with K-Means}
+Given an unlabeled dataset \(\mathcal{X} = \{x_i\}_{i=1}^N\subset \mathbb{R}^p\). The \(K\)-Means aims at partitioning \(\mathcal{X}\) into \(K\) distinct, non-overlapping clusters. \\
+
+We define a set of \(K\) clusters \(\mathcal{C}\coloneqq \{\mathcal{C}_1,\dots, \mathcal{C}_k\}\) such that 
+\begin{itemize}
+    \item \(\mathcal{C}_j\subset [N]\), with \(\mathcal{C}_j\) the indices of the points in the \(j\)-th cluster.
+    \item \(\mathcal{C}_i\cap \mathcal{C}_j=\emptyset\) if \(i\neq j\) and \(\cup_j \mathcal{C}_j=[N]\).
+\end{itemize}
+For the K-Means method, a good clustering \(\mathcal{C}\) minimizes the in-cluster variations \(V_{in}(\mathcal{C})\coloneqq \sum_{j=1}^KV_c(\mathcal{C}_j\), with \(V_c(\mathcal{C}_j)\coloneqq \frac{1}{|\mathcal{C}_j|} \sum_{i,i'\in \mathcal{C}_j}\lVert x_i-x_{i'}\rVert^2\).\\
+
+Therefore, \(K\)-Means aims at minimizing the total variation of \(\mathcal{C}\), i.e.
+\begin{equation}
+    \Hat{C} = \arg\min_\mathcal{C} \sum_{j=1}^KV_c(\mathcal{C}_j) = \arg\min_\mathcal{C}\sum_{j=1}^K\frac{1}{|\mathcal{C}_j|}\sum_{i,i'\in \mathcal{C}_j}\lVert x_i-x_{i'}\rVert^2
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: we have \(\sum_{j=1}^K\frac{1}{|\mathcal{C}_j|}\sum_{i,i'\in \mathcal{C}_j}\lVert x_i-x_{i'}\rVert^2 = 2\sum_{j=1}^K\sum_{i\in \mathcal{C_j}}\lVert x_i-c_j\rVert^2\), with the centroid \(c_j\coloneqq \frac{1}{|\mathcal{C}_j|}\sum_{i\in \mathcal{C}_j}x_i\) of the \(j\)-th cluster.
+\end{itemize}
+Therefore, \(K\)-Means minimizes the distances to the centroids \(\{c_j\}^K_{j=1}\).\\
+
+\subsubsection{Lloyd-Max algorithm}
+Given the number of clusters \(K\in \mathbb{N}\),
+\begin{itemize}
+    \item initialization: randomly assign \(K\) centroids from \(\mathcal{C}\).
+    \item Update \(\mathcal{C}\): for all \(1\le j\le K\),
+    \begin{itemize}
+        \item \(\mathcal{C}_j\leftarrow\{i\in [N]:\lVert x_i-c_j\rVert\le \lVert x_i-c_{j'}\rVert \qquad \forall j'\in [K]\}\).
+        \item This means that \(\mathcal{C}_j\) contains the indices of the points that are closer to \(c_j\) than to any other centroid.
+    \end{itemize}
+    \item Update centroids: \(c_j\leftarrow \frac{1}{|\mathcal{C}_j|}\sum_{i\in \mathcal{C}_j}x_i\).
+    \item Iterate until convergence.
+\end{itemize}
+For this algorithm, we need to know in advance the number of clusters that are needed.
+\subsubsection{Selecting the number of clusters}
+A possible solution is the silhouette score analysis:\\
+Given \(i^*\in \mathcal{C}_{j^*}\in \mathcal{C}\), we define:
+\begin{itemize}
+    \item The mean intra-cluster distance:
+\end{itemize}
+\begin{equation}
+    a(x_{i^*}) = \frac{1}{|\mathcal{C}_{j^*}|-1}\sum_{i\neq i^*\\i\in \mathcal{C}_{j^*}}d(x_{i^*},x_i)
+\end{equation}
+\begin{itemize}
+    \item The mean nearest-cluster distance:
+\end{itemize}
+\begin{equation}
+    b(x_{i^*}) = \min_{j\neq j^*}\frac{1}{|\mathcal{C}_j|}\sum_{i\in \mathcal{C}_j}d(x_{i^*},x_i)
+\end{equation}
+The silhouette score of \(x_{i^*}\) is 
+\begin{equation}
+    s(x_i^*) = \frac{b(x_{i^*}-a(x_{i^*}}{\max(a(x_{i^*}),b(x_{i^*}))}\in [1-,1]
+\end{equation}
+\end{document}

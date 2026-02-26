@@ -1,0 +1,2009 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{pythonhighlight}
+\usepackage[]{titletoc}
+\usepackage{makecell}
+\usepackage{empheq}
+\usepackage{titlesec}
+\usepackage{mathpazo}
+\usepackage{xfrac}
+\usepackage{textcomp}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{tabularray}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{gensymb}
+\usepackage{tabularx}
+\usepackage[skins]{tcolorbox}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\renewcommand{\contentsname}{Table des matières}
+% Define a new tcolorbox style with a red border and transparent interior
+\tcbset{
+    redbox/.style={
+        enhanced,
+        colframe=red,
+        colback=white,
+        boxrule=1pt,
+        sharp corners,
+        before skip=10pt,
+        after skip=10pt,
+        box align=center,
+        width=\linewidth-2pt, % Adjust the width dynamically
+    }
+}
+\newcommand{\boxedeq}[1]{
+\begin{tcolorbox}[redbox]
+    \begin{align}
+        #1
+    \end{align}
+\end{tcolorbox}
+}
+\usepackage{steinmetz}
+\usepackage{nicematrix}
+
+\usepackage{apptools}
+    \titleformat{\chapter}[hang]{\bfseries\huge}{\IfAppendix{\appendixname~}{\relax}\thechapter\IfAppendix{.}{.}}{\IfAppendix{0.333em}{2pc}}{}
+
+\usepackage[nottoc]{tocbibind}
+
+\usepackage{keyval}
+\usepackage{kvoptions}
+\usepackage{fancyvrb}
+\usepackage{ifthen}
+\usepackage{calc}
+\usepackage{pdftexcmds}
+\usepackage{etoolbox}
+\usepackage{xstring}
+\usepackage{xcolor}
+\usepackage{lineno}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usetikzlibrary{patterns,arrows,decorations.pathreplacing,babel}
+\usepackage[many]{tcolorbox}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.25]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LMECA1855 Thermodynamique et énergétique \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt\\ Ari Prezerowitz}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2023-2024 - Q2}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\chapter{Formulaire}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les lettre majuscules caractérisent des grandeurs absolues, tandis que les minuscules sont indiquent des grandeurs massiques. 
+\end{itemize}
+\section{Relations fondamentales}
+\begin{equation}
+    du = \delta q -pdv + \delta w_f \Longrightarrow \Delta u = q-\int_1^2 pdv+w_f
+\end{equation}
+En système monophasique :
+\begin{equation}
+    du = \frac{\partial u}{\partial T}dT + \frac{\partial u}{\partial v}dv = c_v dT+\pi_Tdv
+\end{equation}
+En réversible isochore : \(du=\delta q\).
+\begin{equation}
+    dh = \frac{\partial h}{\partial T}dT+\frac{\partial h}{\partial p}dp = c_p dT+\mu_T dp
+\end{equation}
+En réversible isobare : \(dh=\delta q\).\\
+\underline{Liquides et solides incompressibles :} \(\rho =\) cste et \(dv=0\). \\
+\underline{Rendement d'un cycle moteur :} \(\eta = \frac{\text{effet utile}}{\text{coût}} = \frac{W_{tot}}{Q_I}\), avec \(Q_I\) la chaleur absorbée par le système et transmise depuis la source chaude. \\
+\underline{Coefficient de performance en cycle récepteur :} 
+\begin{itemize}
+    \item \(COP_{PAC} = \frac{\text{effet utile}}{\text{coût}} = \frac{Q_I}{W_m} = COP_{frigo}+1\).
+    \item \(COP_{frigo} = \frac{Q_{II}}{W_m}\), \(Q_{II}\) étant la chaleur transmise depuis la source froide. 
+\end{itemize}
+\underline{Formule de Gibbs :}
+\begin{equation}
+    ds = \frac{du+pdv}{T} = \frac{dh-vdp}{T}
+\end{equation}
+\begin{center}
+\begin{tblr}{
+  colspec = {X[c,h]X[c]X[c]},
+  stretch = 0,
+  rowsep = 4pt,
+  hlines = {.5pt},
+  vlines = {1pt},
+}
+    \hline
+     & Système fermé  & Système ouvert\\ \hline
+    Mécanique & \(w_m = -\int pdv + w_f\) & \(w_m = g\Delta z+\Delta k+w_f + \int vdp\)\\ \hline
+    Energétique & \(w_m = \Delta u-q\) & \(w_m = g\Delta z+\Delta k+\Delta h - q\)\\\hline
+    Hypothèses : & Le fluide est au repos aux états initial et final (\(\Delta k =0\)). &  Régime permanent : \(\Dot{m}_1 = \Dot{m}_2\). \\
+        & \(\Delta E_{pot}\) négligeable par rapport aux travaux.& \\\hline
+\end{tblr}
+\end{center}
+\chapter{Relations fondamentales}
+\section{Définitions}
+\begin{itemize}
+    \item Des variables sont dites d'état si elles sont significatives, indépendantes entre elles et que le passage d'un état à un autre du système est indépendant du chemin emprunté.
+    \item Un état d'équilibre est tel que tous les sous-systèmes sont dans le même état.
+    \item Un processus est dit réversible s'il s'agit d'une séquence continue d'états d'équilibre.
+\end{itemize}
+\section{Equations fondamentales}
+\subsection{Gibbs en système fermé}
+L'équation de Gibbs en système fermé est 
+\begin{equation}
+    dk = dw_e + dw_i -gdz
+\end{equation}
+avec \(K\) l'énergie cinétique, \(W_e\) les travaux extérieurs et \(W_i\) les travaux intérieurs. On peut exprimer de manière plus précise les travaux internes en séparant les effets des forces dissipatives ou non : 
+\begin{equation}
+    dW_i = dW_i^{\text{rev}} + dW_i^{\text{irrev}} = \int_1^2 pdV-W_f
+\end{equation}
+Le premier terme est la déformation réversible et \(W_f\) est le terme dissipatif. On peut également développer les travaux extérieurs : 
+\begin{equation}
+    W_e = W_m + p_1V_1 - p_2V_2
+\end{equation}
+Où le premier terme est le travail moteur, i.e. effectué par un organisme externe, et le second le travail des forces de pression sur la frontière du système. Tout cela se réécrit dans l'équation de Gibbs : 
+\begin{equation}
+    w_m = \int_1^2 vdp + \Delta k+g\Delta z+w_f
+\end{equation}
+\subsection{1ère loi de la thermodynamique}
+\begin{equation}
+    dQ = dU + dW_i
+\end{equation}
+avec \(Q\) la chaleur et \(U\) l'énergie interne. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : ce ne sont pas des variables d'états.
+\end{itemize}
+Dans le cas de procédés réversibles, on peut développer certains termes : 
+\begin{itemize}
+    \item Si le fluide est simple, on peut écrire \(dW_i = pdV\). Il est à noter que le volume est une variable d'état.
+    \item \(dS = dQ/T\), avec \(S\) l'entropie.
+\end{itemize}
+En combinant tout cela, on obtient une relation différentielle totale valable pour des procédés réversibles, mais aussi entre deux états d'équilibre : 
+\begin{equation}
+    TdS = dU+pdV
+\end{equation}
+\section{Principe d'équivalence}
+Partons de l'équation de base 
+\begin{equation}
+    de = dw_e - gdz + dq
+\end{equation}
+avec \(dE = dU+dK\). En utilisant les équations des sections précédentes et en introduisant la notion d'enthalpie \(H \coloneqq U+pV\), on obtient une nouvelle expression du travail moteur : 
+\begin{equation}
+    w_m = \Delta h+\Delta k+g\Delta z-q
+\end{equation}
+\section{Entropie et diagramme}
+On peut séparer l'entropie en deux parties : \(dS=d^{e}S+d^{i}S\), avec \(d^{e}S = dQ/T\) et \(d^{i}S\) la partie irréversible due aux forces dissipatrices. On peut maintenant retrouver le second principe : \\
+
+Par Gibbs, on sait que \(dS = \frac{dU+pdV}{T} = \frac{dH - Vdp}{T}\). De plus, en utilisant les définitions de \(c_v\) et \(c_p\) suivantes : 
+\begin{equation}
+    \begin{cases}
+        du = c_vdT \text{ en transformation réversible isochore}\\
+        du = c_pdT \text{ en transformation réversible isobare}\\
+    \end{cases}
+\end{equation}
+\color{red}Ajouter les pp5-7.\color{black}
+\section{Fonctions d'état thermodynamiques}
+\subsection{Rappel sur les formes différentielles}
+Soit une forme différentielle \(df=  udx+vdy\).
+\begin{itemize}
+    \item Si \(\oint df = C\), alors la forme différentielle est dite fermée.
+    \item Si \(\oint df = 0\), alors la forme différentielle est dite exacte.
+\end{itemize}
+Si on choisit un ensemble de variables d'état indépendantes décrivant complètement le système, alors les autres variables d'état peuvent être décrites selon cet ensemble et, de manière équivalente, leur évolution peut être exprimée en fonction de l'évolution de l'ensemble initial. Par exemple : 
+\begin{equation}
+    dp = \left(\frac{\partial p}{\partial V}\right)_T dV + \left(\frac{\partial p}{\partial T}\right)_V dT
+\end{equation}
+Introduisons les coefficients empiriques (\(\alpha, \beta,K\)) suivants : 
+\begin{itemize}
+    \item Coefficient de dilatation isobare : \(\alpha \coloneqq \frac{1}{v}\left(\frac{\partial v}{\partial T}\right)_p\).
+    \item Coefficient de dilatation isochore : \(\beta \coloneqq \frac{1}{p}\left(\frac{\partial p}{\partial T}\right)_v\).
+    \item Coefficient de compressibilité isotherme : \(K\coloneqq -\frac{1}{v}\left(\frac{\partial v}{\partial p}\right)_T\).
+\end{itemize}
+Ils permettent d'écrire le système suivant :
+\begin{equation}
+    \begin{pmatrix}
+        dp \\
+        dv \\
+        dT \\
+    \end{pmatrix} = \begin{pmatrix}
+        0 & \left(\frac{\partial p}{\partial v}\right)_T & \left(\frac{\partial p}{\partial T}\right)_v \\
+        \left(\frac{\partial v}{\partial p}\right)_T & 0 & \left(\frac{\partial v}{\partial T}\right)_p \\
+        \left(\frac{\partial T}{\partial p}\right)_v & \left(\frac{\partial T}{\partial v}\right)_p & 0 \\
+    \end{pmatrix} \begin{pmatrix}
+        dp \\
+        dv \\
+        dT \\
+    \end{pmatrix} = 
+    \begin{pmatrix}
+        0 & -\frac{1}{Kv} & \beta p\\
+        -Kv & 0 & \alpha v\\
+        \frac{1}{\beta p} & \frac{1}{\alpha v} & 0\\
+    \end{pmatrix} \begin{pmatrix}
+        dp \\
+        dv\\
+        dT\\
+    \end{pmatrix}
+\end{equation}
+On sait cependant que l'ensemble \((p,V)\) décrit totalement le système. Celui-ci est donc surdéterminé et on sait que \(p\beta K = \alpha\). A partir de l'équation de Gibbs, on peut écrire le second système suivant : 
+\begin{equation}
+    \begin{pmatrix}
+        TdS \\
+        TdS\\
+        TdS\\
+    \end{pmatrix} = \underbrace{\begin{pmatrix}
+        0 & \frac{c_p - c_v}{\alpha vT} & \frac{c_v}{T} \\
+        \frac{c_v-c_p}{\beta pT} & 0 & \frac{c_p}{T} \\
+        \frac{c_v}{\beta pT} & \frac{c_p}{\alpha vT} & 0\\
+    \end{pmatrix}}_{S'}\begin{pmatrix}
+        dp\\
+        dV\\
+        dT\\
+    \end{pmatrix}
+\end{equation}
+A partir de cette matrice, on peut définir de nouvelles fonctions d'état : 
+\begin{itemize}
+    \item Energie libre de Helmholtz : \(F = U-TS\Longrightarrow dF = -pdV - SdT\).
+    \item Energie libre de Gibbs : \(G = H-TS\Longrightarrow dG =  Vdp - SdT\). 
+\end{itemize}
+En égalisant les dérivées partielles de ces deux quantités, on trouve la relation suivante : 
+\begin{equation}
+    \color{red}\boxed{\color{black}c_p - c_v = \alpha \beta pvT = R^*}\color{black}
+\end{equation}
+A partir de cette relation, la matrice \(S'\) ne contient en réalité que 3 coefficients indépendants.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les chaleurs massiques, en tout généralité, varient avec la température. 
+\end{itemize}
+\subsection{Diagramme entropique}
+Le diagramme entropique d'un gaz idéal reprend la température en fonction de l'entropie. Les courbes isobares et isochores sont des exponentielles. Les isochores sont cependant de plus grande pente, car \(c_v < c_p\).
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/diag_entro.png}
+    \caption{Diagramme entropique}
+    \label{fig:diag_entro}
+\end{figure}
+\subsection{Transformation polytropique}
+Une transformation polytropique est telle que \(pv^m = cste\), avec \(m\) un coefficient. \\
+On a donc 
+\begin{equation}
+    dU = \Phi TdS \qquad dH = \Psi TdS
+\end{equation}
+avec la relation \(m = \frac{\Psi-1}{\Phi -1 }\). De plus, \(\Phi = \frac{m-1}{m-\gamma}\) et \(\Phi = \gamma \frac{m-1}{m-\gamma}\), avec \(\gamma= \frac{c_p}{c_v}\). 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/polytropic.png}
+    \caption{Transformation polytropique}
+    \label{fig:polytro}
+\end{figure}
+\begin{center}
+\begin{tblr}{
+  colspec = {X[c,h]X[c]X[c]X[c]},
+  stretch = 0,
+  rowsep = 4pt,
+  hlines = {.5pt},
+  vlines = {1pt},
+}
+    \hline
+     Isotherme & \(m=1 \qquad \Psi = 0\) & \(pv = cste\) & \(\Delta H = 0\)\\
+     Isentropique & \(m=\gamma \qquad \Psi = \infty\) & \(pv^\gamma = cste\) & \(\Delta S = 0\)\\
+     Isobare & \(m=0 \qquad \Psi = 1\) & \(p=cste\) & \(\Delta S = c_p \ln(T/T_0)\)\\
+     Isochore & \(m=\infty \qquad \Psi = \gamma\) & \(v=cste\) & \(\Delta S = c_v \ln (T/T_0)\)\\ 
+\end{tblr}
+\end{center}
+De plus, en transformation adiabatique, on a 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{img/adiabatique.png}
+    \caption{Transformations adiabatiques}
+    \label{fig:adiabatique}
+\end{figure}
+\section{Mélanges de gaz}
+On définit la fraction molaire, à partir de laquelle on peut calculer la masse molaire globale du mélange : 
+\begin{equation}
+    [i] \coloneqq \frac{n_i}{\sum_{i=1}^Nn_i} \qquad M_m = \frac{\sum_{i=1}^N n_i M_{m,i}}{\sum_{i=1}^N n_i} = \sum_{i=1}^N [i] M_{m,i}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : en mélange, \(R^*\) se calcule sur base de la masse molaire du mélange. 
+\end{itemize}
+De plus, lorsque le mélange a lieu en conditions isothermes irréversibles, 
+\begin{align}
+    h &= \int_0^t c_p dt = \frac{1}{M_m}\int_0^t C_p dt = \frac{1}{M_m} \sum_{i=1}^N [i]\int_0^t C_{p,i} dt\\
+    u &= \int_0^t c_v dt = \frac{1}{M_m} \int_0^t C_v dt = \frac{1}{M_m} \sum_{i=1}^N [i] \int_0^t C_{v,i}dt\\
+    \Delta S &= \frac{\Delta S_m}{M_m} = -R \sum_{i=1}^N [i] \ln[i]
+\end{align}
+\chapter{Combustion}\label{chap:combustion}
+Une combustion est une réaction exothermique d'un élément avec un oxydant (i.e. un mélange contenant beaucoup d'\(O_2\)). Elle a la particularité de dégager beaucoup de chaleur. On appelle combustible le composé qui réagit. En général, la réaction globale est un ensemble de beaucoup de réactions élémentaires simultanées. 
+\section{Réaction}
+L'air est l'oxydant le plus couramment utilisé en combustion : il contient de l'\(O_2\) et du \(N_2\), en proportions molaires respectives \(29\%\) et \(71\%\). On a donc \(\frac{[N_2]}{[O_2]} = 3.76\). La réaction globale de combustion utilisée dans ce chapitre est la suivante : 
+\begin{equation}
+    C_zH_yO_x +w(O_2+3.76N_2) \longrightarrow a_0 O_2 + a_1 CO + a_2 CO_2 + b_1 H_2 + b_2H_2O + 3.76wN_2
+\end{equation}
+Dans les produits, on a les réactifs non utilisés (\(O_2\) et \(N_2\)), les imbrûlés (\(CO\) et \(H_2\)) en cas de réaction incomplète, et les produits stables (\(CO_2\) et \(H_2O\)). Par bilan atomique, on trouve les équations suivantes :
+\begin{align}\label{eq:bilan_atom}
+    a_1 + a_2 &= z\\
+    2(b_1+b_2) &= y\\
+    2a_0 + a_1 + 2a_2 + b_2 &= x+2w
+\end{align}
+Nous allons maintenant exprimer les coefficients en terme de fraction molaire sur base sèche, i.e. faire l'analyse des fumées sur les fumées sèches (après évacuation de l'eau).
+\begin{equation}\label{eq:a}
+    A \coloneqq a_0 + a_1+a_2+b_1 + 3.76w
+\end{equation}
+On a donc 
+\begin{equation}
+    [O_2]' = \frac{a_0}{A} \qquad [CO]' = \frac{a_1}{A} \qquad [CO_2]' = \frac{a_2}{A} \qquad [H_2]' = \frac{b_1}{A} \qquad [N_2]' = \frac{3.76w}{A}
+\end{equation}
+Par \autoref{eq:bilan_atom}, on trouve donc 
+\begin{align}\label{eq:prop}
+    [CO]'+[CO_2]' &= \frac{z}{A}\\
+    [H_2]' + \frac{z}{3.76}-2[O_2]' -[CO]' - 2[CO_2]' &= \frac{y-2x}{z}\frac{1}{A}\\
+    [N_2]'+[O_2]' +[CO]' + [CO_2]' + [H_2]'&=1
+\end{align}
+On trouve finalement la relation de compatibilité de la combustion : 
+\begin{equation}\label{eq:compatibilite}
+    4.76[O_2]'+\left(2.88+3.76\frac{y-2x}{z}\right) [CO]' + \left(4.76+3.76\frac{y-2x}{4z}\right)[CO_2]' - 0.88[H_2]' = 1
+\end{equation}
+De plus, si les imbrûlés sont causé par un manque d'\(O_2\), alors on a la relation suivante : 
+\begin{equation}\label{eq:imbrules}
+    [H_2]' =\frac{y}{4z} [CO]' \qquad [H_2]';[CO]' \ll [CO_2]';[H_2O]'
+\end{equation}
+En combinant les \autoref{eq:compatibilite} et \autoref{eq:imbrules}, on a la relation de compatibilité couramment utilisée dans ce cours :
+\begin{equation}
+    4.76[O_2]' + \left(2.88+3.46\frac{y-2x}{4z}-0.88\frac{y}{4z}\right)[CO]' + \left(4.76+3.76\frac{y-2x}{4z}\right)[CO_2]' = 1
+\end{equation}
+\section{Propriétés}
+Une combustion est dite complète lorsqu'il n'y a pas d'imbrûlés.\\
+Une combustion est dite stoechimétrique et complète lorsqu'il n'y a pas d'\(O_2\) dans les produits, ni d'imrbûlés. On a donc 
+\begin{equation}
+    w = z+\frac{y-2x}{4}
+\end{equation}
+et la réaction est donc 
+\begin{equation}\label{eq:globale}
+    C_zH_yO_x + \left(z+\frac{y-2x}{4}\right)(O_2+3.76N_2) \longrightarrow zCO_2 + \frac{y}{2}H_2O + 3.76\left(z+\frac{y-2x}{4}\right)N_2
+\end{equation}
+Si trop d'air est fourni, une partie ne participe pas à la réaction et joue le rôle de diluant. Cela diminue alors la température du système (cela est recherché ou non dépendant de l'application). \\
+Si la réaction n'est pas complète malgré que les proportions de réaction complète et stoechiométrique soient respectées, on parle de réaction à proportions stoechiométriques. 
+\section{Indicateurs}
+Le pouvoir comburivore est la proportion de masse d'air nécessaire à la réaction par unité de masse de combustible, en conditions standards, i.e. \(T=25\degree C\) et \(p=1atm\).
+\begin{equation}
+    m_{a,1} = \frac{(32+3.76*28)}{(12z+y+16x)} \left(z+\frac{y-2x}{4}\right) \left[\frac{kg\text{ air}}{kg\text{ combustible}}\right]
+\end{equation}
+Le pouvoir fumigène est la quantité de fumée dégagée par unité de masse de combustible introduit pour la réaction : 
+\begin{equation}
+    m_{f,1} = \frac{44z+9y+3.76*28*\left(z+\frac{y-2x}{4}\right)}{12z+y+16x} = \left[\frac{kg\text{ fumée}}{kg\text{ combustible}}\right] 
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(m_{f,1} = m_{a,1}+1\).
+\end{itemize}
+Le coefficient d'imbrûlés est la proportion d'imbrûlés dans les produits. On le veut généralement le plus proche possible de 0.
+\begin{equation}
+    k \coloneqq \frac{[CO]'}{[CO]'+[CO_2]'}
+\end{equation}
+En combustion quelconque, le rapport air/carburant est le suivant : 
+\begin{equation}
+    m_a = \frac{(32+3.76*28)w}{12z+y+16x} = \left[\frac{kg\text{ air}}{kg \text{ combustible}}\right]
+\end{equation}
+Le coefficient d'excès d'air est la proportion d'\(O_2\) qui n'a pas été utilisée lors de la combustion :
+\begin{equation}
+    \lambda \coloneqq \frac{m_a}{m_{a,1}} = \frac{w}{z+\frac{y-2x}{4}}
+\end{equation}
+\begin{itemize}
+    \item Si \(\lambda >1\), on parle de mélange pauvre.
+    \item Si \(\lambda <1\), on parle de mélange riche.
+    \item On définit la richesse \(\varphi = 1/\lambda\).
+\end{itemize}
+On peut remplacer les coefficients stoechiométriques de l'\autoref{eq:globale} pour obtenir ceci : 
+\begin{align}
+    C_zH_yO_x &+ \lambda \left(z+\frac{y-2x}{4}\right)\left(O_2+3.76N_2\right) \longrightarrow \\
+    &a_0O_2 + a_1CO + a_2 CO_2 + b_1H_2 + b_2H_2O+3.76\lambda \left(z+\frac{y-2x}{4}\right)N_2
+\end{align}
+Par les différentes équations, on trouve les expressions suivantes des coefficients des produits : 
+\begin{equation}
+    a_1 = kz\qquad a_2 = z(1-k) \qquad b_1 = \frac{ky}{4} \qquad b_2  \frac{y}{2}\left(1-\frac{k}{2}\right)
+\end{equation}
+\begin{equation}
+    a_0 = (\lambda-1)\left(z+\frac{y-2x}{4}\right)+\frac{k}{2}\left(z+\frac{y}{4}\right)
+\end{equation}
+On peut donc réécrire l'expression du coefficient d'excès d'air de la manière suivante : 
+\begin{equation}
+    \lambda = 1+\frac{z[O_2]' -1/2 \left(z+\frac{y}{4}\right)[CO]'}{\left(z+\frac{y-2x}{4}\right)\left([CO_2]'+ [CO]'\right)}
+\end{equation}
+\section{Pouvoir calorifique et température de flamme}
+Nous étudions ici un système isolé dans lequel on ignore les frottements. De plus, on le suppose isobare. Puisque le système est thermiquement isolé et isobare, on a \(\Delta H=0\).  
+\begin{equation}
+    \Hat{h} = \Hat{h}_0^f(p_0,T_0) + \Hat{h}^s(p,T)
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : On met un \(\Hat{\color{white}x}\color{black}\) pour indiquer une variable molaire.
+\end{itemize}
+\(\Hat{h}_0^f\) est l'énergie nécessaire pour produire une molécule de réactif en conditions standards (nulle pour les composés diatomiques, par convention) et \(\Hat{h}^s\) est \(\Delta \Hat{h}\) par rapport à l'état de référence (i.e. état standard). De plus, pour les gaz idéaux, 
+\begin{equation}
+    \Hat{h}^s(T) = \int_{T_s}^T\Hat{c}_p(T')dT'
+\end{equation}
+On peut donc finalement écrire
+\begin{equation}\label{eq:43}
+    \sum_R \Hat{h}_i^fn_i + \sum_R \int_{T_s}^{T_{in}} \Hat{c}_{p,i}n_idT' = \sum_P \Hat{h}_j^fn_j + \sum_P \int_{T_s}^{T_f} \Hat{c}_{p,j}n_jdT'
+\end{equation}
+On pose maintenant 
+\begin{equation}
+    \begin{cases}
+        \Delta H^f = \sum_P \Hat{h}_j^fn_j -\sum_R \Hat{h}_i^fn_i\\
+        \Delta C_p = \sum_P\Hat{c}_{p,j}n_j - \sum_R \Hat{c}_{p,i}n_i\\ 
+    \end{cases}
+\end{equation}
+Et donc
+\begin{equation}
+    \sum_P\int_{T_{in}}^{T_s} \Hat{c}_{p,j}n_jdT = -\left(\Delta H^f+\int_{T_s}^{T_{in}} \Delta C_pdT\right) = Q_p
+\end{equation}
+On appelle \(Q_p\) la chaleur de combustion.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : en isobare, on peut effectuer le même raisonnement, en remplaçant \(c_p\) par \(c_v\) et \(H\) par \(U\).
+\end{itemize}
+Le pouvoir calorifique de combustible inférieur (PCI) est la chaleur dégagée lors de la combustion complète et stoechiométrique par une mole de combustible en conditions standard (\(T_{in}=T_s\)). 
+\begin{equation}
+    PCI = -\Delta \Hat{h}^f = \sum_R \Hat{h}_i^fn_i - \sum_P\Hat{h}_j^f n_j\qquad \sum_Fn_i =1
+\end{equation}
+avec le \(F\) indiquant les combustibles. Le pouvoir calorifique est dit inférieur si l'eau dans les fumées est sous forme gazeuse, et supérieur si l'eau est liquide. 
+\begin{equation}
+    PCS = PCI + h_{lv} n_{H_2O}
+\end{equation}
+avec \(h_{lv}\) l'énergie de vaporisation de l'eau. \\
+
+Réécrivons l'\autoref{eq:43} en changeant uniquement l'une des bornes des intégrales : 
+\begin{equation}
+    \sum_R \Hat{h}_i^fn_i + \sum_R \int_{T_s}^{T_{in}} \Hat{c}_{p,i}n_idT' = \sum_P \Hat{h}_j^fn_j + \sum_P \int_{T_s}^{\color{red}T_{ad}\color{black}} \Hat{c}_{p,j}n_jdT'
+\end{equation}
+En utilisant les valeurs moyennes de \(\Hat{c}_{p,i}\) pour simplifier les intégrales, on peut exprimer la température adiabatique de flamme \(T_{ad}\) :
+\begin{equation}
+    T_{ad} = T_s + \frac{PCI + (T_{in}-T_s)\sum_Rn_i\left.\Hat{c}_{p,i}\right|_{T_s}^{T_{in}}}{\sum_P n_j \left.\Hat{c}_{p,j}\right|_{T_s}^{\color{red}T_{ad}\color{black}}}
+\end{equation}
+La formule est implicite, il faut donc effectuer un processus itératif pour trouver la valeur exacte.
+\section{Polluants}
+En combustion complète, les polluants sont
+\begin{itemize}
+    \item le \(CO\)
+    \item les composés organiques volatiles, e.g. des hydrocarbures imbrûlés, des substances mutagènes,\dots
+    \item la suie, i.e. des filaments carbonisés
+    \item le dioxyde de soufre présent dans le combustible (celui-ci est contrôlable)
+    \item le \(NO\), lui pas contrôlable
+\end{itemize}
+\chapter{Vapeurs}
+\section{Vaporisation de l'eau à pression constante}
+Lorsque l'on chauffe de l'eau liquide à pression constante, on observe une augmentation du volume. A partir d'une certaine température, des bulles de gaz apparaissent et l'apport de chaleur n'augmente plus la température. La chaleur est en effet utilisée pour la transormation d'état de l'eau. La vaporisation est donc une transformation isotherme à pression constante. 
+\subsection{Condensation à température constante}
+Dans cette section, l'état initial est la vapeur pure, que l'on comprime de manière isotherme. En gaz idéal, la courbe \((p,v)\) est une hyperbole (\(1\rightarrow 2\) sur la \autoref{fig:vap_isotherme}), car \(pv=cste\). 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/vaeur_isotherme.png}
+    \caption{Condensation à température constante}
+    \label{fig:vap_isotherme}
+\end{figure}
+Le point 2 est le point de pression de saturation. De 2 à 3, la pression est constante bien que le volume diminue. Le point 4 est en phase liquide complète et on arrive sur une courbe \((p,v)\) associée à cet état : une faible diminution du volume entraîne une grande augmentation de pression. Le liquide est en effet quasi-incompressible.
+\section{Diagramme $(p,v)$ d'un fluide vaporisable}
+La \autoref{fig:isotherme-pv} est un diagramme \((p,v)\) contenant des courbes isothermes. Il y a coexistence des phases dans la partie sous la courbe pointillées, et on se rapproche du comportement des gaz idéaux dans la partie supérieure $G$. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/vapeur_pv.png}
+    \caption{Isothermes en diagramme \((p,v)\)}
+    \label{fig:isotherme-pv}
+\end{figure}
+\section{Courbe de vaporisation - Diagramme \((p,T)\) d'une substance pure}
+La pression de saturation varie selon la température, comme illustré à la section précédente. Si la température augmente, le palier a lieu à pression de saturation plus élevée. Les isothermes sont donc les courbes \(p_{sat}(T)\). Cependant, après le point critique, il n'y a plus de pression de saturation, et donc plus de séparation entre liquide et gaz.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : le même phénomène existe pour la séparation entre les états liquide-solide et solide-gaz. 
+\end{itemize}
+\subsection{Règle de phases de Gibbs}
+\begin{equation}
+    \psi = -r + n + 2
+\end{equation}
+\begin{itemize}
+    \item \(\psi\) est le nombre de variables intensives indépendantes, déterminant l'état d'un système thermodynamique. 
+    \item \(r\) est le nombre de phases.
+    \item \(n\) est le nombre de constituants du système.
+\end{itemize}
+Par exemple, en substance pure (\(n=1\)) et une seule phase (\(r=1\)), \(\psi=2\) et le couple \((p,v)\) suffit à caractériser l'état du système. Durant le TP 4, nous étudions des systèmes bi-phasique où coexistent une phase liquide et une phase vapeur. Les substances sont toujours pures (n=1), par contre on a deux phases donc r=2. On arrive donc à \(\psi=1\). Il existe une relation univoque entre la pression et la température de saturation. Autrement dit, pour chaque palier de pression sous la cloche du diagramme (T-S), si on connaît la température de saturation, on connaît également sa pression.
+
+\section{Modèle de Van der Waals et continuité gaz-liquide}
+\subsection{Equation de Van der Waals}
+
+Un élément semble toutefois singulier. Au cours de Chimie 2, nous avons étudié que la transformation isotherme d'un gaz idéal était représentée par une hyperbole (pv=const).
+
+Cependant, empiriquement, les observations diffèrent. En effet, une discontinuité apparaît dans cette hyperbole lorsque le "gaz passe sous la cloche". En réalité, le modèle du gaz parfait que nous avons étudié jusqu'à présent est valide uniquement pour les basses pressions et températures, c'est-à-dire dans la phase gazeuse. Dès que l'on approche de la phase liquide, le modèle n'est plus applicable.
+
+Van der Waals a proposé un modèle qui correspond mieux à ces conditions de température et de pression. Il épouse correctement la courbe à l'extérieur de la cloche, tant pour la phase liquide que gazeuse, mais ne parvient pas à représenter correctement la transition observée sous celle-ci.
+
+Le modèle proposé par Van der Waals est le suivant : 
+\begin{equation}\label{eq:VdW}
+    p = \frac{RT}{r-b}-\frac{a}{r^2}
+\end{equation}
+On trouve les valeurs des coefficients \(a\) et \(b\) en étudiant l'isotherme au point critique \(T=T_k\). Mathématiquement ce n'est pas absolument pas intéressant. On impose les conditons de toutes les isothermes uniquement sur base de l'isotherme critique. 
+\begin{equation}
+    \left.\left(\frac{\partial p}{\partial v}\right)\right|_{T=T_k} = 0\qquad \left.\left(\frac{\partial^2 p}{\partial v^2}\right)\right|_{T=T_k} = 0
+\end{equation}
+On peut toutefois remplacer la portion du modèle de VdW sous la cloche par ce qu'on sait (expérimentalement) être une droite.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/VdW.png}
+    \caption{Modèle de Van der Waals}
+    \label{fig:VdW}
+\end{figure}
+Il nous faut connaître les bornes \(N\) et \(M\) sur la \autoref{fig:VdW} afin de connaître l'équation de la droite. Cela revient à connaître la pression de saturation \(p_{sat}(T)\). Par l'\autoref{eq:VdW}, on a finalement
+\begin{equation}
+    p_{sat} = \frac{1}{v''-v'}\left(RT\ln\left(\frac{v''-b}{v'-b}\right)+\frac{a}{v''}-\frac{a}{v'}\right)
+\end{equation}
+L'équation de Van der Wals permettra donc de dessiner une courbe par morceaux où la valeur sous la cloche est (4.4).   
+\section{Diagramme des vapeurs}
+
+Selon la relation de Gibbs, il est nécessaire d'ajouter une variable indépendante pour décrire correctement notre système biphasique. Naturellement, nous introduisons alors le titre.
+
+Le titre représente simplement la fraction massique de gaz présente dans le système biphasique. Lorsque nous nous trouvons sur un palier sous la cloche, le titre varie entre 0 et 1 et augmente de gauche à droite.
+
+\begin{equation}
+    x = \frac{m_{vap}}{m_{vap}+m_{liq}}
+\end{equation}
+On peut alors écrire la fonction du volume massique en fonction du titre. Soit \(v'\) le volume massique du liquide saturé en \(N\) et \(v''\) en \(M\). 
+\begin{equation}
+    v(x) = xv''+(1-x)v'
+\end{equation}
+
+Si l'on veut connaître n'importe quel état sous la cloche, il faut connaître les états de liquide saturée et de vapeur saturée sur l'isotherme (c'est à dire sur la frontière de la cloche) et de connaître le titre de mélange. En d'autres mots, les états sous la cloche seront une moyenne pondérée des états en dehors de la cloche. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : la formule est identique pour chacune des variables d'état du système, on peut donc lier \(s\) à \(s',s''\), \(h\) à \(h',h''\), etc. 
+\end{itemize}
+\section{Surface d'état \((p,v,T)\)}
+On peut coupler les deux courbes \((p,v)\) et \((p,T)\) en un graphe 3D, de manière à obtenir la surface d'état \(F(p,v,T)=0\). 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/Surface_etat.png}
+    \caption{Surface et diagrammes d'état - \(CO_2\)}
+    \label{fig:surface_etat}
+\end{figure}
+Pour la plupart des substances, le volume massique du solide au point triple est inférieur à celui du liquide saturé dans le même état. Ce n'est toutefois pas le cas de l'eau.
+\section{Action calorifique de formation d'une vapeur}
+L'action calorifique de formation d'une vapeur est l'action calorifique nécessaire à l'obtention par voie isobare d'un kilogramme de cette vapeur à partir d'un kilogramme de liquide à 0$\degree$C.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/formation_vapeur.png}
+    \caption{Formation d'une vapeur}
+    \label{fig:formation_vap}
+\end{figure}
+\begin{itemize}
+    \item \(q_{ech}\) : chaleur d'échauffement du liquide (AB').
+    \item \(h_{lv}\) : chaleur de vaporisation (B'B'').
+    \item \(q_{sur}\) : chaleur de surchauffe (B''C).
+\end{itemize}
+\begin{equation}
+    q_{ech} = \left.\left(\int_0^{T_{sat}} c_{p,liq} dT\right)\right|_{p}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] \(c_{p,l}\) varie avec la pression et la température. 
+\end{itemize}
+La chaleur de vaporisation est l'action calorifique nécessaire à la vaporisation isobare, et donc aussi isotherme, d'un kilogramme de fluide. Soit un cycle réversible passant par B' et B''.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/action_calo.png}
+    \caption{Cycle réversible}
+    \label{fig:action_calo}
+\end{figure}
+
+Nous cherchons à déterminer la quantité de chaleur nécessaire pour passer du point B' au point B''. Pour ce faire, nous allons recourir à une astuce ingénieuse. Tout d'abord, nous savons que cette transformation est effectuée à température constante, mais également à pression constante. Ainsi, le passage de B' à B'' est représenté dans les diagrammes (T-S) et (P-V) par une droite horizontale.
+
+Selon la relation de Gibbs, nous avons \(Tds = dh - vdp\). À pression constante, \(Tds = dh\). Puisque nous sommes également à température constante, $T(S''-S') = \Delta H$.
+Nous souhaitons exprimer cette chaleur de vaporisation en fonction de p, v et T. Pour ce faire, nous adoptons une astuce consistant à créer un cycle réversible correspondant à une légère variation de température, et donc de pression. Les quatre sommets de ce que nous supposons être un rectangle représentent des points de la cloche (c'est-à-dire des états saturés). Nous négligeons la variation du volume massique. En égalant les aires des deux rectangles, nous retrouvons une expression pour la chaleur de vaporisation. On peut obtenir les expressions comme ceci : 
+\begin{equation}
+    h_{lv} = T(s''-s')
+\end{equation}
+Par définition du cycle, les états C' et C'' se trouvent aussi sur la cloche, i.e. ils sont saturés. Le cycle élémentaire B'C'C''B'' étant réversible, la surface du cycle vaut
+\begin{equation}
+    a(p,v) = (v''-v')dp \qquad a(T,s) = (s''-s')dT = \frac{h_{lv}}{T}dT
+\end{equation}
+Or, puisque ces deux aires sont égales en cycle, on trouve l'expression de \(h_{lv}\) (formule de Clapeyron) : 
+\begin{equation}
+    h_{lv} = T_{sat}(v''-v') \left.\left(\frac{dp}{dT}\right)\right|_{T=T_{sat}}
+\end{equation}
+\subsection{Dérivation de la formule de Clapeyron-Clausius}
+
+La formule de Clapeyron-Clausius est utilisée pour décrire la relation entre la pression de vapeur d'un liquide à deux températures différentes. Voici la dérivation de cette formule :
+
+1. \textbf{Formule de Clapeyron}:
+   Nous partons de la formule de Clapeyron, qui s'écrit :
+   \[
+   \frac{dP}{dT} = \frac{\Delta H_{\text{vap}}}{T \Delta V}
+   \]
+
+2. \textbf{Hypothèse sur le volume}:
+   Pour une vaporisation, le volume de la phase gazeuse \(V_g\) est beaucoup plus grand que celui de la phase liquide \(V_l\), donc \(\Delta V \approx V_g\). En utilisant l'équation des gaz parfaits, \(V_g = \frac{RT}{P}\), où \(R\) est la constante des gaz parfaits et \(P\) est la pression :
+   \[
+   \Delta V \approx \frac{RT}{P}
+   \]
+
+3. \textbf{Substitution dans la formule de Clapeyron}:
+   En substituant \(\Delta V\) dans la formule de Clapeyron, nous obtenons :
+   \[
+   \frac{dP}{dT} = \frac{\Delta H_{\text{vap}}}{T \cdot \frac{RT}{P}} = \frac{P \Delta H_{\text{vap}}}{R T^2}
+   \]
+
+4. \textbf{Séparation des variables}:
+   Nous réarrangeons les termes pour séparer les variables \(P\) et \(T\) :
+   \[
+   \frac{dP}{P} = \frac{\Delta H_{\text{vap}}}{R} \frac{dT}{T^2}
+   \]
+
+5. \textbf{Intégration}:
+   Nous intégrons les deux côtés de l'équation. Pour la pression, nous intégrons de \(P_1\) à \(P_2\), et pour la température, de \(T_1\) à \(T_2\) :
+   \[
+   \int_{P_1}^{P_2} \frac{1}{P} \, dP = \frac{\Delta H_{\text{vap}}}{R} \int_{T_1}^{T_2} \frac{1}{T^2} \, dT
+   \]
+
+   L'intégrale de gauche donne :
+   \[
+   \ln{\frac{P_2}{P_1}}
+   \]
+
+   L'intégrale de droite donne :
+   \[
+   \frac{\Delta H_{\text{vap}}}{R} \left[ -\frac{1}{T} \right]_{T_1}^{T_2} = \frac{\Delta H_{\text{vap}}}{R} \left( -\frac{1}{T_2} + \frac{1}{T_1} \right)
+   \]
+
+6. \textbf{Résultat final}:
+   En combinant les deux résultats, nous obtenons la formule de Clapeyron-Clausius :
+   \[
+   \ln{\frac{P_2}{P_1}} = -\frac{\Delta H_{\text{vap}}}{R} \left( \frac{1}{T_2} - \frac{1}{T_1} \right)
+   \]
+
+Cette formule permet de calculer la variation de la pression de vapeur d'un liquide en fonction de la température, connaissant l'enthalpie de vaporisation \(\Delta H_{\text{vap}}\).
+\section{Energie interne, enthalpie et entropie de vapeurs saturées}
+
+Dans les exercices, on va souvent devoir trouver les valeurs des différents états sous la cloche. Comme il s'agit d'une moyenne pondérée par le titre des valeurs sur la cloche, on a besoin de connaître les valeurs sur la cloche. Ces données pourront être retrouvées dans les tables mais ici on voit comment les calculer. Comme d'habitude ces grandeurs ne sont jamais utilisées dans l'absolue mais plutôt de manière relative.
+
+L'énergie interne, l'enthalpie et l'entropie des vapeurs saturées sont définies par rapport à l'état de référence \(T=0K\). On utilise plutôt des valeurs relatives avec comme état de référence l'état de liquide saturé à \(T=0\degree C\). Cependant, cet état n'existe que si la température du point critique est supérieure à \(0\degree C\) et la température du point triple inférieure. Si ce n'est pas le cas, on choisit arbitrairement un autre état de référence. Les valeurs relatives sont donc 
+\begin{equation}
+    u = U-U_0 \qquad h = H-H_0 \qquad s= S-S_0
+\end{equation}
+\subsection{Variations \(u,h,s\) sur l'isotherme liquide \(0\degree C\)}
+Par le théorème de Schwarz, 
+\begin{equation}
+    \left.-\frac{\partial S}{\partial p}\right|_T = \left.\frac{\partial v}{\partial T}\right|_p = \alpha v
+\end{equation}
+avec \(\alpha\) le coefficient de dilatation thermique. 
+\begin{equation}
+    s_A = S_A - S_0 = -\int_{p_0}^{p_A} \alpha vdp = -\overline{\alpha v}(p_A-p_0)
+\end{equation}
+Pour l'eau, on peut négliger \(s_A\), car \(\alpha\) et \(v\) sont très petits. Calculons maintenant la variation d'énergie interne : 
+\begin{equation}
+    dU = TdS -pdV \approx -pdV \Longrightarrow u_A = U_A-U_0 \approx -\overline{p}(V_0-V_A)
+\end{equation}
+Puisqu'on étudie la phase liquide, \(V_0-V_A=\mathcal{O}(10^{-4})\) et on néglige \(u_A\). La variation de \(h_A\) est, elle, non négligeable : 
+\begin{equation}
+    h_A = H_A-H_0 = v_0(p_A-p_0)
+\end{equation}
+\subsection{Calcul de \(u',h',s'\) pour les liquides saturés}
+Le point \(A\) n'est pas un liquide saturé, mais B' l'est. La transformation AB' est isobare, on a donc 
+\begin{equation}
+    h'-h_A = q_{ech} = \int_{273.15}^T c_pdT \qquad u' = h' - (pA_v'-p_0v_0) \qquad s' = \int_{273.15}^T \frac{c_{p,l}}{T}dT
+\end{equation}
+\subsection{Calcul de \(u'',h'',s''\) en vapeur saturée}
+\begin{equation}
+    h''-h' = h_{lv} \qquad s''-s' = \frac{h''-h'}{T_{sat}} = \frac{h_{lv}}{T_{sat}} \qquad u''-u' = h_{lv} - p(v''-v')
+\end{equation}
+\section{Diagramme \((T,S)\) des vapeurs}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/TS_vap.png}
+    \caption{Diagramme \((T,S)\)}
+    \label{fig:ts_vap}
+\end{figure}
+
+On va souvent représenter les isobares sur le diagrammes (T-S) qui ont une allure très proche des isochore. Sur le diagramme 4.7, on trace les isochores, les isobares mais aussi les isotitres qui sont tout simplement les droites qui rejoignent les points ayant le même titre sous la cloche. 
+
+A gauche de la cloche (\(x=0\)), l'état est complètement liquide, et complètement vapeur à droite (\(x=1\)). Sous la cloche, les isothermes sont confondues avec les isobares. \\
+En dehors de la cloche, on trouve l'expression suivante : 
+\begin{equation}
+    dS = C_{pv}\frac{dT}{T} + \left.\left(\frac{\partial S}{\partial p}\right)\right|_T dp = C_{pv} \frac{dT}{T}
+\end{equation}
+Il s'agit donc d'une courbe exponentielle. A gauche de \(x=0\), on fait l'approximation pour les liquides peu compressibles que l'isobare et la limite \(x=0\) sont confondues. Cela rejoint l'approximation \(s_A = S_A-S_0 =0\).
+\section{Diagramme \((H,S)\) de vapeur d'eau}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/HS_vapeau.png}
+    \caption{Diagramme de Mollier de l'eau}
+    \label{fig:mollier_eau}
+\end{figure}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : le point critique \(K\) n'est plus le sommet de la cloche, car \(h''\) n'est plus maximale au point critique. 
+\end{itemize}
+Sous la cloche, les isobares sont également les isothermes. Elles sont des droites, car 
+\begin{equation}
+    TdS = dh -vdp = dh \Longrightarrow T = \left.\left(\frac{\partial h}{\partial S}\right)\right|_p
+\end{equation}
+La pente de ces droites est donc \(\left.\left(\frac{\partial h}{\partial S}\right)\right|_p\). On voit que la pente augmente avec la température. Quand les isobares dépassent \(x=1\) pour passer dans le domaine des vapeurs surchauffées, l'inclinaison de la tangente commence à croitre. Les isobares sont alors des exponentielles, tandis que les isothermes sont horizontales. \\
+
+De l'autre côté, à gauche de \(x=0\), les courbes sont presque tangentes à \(x=0\). En \(x=0\), on a 
+\begin{equation}
+    h' = c_p' (T-273) \qquad s' = c_p' \ln \left(\frac{T}{273}\right)
+\end{equation}
+Si on suppose que \(c_p'(T_{sat}) = c_p'\), alors 
+\begin{equation}
+    dh' = c_p' dT\qquad ds' = c_p' \frac{dT}{T}
+\end{equation}
+On a donc finalement que 
+\begin{equation}
+    \frac{dh'}{ds'} = T
+\end{equation}
+Cette expression est bien tangente aux isobares, car \(\left.\left(\frac{\partial h}{\partial s}\right)\right|_p = T\) pour toute température, lorsqu'on se situe dans \(x\in[0,1]\). 
+\chapter{Machines thermodynamiques}
+\section{Machines réceptrices ou motrices}
+En machine réceptrice, le fluide reçoit l'énergie utile, tandis qu'il la fournit en machine motrice.
+\begin{center}
+\begin{tblr}{
+  colspec = {X[c,h]X[c]X[c]},
+  stretch = 0,
+  rowsep = 4pt,
+  hlines = {.5pt},
+  vlines = {1pt},
+}
+    \hline
+     & Liquide & Gaz\\ 
+     Machines RECEPTRICES & Pompe & Compresseur \\ \hline
+     Machines dynamiques-turbomachines (machines tournantes) & Pompe centrifuge\newline Pompe hélicoïdale ou axiale & Compresseur centrifuge \newline Compresseur axial (=ventilateur)\\ 
+     Machines volumétriques (agissant sur le volume) & Pompe à piston \newline Pompe volumétrique & Compresseur à piston \newline Compresseur volumétrique\\
+     Machines MOTRICES & & \\ \hline
+     Machines dynamique-turbomachines & Turbine hydraulique & Turbine à gaz ou vapeur \\
+     Machines volumétriques & Moteur hydraulique  Moteur pneumatique \newline Moteur à essence/diesel\\
+\end{tblr}
+\end{center}
+Les éléments nécessaires au bon fonctionnement d'une machine thermodynamique sont les suivants : 
+\begin{itemize}
+    \item Fluide : liquide, gaz ou vapeur.
+    \item Compression (en machine opératrice) : compresseur ou pompe.
+    \item Détente (en machine motrice) : turbine à gaz ou vapeur.
+    \item Echangeur de chaleur entre deux flux de gaz, vapeur ou liquide.
+    \item Combustion (voir \autoref{chap:combustion}).
+\end{itemize}
+\section{Analyse mécanique et énergétique en système ouvert}
+Pour rappel,
+\begin{center}
+\begin{tblr}{
+  colspec = {X[0.5,c,h]X[c]X[c]},
+  stretch = 0,
+  rowsep = 4pt,
+  hlines = {.5pt},
+  vlines = {1pt},
+}
+    \hline
+     & Expression mécanique du travail moteur & Expression énergétique du travail moteur\\ \hline
+     Machine réceptrice & \(w_m = w_f + \underbrace{\int_1^2 vdp}_{\text{pompe}} + \underbrace{\Delta k}_{\text{ventilateur}} + \underbrace{g\Delta z}_{\text{pompe (puits)}}\) & \(w_m = \Delta h+ \Delta k + g\Delta z-q\ge 0\)\\
+     Machine motrice & \(w_m = -w_f + \underbrace{-\int_1^2 vdp}_{\text{turbine}} - \underbrace{\Delta k}_{\text{éolienne}} -\underbrace{g\Delta z}_{\text{turbine hydro}}\) & \(w_m = -\Delta h - \Delta k-g\Delta z+q\ge 0\)\\
+\end{tblr}
+\end{center}
+Dans l'expression mécanique, la somme des trois premiers termes représente le travail utile et le dernier le travail lié au frottement. Il s'agit de la dissipation sous forme de chaleur liée aux irréversibilités. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : pour rappel, la puissance mécanique est \(P_m = \Dot{m}w_m\), avec \(\Dot{m}\) le débit massique. 
+    \item [\(\rightarrow\)] Remarque : sur un cycle, \(w_m^{\text{cycle}} = q^{\text{cycle}}\). 
+\end{itemize}
+\section{Pertes de charge en conduite}
+\subsection{Pertes de charges régulières}
+A partir des principes de la thermodynamique, on a les équations suivantes : 
+\begin{equation}
+    \int Tds = q +w_f \qquad w_m = \int_1^2 vdp + \Delta k+d\Delta z+w_f
+\end{equation}
+Dans un écoulement en conduite, le travail moteur est nul. De plus, on suppose le fluide incompressible et les effets de la gravité sont négligés. La seconde équation devient alors
+\begin{equation}
+    0 = \Delta p+\rho \Delta k+\rho w_f
+\end{equation}
+On définit maintenant la notion de pression totale. Il s'agit de la somme de la pression statique (pression usuelle) et de la pression dyanmique : 
+\begin{equation}
+    \rho w_ = - \Delta p_{tot} = -(\Delta p+\rho \Delta k) = \left(p+\rho \frac{c^2}{2}\right)^1_2
+\end{equation}
+De manière générale, avec le terme de gravité, on a 
+\begin{equation}
+    0 = \Delta p + \rho \Delta k+\rho g \Delta z+\rho w_f \Longrightarrow -\Delta p = \Delta p_{acc} + \Delta p_{grav} + \Delta p_f
+\end{equation}
+Le terme \(\Delta p_{acc}\) est nul car la conduite est de section constante et de débit constant. On a finalement
+\begin{equation}
+    \Delta p_f = \lambda \frac{L}{D_h}\rho \frac{c^2}{2}
+\end{equation}
+avec \(\lambda\) le coefficient de perte de charges, \(L\) la longueur de la conduite, \(D_h = \frac{4Aire}{perimetre}\) le diamètre mouillé. On trouve la valeur de \(\lambda\) sur base du diagramme de Moody, en connaissant \(Re_{D_h}\) et \(\epsilon\) la rugosité. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : dans le cas lisse, \(w_f\propto c\), et donc \(p_f \propto c^2\).
+    \item [\(\rightarrow\)] \qquad \qquad     dans le cas rugueux, \(w_f \propto c^2\), et donc \(p_f \propto c^5\)
+\end{itemize}
+\subsection{Pertes de charge singulières}
+Les pertes de charges sont dites singulières lorsqu'elles sont dues à un changement de géométrie (coude, rétrécissement brusque,\dots). 
+\begin{equation}
+    \Delta p_{fs} = \rho w_{fs} = K\frac{c^2}{2}
+\end{equation}
+avec \(K\) une constante dépendant du type de changement de géométrie. 
+\section{Rendement interne}
+En machine réceptrice, 
+\begin{equation}
+    w_m = \int_1^2vdp + \Delta k+g\Delta z+w_f = w_u + w_f
+\end{equation}
+On définit le rendement interne d'une machine réceptrice comme le rapport entre le travail utile et le travail moteur :
+\begin{equation}
+    \eta_i = \frac{w_u}{w_m} = \frac{w_m-w_f}{w_m}
+\end{equation}
+En machine motrice, le travail utile est le travail moteur, on a donc une relation différente : 
+\begin{equation}
+    \eta_i = \frac{w_m}{w_m+w_f}
+\end{equation}
+\section{Rendement isentropique}
+Nous analysons ici le travail effectué de manière isentropique pour un même rapport de compression, en machine réceptrice. Cette analyse est utile car le terme de travail utile \(\int vdp\) peut être difficile à calculer. \\ 
+Considérons que les compresseurs fonctionnent de manière adiabatique. L'expression énergétique du travail moteur devient
+\begin{equation}
+    w_m = \Delta h
+\end{equation}
+Le rendement isentropique est donc 
+\begin{equation}
+    \eta_{is} = \frac{\Delta h}{\Delta h_{is}} = \frac{h_2-h_1}{h_{2,is}-h_{1,is}}
+\end{equation}
+En isentropique, i.e. adiabatique sans frottement, on a \(pv^\gamma=cste\). En gaz parfait, l'expression du volume est donc 
+\begin{equation}
+    v = v_1\left(\frac{p_1}{p}\right)^{1/\gamma}
+\end{equation}
+Dont on tire l'expression du travail isentropique \(w_{is} = \int vdp\). 
+\section{Rendement interne en transformation polytropique}
+En transformation polytropique, on a 
+\begin{equation}
+    \frac{dh}{Tds} = cste = \frac{\delta w_m}{\delta w_f}
+\end{equation}
+avec la seconde égalité valable uniquement en adiabatique. En machines réceptrice, on a 
+\begin{equation}
+    dw_f = Tds = (1-\eta_i)dw_m = (1-\eta_i)dh
+\end{equation}
+Si on suppose le gaz parfait : 
+\begin{equation}
+    Tds = (1-\eta_i)c_pdT \Longrightarrow c_p dT - rT\frac{dp}{p} = (1-\eta_i)c_pdT \Longrightarrow \frac{1}{\eta_i} \frac{r}{c_p}\frac{dp}{p} = \frac{dT}{T}
+\end{equation}
+Introduisons maintenant la propriété polytropique \(pv^m=cste\):
+\begin{equation}
+    \begin{cases}
+        \frac{T}{T_1} = \left(\frac{p}{p_1}\right)^{\frac{m-1}{m}} \\
+        \frac{1}{\eta_i} \frac{r}{c_p}\frac{dp}{p} = \frac{dT}{T}\\
+    \end{cases} \Longrightarrow \ln \left[\left(\frac{p}{p_1}\right)^{\frac{1}{\eta_i}\frac{r}{c_p}}\right] = \ln \left(\frac{T}{T_1}\right)
+\end{equation}
+On trouve finalement 
+\begin{equation}
+    \frac{1}{\eta_i} \frac{r}{c_p} = \frac{m-1}{m} \Longrightarrow m = f(\eta_i, c_p,R^*)
+\end{equation}
+On en déduit ensuite le travail utile :
+\begin{equation}
+    w_u = \pm \int_1^2 vdp = \pm R^* \left(\frac{m}{m-1}\right)(T_2-T_1) = \pm p_1v_1 \left(\frac{m}{m-1}\right)\left[\left(\frac{v_1}{v_2}\right)^{m-1}-1\right]
+\end{equation}
+Supposons maintenant que l'on connait le rendement isentropique, et qu'on veut retrouver la relation entre rendements interne et isentropique en machine réceptrice : 
+\begin{align}
+    \eta_{is} &= \frac{\Delta h_{is}}{\Delta h} = \frac{T_{2s}-T_1}{T_2-T_1} = \frac{T_{2s}/T_1-1}{T_2/T_1-1}\\
+    & = \frac{\left(\frac{p_2}{p_1}\right)^{\frac{\gamma-1}{\gamma}}-1}{\left(\frac{p_2}{p_1}\right)^{\frac{1}{\eta_i}\frac{r}{c_p}}-1} 
+\end{align}
+On sait que \(c_p = \frac{\gamma R^*}{\gamma-1}\) et on pose \(X = \left(\frac{p_2}{p_1}\right)^{\frac{\gamma-1}{\gamma}}\). 
+\begin{equation}
+    \eta_{is} = \frac{X-1}{X^{1/\eta_i}-1} \Longrightarrow \eta_i = \frac{\log(X)}{\log\left(\frac{X-1}{\eta_{is}}-1\right)}
+\end{equation}
+\section{Rendements polytropique et isentropique en compresseur}
+On cherche ici à démontrer graphiquement que le rendement polytropique est supérieur au rendement isentropique, i.e. que le rendement interne en transformation polytropique est supérieur au rendement isentropique en transformation isentropique. 
+\begin{equation}
+    \begin{cases}
+        \eta_i = \frac{\int vdp}{w_m} = \frac{w_m-w_f}{w_m}\\
+        \eta_{is} = \frac{w_{ms}}{w_m}\\
+        Tds = dh - vdp = c_p dT-rT\frac{dp}{p}\\
+    \end{cases}
+\end{equation}
+En isobare, on a donc 
+\begin{equation}
+    \left.\left(dh-vdp\right)\right|_p = \left.\left(c_pdT-rT\frac{dp}{p}\right)\right|_p \Longrightarrow dh = c_pdT
+\end{equation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .5\textwidth]{img/poly_iso.png}
+\end{figure}
+Les courbes noires sont des isobares. La transformation $1\rightarrow 2$ est polytropique. \\
+Les expressions "graphiques" des enthalpies sont les suivantes : 
+\begin{align}
+    h_{2s} = \int_{ref}^{2s}Tds &= \color{green} \blacksquare \color{black} + \color{cyan} \blacksquare\color{black}\\
+    h_2 = \int_{ref}^2 Tds &= \color{green} \blacksquare \color{black} + \color{cyan} \blacksquare\color{black} + \color{blue} \blacksquare \color{black} + \color{red} \blacksquare\color{black}\\
+    h_2-h_1 &= \color{cyan} \blacksquare\color{black} + \color{blue} \blacksquare \color{black} + \color{red} \blacksquare\color{black}\\
+    w_f &= \color{red} \blacksquare\color{black}\\
+    w_m &= \color{cyan} \blacksquare\color{black} + \color{blue} \blacksquare \color{black} + \color{red} \blacksquare\color{black}\\
+    w_u = w_m - w_f &= \color{cyan} \blacksquare\color{black} + \color{blue} \blacksquare \color{black}
+\end{align}
+On déduit que \(w_{is} = \color{cyan} \blacksquare\color{black}\)
+\section{Compression mutli-étagée et refroidie}
+\begin{minipage}{.5\textwidth}
+    En compression adiabatique, on a 
+    \begin{equation}
+        \int vdp = \Delta h-\int Tds
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    En compression isotherme, on a 
+    \begin{equation}
+        \int vdp = T|\Delta S|
+    \end{equation}
+\end{minipage}
+Par analyse graphique d'un diagramme \((T,S)\), on a que \(\left.w_m\right|_T < w_{m, ad}\). Notre but étant de minimiser le travail moteur, l'idéal serait de faire une compression isotherme. Cela n'est cependant pas réalisable en pratique. L'adiabatique parfait ne l'est pas non plus si la température est trop élevée. On va donc minimiser le travail moteur en passant de \(p_1\) à \(p_2\) par plusieurs étages de pression. On réalise une succession de compressions adiabatiques suivies de refroidissements isobares.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/compression_multi.png}
+    \caption{Compression multi-étagée}
+    \label{fig:compression_multi}
+\end{figure}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : la hauteur des "dents" est le rapport de compression des compressions adiabatiques.
+\end{itemize}
+L'effet sur \(w_u\) est visible sur un diagramme \((p,v)\) : 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/compression_multi_pv.png}
+    \caption{Diagramme \((p,v)\)}
+    \label{fig:compression_multi_pv}
+\end{figure}
+La courbe discontinue est l'isotherme, la courbe pointillée l'isentropique, le trait fin l'adiabatique et le trait gras la compression multi-étagée. Celle-ci fait donc mieux que les transformations adiabatique ou isentropique, mais la courbe optimale reste l'isotherme. \\
+A cause des capacités physiques des machines, il existe une température maximale tolérable, et la transformation adiabatique parfaite ne sera pas possible. Il faut donc adapter les rapports de compression en fonction de ces contraintes. Mathématiquement, on a 
+\begin{equation}
+    \prod_{j=1}^n \frac{p_{2,j}}{p_{1,j}} = \frac{p_2}{p_1}
+\end{equation}
+avec \(p_{1,j} = p_{2,j-2}\), car les deux points se situent sur une même isobare : les \(p_{1,j}\) commencent au premier point à gauche, tandis que les \(p_{2,j}\) comment au deuxième point à gauche.\\
+Puisque les compressions sont polytropiques, on a 
+\begin{equation}
+    \frac{T_2}{T_1} = \left(\frac{p_2}{p_1}\right)^{\frac{m-1}{m}} \Longrightarrow T_{2,j} = T_{1,j} \left(\frac{p_2}{p_1}\right)^{\frac{m-1}{m}} < T_{\max}
+\end{equation}
+On peut maintenant calculer le travail moteur, en supposant que les transformations multi-étagées sont adiabatiques : 
+\begin{equation}
+    w_ m =\sum_j \Delta h_j = \sum_j c_p (T_{2,j}-T_{1,j})
+\end{equation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/étages.png}
+\end{figure}
+Soit \(n\) le nombre d'étages de compression. Le travail moteur en multi-étagé tend vers une valeur supérieure au travail moteur en isotherme réversible, mais reste inférieure aux deux autres transformations possibles (adiabatique et isentropique). 
+\section{Cavitation d'une pompe}
+La cavitation est la formation de bulles de gaz dans un liquide dans une pompe. Cela arrive lorsque la pression dans cette pompe diminue et devient inférieure à la pression de saturation du fluide. La pompe n'étant pas créée dans le but de gérer des vapeurs ou gaz, elle s'abîme alors beaucoup plus et cela peut créer d'importants dommages à la machine.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{img/cavitation.png}
+    \caption{Pompe}
+    \label{fig:pompe_cavitation}
+\end{figure}
+Dans cette pompe, on a 
+\begin{equation}
+    \begin{cases}
+        0=\int_0^1vdp+gh+w_f\\
+        p_1 = p_0-\rho gh+\rho w_f\\
+    \end{cases}
+\end{equation}
+Au vu de l'expression de la pression en 1, il faut faire attention qu'elle ne devienne pas négative, mais aussi qu'elle reste supérieure à la pression de saturation.
+\begin{equation}
+    p_1 -p_{sat} = p_0 -\rho gh-\rho w_f -p_{sat}>0
+\end{equation}
+Réécrivons cette expression : 
+\begin{equation}
+    \underbrace{\frac{p_1-p_{sat}}{\rho g}}_{\text{NPSH}_{dispo}} = \frac{p_0}{\rho g} - h - \frac{w_f}{g} - \frac{p_{sat}}{\rho g} > \text{NPSH}_{adm}
+\end{equation}
+Le NPSH est le "Net Positive Suction Head". On l'exprime comme la hauteur de colonne d'eau nécessaire pour éviter la cavitation. 
+\section{Analyse cinématique des machines de compression}
+On analyse ici les turbo-machines, i.e. des machines rotatives traversées par un fluide. L'action du fluide sur la machine le ralentit et crée donc une différence de pression, créant un travail moteur. La machine est composée d'un rotor (qui tourne) sur lequel sont posées des ailettes, et d'un stator (qui ne tourne pas), avec ailettes lui aussi. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/turbomachine.png}
+    \caption{Machine axiale}
+    \label{fig:turbomachine}
+\end{figure}
+La machine que nous analysons est axiale, car le fluide entre et sort dans une direction parallèle à l'axe de la machine.
+\begin{itemize}
+    \item Soit \(c_1\) la vitesse absolue de l'air (ou du fluide) dans un repère qui n'est pas celui de la machine.
+    \item Soit \(\omega_1\) la vitesse relative du fluide par rapport au rotor.
+    \item Soit \(\alpha\) l'angle entre le vecteur de vitesse absolue du fluide et le vecteur vitesse du rotor.
+    \item Soient \(\omega_m\) et \(c_m\) les projections de vitesse dans la direction axiale ou radiale (ici axiale).
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\linewidth]{img/triangle_vitesses.png}
+    \caption{Triangle des vitesses}
+    \label{fig:triangle}
+\end{figure}
+\begin{equation}
+    \Vec{\omega} = \Vec{c}-\Vec{u}
+\end{equation}
+On connait la vitesse d'entrée du fluide \(c_1\), mais on ne connait pas la vitesse de sortie \(c_2\). On peut cependant trouver une relation liant ces deux vitesses. Le fluide lèche le chenal et sort donc dans une direction tangente à l'ailette. Sa norme sera déterminée grâce à notre connaissance des échanges du fluide dans la machine. On sait que \(u_1=u_2\), car la vitesse de la roue ne change pas. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/pale développée.png}
+    \caption{Section développée}
+    \label{fig:développée}
+\end{figure}
+\(c_m\) vaut ici \(c_a\), une constante. En effet, 
+\begin{equation}
+    \Dot{V} = 2\pi rbc_a \Longrightarrow c_a = cste
+\end{equation}
+Faisons un bilan de moment de quantité de mouvement : 
+\begin{equation}
+    \Delta(MQDM) = \pm \Dot{m}(c_{2,t}r_2-c_{1,t}r_1)
+\end{equation}
+avec l'indice \(t\) indiquant la vitesse tangentielle et \(r\) les bras de levier. 
+\begin{equation}
+    w_m = \frac{P_m}{\Dot{m}} = \pm \frac{\Delta(MQDM)\omega}{\Dot{m}} = \pm (c_2u_2\cos \alpha_2-c_1u_1\cos \alpha_1)
+\end{equation}
+\subsection{Cas de la machine axiale}
+En machine axiale, \(r_1=r_2=r\). On peut donc développer l'expression du travail moteur comme suit : 
+\begin{equation}\label{eq:analyse_ciné}
+    \frac{W_m}{u^2} = 1-\frac{c_a}{u}(\tan \beta_2+\cot \alpha_1) \qquad \Dot{V} = 2\pi rbc_a
+\end{equation}
+\begin{equation}
+    \frac{W_m}{u^2} = 1-\Dot{V}\frac{\tan \beta_2+\cot \alpha_1}{2\pi bru} \Longrightarrow \begin{cases}
+        W_m = u^2 \left(1-\frac{\Dot{V}}{\Dot{V}_x}\right)\\
+        \Dot{V}_x = \frac{2\pi bru}{f(\alpha,\beta)}
+    \end{cases}
+\end{equation}
+\subsection{Cas de la machine radiale}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/machine_radiale.png}
+    \caption{Machine radiale}
+    \label{fig:machine_radiale}
+\end{figure}
+Ici, \(\Dot{V} = 2\pi r_2b_2c_{2,r}\) et \(\alpha_1=\pi/2\). L'\autoref{eq:analyse_ciné} générale se simplifie alors et en introduisant de nouveau \(\Dot{V}\) dans l'équation, on a 
+\begin{equation}
+    \frac{W_m}{u^2} = 1-\Dot{V}\frac{\tan \beta_2}{2\pi b_2r_2u_2} \Longrightarrow\begin{cases}
+        w_m = u^2 \left(1-\frac{\Dot{V}}{\Dot{V}_x}\right)\\
+        \Dot{V}_x = \frac{2\pi bru}{f(\alpha,\beta)}
+    \end{cases}
+\end{equation}
+La forme est donc la même que pour la machine axiale, mais l'expression de \(\Dot{V}_x\) change. 
+\subsection{Droites d'Euler et courbe caractéristique}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/droite_euler.png}
+    \caption{Droites d'Euler}
+    \label{fig:euler}
+\end{figure}
+Les droites d'Euler illustrent l'évolution du travail moteur en fonction de \(\Dot{V}\) pour différentes valeurs de \(u\), mais la variable qui nous intéresse est \(w_u=w_m-w_f\). Il faut donc prendre en compte les pertes de charges dans la machine, qui induisent le travail \(w_f\). Il y a des dissipations régulières aussi bien que des dissipations singulières à l'entrée et à la sortie. Elles s'expriment comme suit :
+\begin{align}
+    W_{f,L} &= K_L\Dot{V}^2\\
+    W_{f,1} &= K_1(\Dot{V}-\Dot{V}_y)^2\\
+    W_{f,2} &= K_2(\Dot{V}-\Dot{V}_z)^2\\
+\end{align}
+Les pertes de charge singulières sont dues au changement brutal de direction du fluide. La courbe caractéristique de la machine est alors l'expression du travail utile en fonction du débit : 
+\begin{equation}
+    W_u = W_m - W_{f,1}-W_{f,2}-W_{f,L}
+\end{equation}
+Il s'agit d'une parabole en \(\Dot{V}\).
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/courbe_carac.png}
+    \caption{Courbe caractéristique}
+    \label{fig:courbe_carac}
+\end{figure}
+On peut donc optimiser le travail utile, en modifiant le débit, mais tout en prenant en compte les phénomènes de cavitation. En changeant l'orientation des pales, on peut également jouer sur les valeurs des termes \(\Dot{V}_y\) et \(\Dot{V}_z\) et donc augmenter la hauteur de la parabole. Il est toutefois impossible en pratique de les annuler tous les deux, car ils dépendent des mêmes paramètres mais pas de la même manière.
+\section{Adaptation machine-circuit}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/adaptation_sys.png}
+    \caption{Système analysé}
+    \label{fig:adaptation_sys}
+\end{figure}
+L'adaptation machine-circuit consiste à trouver le point d'intersection entre les courbes de fonctionnement du circuit et de la pompe. Soit le système à deux bassins de la \autoref{fig:adaptation_sys}. En toute généralité, il y a une différence de hauteur, de pression et de vitesse entre les deux bassins. On a donc les équations suivantes : 
+\begin{equation}
+    \begin{cases}
+        w_{m,\text{circuit}} = \underbrace{\int_I^{II}vdp+g(z_{II}-z_I)}_{\text{statique}} + \underbrace{\frac{c_{II}^2-c_I^2}{2} + w_{fI-II}}_{\text{dynamique}}\\
+        w_{m,\text{pompe}} = \underbrace{\int_A^B vdp}_{w_u} + w_{fA-B}\\
+    \end{cases}
+\end{equation}
+\begin{equation}\label{eq:adaptation}
+    w_u = \underbrace{\int_I^{II} vdp + g(z_{II}-z_I)}_{w_{stat}} + \underbrace{\frac{c_{II}^2-c_I^2}{2}+w_{fI-A} + w_{fB-II}}
+\end{equation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/adaptation_courbes.png}
+    \caption{Adaptation machine-circuit}
+    \label{fig:adaptation}
+\end{figure}
+Les courbes croissantes sont celles du travail utile du circuit, tandis que la parabole négative est caractéristique de la pompe et est l'expression de l'\autoref{eq:adaptation}. On observe sur l'axe \(\Dot{V}\) une intersection entre l'axe et la courbe du circuit lorsque \(W_{stat}<0\). Il s'agit du point tel qu'il y a un débit dans le circuit sans que la pompe ne fournisse de travail utile. 
+\subsection{Stabilité}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = .5\textwidth]{img/adaptation_stabilité.jpg}
+    \caption{Stabilité}
+    \label{fig:adaptation_stabilité}
+\end{figure}
+Le système est stable si une perturbation de débit autour d'un point de fonctionnement entraîne un effet correcteur qui ramène au point de fonctionnement. Inversement, il est instable si une perturbation de débit autour d'un point de fonctionnement entraîne un effet amplificateur qui éloigne encore plus du point de fonctionnement initial. \\
+En termes mathématiques, il faut que la pente de la courbe \(C\) au point \(P\) soit strictement supérieure à la pente de \(W_u\) au point \(P\). 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : on analyse les pentes, mais pas leur valeur absolue. 
+\end{itemize}
+\subsection{Limite de pompage}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.3\textwidth}
+        \centering
+        \includegraphics[width=0.5\linewidth]{img/limite_pompage_schema.png}
+    \end{subfigure}
+    \begin{subfigure}{.7\textwidth}
+        \centering
+        \includegraphics[width = .5\textwidth]{img/limite_pompage_graphe.png}
+    \end{subfigure}
+\end{figure}
+Le cercle est la pompe, le \(R\) un réservoir, i.e. une "capacité" caractérisée par son niveau de remplissage, et le troisième symbole le reste du circuit. Le couple réservoir circuit est toujours stable, tandis que le couple réservoir-pompe peut être aussi bien stable que instable. On analyse ici le cas où la courbe du travail utile du circuit passe par l'extremum de la parabole. \\
+En cas de fluctuation, le compresseur va se couper, et le niveau du réservoir baisse jusqu'à ce que le compresseur puisse redémarrer naturellement, lorsqu'il passe sous la droite \(Z\) (condition sur les pentes alors respectée). La limite de pompage est la courbe rouge, au-dessus de laquelle une fluctuation de débit risque d'amener la courbe au point \(Q\). 
+\subsection{Mise en série}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/mise_en_serie.png}
+\end{figure}
+La mise en série de deux machines \(m_1\) et \(m_2\) entraîne un travail supérieur sur une certaine tranche de débit. La zone d'intérêt est limitée à gauche par la limite de pompage et à droite par le fait que la courbe est alors inférieure à la courbe de la machine 2. \\
+En série, le travail des deux machines est sommé.
+\subsection{Mise en parallèle}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/mise_en_parallele.png}
+\end{figure}
+La mise en parallèle de deux machines \(m_1\) et \(m_2\) entraîne un débit supérieur sur une certaine tranche de travail.\\
+En parallèle, le débit des deux machines est sommé.
+\chapter{Air humide}
+\section{Mélange de gaz parfaits - Loi de Dalton}
+Dans un mélange de gaz parfaits, on a 
+\begin{equation}
+    \frac{p_k}{p} = \frac{n_k}{n}=\frac{V_k}{V}
+\end{equation}
+avec \(p_k\) la pression partielle et \(n_k\) et \(V_k\) les quantité de matière et volume correspondants. La fraction molaire ou volumique est 
+\begin{equation}
+    [k]\coloneqq \frac{n_k}{n} = \frac{V_k}{V}
+\end{equation}
+et la fraction massique 
+\begin{equation}
+    \frac{m_k}{m} = (k) = [k] \frac{M_k}{M}\qquad M = \sum_k[k]M_k
+\end{equation}
+avec \(M\) la masse molaire. 
+\subsection{Point de rosée}
+Le point de rosée, en refroidissement isobare, est le point auquel le premier constituant du mélange condense. Pour les fumées de combustion à pression atmosphérique, il s'agit de l'eau, et 
+\begin{equation}
+    t_{sat} (18.23kPa) = 58\degree C
+\end{equation}
+Les valeurs pour les autres constituants sont tellement faibles qu'elles ne nous intéresse pas ici\footnote{Le \(CO_2\) n'existe même pas en phase liquide}.\\
+A 58$\degree C$, le mélange est composé de vapeur d'eau saturée et d'incondensables (notés NC : \(CO_2,O_2,N_2\)). Si on poursuit le refroidissement, le mélange est composée de vapeur d'eau toujours saturée, des incondensables, et d'eau liquide. 
+\section{Humidité absolue et humidité absolue totale}
+On définit l'humidité absolue vapeur dans un mélange gazeux : 
+\begin{equation}
+    x_v = \frac{(H_2O)}{1-(H_2O)} = \frac{M_{H_2O}}{M_{NC}} \frac{[H_2O]}{1-[H_2O]} = \frac{M_{H_2O}}{M_{NC}} \frac{p_{H_2O}}{p-p_{H_2O}} \equiv \left[\frac{kg_{H_2O}}{kg_{NC}}\right]
+\end{equation}
+Il s'agit de la quantité massique de vapeur d'eau contenue dans le mélange gazeux par kilogramme de mélange sec ou non condensable. Elle reste consatnte et égale à sa valeur initiale jusqu'au point de rosée. Si on continue à refroidir, \(x_v\) diminue et le mélange gazeux reste saturé.\\
+Pour un mélange à saturation,
+\begin{equation}
+    x_v' = \frac{M_{H_2O}}{M_{NC}} \frac{p_{sat}(t)}{p-p_{sat}(t)}
+\end{equation}
+La masse d'eau condensée est, par conservation de la masse, 
+\begin{equation}
+    m_e = m_{NC} (x_{v,200}-x_{v,25})
+\end{equation}
+Pour des températures \(0.01\degree C <t<t_R\), le mélange est constitué de la vapeur d'eau (limitée par la quantité à saturation), des NC et d'eau liquide. On définit donc l'humidité absolue totale :
+\begin{equation}
+    x= x_v'+x_l
+\end{equation}
+avec \(x_l\) la fraction du liquide à l'extérieur.\\
+Pour des températures \(t<t_R<0.01\degree C\), le mélange est constitué de la vapeur d'eau (limitée par la quantité à sublimation), des NC et d'eau sous forme de glace. On définit donc l'humidité absolue totale de manière différente : 
+\begin{equation}
+    x = x_v''+x_s\qquad x_v'' = \frac{M_{H_2O}}{M_{NC}}\frac{p_{sub}(t)}{p-p_{sub}(t)}
+\end{equation}
+\section{Humidité relative}
+On définit l'humidité relative : 
+\begin{equation}
+    \varphi = \frac{p_{H_2O}}{p_{sat}(t)}
+\end{equation}
+Il s'agit du rapport entre la quantité volumique ou molaire de vapeur d'eau dans le mélange gazeux à la température considérée et la quantité maximale que pourrait contenir ce mélange à cette température. Si on néglige les pressions partielles de vapeur par rapport à la pression totale,
+\begin{equation}
+    \varphi \approx \frac{x_v}{x_v'}
+\end{equation}
+\subsection{Relation humidité relative et absolue}
+Par définition, on a 
+\begin{equation}
+    x_v = \frac{M_{H_2O}}{M_{NC}} \frac{p_{H_2O}}{p-p_{H_2O}} = \frac{M_{H_2O}}{M_{NC}} \frac{\varphi p_{sat}(t)}{p-\varphi p_{sat}(t)} 
+\end{equation}
+Par la dernière égalité, on a donc 
+\begin{equation}
+    \begin{cases}
+        \text{Mélange sec : }\varphi = 0\Longrightarrow x_v = 0\\
+        \text{Mélange saturé : }\varphi = 1\Longrightarrow x_v = x_v' = \frac{M_{H_2O}}{M_{NC}} \frac{p_{sat}(t)}{p-p_{sat}(t)}\\
+    \end{cases}
+\end{equation}
+\section{Applications}
+\subsection{Hygromètre}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/hygrometre.png}
+    \caption{Hygromètre}
+    \label{fig:hygrometre}
+\end{figure}
+Un miroir est refroidi, et la condensation de l'eau du mélange est captée par atténuation d'un faisceau lumineux. Cette atténuation du courant, due à l'apparition d'eau sur le miroir, permet de déterminer le point de rosée, afin de calculer \(x_v\) et \(x_v'\). On mesure donc l'humidité absolue au point de rosée, cela permettant de remonter à l'humidité relative, car \(x_v\) est constant entre \(t\) et \(t_R\), et \(t\) est connu. 
+\section{Enthalpie des constituants et du mélange}
+Dans cette section, nous faisons l'hypothèse que le gaz et la vapeur sont assimilés à des gaz parfaits. La référence enthalpique pour un mélange sec est \(0\degree C\) et celle pour un mélange humide est l'eau liquide à \(0\degree C\). 
+\begin{itemize}
+    \item Pour le mélange sec (non condensable) : \(h_g = c_{p,g}t\)
+    \item Pour la vapeur d'eau : \(h_v = h_{lv0} + c_{pv}t\)
+    \item Pour l'eau liquide : \(h_l = c_{pl}t\)
+    \item Pour l'eau solide : \(h_s = -h_{sl0} + c_{ps}t\)
+\end{itemize}
+\subsection{Enthalpie de mélange}
+Pour un mélange gaz sec (NC) et vapeur d'eau : 
+\begin{equation}
+    h = h_g + x_vh_v
+\end{equation}
+Pour un mélange gaz sec (NC), vapeur d'eau et eau liquide : 
+\begin{equation}
+    h = h_g + x_v'h_v + x_lh_l
+\end{equation}
+Pour un mélange gaz sec (NC), vapeur d'eau et eau solide : 
+\begin{equation}
+    h = h_g + x_v'' h_v + x_sh_s
+\end{equation}
+\section{Cas de l'air}
+La composition de l'air sec est 
+\begin{equation}
+    [O_2] = 0.21\qquad [N_2] = 0.781 \qquad [Ar] = 0.009
+\end{equation}
+L'air humide est un mélange d'air sec et d'eau sous forme de vapeur. La masse molaire de l'air sec est \(M_a = 28.96kg/kmole\). \\
+Dans le cas de l'air, les degrés hygrométriques sont 
+\begin{equation}
+    \varphi = \frac{p_{H_2O}}{p_{sat}(t)} \qquad x_v = 0.622 \frac{\varphi p_{sat}(t)}{p-\varphi p_{sat}(t)}
+\end{equation}
+\subsubsection{Enthalpie d'air humide}
+Pour une température positive, on a 
+\begin{itemize}
+    \item Air humide non saturé (air sec + vapeur d'eau)
+\end{itemize}
+\begin{equation}
+    h = (\underbrace{1.009}_{c_{p,air sec}} + \underbrace{1.854x_v}_{c_{pv}})t + \underbrace{2501.6x_v}_{h_{lv,vap}}
+\end{equation}
+\begin{itemize}
+    \item Air humide saturé (air sec + vapeur d'eau et eau liquide)
+\end{itemize}
+\begin{equation}
+    h = (\underbrace{1.009}_{c_{p,air sec}} + \underbrace{1.854x_v'}_{c_{pv}})t + \underbrace{2501.6x_v'}_{h_{lv,vap}} + \underbrace{4.1868x_lt}_{\text{eau liquide}}
+\end{equation}
+Pour une température négative, ça devient 
+\begin{equation}
+    h = (\underbrace{1.009}_{c_{p,air sec}} + \underbrace{1.854x_v''}_{c_{pv}})t + \underbrace{2501.6x_v''}_{h_{lv,vap}} - \underbrace{(333.5-2.093t)x_s}_{\text{eau solide}}
+\end{equation}
+\section{Température humide}
+La température bulbe humide est la température indiquée par un thermomètre plongé dans un linge humide. Elle est toujours inférieure ou égale à la température bulbe sec, avec égalité en cas de saturation de l'air. L'effet de refroidissement est d'autant plus fort qu'il fait sec.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/bulbe_humide.png}
+    \caption{Température bulbe humide}
+    \label{fig:bulbe-humide}
+\end{figure}
+On a (pas démontrée dans ce cours) la formule suivante : 
+\begin{equation}
+    c_{pa}(t_a-t_h) \approx h_{lv}(x_h-x_a)\qquad h_a-h_h = c_{pa}(t_a-t_h) + h_{lv}(x_a-x_h) \approx 0
+\end{equation}
+\section{Applications}
+\subsection{Mélange adiabatique et isobare}
+Soit un mélange entre deux états hygrométriques \((h_1,t_1,x_1)\) et \(h_2,t_2,x_2)\). Les équations de conservation de la masse sèche et de l'énergie sont 
+\begin{equation}
+    \begin{cases}
+        x = \frac{x_1m_{1s} + x_2m_{2s}}{m_{1s}+m_{2s}}\\
+        h = \frac{h_1m_{1s} + h_2 m_{2s}}{m_{1s}+m_{2s}}\\
+    \end{cases}
+\end{equation}
+Soit maintenant le mélange d'air humide et d'eau (liquide ou vapeur) : l'air humide a une masse sèche \(m_{as}\) et un état hygrométrique \((h_a,t_a,x_a)\). L'eau est de masse \(m_e\) à température \(t_e\). Les équations sont 
+\begin{equation}
+    \begin{cases}
+        x_m = \frac{m_e + x_am_{as}}{m_{as}} \\
+        h_m = \frac{m_eh_e + m_{as}h_a}{m_{as}}\\
+    \end{cases}
+\end{equation}
+En isolant \(h_e\), on trouve finalement
+\begin{equation}
+    h_e = \frac{h_m-h_a}{x_m-x_a}
+\end{equation}
+cette valeur étant la pente de la droite de mélange dans le diagramme \((h,x)\). 
+\subsection{Formation de buée ou de givre}
+La formation de buée a lieu lorsque la température du vitrage est inférieure à la température de rosée (8$\degree C$). Une humidité relative élevée est favorable au phénomène, car il demande alors un écart de température moins important. \\
+Le givre se forme lorsque la température de surface (route,\dots) est plus basse que la température de rosée, elle-même inférieure à 0$\degree C$. Une humidité relative élevée et température basse sont favorable au phénomène. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : la formation de givre est possible pour des températures positives par temps clair, par rayonnement. 
+\end{itemize}
+\chapter{Turbines à gaz}
+\section{Principe de fonctionnement}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/turbine.png}
+    \caption{Turbine à gaz}
+    \label{fig:turbine_gaz}
+\end{figure}
+La puissance électrique fournie en sortie de turbine, i.e. la puissance utile, est 
+\begin{equation}
+    P_e = \underbrace{\Dot{m}_T w_{m,T} - \Dot{m}_C w_{m,C}}_{P_m} - P_{fm+aux}
+\end{equation}
+avec \(P_{fm+aux}\) la puissance consommée par les frottements et le système auxiliaire. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/turbine_cycle.png}
+    \caption{Cycles de turbine à gaz}
+    \label{fig:turbine_cycle}
+\end{figure}
+Les transformations sont les suivantes : 
+\begin{itemize}
+    \item \(1\rightarrow 2\) : Compression (quasi) isentropique.
+    \item \(2\rightarrow 3\) : Combustion isobare dans la chambre.
+    \item \(3\rightarrow 4\) : Détente.
+    \item \(4\rightarrow 1\) : Retour isobare à l'état initial.
+\end{itemize}
+\begin{align}
+    w_m &= \frac{P_m}{\Dot{m}_C} = \frac{\Dot{m}_T}{\Dot{m}_C} w_{m,T} - w_{m,C}\\
+    & = \frac{\Dot{m}_T}{\Dot{m}_C} (h_3-h_4)-(h_2-h_1)
+\end{align}
+Faisons maintenant le bilan énergétique de la combustion (supposée complète) : 
+\begin{equation}
+    \Dot{m}_{fuel}PCI + \Dot{m}_Ch_2 = \Dot{m}_Th_3
+\end{equation}
+La chaleur à la source chaude, i.e. le compresseur, est donc
+\begin{equation}
+    Q_I \coloneqq \frac{\Dot{m}_T}{\Dot{m}_C}h_3 - h_2 = \frac{\Dot{m}_{fuel}}{\Dot{m}_C}PCI = \frac{PCI}{\lambda m_{a1}}
+\end{equation}
+On a donc une nouvelle expression du travail moteur : 
+\begin{align}
+    w_m &= \left(1+\frac{1}{\lambda m_{a1}}\right) (h_3-h_4) - (h_2-h_1)
+    & = \underbrace{\left(\left(1+\frac{1}{\lambda m_{a1}}\right)h_3-h_2\right)}_{Q_I} - \underbrace{\left(\left(1+\frac{1}{\lambda m_{a1}}\right)h_4-h_1\right)}_{Q_{II}}
+\end{align}
+Et on définit maintenant le rendement thermique 
+\begin{equation}
+    \eta_{th} = \frac{W_m}{Q_I} = 1 - \frac{Q_{II}}{Q_I} = 1 - \frac{\left(\left(1+\frac{1}{\lambda m_{a1}}\right)h_4-h_1\right)}{\left(\left(1+\frac{1}{\lambda m_{a1}}\right)h_3-h_2\right)}
+\end{equation}
+\section{Etude paramétrique des performances}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les indices \(C\) et \(T\) correspondent respectivement au compresseur et à la turbine.
+\end{itemize}
+\underline{Hypothèses :}
+\begin{itemize}
+    \item Combustion isobare
+    \item Masse invariable
+    \item Gaz idéal et chaleur massique constante
+\end{itemize}
+\begin{equation}
+    w_m = c_p\left((T_3-T_4)-(T_2-T_1)\right)
+\end{equation}
+\begin{equation}
+    \eta_{th} = 1-\frac{T_4-T_1}{T_3-T_2}
+\end{equation}
+\underline{Hypothèses supplémentaires :}
+\begin{itemize}
+    \item \(T_3-T_4 = \eta_{siT} (T_3-T_{4s})\)
+    \item \(T_2-T_1 = \frac{1}{\eta_{isC}} (T_{2s}-T_1)\)
+\end{itemize}
+Le travail moteur est alors 
+\begin{equation}
+    w_m = \eta_{siT}c_pT_3\left(1-\frac{T_{4s}}{T_3}\right) - \frac{1}{\eta_{siC}}c_pT_1 \left(\frac{T_{2s}}{T_1}-1\right)
+\end{equation}
+\begin{equation}
+    w_m = c_pT_3\left(1-\left(\frac{T_{4s}}{T_3}\right)^{\eta_{piT}}\right) - c_pT_1\left(\left(\frac{T_{2s}}{T_1}\right)^{\frac{1}{\eta_{piC}}}-1\right)
+\end{equation}
+Si on définit maintenant \(X\) et \(Y\) tels que 
+\begin{equation}
+    \begin{cases}
+        W_m = c_pT_1\left(\eta_{siT}Y\left(1-\frac{1}{X}\right)-\frac{1}{\eta_{siC}}(X-1)\right)\\
+        w_m = c_pT_1\left(Y\left(1-X^{-\eta_{piT}}\right)-\left(X^{\frac{1}{\eta_{piC}}}-1\right)\right)
+    \end{cases}
+\end{equation}
+Soient \(X_A\) la valeur de \(X\) telle que le travail moteur est maximal et \(X_0\) tel qu'il est nul. A \(Y\) fixé, leurs expressions respectives sont 
+\begin{align}
+    X_0 &= \eta_{siC}\eta_{siT}Y \approx \eta_{piT}\eta_{piC}Y
+    X_A &= \sqrt{\eta_{siC}\eta_{siT}Y} \approx \sqrt{\eta_{piT}\eta_{piC}Y}
+\end{align}
+Soit finalement \(X_B\) la valeur de \(X\) maximisant le rendement thermique. On a \(X_A < X_B < X_0\). \\
+\subsection{Indice de répartition et rendement mécanique}
+On définit de plus l'indice de répartition :
+\begin{equation}
+    \tau_C \coloneqq \frac{W_{mC}}{W_{mT}} = \frac{1/\eta_{si,T} c_pT_1(X-1)}{\eta_{si,T}c_pT_3(X-1)/X} = \frac{X}{X_0}
+\end{equation}
+On peut écrire les puissances de pertes comme suit :
+\begin{equation}
+    P_{fm+aux} = k(P_{mC}+P_{mT})
+\end{equation}
+avec \(k\) un coefficient de pertes. Le rendement mécanique est donc par définition
+\begin{equation}
+    \eta_{mec} = 1-\frac{P_{fm+aux}}{P_m} = 1-k\frac{1+\tau_C}{1-\tau_C} = 1-k\frac{X_0+X}{X_0-X}
+\end{equation}
+\section{Cycle aval}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/cycle_aval.png}
+    \caption{Cycle aval}
+    \label{fig:cycle-aval}
+\end{figure}
+Un cycle aval est le cycle permettant de sortir les gaz d'échappement de la turbine à gaz. En effet, leur pression étant inférieure à la pression atmosphérique, il faut fournir un travail pour les sortir de la turbine. \\
+La partie rose sur la figure \ref{fig:cycle-aval} est ce que l'on peut réellement utiliser dans ce but, et la partie bleue est les pertes qui y sont liées. On a donc un rendement de cycle aval tel que 
+\begin{equation}
+    \begin{cases}
+        e_4 = H_4-H_1-T_1(S_4-S_1)\\
+        a_4 = T_1(S_4-S_1)\\
+    \end{cases}
+    \Longrightarrow \eta_{CAV} = \frac{e_4}{e_4+a_4} = 1-\frac{T_1(S_4-S_1)}{H_4-H_1} = 1-\frac{T_1}{T_4-T_1}\log \left(\frac{T_4}{T_1}\right)
+\end{equation}
+\subsection{Cycle combiné}
+On combine évidemment le cyle aval avec une turbine à gaz. On a donc un rendement total. Il s'exprime comme suit :
+\begin{equation}
+    \eta_{TGCAV} = \eta_{TG}+(1-\eta_{TG})\eta_{CAV}\eta_R
+\end{equation}
+avec \(\eta_R\) un coefficient dépendant des hypothèses du cycle (e.G. adiabatique,\dots). Si on remplace les rendements par leur expression, dans le cas \(\eta_R = 1\), 
+\begin{equation}
+    \eta_{TGCAV} = 1-\frac{T_1}{T_3-T_2}\log\left(\frac{T_4}{T_1}\right)
+\end{equation}
+\chapter{Machines frigorifiques}
+\section{Cycle de Carnot}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/carnot.png}
+    \caption{Cycle de Carnot}
+    \label{fig:carnot}
+\end{figure}
+Le cycle de Carnot est un cycle théorique idéal composé de 
+\begin{itemize}
+    \item A \(\rightarrow\) B : évaporation isotherme, c'est l'effet utile du cycle.
+    \item B \(\rightarrow\) C : compression isentropique, c'est le travail permettant d'augmentr la température.
+    \item C \(\rightarrow\) D : condensation isotherme.
+    \item D \(\rightarrow\) A : détente isentropique.
+\end{itemize}
+\begin{align}
+    q_I &= T_I(s_B-s_A)\\
+    q_{II} &= T_{II} (s_B-s_A)\\
+    w_{m,cycle} &= (T_{II}-T_I(s_B-s_A) >0
+\end{align}
+Le coefficient de performance (COP) d'un frigo et d'une pompe à chaleur son respectivement
+\begin{align}
+    COP_{fri} &\triangleq \frac{q_I}{w_{m,cycle}} = \frac{T_I}{T_{II}-T_I}\\
+    COP_{PAC} & \triangleq \frac{|q_{II}|}{w_{m,cycle}} = \frac{T_{II}}{T_{II}-T_I}
+\end{align}
+\section{Cycle frigorifique de référence}
+Les étapes du cycle de référence sont 
+\begin{itemize}
+    \item 1\(\rightarrow\) 2 : compression isentropique
+    \item 2\(\rightarrow\) 3 et 4 \(\rightarrow\) 1 : évolutions isobares
+    \item 3 \(\rightarrow\) 4 : détente isenthalpique
+\end{itemize}
+\begin{figure}
+    \begin{subfigure}[b]{.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/cycle_ref.png}
+    \label{fig:cycle_frigo_ref}
+    \end{subfigure}
+    \begin{subfigure}[b]{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/frigo_ref_st.png}
+        \label{fig:cycle_frigo_ref_st}
+    \end{subfigure}
+    \caption{Cycle frigorifique de référence}
+\end{figure}
+Comme toujours en cycle frigorigique, l'effet utile est ici \(q_I\):
+\begin{align}
+    q_I &= \int_4^1Tds = T_1(s_1-s_4) = h_{lv}(x_1-x_4) = h_1-h_4>0\\
+    q_{II} &= \int_2^3 Tds = h_3-h_2 - \underbrace{\int_2^3vdp}_{=0} < 0\\
+    w_m &= \int_1^2vdp = h_2-h_1 - \underbrace{\int_1^2Tds}_{=0}
+\end{align}
+On trouve donc le coefficient de performance suivant, le cycle étant un frigo :
+\begin{equation}
+    COP = \frac{q_I}{w_m} = \frac{q_I}{h_2-h_1} = \frac{q_I}{|q_{II}|-q_I} = \frac{h_1-h_4}{h_2-h_1}
+\end{equation}
+\section{Choix des fluides frigorigènes}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les fluides frigorigènes ne sont pas des gaz parfaits.
+\end{itemize}
+\subsection{Critères thermodynamiques}
+\begin{itemize}
+    \item Faisabilité : Il faut que la pression de l'évolution isobare de l'effet utile soit supérieure à la pression du point triple : \(p_{4-1} > p_{XYZ}\).
+    \item Efficacité : On veut un effet utile élevé, il faut donc que \(\frac{h_1-h_4}{h_2-h_1}\) soit élevé \(\Longleftrightarrow \frac{h_{lv(4-1)}}{c_{p(1-2)}}\) soit élevé également, l'équivalence étant due au caractère polytropique de la transformation 1-2.
+\end{itemize}
+\subsection{Critères de sécurité et environnementaux}
+\begin{itemize}
+    \item Toxicité
+    \item Inflammabilité
+    \item Toxicité des produits de dégradation
+    \item Effet sur l'ozone de la stratosphère
+\end{itemize}
+\subsection{Critères technologiques}
+\begin{itemize}
+    \item Une masse volumique élevée pour le fluide frigorigène impliquera une plus forte compacité.
+    \item Pression de fonctionnement : il faut que \(p_{2-3}\) soit modérée, et \(p_{4-1}\) supérieure à la pression atmosphérique.
+    \item Propriétés aérauliques et thermiques : une viscosité faible impliquera un écoulement et un transfert plus simples. De plus, une conductivité thermique élevée aidera au transfert thermique.
+\end{itemize}
+\subsection{Compatibilité des matériaux et durabilité}
+\begin{itemize}
+    \item Il faut prendre en compte la compatibilité du fluide avec les lubrifiants, la compatibilité du matériaux avec la machine et la stabilité chimique et thermique. 
+\end{itemize}
+\subsection{Cout}
+\begin{itemize}
+    \item On est restreint au niveau de la taille de la machine par les coût que cela engendre.
+\end{itemize}
+\subsection{Exemples de fluides frigorigènes}
+\begin{itemize}
+    \item Fluides inorganiques : \(NH_3\) (toxique), \(H_2O\), \(CO_2\)
+    \item Alacanes et alcènes légers : \(C_2H_6\), \(C_3H_8\), \(C_4H_{10}\), \(C_2H_4\) (inflammable), \(C_3H_6\) (inflammable aussi).
+    \item Chlorofluorocarbones et halocarbones : \(C_nH_pCl_qBr_rF_s\) avec l'égalité \(p+q+r+s = 2n+2\).
+\end{itemize}
+\section{Irréversibilités en cycle réel}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{img/cycle_frigo_irr.png}
+    \caption{Irréversibilités en cycle frigorifique}
+    \label{fig:cycle_frigo_irr}
+\end{figure}
+En cycle réel, il y a des irréversibilités aux échangeurs : on a \(t_9>t_3\) au condenseur et \(t_{12}<t_4\) à l'évaporateur. Cela implique une dégradation u \(COP\), par un accroissement de \(T_{II}-T_I\) et une diminution de \(T_I\). 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : ces écart inévitables sont de l'ordre de \(10\degree C\). 
+\end{itemize}
+On a également un sous-refroidissement au condenseur.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{img/sous-refroidi_cycle_frigo.png}
+    \caption{Sous-refroissement des cycles réels}
+    \label{fig:cycle_frigo_sous_refroidissement}
+\end{figure}
+Le sous-refroidissement a pour intérêt d'éviter le cycle \(1-2-A-B\). Il est composé d'une partie externe au système de base mais qui dégrade bien le \(COP\), et une partie interne par échange aux étapes \(3-7\) et \(8-4\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : le sous-refroidissement nécessaire est de l'ordre de 3 à 5\(\degree C\). 
+\end{itemize}
+\section{En cascade}
+On peut également mettre des cycles frigorifiques en cascade, afin de descendre à des températures très faibles 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/frigo_cascade.png}
+    \caption{Cycles frigorifiques en cascade}
+    \label{fig:frigo_cascade}
+\end{figure}
+La courbe noir est la cloche de saturation correspondant au cycle initial rouge, tandis que la cloche grise est celle du cycle bleu. Pour chaque nouveau cycle ajouté, on aura une courbe de saturation différente. 
+
+\chapter{Cycles à vapeur}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : pour rappel, les aires d'un cycle en diagramme \((p,v)\) ou \((T,s)\) sont identiques et on a \(w_m = Aire - w_f = q\)
+\end{itemize}
+\section{Description}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/cycle_vapeur.png}
+    \caption{Cycle moteur à vapeur}
+    \label{fig:cycle-vapeur}
+\end{figure}
+La figure \ref{fig:cycle-vapeur} contient tous les éléments essentiels à un cycle moteur à vepeur. On le simplifie toutefois ici par le cycle suivant :
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/cycle_vapeur_simple.png}
+    \caption{Modèle thermodynamique simple d'un cycle moteur à vapeur}
+    \label{fig:cycle-vapeur-simple}
+\end{figure}
+Nous avons les éléments suivants : 
+\begin{itemize}
+    \item \(1-2\) : pompe P
+    \item \(2-2'\) : \color{red} TODO\color{black}
+    \item \(3-4\) : turbine T et générateur de courant
+    \item \(4-1\) : condenseur C
+\end{itemize}
+Le diagramme \(T,s\) équivalent est le suivant :
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/cycle_vapeur_ts.png}
+    \caption{Diagramme \((T,s)\) d'un cycle moteur à vapeur}
+    \label{fig:cycle_vapeur_ts}
+\end{figure}
+\section{Analyse énergétique}
+Analysons les différents éléments de ce cycle : 
+\begin{align}
+    Q_I &= h_3-h_2 >0 \\
+    Q_{II} &= h_1-h_4<0\\
+    W_{m,P} &= \int_1^2vdp + W_f \approx \frac{\int_1^2vdp}{\eta_{iP}} = h_2-h_1 = \frac{h_{2s}-h_1}{\eta_{s,P}}
+\end{align}
+la dernière égalité étant valable uniquement si le rendement isentropique est connu. 
+Finalement, dans la turbine,
+\begin{equation}
+    W_{mT} = h_3-h_4 = (h_3-h_{4s}) \eta_{s,T}
+\end{equation}
+\section{Rendement de cycle}
+Par le premier principe, on a 
+\begin{equation}
+    W_ m Q_I-|Q_{II}| = W_{mT} - W_{mP}
+\end{equation}
+et donc le rendement énergétique du cycle, ou rendement thermique, est 
+\begin{equation}
+    \eta_{cyclen} = \eta_t = \frac{W_m}{Q_I} = 1- \frac{|Q_II|}{Q_I}
+\end{equation}
+En supposant que \(W_{mP}\ll W_{mT}\), le rendement de cycle est approximé :
+\begin{equation}
+    \eta_{cyclen} \approx \frac{h_3-h_4}{h_3-h_1}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : on a une condition sur \(h_4\) : pour que le cycle fonctionne il faut que \(x_4\ge 0.88\). 
+\end{itemize}
+\section{Rendement total}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/rendement_total.png}
+    \caption{Rendement total de cycle}
+    \label{fig:rendement-total}
+\end{figure}
+Le rendement total est le rapport entre la puissance électrique créée et la puissance de combustion fournie. En \(Q_I\), il y a des pertes liées à la combustion, la cheminée, l'isolement des parois et les imbrûlés. A la turbine, il y a des pertes mécaniques lors de la production d'électricité. Il y a également des pertes à la source froide du condenseur. Le rendement total de cycle est donc
+\begin{align}
+    \eta_{toten} &= \frac{P_e}{\Dot{m}_cPCI} = \underbrace{\frac{P_e}{P_m}}_{\text{pertes méca}} \underbrace{\frac{P_m}{\Dot{m}_v(h_3-h_2)}}_{\text{source froide}} \underbrace{\frac{\Dot{m}_v(h_3-h_2}{\Dot{m}_cPCI}}_{\text{source chaude}}\\
+    &= \eta_{mec}\eta_{cyclen}\eta_{gen}
+\end{align}
+Les développements des différentes pertes sont les suivants : 
+\begin{itemize}
+    \item Pertes mécaniques :
+\end{itemize}
+\begin{equation}
+    p_{mec} = P_e-P_m
+\end{equation}
+\begin{itemize}
+    \item Pertes à la source froide : 
+\end{itemize}
+\begin{equation}
+    p_{II} = P_m - \Dot{m}_v(h_3-h_2) = \Dot{m}_vW_m - \Dot{m}_vQ_I
+\end{equation}
+\begin{itemize}
+    \item Pertes au générateur de vapeur :
+\end{itemize}
+\begin{equation}
+    p_{chem} + p_{imb} + p_{isol} = \Dot{m}_v (h_3-h_2) - \Dot{m}_cPCI
+\end{equation}
+\section{Cycle à soutirage}
+\begin{figure}
+\begin{subfigure}[b]{.5\textwidth}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/soutirage.png}
+    \caption{Cycle à soutirage}
+    \label{fig:soutirage}
+    \end{subfigure}
+    \begin{subfigure}[b]{.5\textwidth}
+        \centering
+        \includegraphics[width=0.5\linewidth]{img/soutirage_ts.png}
+        \caption{et son diagramme \((T,s)\)}
+        \label{fig:soutirage_st}
+    \end{subfigure}
+\end{figure}
+Le soutirage consiste à dévier une fraction \(\frac{X}{1+X}\) de la vapeur en sortie de turbine vers un réchauffeur (R). Là, la vapeur donne de la chaleur à l'eau liquide (échange interne au cycle) et donc une partie de la vapeur condense. Elle passe ensuite par un sous-refroidisseur (SR) et une vanne de détente (V)\footnote{Une vanne de détente est équivalente à une forte perte de charge.}. Elle est ensuite réinjectée dans le condenseur et termine le cycle normalement. \\
+La vanne de détente a pour intérêt de renvoyer de l'eau à même pression que dans le condenseur. \\
+
+Les différents états étant très proches, on fait les hypothèses suivantes : 
+\begin{itemize}
+    \item \(h_5\approx h_6\approx h_9\approx h_10\) (point \(a\) dans la suite).
+    \item \(h_1\approx h_8\) (point \(b\) dans la suite).
+\end{itemize}
+On a donc 
+\begin{equation}
+    X(h_7-h_9) = (1+X)(h_6-h_1)
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : Le \(X\) dans ce cycle ne correspond pas au \(x\) des chapitres précédents!! (titre,etc).
+\end{itemize}
+Afin de simplifier le cycle, on introduit un cycle à soutirage équivalent au précédent, grâce aux hypothèses ci-dessus :
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/soutirage_eq.png}
+    \caption{Cycle à soutirage équivalent}
+    \label{fig:soutirage_eq}
+\end{figure}
+Par les hypothèses des points \(a\) et \(b\), on peut simplifier le cycle sans perte de généralité en ne gardant que le réchauffeur. On peut maintenant calculer le nouveau rendement de cycle : 
+\begin{itemize}
+    \item Rendement du cycle de référence : 
+\end{itemize}
+\begin{equation}
+    \eta_{cyclen}^1 = \frac{W_m^1}{Q_I^1} = 1-\frac{|Q_{II}^1|}{Q_I}
+\end{equation}
+\begin{itemize}
+    \item Rendement du cycle avec soutirage :
+\end{itemize}
+\begin{equation}
+    \eta_{cyclen}^{1+X} = \frac{W_m^{1+X}}{Q_I^{1+X}} = \frac{W_m^1+W_m^X}{Q_I^1+Q_I^X} = \frac{W_m^1+Q_I^X}{Q_I^1+Q_I^X} > \frac{W_m^1}{Q_I^1} = \eta_{cyclen}^1
+\end{equation}
+Cela démontre que le rendement avec soutirage sera toujours plus élevé que sans.
+\begin{itemize}
+    \item Rendement du cycle "\(X\)" :
+\end{itemize}
+\begin{equation}
+    \eta_{cyclen}^X = \frac{W_m^X}{Q_I^X} = 1-\frac{Q_{II}^X}{Q_I^X} \approx 1
+\end{equation}
+Ce rendement vaut presque 1 car on a \(Q_{II}^X \approx 0\). Cependant, ce cycle ne peut pas exister seul. \\
+
+En pratique, on place le soutirage de façon à couper la détente en deux chutes d'enthalpie égales. La fraction soutirée est donc une conséquence du bilan au réchauffeur. 
+\begin{equation}
+    X = \frac{h_b-h_a}{h_7-h_b}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : on peut ajouter plusieurs soutirages, le rendement aura cependant une valeur asymptotique, qui ne variera donc plus après un certain nombre de soutireurs.
+\end{itemize}
+\section{Cycle à resurchauffe}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/resurchauffe.png}
+    \caption{Cycle à resurchaffe}
+    \label{fig:resurchauffe}
+\end{figure}
+La resurchauffe consiste à séprarer la turbine en une zone haute pression et une zone basse pression, afin de rechauffer une partie de la vapeur et de la renvoyer directement vers la zone basse pression. On va donc chauffer plus de vapeur dans le générateur de vapeur, mais sans changer la quantité de combustible utilisé. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : on ne fait jamais plus d'une resurchauffe, car la vapeur serait trop détendue. 
+\end{itemize}
+Ce genre de machine est apparue avec l'augmentation des puissances requise : elles permettent des pressions de vapeur vive plus élevées, tout en respectant la contrainte de titre en fin de détente. \\
+Le rendement de cycle est 
+\begin{equation}
+    \eta_{cyclen} = \frac{(h_3-h_5)+(h_6-h_7)}{(h_3-h_2) + (h_6-h_5)} > \frac{h_6-h_7}{h_6-h_2}
+\end{equation}
+De nouveau, le rendement avec resurchauffe est donc toujours supérieur à celui sans. \\
+
+En plus de mettre plusieurs soutireurs dans un cycle, on peut également combiner soutirage et resurchauffe. On introduit alors une turbine à pression intermédiaire, de laquelle part une partie des soutireurs. Ils peuvent également partir de la turbine basse pression. 
+\section{Cycles combinés}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/cycle_combiné.png}
+    \caption{Cycles combinés}
+    \label{fig:cycles_combinés}
+\end{figure}
+On combine ici un cycle à vapeur avec une turbine à gaz, lesquels sont liés au niveau du générateur de vapeur. Cela a pour intérêt de récupérer les pertes thermiques à l'échappement de la turbine à gaz. On produit donc de l'électricité sans consommation supplémentaire d'énergie primaire. La chaudière de récupération est ici l'élément clé du cycle. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : on ne peut pas faire de soutirage dans un tel système. 
+\end{itemize}
+Les rendements qui nous intéressent ici sont les suivants :
+\begin{equation}
+    \eta_{tot,g} = \frac{P_g}{P_{prim}} = \frac{P_g}{\Dot{m}_cPCI} \qquad \eta_{tot,v} = \frac{P_v}{\Dot{m}_v(h_3-h_1)}\qquad \eta_{tot} = \frac{P_g+P_v}{\Dot{m}_cPCI}
+\end{equation}
+\chapter{Questions théoriques}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Est-ce que la chaleur échangée entre un système est son extérieur est une variable d'état du système?}
+                 ]
+    La chaleur échangée par le système avec son extérieur n’est pas une variable d’état car \(\delta Q\) n’est pas une différentielle exacte \(\oint \delta Q \neq 0\). On peut également le montrer par un contre exemple, si la chaleur échangée était une variable d’état, alors elle serait indépendante de la transformation. Hors on calcul que la chaleur échangée par une transformation adiabatique et une transformation isotherme n’est pas la même.
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Donner la définition d'un processus adiabatique. Donner un exemple de processus adiabatique réversible puis irréversible.}
+                 ]
+    Un processus est adiabatique quand \(\delta Q = 0\) tout au long de la transformation. Un exemple de processus adiabatique réversible est la compression d’un piston dont les parois sont parfaitement isolées et sans frottements. Pour rendre la transformation adiabatique irréversible, il suffit d’ajouter des frottements.
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Donner la définition mathématique ainsi que la signification physique de \(c_p\) et \(c_v\).}
+                 ]
+    Les définitions mathématiques des chaleurs spécifiques sont les suivantes
+    \begin{equation}
+        c_p = \left.\left(\frac{\partial h}{\partial t}\right)\right|_p\qquad  c_v = \left.\left(\frac{\partial u}{\partial T}\right)\right|_v
+    \end{equation}
+    \begin{itemize}
+        \item \(c_p\) représente la quantité de chaleur qu’il faut fournir à 1kg de matière pour la faire monter de 1K à pression constante.
+        \item \(c_v\) représente la quantité de chaleur qu’il faut fournir à 1kg de matière pour la faire monter de 1K à volume constant.
+    \end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Donner la définition de l’enthalpie libre F de Helmoltz ainsi que de l’enthalpie libre G de Gibbs. Ecrivez l’équation de Gibbs sous la forme différentielle de F et G.}
+                 ]
+    On a 
+    \begin{minipage}{.5\textwidth}
+        \begin{align*}
+            F &= U-TS\\
+            dF &= dU-TdS-SdT
+        \end{align*}
+    \end{minipage}
+    \begin{minipage}{.5\textwidth}
+        \begin{align*}
+            G &= H-TS\\
+            dG &= dH-TdS-SdT
+        \end{align*}
+    \end{minipage}
+    Les formules de Gibbs sont les suivantes : 
+    \begin{equation}
+        TdS = dU+pdV \qquad TdS = dH-Vdp
+    \end{equation}
+    En injectant les différentielles de F et G dans les formules de Gibbs, on trouve
+    \begin{align*}
+        dU - SdT-dF &= dU+pdV\\
+        dG-dH+TdS &= dF +pdV\\
+        dG-dH+TsD &= dF+pdV
+    \end{align*}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Dérivez l’équation (1.18), page 9 des notes du chapitre 1, \(\alpha=p\beta K\)}
+                 ]
+    La matrice des dérivées partielle doit posséder un nullspce non trivial, il faut donc annuler son déterminant. Par définition des paramètres \(\alpha,\beta,K\), on trouve cette relation.
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Démontrer que les expressions suivantes sont valables pour toutes les espèces,
+\begin{equation}
+    \left.\left(\frac{\partial T}{\partial p}\right)\right|_s = \left.\left(\frac{\partial v}{\partial s}\right)\right|_p\qquad \left.\left(\frac{\partial s}{\partial p}\right)\right|_T = \left.\left(\frac{\partial v}{\partial T}\right)\right|_p
+\end{equation}}
+                 ]
+    Sur base des différentielles, on a 
+    \begin{equation*}
+        \left(.\left(\frac{\partial F}{\partial V}\right)\right|_T = -p\qquad \left(.\left(\frac{\partial F}{\partial T}\right)\right|_v = -s \qquad \left(.\left(\frac{\partial G}{\partial p}\right)\right|_T = v \qquad \left(.\left(\frac{\partial G}{\partial T}\right)\right|_p = -s
+    \end{equation*}
+    Par le théorème de Schwarz, 
+    \begin{align*}
+        \frac{\partial^2F}{\partial T\partial v} &= \frac{\partial^2 F}{\partial v\partial T}\\
+        \left.\left(\frac{\partial p}{\partial T}\right)\right|_v = \left.\left(\frac{\partial s}{\partial s}\right)\right|_p
+    \end{align*}
+    On a donc la première égalité. On trouve la seconde de la même manière avec \(G\).
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Dériver l’équation suivante : \(c_p-c_v = \alpha \beta pvT\)}
+                 ]
+    
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Dériver l’équation suivante, \(l_T = (c_p-c_v)/\alpha v\) . Le coefficient \(l_T\) apparait dans l’équation (1.19), page 9 des notes du chapitre 1.}
+                 ]
+    
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Démontrer que l’entropie d’un gaz idéal est donnée par l’expression suivante \(s = s_0(T_0)-R_g\ln{\frac{p}{p_0}}+ \int^T_{T_0} c_p \frac{dT}{T} = s_0(T_0)+R_g\ln{\frac{\rho_0}{\rho}} + \int^T_{T_0} c_v \frac{dT}{T}\).}
+                 ]
+    On fait l'intégrale des relations de Gibbs.
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Donner l’expression de la variation d’entropi quand on chauffe un gaz idéal de \(T_i\) jusqu’à $T_f$ sous pression constante. Donner également l’expression de la variation d’entropique quand l’élévation de la température est effectuée sous volume constant. Lequel des deux processus donne la plus grande augmentation d’entropie ?}
+                 ]
+    Relations de Gibbs encore. Le processus qui mène à la plus grande variation d'entropie est l'augmentation de température à pression constante, car \(c_p>c_v\).
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Définissez la transformation polytropique et établissez-en les équations appliquées au gaz idéal.}
+                 ]
+    Une transformation polytropique est une relation pour laquelle une des relations suivante est respectée :
+    \begin{equation}
+        \frac{dH}{TdS} = \Psi \qquad \frac{dU}{TdS} = \Phi
+    \end{equation}
+    Dans le plan $(T,S)$ :
+    \begin{equation}
+        dU = c_vdT = \Phi TdS\qquad dH =c_pdT = \Psi TdS
+    \end{equation}
+    Ces relations peuvent être intégrées pour obtenir des \(\Delta S\), mais en pratique, on ne pourra pas résoudre ces intégrales, car \(c_v = c_v(T)\) et \(c_p = c_p(T)\).\\
+    Dans le plan (p, V) :
+    \begin{equation}
+        dU = c_vdT = \Phi TdS \qquad dH = c_pdT = \Psi TdS
+    \end{equation}
+    En divisant ces deux équations l’une par l’autre, on trouve :
+    \begin{equation}
+        \frac{\frac{dp}{p}}{\frac{dV}{V}} = \frac{1-\Psi}{\Phi - 1} = -m
+    \end{equation}
+    A nouveau, on ne peut pas détailler plus comme dans le cas d’un gaz parfait, car \(c_p\) et $c_v$ ne sont pas constants, donc \(\Phi,\Psi\) et \(m\) non plus.
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Quelle est la loi de Dalton ? Donner l’équation d’état d’un mélange homogène des gaz idéaux en appliquant la loi.}
+                 ]
+    Quand on mélange plusieurs gaz qui ne réagissent pas chimiquement, chacun d’eux se répartit uniformément dans tout le volume offert comme s’il était seul et la pression du mélange a pour valeur la somme des pressions dites partielles qu’aurait chaucun d’eux s’il occupait seul le volume total du mélange. En pratique, si on a deux gaz idéaux \(\alpha,\beta\) dans un volume, on aura :
+    \begin{align*}
+        p_t &= p_\alpha + p_\beta \\
+        p_\alpha = \frac{m_\alpha R^*T}{V_t}\\
+        p_\beta = \frac{m_\beta R^*T}{V_t}\\
+    \end{align*}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Démontrer que si l’énergie interne et l’enthalpie d’une substance ne dépendent que de la température, alors cette substance est un gaz idéal.}
+                 ]
+    On a : 
+    \begin{equation}
+        dU = TdS - pdV = C_vdT \qquad dH = TdS + V dp = C_pdT
+    \end{equation}
+    Donc, si $dU$ et $dH$ ne dépendent que de la température, cela signifie que c’est également le cas pour \(c_v\) et \(c_p\), donc c’est un gaz idéal.
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Considérer l’équation des transformations isochores ainsi que l’équation des transformations isobares d’un gaz idéal. Quelle entre les deux équations a la pente la plus élevée dans le plan (T,S). Justifiez votre réponse.}
+                 ]
+    Pentes des isochores plus élevées par les relations de Gibbs.
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Démontrer que l’expression suivante est valable pour des gaz idéaux : \(c_p-c_v = R^*\)}
+                 ]
+    On a la relation suivante : \(c_p-c_v = \alpha \beta pvT\). Pour un gaz idéal, \(\alpha\) et \(\beta\) ont été déterminés expérimentalement et pour des valeurs de température, pression où le gaz peut exister, on a :
+    \begin{equation}
+        \alpha = \frac{1}{T}\qquad \beta = \frac{1}{T}
+    \end{equation}
+    On trouve alors 
+    \begin{equation}
+        c_p-c_v = \frac{pv}{T} = R
+    \end{equation}
+    La dernière égalité par la loi des gaz parfaits.
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Démontrer que l’expression suivante est valable pour des gaz idéaux : \(c_p-c_v = R^*\).}
+                 ]
+    On a la relation suivante : \(c_p-c_v = \alpha \beta pvT\). Pour un gaz idéal, \(\alpha\) et \(\beta\) ont été déterminés expérimentalement et pour des valeurs de température, pression où le gaz peut exister, on a :
+    \begin{equation}
+        \alpha = \frac{1}{T}\qquad \beta = \frac{1}{T}
+    \end{equation}
+    On trouve alors 
+    \begin{equation}
+        c_p-c_v = \frac{pv}{T} = R
+    \end{equation}
+    La dernière égalité par la loi des gaz parfaits.
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Démontrer que le travail produit par l’expansion isotherme de N moles d’un gaz idéal est donnée par \(W = -NRT \ln \left(\frac{V_f}{V_i}\right)\) où $V_i$ est le volume initial et $V_f$ est le volume final.}
+                 ]
+    Trivial.                
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Donner la définition de la pression partielle $p_i$ du constituant i dans un mélange homogène de n constituants. Dériver l’expression de la production d’entropie lors de l’opération de mélange des \(\eta_A\) moles d’un gaz idéal A avec \(\eta_B\) moles d’un gaz idéal B. Initialement, les deux gaz occupent des volumes différents, $V_A$ et $V_B$ séparés par un diaphragme.}
+                 ]
+    Trivial.
+\end{tcolorbox}
+Turbines à gaz
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={Dessiner un cycle thermodynamique idéal d’une turbine à gaz sur les plans \((p-v)\) et \((T-s)\). Décrire les 4 étapes du cycle.}
+                 ]
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\textwidth]{img/turbine_vapeur.png}
+        \caption{e}
+        \label{e=}
+    \end{figure}
+    \begin{itemize}
+        \item 1-2 : compression (quasi) isentropique
+        \item 2-3 : combustion isobare
+        \item 3-4 : détente
+        \item 4-1 : compression isobare
+    \end{itemize}
+\end{tcolorbox}
+\begin{tcolorbox}[breakable,
+                  colback=white,
+                  colframe=white!75!black,
+                  title={On considère le cycle d’une turbine à gaz. On suppose que i) p2 = p3, ii) $c_p$ = cste. et iii) les flux de masse à la turbine et au compresseur sont égaux. Dériver l’expression du rendement thermique du cycle.}
+                  ]
+    
+\end{tcolorbox}
+\end{document} 

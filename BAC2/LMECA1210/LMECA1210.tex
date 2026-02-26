@@ -1,0 +1,556 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\renewcommand{\contentsname}{Table des matières}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.6]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LMECA1210 Description et analyse des mécanismes \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2022-2023 - Q2}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les petits exercices faits dans le cours et au tableau font partie de l'examen.
+\end{itemize}
+
+\chapter{Cinématique}
+\section{Etude des déplacements}
+\begin{center}
+    \includegraphics[width = 0.8\textwidth]{img/Grandeurs utiles.png}
+\end{center}
+Pour rappel, une masse ponctuelle a 3 ddl, et un corps rigide 6.
+\subsection{Déplacements finis élémentaires}
+\begin{itemize}
+    \item Translation suivant un axe fixe.
+    \item Rotation autour d'un axe fixe.
+    \item [\(\rightarrow\)] Remarque : Si plusieurs rotations se font autour d'un même axe, ces rotations successives sont commutatives, mais elles ne le sont pas si elles se font selon des axes quelconques.
+\end{itemize}
+\subsection{Théorème d'Euler}
+\begin{center}
+    \textbf{"Tout déplacement d'un solide ayant un point fixe se résume à une rotation autour d'un axe unique, fixe, passant par ce point."}
+\end{center}
+
+Le théorème d'Euler est vérifié si la matrice de rotation de ce déplacement a une valeur propre égale à \(1\).
+
+\begin{itemize}
+    \item Des rotations successives autour d'axes \(a_i\) parallèles sont équivalentes à une rotation autour d'un axe \(a\) prallèle aux \(a_i\).
+    \item Deux rotations successives d'angles \(\alpha\) et \(-\alpha\) sont équivalentes à une translation. On peut donc remplacer une translation par deux rotations d'angles opposés et inversément.
+\end{itemize}
+\subsection{Théorème de Chasles}
+\begin{center}
+    \textbf{"Un déplacement fini quelconque d'un solide peut être représenté par une combinaison d'une translation et d'une rotation."}
+\end{center}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : un mouvement hélicoïdal est caractérisé par des axes de translation et de rotation de même direction.
+\end{itemize}
+
+\subsubsection{Déplacement infinitésimal}
+Un déplacement infinitésimal est un cas particulier de déplacement fini autour d'un axe hélicoïdal instantané.
+\begin{itemize}
+    \item Propriété : Des rotations infinitésimales autour d'axes sécants sont commutatives.
+\end{itemize}
+Le mouvement général d'un solide est une séquence de déplacements hélicoïdaux infinitésimaux autour d'axes hélicoïdaux instantanés successifs.
+
+\section{Vitesses}
+\begin{minipage}{0.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Vitesses.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Vitesse absolue du point \(M\) : \(\Vec{v}_M(t) = \frac{d}{dt}\Vec{OM}(t) = \Vec{v}_P + \Vec{v}_{M/P}\)\\
+    
+    Vitesse angulaire absolue de la base \(\{\Hat{x}\}\) : \(\Vec{\omega}\).
+\end{minipage}
+\newline
+
+\underline{Types de vitesse :}
+\begin{itemize}
+    \item Vitesse d'entraînement d'origine \((P)\) : \(\Vec{v}_P\).
+    \item Vitesse d'entraînement de \(M\) : \(\Vec{v}_P + \Vec{\omega}\times \Vec{\rho}_M\).
+    \item Vitesse relative de \(M\) par rapport à la base \(\{\Hat{x}\}\) : <Vitesse relative> \(= [\Hat{x}_{\alpha}] ^T\Dot{\rho}_M\)
+\end{itemize}
+
+\subsection{Compatibilité des vitesses de deux points}
+Puisque le corps est rigide, le champ de vecteurs est conditionné.\\
+
+Soient deux points matériels \(A\) et \(B\). On peut écrire, par rigidité, \(\Vec{v}_A = \Vec{v}_B + \Vec{\omega}\times \Vec{BA}\). Si on multiplie de chaque côté par le vecteur \(\Vec{AB}\) réduit, on a 
+\begin{equation}
+    \frac{\Vec{v}_A \cdot \Vec{AB}}{\lVert \Vec{AB} \rVert} = \frac{\Vec{v}_B \cdot \Vec{AB}}{\lVert \Vec{AB} \rVert}
+\end{equation}
+Cette formule signifie que la projection des vitesses en deux points d'un solide sur la droite qui les relie est la même.
+
+\subsection{Vitesse et mouvement hélicoïdal}
+Un axe instantané de rotation \(a_{ir}\) est un axe de mouvement hélicoïdal. Il est toujours parallèle au vecteur \(\Vec{\omega}\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : l'axe hélicoïdal est mobile dans l'espace et dans le corps.
+\end{itemize}
+\subsubsection{Cas particuliers}
+\begin{itemize}
+    \item Translation continue : \(\Vec{\omega} = 0\)
+    \item Rotation continue : pour un point \(P' \in a_{ir}\), \(\Vec{v}_{P'} = 0\) et \(\Vec{\omega}\) est de direction fixe.
+\end{itemize}
+\section{Accélérations}
+\begin{minipage}{0.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Accélérations.png}
+\end{minipage}
+\begin{minipage}{.1\textwidth}
+                               
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    Pour rappel des différentes composantes de l'accélération, voir LEPL1202.
+\end{minipage}
+\section{Mouvement général}
+\subsection{Axoïdes}
+\begin{minipage}{.3\textwidth}
+    \includegraphics[width = \textwidth]{img/Axoïde fixe.png}
+\end{minipage}
+\begin{minipage}{.7\textwidth}
+    Un axoïde fixe est l'ensemble des droites de l'espace qui coïncident avec les axes hélicoïdaux successifs, qui forment une surface réglée fixe.
+\end{minipage}\\
+
+\begin{minipage}{.7\textwidth}
+    Un axoïde mobile est l'ensemble des droites solidaires du solide qui coïncident avec les axes hélicoïdaux successifs (les génératrices), qui forment une surface réglée liée au solide.
+\end{minipage}
+\begin{minipage}{.3\textwidth}
+    \includegraphics[width = \textwidth]{img/Axoïde mobile.png}
+\end{minipage}
+Un axoïde peut être décrit comme étant l'axe qui, lors du mouvement du corps, est en RSG en tout instant.\\
+
+En tout instant, les deux axoïdes ont une génératrice commune, l'axe hélicoïdal instantané. Les axoïdes sont en translation (glissement) parallèle à et en rotation (roulement) autour de cette génératrice.
+\section{Mouvement avec contact ponctuel sur un solide fixe}
+\subsection{Concepts}
+\subsubsection{Points matériels et géométriques}
+Soient deux solides \(A,B\) en contacts ponctuels.
+\begin{itemize}
+    \item Un point matériel (PM) est une particule fixe sur la surface d'un solide.
+    \item Un point matériel de contact (PMC) est le point matériel qui, instantanément, est au point de contact entre \(A\) et \(B\).
+    \item Un point géométrique de contact (PGC) est le point de l'espace qui coïncide avec le contact.
+\end{itemize}
+\subsubsection{Glissement et frottement}
+Les notions de frottement et de glissement sont différentes : le glissement est lié à la cinématique et à la vitesse, tandis que le frottement est lié à la dynamique et aux forces.
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width = \textwidth]{img/Glissement-Frottement.png}
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    \begin{itemize}
+        \item Orange : glissement sans frottement
+        \item Bleu : Frottement sans glissement
+        \item Rouge : Frottement et glissement
+        \item Jaune : Pas de frottement ni de glissement
+    \end{itemize}
+\end{minipage}
+\section{Mouvement plan d'un solide}
+\begin{minipage}{0.4\textwidth}
+    \includegraphics[width = \textwidth]{img/cir.png}
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    Un mouvement est plan lorsque trois points non colinéaires du solide se meuvent dans un plan fixe. Le mouvement de tout point est alors parallèle au plan et rst complètement décrit par un plan mobile dans un plan fixe. \\
+
+    Un mouvement est hélicoïdal lorsqu'il ne contient aucune translation.\\
+
+    Le centre instantané de rotation (cir) est le point géométrique coïncidant avec le point matériel \(I\) du corps à vitesse nulle. 
+\end{minipage}
+\newline
+Pour tout point \(A\) du corps, \(\Vec{v}_A = \Vec{\omega} \times I\Vec{A}\).
+
+\subsection{Détermination graphique du cir}
+A partir des vecteurs vitesse de deux points du solide, il est possible de déterminer la position du cir : il s'agit de l'intersection entre les droites perpendiculaires aux vecteurs vitesse passant par  \(A\) et \(B\).\\
+
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : lorsque les vecteurs vitesses sont parallèles, mais pas de même amplitude, il faut utiliser les triangles semblables formés par les vecteurs et leurs perpendiculaires.
+\end{itemize}
+\subsection{Détermination analytique du cir}
+Connaissant la vitesse de chacun des points, \(\Vec{v}_B = \Vec{v}_A + \Vec{\omega}\times A\Vec{B}\).\\
+Si \(\Vec{v}_A = 0\) et \(\Vec{v}_B \neq 0\), \(I = A\) et 
+\begin{equation}
+    \Vec{\omega} = \frac{A\Vec{B} \times \Vec{v}_B}{|A\Vec{B}|^2}
+\end{equation}
+Si \(0 \neq \Vec{v}_A \neq \Vec{v}_B \neq 0\),
+\begin{equation} \label{eq:1}
+    \Vec{\omega} = A\Vec{B} \times \frac{\Vec{v}_B - \Vec{v}_A}{|A\Vec{B}|^2}
+\end{equation}
+\begin{equation}
+    A\Vec{I} = \frac{\Vec{\omega} \times \Vec{v}_A}{|\Vec{\omega}|^2}
+\end{equation}
+
+\subsection{Démonstration de l'équation \ref{eq:1}}
+\begin{equation}
+    \Vec{v}_B - \Vec{v}_A = \Vec{\omega} \times \Vec{AB}
+\end{equation}
+\begin{equation}
+    \Vec{AB} \times (\Vec{v}_B - \Vec{v}_A) = \Vec{AB} \times (\Vec{\omega} \times \Vec{AB}) \Longleftrightarrow \Vec{AB} \times (\Vec{v}_B - \Vec{v}_A) = - (\Vec{\omega} \times \Vec{AB}) \times \Vec{AB}
+\end{equation}
+\begin{equation}
+    \Vec{AB} \times (\Vec{v}_B - \Vec{v}_A) = \Vec{\omega} \lVert\Vec{AB}\rVert^2 \Longrightarrow \Vec{\omega} = \frac{\Vec{AB} \times (\Vec{v}_B - \Vec{v}_A)}{\lVert \Vec{AB}\rVert^2}
+\end{equation}
+
+\subsection{Caractéristiques du cir}
+Le cir se déplace dans le plan fixe et dans le plan mobile. C'est un point géométrique qui se déplace de point matériel \(I\) en point matériel \(I\).\\
+
+Le cir décrit :
+\begin{itemize}
+    \item dans le plan fixe, une courbe \(B\) appelée BASE (axoïde fixe)
+    \item dans le plan mobile, une courbe \(R\) appelée ROULANTE (axoïde mobile)
+\end{itemize}
+Lors du mouvement, la roulante roule sans glisser sur la base en leur point matériel de contact \(I\) dont la vitesse instantanée est nulle.
+\chapter{Mécanismes, couples et chaînes cinématiques}
+\section{Mécanismes}
+\subsection{Vocabulaire}
+\begin{itemize}
+    \item Un mécanisme est un ensemble d'organes rigides assemblés à l'aide de liaisons dans le but de produire un effet utile.
+    \begin{itemize}
+        \item [\(\bullet\)] Transmission de puissance.
+        \item [\(\bullet\)] Démultiplication d'un effort.
+        \item [\(\bullet\)] Commande (bouton, levier,...).
+        \item [\(\bullet\)] Contrainte de mouvement relatif.
+    \end{itemize}
+    \item Une machine est un ensemble de mécanismes.
+\end{itemize}
+Un organe est contraint par des liaisons, i.e. le mouvement est contraint en translation ou en rotation. Les mouvements peuvent être continus ou intermittents, et alternatif (changement de sens) ou non.
+\section{Couples cinématiques}
+\subsection{Définitions}
+\begin{itemize}
+    \item Un couple est un mécanisme élémentaire à deux organes (mis en liaison).
+    \begin{itemize}
+        \item [\(\bullet\)] Engrenage,...
+    \end{itemize}
+    \item Un couple peut être à contact direct (contact entre les organes) ou indirect (transmission des efforts de l'un sur l'autre par une courroie).
+    \begin{itemize}
+        \item [\(\bullet\)] Rotule >< courroie de distribution,...
+    \end{itemize}
+    \item Un couple peut être complet ou incomplet (besoin d'une force extérieure pour le contenir).
+    \begin{itemize}
+        \item [\(\bullet\)] Charnière >< gond,...
+    \end{itemize}
+    \item Une liaison possède un nombre de degré de liberté compris entre 0 et 6.
+\end{itemize}
+\section{Couples supérieurs ou inférieurs}
+\begin{itemize}
+    \item Couples supérieurs : 
+    \begin{itemize}
+        \item [\(\bullet\)] Contact ponctuel entre les organes : un seul point de contact et donc 5 ddl.
+        \item [\(\bullet\)] Contact linéique entre les organes : une ligne de points de contact.
+    \end{itemize}
+    \item Couples inférieurs : 
+    \begin{itemize}
+        \item [\(\bullet\)] Contact surfacique entre les organes : surface macroscopique de points de contact.
+    \end{itemize}
+    \item [\(\rightarrow\)] Remarque : il faut savoir différencier ces couples.
+\end{itemize}
+\subsection{Propriétés des couples inférieurs}
+\begin{itemize}
+    \item Le mouvement est réversible, i.e. les organes menant et mené peuvent être interchangés sans que cela n'affecte le mécanisme.
+    \item Le glissement et/ou pivotement est inévitable, on n'a donc pas de RSG.
+    \item Le couple est généralement complet.
+    \item Les couples inférieurs sont privilégiés pour la transmission d'efforts importants.
+    \item Leur défaut majeur est que le glissement induit du frottement, et donc une perte d'énergie et une usure des matériaux.
+\end{itemize}
+\section{Classification des couples selon le principe de génération}
+Soit un axe \(d\) fixe autour duquel a lieu l'interaction des deux organes, et une ligne \(l\) quelconque sur laquelle a lieu le contact. Soit également la surface de contact \(S\), générée par le déplacement de \(l\) autour de \(d\).\\
+
+Le mouvement général d'un solide est le mouvement hélicoïdal. Tout mouvement possède un pas \(P\) (// vis).
+
+\begin{itemize}
+    \item Couple hélicoïdal "H" :
+    \begin{itemize}
+        \item [\(\bullet\)] Pas \(P\) non nul.
+        \item [\(\bullet\)] Surface de contact hélicoïdale.
+        \item [\(\bullet\)] Un seul degré de liberté, car la rotation et la translation sont liées.
+    \end{itemize}
+    \item Couple rotoïde "R" : 
+    \begin{itemize}
+        \item [\(\bullet\)] Pas \(P\) nul.
+        \item [\(\bullet\)] Surface de contact de révolution (la coupe est circulaire, mais ce n'est pas forcément un cylindre).
+        \item [\(\bullet\)] Un seul degré de liberté, en rotation autour de \(d\).
+    \end{itemize}
+    \item Couple rotoïde dégénéré - Couple plan "E" : 
+    \begin{itemize}
+        \item [\(\bullet\)] La ligne \(l\) appartient à un plan perpendiculaire à l'axe \(d\).
+        \item [\(\bullet\)] La surface \(S\) est donc un plan aussi perpendiculaire à l'axe \(d\).
+        \item [\(\bullet\)] Trois degrés de liberté : une rotation et deux translations.
+    \end{itemize}
+    \item Couple rotoïde dégénéré - Couple cylindrique "C" : 
+    \begin{itemize}
+        \item [\(\bullet\)] La ligne \(l\) appartient à un cylindre de révolution d'axe \(d\).
+        \item [\(\bullet\)] La surface \(S\) est cylindrique et de section circulaire.
+        \item [\(\bullet\)] Deux degrés de liberté : une rotation et une translation qui ne sont pas liées.
+    \end{itemize}
+    \item Couple sphérique "S" :
+    \begin{itemize}
+        \item [\(\bullet\)] La ligne \(l\) appartient à une sphère dont \(d\) est un axe de symétrie.
+        \item [\(\bullet\)] La surface \(S\) forme une sphère.
+        \item [\(\bullet\)] Trois degrés de liberté : les trois rotations.
+    \end{itemize}
+    \item Couple prismatique "P" : 
+    \begin{itemize}
+        \item [\(\bullet\)] Pas \(P\) infini (pas de rotation).
+        \item [\(\bullet\)] Surface de contact prismatique.
+        \item [\(\bullet\)] Un seule degré de liberté, en translation le long de \(d\).
+    \end{itemize}
+    \item [\(\rightarrow\)] Remarque : voir Annexe \ref{Annexe1} pour des exemples illustrés.
+\end{itemize}
+\subsection{Cas des mouvements plans}
+\begin{itemize}
+    \item Couple rotoïde "R" : 
+    \begin{itemize}
+        \item [\(\bullet\)] La rotation est perpendiculaire au plan.
+        \item [\(\bullet\)] La ligne \(l\) devient un point, et \(S\) un cercle inclus dans le plan.
+        \item [\(\bullet\)] Les degrés de liberté ne changent pas.
+    \end{itemize}
+    \item Couple prismatique "P" : 
+    \begin{itemize}
+        \item [\(\bullet\)] Ce mouvement est la rotation dont l'axe \(d\) se situe à l'infini.
+        \item [\(\bullet\)] La surface \(S\) devient une droite incluse dans le plan.
+        \item [\(\bullet\)] Les degrés de liberté ne changent pas.
+    \end{itemize}
+    \item Couple plan "E" : 
+    \begin{itemize}
+        \item [\(\bullet\)] Le mouvement dans le plan est libre.
+        \item [\(\bullet\)] Les degrés de liberté ne changent pas.
+    \end{itemize}
+    \item Il n'existe pas d'autres couples inférieurs dans le plan.
+    \item [\(\rightarrow\)] Remarque : aucun couple inférieur ne possède que deux degrés de liberté dans le plan.
+\end{itemize}
+\section{Chaînes cinématiques}
+\subsection{Définitions}
+\begin{itemize}
+    \item Une chaîne cinématique est un ensemble organes-liaisons formant un mécanisme comportant plusieurs couples inférieurs.
+    \item Une chaîne ouverte est une chaîne contenant autant d'organes que de liaisons.
+    \item Une chaîne fermée est une chaîne contenant plus de liaisons que d'organes.
+    \item Une chaîne composée est une chaîne qui comporte des branchements (\(\approx\) arbre).
+\end{itemize}
+\section{Degrés de liberté}
+\subsection{Définitions}
+\begin{itemize}
+    \item Le nombre \(d\) de degrés de liberté (ddl) d'un mécanisme est [le nombre de coordonnées généralisées choisies pour décrire le système] - [le nombre de contraintes bilatérales\footnote{Qui va dans les directions + et - de l'axe.} indépendantes entre ces coordonnées].
+    \item Les contraintes peuvent être holonomes (entre les coordonnées généralisées) ou non holonomes (entre les vitesses généralisées).
+    \item Dans le cas de contraintes holonomes, on peut éliminer les coordonnées dépendantes et \(d\) est alors le nombre minimum de coordonnées nécessaires pour déterminer sans équivoque une configuration donnée.
+\end{itemize}
+\subsection{Degrés de liberté d'une chaîne ouverte}
+\begin{equation}
+    d = \sum_{i=0}^nd_i
+\end{equation}
+avec \(n\) le nombre de couples.
+\subsection{Degrés de liberté d'une chaîne fermée}
+\begin{equation}
+    d \ge 6(N-1) - \sum_{m=1}^5{p_m(6-m)}
+\end{equation}
+avec \(p_m\) le nombre de couples à \(m\) ddl et \(N\) le nombre d'organes (bâti inclus).\\ !!Cette formule donne bien une borne inférieure, et peut donc donner un nombre négatif.
+\subsection{Changement de ddl local}
+La matrice jacobienne d'un système dépend de sa configuration \(q\) : en toute généralité, \(h(q) \Rightarrow J(q)\) et le nombre de ddl du système peut donc changer localement dans des configurations particulières!
+\subsection{Chaîne fermée -- Cas plan}
+\begin{equation}
+    d \ge 3(N-1) - 2g
+\end{equation}
+avec \(N\) le nombre d'organes (bâti inclus) et \(g\) le nombre d'articulations simples. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : une articulation commune à \(m\) organes correspond à \((m-1)\) articulations simples.
+\end{itemize}
+De nouveau, cette formule ne prend pas en compte les cas de contraintes non indépendantes, ni les cas où le nombre de ddl varie localement.
+\chapter{Mécanismes articulés à couples inférieurs}
+\section{Mécanismes plans}
+\subsection{Définition}
+Un mécanisme articulé est plan lorsque tous les mouvements sont sur un même support plan ou supports parallèles. Les seuls couples sont les "R" ou "P". 
+\subsection{Trois-barres}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Trois-barres.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{itemize}
+        \item d : côté fixe
+        \item b : bielle
+        \item a, c : manivelle (si rotation entière) ou balancier (sinon)
+    \end{itemize}
+\end{minipage}
+Par la formule de Grübler, le trois-barres est la chaine fermée contenant le moins de corps qui a un seul ddl.\\
+
+Les conditions pour que a soit une manivelle sont : 
+\begin{equation}
+    \begin{cases}
+        d+a \le b+c\\
+        |d-a| \ge |b-c|\\
+    \end{cases}
+\end{equation}
+Et a et c sont des manivelles si ces conditions sont respectées pour les deux.\\
+\subsubsection{Fonction}
+Le trois-barres a pour fonction la production ou transformation d'un mouvement, ou la transmission d'efforts, i.e. un transfert d'énergie input/output.
+\subsubsection{Cas limite}
+\begin{itemize}
+    \item Le parallélogramme articulé (\(d=b, a=c\)) est un cas limite du trois-barres. Il permet d'assurer un parallélisme entre deux corps.
+    \item La charnière double (\(a=b=c=d\)) est un cas limite du trois-barres, mais aussi du parallélogramme articulé.
+\end{itemize}
+\subsubsection{Position de bifurcation}
+Le mouvement imposé à un organe déterminé peut entraîner plusieurs mouvements distincts d'autres organes : 
+\begin{itemize}
+    \item Apparition d'un degré de liberté interne supplémentaire.
+    \item Imprévisibilité du mouvement (mouvement vers la gauche ou vers la droite lorsque deux barres consécutives sont parallèles).
+    \item Déficience locale d'actionnement (les deux barres consécutives parallèles empêchent le mouvement car la force leur est parfaitement parallèle).
+\end{itemize}
+\subsubsection{Cas limites du trois-barres}
+\begin{enumerate}
+    \item Bielle/manivelle :
+\end{enumerate}
+\begin{center}
+    \includegraphics[width = \textwidth]{img/BM.png}
+\end{center}
+L'articulation O' fixe tend vers l'infini vers le bas et la rotation de l'articulation A' devient un translation de ce point dans la direction horizontale. La manivelle c devient un coulisseau. 
+\begin{enumerate}\setcounter{enumi}{1}
+    \item Excentrique à coulisse : 
+\end{enumerate}
+\begin{center}
+    \includegraphics[width = \textwidth]{img/Excentrique.png}
+\end{center}
+Il s'agit de la situation précédente bielle-manivelle avec l'articulation A' mobile qui tend vers l'infini vers la droite. La bielle AA' mute en un coulisseau et celui-ci est perpendiculaire au premier et se meut dans la direction de A'O'. La rotation a-b devient une translation.
+\begin{enumerate}\setcounter{enumi}{2}
+    \item Guidage elliptique :
+\end{enumerate}
+\begin{center}
+    \includegraphics[width = \textwidth]{img/Guidage elliptique.png}
+\end{center}
+Il s'agit de la situation bielle-manivelle, avec l'articulation O fixe qui tend vers l'infini dans une direction quelconque. De nouveau, la manivelle OA mute en un coulisseau et la rotation d-a devient une translation.
+\begin{enumerate}\setcounter{enumi}{3}
+    \item Coulisse oscillante : 
+\end{enumerate}
+\begin{center}
+    \includegraphics[width = \textwidth]{img/Coulisse oscillante.png}
+\end{center}
+Il s'agit de la situation initiale avec l'articulation A mobile qui tend vers l'infini dans une direction quelconque. La rotation a-b devient une translation et la bielle b mute en un coulisseau. On observe également un désaxement de la manivelle a.
+\subsection{Bielle-manivelle}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Bielle-manivelle.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Le déplacement du point \(A\) est, pour \(R<< L\)
+    \begin{equation}
+        x_A \approx R(1-\cos{\theta}) + \frac{R^2}{2L} \sin^2{\theta}
+    \end{equation}
+    Le premier terme est le terme harmonique et le second est l'écart dû à l'obliquité de la bielle. Celui-ci est négligé dans la suite.\\
+\end{minipage}\\
+La vitesse et l'accélération du point \(A\) sont
+\begin{equation}
+    \begin{cases}
+        v_A = R\omega \sin{\theta}\\
+        a_A = R\omega \cos{\theta}\\
+    \end{cases}
+\end{equation}
+\subsection{Mécanisme de direction de véhicule}
+La situation  idéale en virage est une absence de glissement latéral des quatre roues. Les axes de toutes les roues doivent donc intersecter le CIR de la caisse. \\
+
+Trois cas possibles : 
+\begin{center}
+    \includegraphics[width = \textwidth]{img/Direction.png}
+\end{center}
+Le premier cas manque de stabilité, tandis que le second est encombrant et manque de stabilité dans les virages.\\
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Direction_pfte.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Ce dernier cas est le plus efficace, et est celui utilisé en automobile. L'essieu avant est brisé avec deux pivots afin que les angles des roues avant soient différents et que leurs axes intersectent le CIR. En réalité, les voitures actuelles utilisent un cinq-barres plutôt qu'un trois-barres. 
+\end{minipage}
+\subsection{Mécanismes plans à 2 ddl}
+Un mécanisme plan à deux ddl est créé de deux manières : le ddl de configuration du mécanisme et un ddl supplémentaire de l'organe de référence, ou un ddl du mouvement principal avec un mouvement de réglage du mécanisme (joints de cardan,...). 
+\subsubsection{Inversion}
+L'inversion est une propriété géométrique telle que à tout point P du plan correspond un point Q tel que les deux points sont alignés avec un pôle O et tels que \(\Vec{OP}\cdot \Vec{OQ} = k_{cste}\), avec \(k\) le rapport d'inversion.\\
+
+Exemple : si une figure est un cercle passant par le pôle, celle obtenue par inversion est une droite perpendiculaire à la ligne pôle-centre.\\
+
+Il existe de multiples mécanismes d'inversion permettant, entre autres, le mouvement de l'exemple ci-dessus.
+\subsection{Mécanismes dans l'espace}
+\chapter{Mécanismes à couples supérieurs}
+Slide 6/61
+\chapter{Annexes}
+\section{Annexe 1}\label{Annexe1}
+\subsection{Couple hélicoïdal "H"}
+\begin{minipage}{.5\textwidth}
+    \begin{center}
+        \includegraphics[width = .5\textwidth]{img/H1.png}
+    \end{center}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{center}
+        \includegraphics[width = .5\textwidth]{img/H2.png}
+    \end{center}
+\end{minipage}
+\subsection{Couple rotoïde "R"}
+\begin{center}
+        \includegraphics[width = .2\textwidth]{img/R1.png}
+\end{center}
+\subsection{Couple plan "E"}
+\begin{minipage}{.5\textwidth}
+    \begin{center}
+        \includegraphics[width = .5\textwidth]{img/E1.png}
+    \end{center}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{center}
+        \includegraphics[width = .5\textwidth]{img/E2.png}
+    \end{center}
+\end{minipage}
+\subsection{Couple cylindrique "C"}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = .5\textwidth]{img/C1.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = .5\textwidth]{img/C2.png}
+\end{minipage}
+\subsection{Couple prismatique "P"}
+\begin{minipage}{.5\textwidth}
+    \begin{center}
+        \includegraphics[width = .5\textwidth]{img/P1.png}
+    \end{center}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{center}
+        \includegraphics[width = .5\textwidth]{img/P2.png}
+    \end{center}
+\end{minipage}
+\subsection{Couple sphérique "S"}
+\begin{center}
+    \includegraphics[width = .5\textwidth]{img/S1.png}
+\end{center}
+\end{document}

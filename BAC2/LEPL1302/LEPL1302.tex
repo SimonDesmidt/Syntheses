@@ -1,0 +1,1057 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amsmath}
+\usepackage{nicefrac}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{textcomp}
+\usepackage{lmodern}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\renewcommand{\contentsname}{Table des matières}
+\begin{document}
+
+
+\begin{titlepage} 
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.5]{img/page_de_garde.png}~\\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LEPL1302 Chimie et chimie physique 2 \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2023-2024 - Q1}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\chapter{Thermodynamique}
+\section{Définitions}
+\begin{itemize}
+    \item Une grandeur est extensive si elle dépend de la quantité de matière, et intensive si non.
+    \begin{itemize}
+        \item Extensive : volume, masse,\dots
+        \item Intensive : température, pression, masse volumique, dots
+    \end{itemize}
+    \item L'effusion d'un gaz est le passage de ses molécules au travers d'une section de petite taille. 
+\end{itemize}
+\begin{equation}
+    \frac{dN_1/dt}{dN_2/dt} = \sqrt{\frac{M_{m2}}{M_{m1}}}
+\end{equation}
+\begin{equation}
+    C_{v,m} = \frac{ddl_{translation}+ddl_{rotation}+2ddl_{vibration}}{2}R
+\end{equation}
+\begin{itemize}
+    \item Un système est ouvert s'il peut échanger de la chaleur et de la matière avec son environnement.
+    \item Un système est fermé s'il ne peut échanger que de la chaleur avec son environnement.
+    \item Un système est isolé s'il ne peut pas échanger avec son environnement.
+    \item Une variable d'état est une grandeur qui dépend uniquement de l'état du système et pas de la manière dont le système a atteint cet état. Exemple : pression et température. Contre-exemple : travail.
+    \item Loi des gaz parfaits : 
+\end{itemize}
+\begin{equation}
+    pV=nRT \Longleftrightarrow pv=R^*T\qquad R^* = R/M_m
+\end{equation}
+\begin{itemize}
+    \item Un travail est positif lorsqu'il est reçu par le système. En réversible, \(\delta W=-pdV\). 
+    \item L'enthalpie est un apport de chaleur à pression constante : \(dH = dQ_{p=cste} = dU+d(pV)\).
+    \item La capacité calorifique à volume constant est \(C_V \coloneqq \left(\frac{\partial U}{\partial T}\right)_V\). De manière générale, \(dU = \left(\frac{\partial U}{\partial T}\right)_V dT + \left(\frac{\partial U}{\partial V}\right)_TdV = C_VdT+\pi_TdV\), avec \(\pi_T=0\) pour un gaz parfait. 
+    \item La capacité calorifique à pression constante est \(C_p\coloneqq \left.\left(\frac{\partial H}{\partial T}\right)\right|_p\).
+\end{itemize}
+\begin{equation}
+    C_p-C_V = mR^*
+\end{equation}
+\begin{itemize}
+    \item Une transformation est dite adiabatique s'il n'y a pas de transfert de chaleur. En évolution adiabatique et révsersible d'un gaz parfait, on a la relation \(pV^\gamma=cste\), avec \(\gamma = C_p/C_V\).
+    \item Le rendement d'un cycle caractérise son efficacité : \(\eta = \frac{\text{effet utile}}{\text{coût}}\). 
+    \item Une différentielle est exacte si, pour \(Mdx+Ndy=0\), on a \(\frac{\partial M}{\partial y} = \frac{\partial N}{\partial x}\). 
+\end{itemize}
+\section{Théorie de Bernoulli}
+\subsection{Hypothèses}
+\begin{itemize}
+    \item Un gaz est composé de nombreuses molécules assimiliées à des sphères de diamètre \(d\) et de masse \(m\).
+    \item Le diamètre \(d\) est petit par rapport à la distance qui sépare les molécules, elle-même petite par rapport à la taille macroscopique du système.
+    \item Il n'y a pas d'interactions entre molécules (attraction ou répulsion) mais les chocs élastiques sont possibles.
+    \item Les lois de la mécanique classiques sont d’application (pas de mécanique quantique).
+    \item En moyenne, les parois n’absorbent pas d’énergie.
+\end{itemize}
+\subsection{Théorie de Bernoulli}
+\begin{equation}
+    p = \frac{1}{3}\rho \overline{c^2}
+\end{equation}
+Slides 15-17 pour le développement, mais pas indispensable. En liant Bernoulli à la loi des gaz parfaits, on a 
+\begin{equation}
+    \frac{3}{2}k_BT = \frac{1}{2}m\overline{c^2}
+\end{equation}
+avec \(k_B\) la constante de Boltzmann telle que \(R=N_Ak_B\) et \(N_A\) le nombre d'Avogadro. 
+\section{Distribution de Maxwell}
+\subsection{Hypothèses}
+\begin{itemize}
+    \item Le milieu gazeux est homogène (les propriétés ne dépendent pas de la position).
+    \item Le milieu est isotrope (les propriétés ne dépendent pas de la direction).
+    \item Il existe une distribution (au sens statistique) de la vitesse (de l’énergie de translation).
+    \item Les propriétés macroscopiques sont le reflet du comportement microscopique moyen.
+\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/distribution_maxwell.png}
+    \caption{Distribution de Maxwell : fonction de distribution de la répartition de vitesse}
+    \label{fig:maxwell}
+\end{figure}
+On définit \(\phi_i(c_i)\) comme la fraction de molécules dont la vitesse selon la composante \(i\) est inférieure ou égale à la vitesse \(c_i\). Puisque le choix des axes est arbitraire, on a \(\phi_i(0)=1/2\). 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : la fonction pour \(c\) ne commence qu'en 0, car la norme est positive. 
+    \item Lire le point 1.3 du syllabus (p14-20).
+\end{itemize}
+\section{Premier principe}
+Par équivalence entre chaleur et travail, la conservation de l'énergie s'écrit 
+\begin{equation}
+    \Delta U = Q+W
+\end{equation}
+La variation d'énergie d'un système isolé est nulle : \(\Delta U = 0\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : l'énergie interne est une variable d'état, mais ni le travail ni la chaleur ne l'est. 
+\end{itemize}
+\section{Expériences de Joule}
+La première expérience de Joule consiste à mesurer l'augmentation de température de l'eau contenue dans un bac isolé induite par l'apport d'un travail mécanique au moyen de pales mise en rotation. Elle permet de lier les concepts de travail et température. Cela est possible uniquement sous hypothèse du premier principe, disant que la chaleur et le travail sont deux formes équivalentes d'énergie. \\
+
+La seconde expérience de Joule a pour but de mesurer le coefficient \(pi_T\) pour un gaz. L'expérience consiste à remplir un réservoir d'un gaz sous pression à température ambiante, puis connecter ce réservoir à un second, vidé préalablement de tout gaz et donc sous vide. Ces deux réservoirs sont plongés dans un bain d'eau dont la température est mesurée. Ce bac rempli d'eau est lui-même isolé themriquement de l'atmosphère ambiante. On mesure l'évolution de la température de l'eau après mise en communication des deux réservoirs. Puisqu'aucun changement de température n'est observé\footnote{Par Joule au 19e sicèle, mais il existe bel et bien.}, on suppose l'évolution du système comme adiabatique. L'énergie interne est donc conservée puisqu'on ne fournit aucun travail moteur. Le volume a changé lors du contact entre les deux réservoirs. Or, l'énergie interne n'a pas changé. Le coefficient \(\pi_T\) doit donc être nul, et on en déduit que l'énergie interne ne dépend que de la température. 
+\section{Effet Joule-Thomson}
+Le coefficient de Joule-Thomson mesure l'influence du volume sur l'énergie.
+\begin{equation}
+    \mu_{J-T} = \left(\frac{\partial T}{\partial p}\right)_H
+\end{equation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/jt.png}
+    \caption{Expérience de Joule-Thomson}
+    \label{fig:jt}
+\end{figure}
+Considérons deux cylindres connectés entre eux par l'intermédiaire d'une zone poreuse. Les deux cylinres sont pourvus d'un piston permettant de modiifer les volumes et donc d'effectuer des travaux sur le fluide. En situation initiale, tout le gaz est contenu dans le cylindre de gauche et maintenu à une pression \(p_1\). Le volume du second cylindre est réduit à zéro par la position du piston contre le milieu poreux. On réduit ensuite le volume initial en poussant le piston 1, augmentant alors le volume du second cylindre. La pression \(p_2\) est maintenue inférieure grâce au milieu poreux. En situation finale, tout le gaz se trouve dans le second cylindre à pression \(p_2\). On suppose que l'ensemble du système est isolé thermiquement de l'environnement. Par bilan d'énergie, cette évolution est isenthalpique. La variation de température met en évidence l'existence du coefficient de Joule-Thomson. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : le coefficient de Joule-Thomson est la plupart du temps négatif. 
+\end{itemize}
+\section{Systèmes ouverts}
+En système ouvert, on a conservation de la masse (tout ce qui rentre sort). En régime permanent, on a donc
+\begin{equation}
+    \Dot{m}_1 = \Dot{m}_2 \Longrightarrow \rho_1A_1c_1 = \rho_2A_2c_2
+\end{equation}
+On peut exprimer le travail moteur sous deux formes : 
+\begin{align}
+    w_m &= \int_1^2vdp + \Delta k+g\Delta z + w_f\\
+    w_m &= \Delta h + \Delta k+g\Delta z - q
+\end{align}
+\subsection{Equation de Bernoulli}
+Si on suppose le travail moteur et les dissipations par frottement nuls, on a pour un fluide incompressible : 
+\begin{equation}
+    \Delta p + \rho \frac{\Delta (c^2)}{2} +\rho g\Delta z = 0
+\end{equation}
+\section{Second principe}
+L'entropie est composée de deux quantités : \(dS = d_iS+d_eS\). Le second principe dit que \(d_iS \ge 0\), avec égalité dans le cas réversible. Les irréversibilités induissent donc toujours une augmentation d'entropie.\\
+\begin{itemize}
+    \item Lord Kelvin : dans un système cyclique, il est impossible de convertir totalement en travail de la chaleur extraite d'une seule source à température constante.
+    \item Clausius : dans un système cyclique, il est impossible de transférer de la chaleur d'une source froide à une source chaude sans un apport extérieur de chaleur ou de travail.
+\end{itemize}
+\section{Cycle de Carnot}
+\begin{itemize}
+    \item Compression isotherme
+    \item Compression adiabatique
+    \item Détente isotherme
+    \item Détente adiabatique
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{img/carnot.png}
+    \caption{Cycle de Carnot}
+    \label{fig:carnot}
+\end{figure}
+Le cycle de Carnot est un cycle idéal. Dans sa version motrice, son rendement thermique est 
+\begin{equation}
+    \eta_{th} = \frac{|W|}{Q_c} = \frac{Q_c-|Q_f|}{Q_c} = 1-\frac{|Q_f|}{Q_c}
+\end{equation}
+Par le second principe, le cycle de Carnot est idéal : un cycle réversible travaillant entre deux sources de chaleur à température constante a un rendement maximal.\\
+
+La version réceptrice du cycle de Carnot a un coefficient de performance (COP) : 
+\begin{itemize}
+    \item Pompe à chaleur : \(COP_{PAC} = \frac{|Q_c|}{W} = \frac{1}{1-\frac{Q_f}{|Q_c|}}\)
+    \item Frigo : \(COP_{fri} = \frac{Q_f}{W} = \frac{1}{\frac{|Q_c|}{Q_f}-1}\)
+\end{itemize}
+\section{Exercices}
+\begin{itemize}
+    \item Démontrer l'expression du travail moteur lors d'une détente isotherme réversible d'un gaz parfait.
+    \item Exemple du moteur thermique, cours 4 slides 22-26. On le fera ensemble. 
+    \item Si le rendement est toujours inférieur à 1, quel est l'intérêt d'un cycle?
+\end{itemize}
+\chapter{Proost}
+\section{A savoir faire à la fin}
+\begin{itemize}
+    \item quel facteur fait que la vitesse d'apparition/disparition est différente selon le constituant?
+    \item donner l'expression de la vitesse de réaction pour les ordres 0, 1 et 2, et les unités de la constante k dans chacune;
+    \item définir fraction convertie et temps de demi-réaction;
+    \item expliquer la théorie des collisions et la TST;
+    \item détailler les réactions radicalaires en chaine et les étapes;
+    \item définir mathématiquement un potentiel chimique;
+    \item donner la condition d'équilibre;
+    \item définir l'activité, mathématiquement et en français;
+    \item expliquer le principe de Le Châtelier;
+    \item expliquer le fonctionnement des réactions rédox;
+    \item expliquer comment compléter une demi-réaction rédox;
+    \item pourquoi peut-on utiliser le concept de potentiel électrique dans les réactions rédox?
+    \item expliquer le phénomène de corrosion;
+    \item décrire le diagramme de phase d'un composé pur;
+\end{itemize}
+\section{Cinétique chimique}
+\subsection{Décomposition de l'ozone - exemple à réexpliquer}
+\begin{minipage}{.5\textwidth}
+\begin{enumerate}
+    \item Les CFC (chloro-fluoro-carbones, gros composés dégueu) émis par l'industrie sont décomposés dans l'atmosphère, sous l'influence du rayonnement solaire, en molécules plus petites, servant de réservoir de Cl.
+    \item Ensuite, ces molécules réagissent entre elles dans la stratosphère pendant l'hiver polaire.
+    \item Le $Cl_2$ moléculaire se décompose en $Cl$ atomique, un radical extrêmement réactif.
+    \item Le radical \(Cl^*\) détruit l'ozone, et est en même temps recyclé par diverses réactions.
+    \item L'effet net est donc une décomposition de l'ozone, catalysée par le $Cl^*$.
+\end{enumerate}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{align*}
+        CFC + rayonnement &= HCl + HClO\\\\\\
+        HCl+HClO& = Cl_2 + H_2O\\\\\\
+        Cl_2 + rayonnement &= Cl^*+Cl^*\\\\\\
+        Cl^* + O_3 &= ClO+O_2\\\\
+        2ClO&=2Cl^*+O_2\\
+        2O_3 &\stackrel{Cl^*}{=} 3O_2
+    \end{align*}
+\end{minipage}
+\subsection{Vitesse de réaction}
+Soit une réaction
+\begin{equation}
+    \nu_A A+\nu_B B+\dots = \nu_C C+\nu_DD +\dots
+\end{equation}
+On définit l'avancement \(\xi\) d'une réaction comme une variable unique décrivant la compisition d'un système réactionnel au cours d'une réaction.
+\begin{equation}
+    d\xi = \frac{dn_i}{\nu_i} \Longrightarrow \frac{d\xi}{dt} = \frac{1}{\nu_i}\frac{dn_i}{dt}
+\end{equation}
+On définit également la vitesse de réaction sur base de l'avancement :
+\begin{equation}
+    r(t) = \frac{1}{V}\frac{d\eta(t)}{dt} [mol/Ls]
+\end{equation}
+Sur cette base, on peut définir la vitesse d'apparition des produits et la vitesse de disparition des réactifs : 
+\begin{equation}
+    R_k = \pm \nu_k r
+\end{equation}
+avec + s'il s'agit d'un produit et - si c'est un réactif.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : si le volume du système est constant, on peut rentrer le volume dans la dérivée et la vitesse de réaction dépend de la concentration : 
+\end{itemize}
+\begin{equation}
+    r(t) = \frac{1}{\nu_i}\frac{d[i]}{dt}
+\end{equation}
+avec \([i]\) la concentration molaire du composé \(i\). Dans ce cas, on définit deux taux : 
+\begin{itemize}
+    \item le taux de conversion d'un réactif : \(C_i(t) = \frac{[i]_{init} - [i]_t}{[i]_{init}} = 1-\frac{[i]_t}{[i]_{t=0}}\).
+    \item le taux de production d'un produit : \(P_j(t) = \frac{[j]_t}{[j]_{finale}}\).
+\end{itemize}
+\subsection{Ordre de réaction}
+Par observations expérimentales, on peut en général exprimer la vitesse de réaction de la manière suivante : 
+\begin{equation}
+    r = k \left[\prod_{\text{réactifs}}[i]^{a_i}\right] \left[\prod_{\text{produits}}[j]^{a_j}\right]
+\end{equation}
+avec \(k\) la constante de vitesse dont les unités varient selon la réaction, et on appelle les \(a_i,a_j\) les ordres partiels des composants, et ce sont des nombres rationnels. Les \(a_i\) sont positifs ou nuls, tandis que les \(a_j\) sont négatifs ou nuls (mais souvent nuls). L'ordre global de la réaction est \(\sum a_i - \sum a_j\).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : il n'y a pas de lien entre les coefficients stoechiométriques \(nu_i\) et les ordres partiels \(a_i\) de manière générale. Ce lien existe par contre pour des réactions élémentaires. 
+\end{itemize}
+\subsubsection{Réaction d'ordre 1}
+\begin{equation}
+    A=P
+\end{equation}
+Cette réaction est d'ordre 1. A noter que \(P\) est l'ensemble des produits, il peut y en avoir plusieurs. La vitesse de réaction s'écrit
+\begin{equation}
+    r = k [A]_t
+\end{equation}
+et elle varie avec le temps. Ici, \(k=[1/s]\). Pour des réactions élémentaires comme celle-ci, il y a un lien entre l'ordre et le nombre de molécules mises en jeu dans l'étape déterminante de vitesse (i.e. l'étape la plus lente de la réaction). On appelle alors l'ordre la molécularité de la réaction. Une réaction élémentaire d'ordre 1 est donc une réaction mono-moléculaire.\\
+Exprimons maintenant l'évolution de la concentration \([A]_t\), sur base de l'équation différentielle dérivée de la définition de \(r\) : 
+\begin{equation}
+    r \coloneqq = -\frac{d[A]_t}{dt} = k [A]_t \Longrightarrow [A]_t = [A]_{t=0} \exp(-kt)
+\end{equation}
+On peut donc exprimer également l'évolution de la concentration des produits : 
+\begin{equation}
+    [P]_t = [P]_{t=0} + [A]_{t=0}\left(1-\exp(-kt)\right)
+\end{equation}
+De plus, la fraction convertie ne dépend pas ici de la concentration initiale : 
+\begin{equation}
+    1-\frac{[A]_t}{[A]_{t=0}} = 1-\exp(-kt)
+\end{equation}
+Le temps de demi-réaction \(t_{\nicefrac{1}{2}}\) est le temps nécessaire pour convertir la moitié des réactifs. Pour une réaction d'ordre 1, il vaut donc : 
+\begin{equation}
+    \frac{1}{2} = \exp(-kt_{\nicefrac{1}{2}}) \Longrightarrow t_{\nicefrac{1}{2}} = \frac{\ln (2)}{k}
+\end{equation}
+\subsubsection{Réaction d'ordre 2}
+\begin{equation}\label{eq:ordre_2}
+    2A = P
+\end{equation}
+La réaction étant d'ordre 2, l'expression de la vitesse de réaction est 
+\begin{equation}
+    r = k[A]_t^2
+\end{equation}
+avec ici \(k\) en \([L/mols]\). L'ordre 2 est souvent observé dans les réactions à molécularité 2 (comme la réaction \ref{eq:ordre_2}). On peut de nouveau trouver une équation différentielle pour déterminer \([A]_t\) :
+\begin{equation}
+    r = k[A]_t^2 = -\frac{1}{2} \frac{d[A]_t}{dt}\Longrightarrow \frac{1}{[A]_t} = \frac{1}{[A]_{t=0}} + 2kt
+\end{equation}
+Le temps de demi-réaction est dans ce cas \footnote{Démontre-le}
+\begin{equation}
+    t_{\nicefrac{1}{2}} = \frac{1}{2k[A]_{t=0}}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : il dépend de la concentration initiale, ce qui n'est pas le cas à l'ordre 1.
+\end{itemize}
+\subsubsection{Réaction d'ordre 0}
+\begin{equation}
+    A=P
+\end{equation}
+A l'ordre 0, la vitesse de réaction est une constante : 
+\begin{equation}
+    r = k
+\end{equation}
+avec \(k\) en \([mol/Ls]\), mêmes unités que la vitesse de réaction.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : l'ordre 0 est souvent un pseudo-ordre, il s'agit en général d'une approximation d'un ordre 1 avec une concentration variant peu.
+\end{itemize}
+Les concentrations de cette réaction sont 
+\begin{equation}
+    \begin{cases}
+        [A]_t = [A]_{t=0} - kt\\
+        [P]_t = [P]_{t=0} + kt\\
+    \end{cases}
+\end{equation}
+\subsubsection{Dégénérescence de l'ordre}
+Lorsque la concentration d'un des constituants est très élevée relativement à celle des autres, on peut la considérer comme constante et diminuer l'ordre globale de la réaction. Pour une même réaction, en modifiant les concentrations initiales de chacun des réactifs tour à tour, on peut donc déterminer l'ordre de chaque réactif (en cas de réaction simple). 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{img/resume.png}
+    \caption{Résumé des ordres de réaction}
+    \label{fig:resume}
+\end{figure}
+\subsection{Influence de la température - Arrhenius}
+\begin{equation}
+    \color{red}\boxed{\color{black}k=A\exp{\left(\frac{-E_a}{RT}\right)}}\color{black}
+\end{equation}
+avec \(E_a\) l'énergie d'activation (indépendante de la température), \(A\) le facteur de proportionnalité et \(k\) la constante de vitesse. On peut donc calculer \(k\) à toute température si on la mesure à deux températures (on calcule les paramètres \(A\) et \(E_a\)) : 
+\begin{equation}
+    k_2 = k_1 \exp{\left(\frac{-E_a}{R}\left(\frac{1}{T_2}-\frac{1}{T_1}\right)\right)}
+\end{equation}
+\subsubsection{Théorie des collisions}
+La théorie des collisions considère la réaction comme le résultat des collisions entre molécules. La réaction ne peut donc se produire que si les molécules se rencontrent avec une énergie cinétique au moins égale à une valeur critique minimale : \(E\ge E_{\min}\). Il s'agit en quelque sorte d'une barrière d'activation, équivalente à \(E_a\). 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{img/theorie_collisions.png}
+    \caption{Théorie des collisions}
+    \label{fig:collisions}
+\end{figure}
+La fraction de molécules réagissant est la zone colorée sous chaque courbe. Le facteur de proportionnalité tient compte du fait toute collision d'énergie suffisamment élevée n'entraîne pas de réaction. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : la réaction est-elle "plus difficile" si \(E_a\) augmente?\footnote{Non, \(k\) varie juste plus vite avec la température.}
+\end{itemize}
+\subsubsection{Théorie du complexe activé - TST}
+Lors des collisions, les molécules se déforment. Une partie de l'énergie cinétique est ainsi transformée en énergie potentielle. On appelle complexe activé les molécules déformées lors du contact, formant un modèle transitoire. Ce complexe a une énergie potentielle supérieure aux constituants à cause des liaisons déformées entre les atomes.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{img/tst.png}
+    \caption{Théorie du complexe activé}
+    \label{fig:tst}
+\end{figure}
+La variation d'énergie au cours de la collision est, comme pour la théorie des collisions, équivalente à l'énergie d'activation \(E_a\). 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : exemple intéressant slide 33. 
+\end{itemize}
+\subsection{Influence des catalyseurs}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{img/catalyseurs.png}
+    \caption{Influence des catalyseurs}
+    \label{fig:catalyseurs}
+\end{figure}
+Un catalyseur fournit un nouveau chemin réactionnel avec une énergie d'activation inférieure, permettant ainsi à un plus grand nombre de molécules du réactif de franchir la barrière et de former des produits. Il déplace vers la droite la limite de la zone colorée en figure \ref{fig:collisions}. Il ne modifie cependant pas l'enthalpie standard de réaction \(\Delta_rH^\circ\).
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/catalyseurs_2.png}
+    \caption{Avec ou sans catalyseurs}
+    \label{fig:withorwithout}
+\end{figure}
+\subsection{Exemples de types de réaction}
+\subsubsection{Cinétique avec équilibre}
+À la place d’une collision bi-moléculaires, on a des réactions en chaine. \\
+e.g. Décomposition de l’ozone : $O_3\rightarrow O_2+O^*$, puis $O_3+O^*=O_2+O_2$. $O^*$ est l’intermédiaire réactionnel (il faut pouvoir l’identifier).\\
+Quasi-stationnarité des intermédiaires réactionnels : la première réaction est rapide et réversible, tandis que la seconde est lente et irréversible. La vitesse de réaction est donc celle de la réaction lente. 
+\subsubsection{Cinétique enzymatique}
+En catalyse, les réactifs sont généralement en excès ($S$). \\
+\begin{equation}
+    r=k \frac{[E]_{total} [S]_{total}}{K_{ES}^{-1}+[S]_{total}}
+\end{equation}
+$r$ est maximal quand $K_{ES}^{-1}=0$. On a donc $r_{max}=k \frac{[E]_{tot} [S]_{tot}}{[S]_{tot}} = k[E]_{tot} \Longrightarrow r=r_{max}  \frac{[S]_{tot}}{K_{ES}^{-1}+S_{tot}}$.
+Lorsque $[S]_{tot}\rightarrow 0$ , $r=r_{max} K_{ES} [S]_{tot}$. Et lorsque $[S]_{tot} \rightarrow \infty, r=r_{max}$.
+
+\subsubsection{Réaction radicalaires en chaîne}
+Le mécanisme réactionnel de ces réactions comprennent plusieurs étapes consécutives :
+\begin{itemize}
+    \item Initiation : formation des radicaux (intermédiaires réactionnels).
+	\item Propagation : action des radicaux sur les réactifs, avec conservation des radicaux.
+	\item Terminaison : destruction des radicaux.
+\end{itemize}
+	
+Quasi-stationnarité des radicaux : les radicaux doivent être quasi-stationnaires afin que les vitesses de disparition des réactifs et d’apparition des produits soient égales. \\
+
+\underline{Initiation :} \\
+
+Prenons l’exemple du craquage de l’éthane : $C_2 H_6\rightarrow C_2 H_4+H_2$. 
+L’initiation de cette réaction est $C_2 H_6\rightarrow 2CH_3^*$\footnote{L’étoile en exposant signifie que le groupement est un radical.} et $C_2 H_6+CH_3^*\rightarrow C_2 H_5^*+CH_4$.Ces réactions ont des $k$ respectivement $k_{init}$ et $k_{init2}$. \\
+La première réaction est lente et $R_{CH_3^*,prod}= 2r_{init}=2k_{init}[C_2 H_6]$. La deuxième réaction est rapide et $R_{C_2 H_5^*,prod}=R_{CH_3^*,disp}=2r_{init}=2k_{init} [C_2 H_6]$, puisque la réaction totale dépend de la vitesse lente.\\
+
+\underline{Propagation : }\\
+
+Lors de cette étape, les deux réactions sont rapides. On a deux réactions : \\
+\begin{equation}
+    \begin{cases}
+        C_2 H_5^*\rightarrow C_2 H_4+H^*\\
+        C_2 H_6+H^*\rightarrow C_2 H_5^*+H_2\\
+    \end{cases}
+\end{equation}
+
+Les réactions ont des $k$ respectivement $k_{p1},k_{p2}$. On trouve des $R$ : \\
+$R_{C_2 H_4,prod}=R_{H^*,prod}=k_{p1} [C_2 H_5^*]$ et $R_{H_2,prod}=R_{H^*,disp}=k_{p2} [C_2 H_6 ][H^*]$.\\
+
+\underline{Terminaison :}\\
+
+La seule réaction de la terminaison est $2C_2 H_5^*\rightarrow C_4 H_{10}$, avec un $k_{term}$. Cette réaction a une vitesse $r_{term}=k_{term} [C_2 H_5^* ][C_2 H_5^* ]\rightarrow R_{C_2 H_5^*,term}=2r_{term}=2k_{term} [C_2 H_5^* ]^2$.\\
+Toutes ces réactions se résument par le schéma suivant : \\
+
+\begin{minipage}{.3\textwidth}
+\includegraphics[width = 1.3\textwidth]{img/Réactions radicalaires en chaine.png}
+\end{minipage}
+\begin{minipage}{.7\textwidth}
+Voici un résumé des équations des différentes étapes : 
+\begin{equation}
+    R_{C_2 H_5^*,prod}=2k_{init} [C_2 H_6 ]
+\end{equation}
+\begin{equation}
+    R_{C_2 H_5^*,term}=2k_{term} [C_2 H_5^* ]^2
+\end{equation}
+\begin{equation}
+    R_{H^*,prod}=k_{p1} [C_2 H_5^* ]
+\end{equation}
+\begin{equation}
+    R_{H^*,disp}=k_{p2}[C_2 H_6 ][H^* ]
+\end{equation}
+\begin{equation}
+    R_{CH_3^*,prod}=2r_{init}=R_{CH_3^*,disp}
+\end{equation}
+\end{minipage}\\
+
+On en déduit : \\
+
+\begin{equation}
+    \begin{cases}
+        [C_2 H_5^*]=\left(\frac{k_{init}}{k_{term}}\right)^{1/2} [C_2 H_6 ]^{1/2}\\
+        [H^*]= \frac{k_{p1}}{k_{p2}} \left(\frac{k_{init}}{k_{term}}\right)^{1/2}  \frac{1}{[C_2 H_6 ]^{1/2}}\\
+        R_{CH_3^*,prod}=R_{CH_3^*,disp}
+    \end{cases}
+\end{equation}
+Et on peut donc en déduire les vitesses d’apparition et de disparition des composés de la réaction initiale (pas fait ici). 
+\section{Équilibre chimique}
+\subsection{Evolution spontanée et entropie}
+\subsubsection{Etat d'équilibre et procédés (ir)réversibles}
+\begin{itemize}
+    \item Etat d'équilibre : pas de transformation spontanée du système en absence d'action du milieu extérieur.
+    \item Procédé réversible : transformation consistant en un continuum d'états d'équilibre successifs.
+    \item Procédé irréversible : transformation spontanée dans une certaine direction.
+\end{itemize}
+
+\subsubsection{Différentielle exacte et fonction d'état}
+Pour toute fonction d'état $X$ d'un système subissant une transformation finie, $\Delta X = X_{final} - X_{initial}$.
+Pour une transformation élémentaire : $\Delta X \rightarrow dX$.
+Si $X$ est une fonction d'état, $dX$ est une différentielle exacte, sinon elle est notée $\delta X$.
+
+Pour une grandeur extensive, $dX=\delta_eX+\delta _iX$. \\
+\subsection{Energie libre de Gibbs}
+On définit les énergies libres de Helmholtz $A$ et de Gibbs $G$ : 
+\begin{equation}
+\begin{cases}
+    A = U - TS \\
+    G = H - TS \\
+\end{cases}
+\end{equation}
+
+Pour un procédé isotherme et isobare dans un système fermé, 
+\begin{equation}
+    dG = dU + pdV + Vdp - TdS - SdT = dU + pdV - TdS
+\end{equation}
+
+Par les deux principes de la thermodynamique, on trouve 
+\begin{equation}
+    dG_{p,T} \ge \delta W + pdV
+\end{equation}
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : si le travail n'est que mécanique, on a $\delta W = - pdV$ et donc $dG_{p,T} \leq 0$.
+\end{itemize}
+La direction spontanée d'une direction est celle de la réaction telle que $dG_{p,T} < 0$, et la condition d'équilibre est 
+\begin{equation}
+    \color{red}\boxed{\color{black}dG_{p,T} = 0}\color{black}
+\end{equation}
+\subsubsection{Relations fondamentales pour un système fermé à composition fixée}
+\begin{equation}
+    \begin{cases}
+        dU = TdS -pdV\\
+        dH = TdS + Vdp\\
+        dA = -SdT - pdV\\
+        dG = -SdT + Vdp\\
+    \end{cases}
+\end{equation}
+\subsubsection{Evolution de l'énergie libre $G$ avec $p$}
+Pour un système de composition fixée à une température donnée, $dG = Vdp$ et donc 
+\begin{equation}
+    G(p,T) = G(p^{{\circ}},T) + \int_{p^{\circ}}^p V(p,T)dp
+\end{equation}
+\begin{equation}
+    G_m(p,T) = G^*_m(T) = \int_{p^{\circ}}^{p} V_m(p,T)dp
+\end{equation}
+Avec $G_m$ l'énergie libre molaire et $p^{\circ}$ la pression de référence, souvent 1bar.
+Pour un gaz parfait : 
+\begin{equation}
+    \color{red}\boxed{\color{black}G_m(p,T) = G^{\circ}_m(T) + RT \ln{\left(\frac{p}{p^{\circ}}\right)}}\color{black}
+\end{equation}
+
+Pour un solide ou un liquide pur à une température donnée : 
+\begin{equation}
+    G_m(p,T) = G_m^{\circ}(T) + \int_{p^{\circ}}^pV_{m(sol,liq)}(p,T) dp \approx G_m^{\circ}(T) 
+\end{equation}
+
+Si une mole de gaz coexiste avec une mole de liquide ou solide, 
+\begin{equation}
+    \Delta G_{m(p-p^{\circ})} = RT \ln{\frac{p}{p^{\circ}}}
+\end{equation}
+
+\subsection{Potentiel chimique}
+Dans un système réactionnel constitué de $k$ espèces chimiques différentes, $G$ est une fonction $G(T,p,n_1,...n_k)$ : 
+\begin{equation}
+    dG = \left(\frac{\partial G}{\partial T}\right)_{p,n_i}dT + \left(\frac{\partial G}{\partial p}\right)_{T,n_i}dp + \sum_{i = 0,...,k} \left(\frac{\partial G}{\partial n_i}\right)_{T,p,n_{j\neq i}}dn_i = -SdT + Vdp + \sum_i \mu_i dn_i
+\end{equation}
+
+\subsubsection{Potentiel chimique $\mu_i$}
+Le potentiel chimique \footnote{Grandeur intensive}de l'espèce $i$ est défini par 
+\begin{equation}
+    \mu_i \equiv \left(\frac{\partial G}{\partial n_i}\right)_{T,p,n_{j\neq i}}
+\end{equation}
+Relation fondamentale de $G$ : 
+\begin{equation}
+    dG = -SdT + Vdp + \sum_i \mu_idn_i
+\end{equation}
+
+\begin{itemize}
+    \item Pour une substance $A$ pure : $\mu_A = \left(\frac{\partial G}{\partial n_i}\right)_{T,p} \equiv G_m^{A}$, l'énergie libre molaire de $A$.
+    \item Pour un composé $i$ dans un système réactionnel à plusieurs composants : $\mu_i = \left(\frac{\partial G}{\partial n_i}\right)_{T,p,n_{j\neq i}} \approx G_{m,i}$, l'énergie libre molaire partielle de $i$.
+\end{itemize}
+\subsection{Equilibre chimique}
+\subsubsection{Degré d'avancement $\xi$ d'une réaction}
+\begin{equation}
+    d\xi = \frac{dn_i}{\nu_i}
+\end{equation}
+En tout instant, $d\xi$ et $\xi$ sont identiques pour tous les constituants $i$.
+\subsubsection{Energie libre de réaction $\Delta_rG$}
+\begin{equation}
+    \left(\frac{\partial G}{\partial \xi }\right)_{T,p} \equiv \Delta_rG
+\end{equation}
+Il s'agit de l'énergie libre de réaction, c'est la variation d'énergie libre du système.
+La direction d'évolution spontanée d'une réaction est donc $(\frac{\partial G}{\partial \xi })_{T,p} \equiv \Delta_rG < 0$.
+Et à l'équilibre ($\xi = \xi_{\text{éq}}$) : 
+\begin{equation}
+    \color{red}\boxed{\color{black}\Delta_rG \equiv \sum_i\nu_i\mu_i = 0}\color{black}
+\end{equation}
+
+\subsection{Equilibre chimique entre gaz parfaits}
+Dans cette section, le système réactionnel est un mélange de gaz parfaits. Le mélange idéal est un mélange dans lequel les forces de liaison ressenties par chaque espèce $i$ ne dépendent pas de la concentration des autres espèces.
+
+\subsubsection{Loi de Dalton et pressions partielles}
+\underline{Loi de Dalton :} La pression $p$ exercée par un mélange idéal de gaz parfaits est égale à la somme des pression $p_i$ que les gaz individuels $i$ exerceraient s'ils étaient seuls présents dans le volume occupé par le mélange : $p = \sum_ip_i$.\\
+
+$\Longrightarrow x_i \equiv \frac{n_i}{n} = \frac{p_i}{p}$ = fraction molaire\\
+A partir de la formule de l'énergie molaire d'un gaz parfait pur, on peut déduire le potentiel chimique des constituants $i$ d'un mélange idéal de gaz parfaits : 
+\begin{equation}
+    \mu_i = G_m^{i{\circ}} + RT \ln{\left(\frac{p_i}{p}\right)}
+\end{equation}
+
+Et l'énergie libre $\Delta_rG$ d'une réaction entre gaz parfaits est 
+\begin{equation}
+    \Longrightarrow \Delta_rG = \Delta_rG^{\circ} + RT \sum_i\nu_i \ln{\left(\frac{p_i}{p^{\circ}}\right)}
+\end{equation}
+Le premier terme est la contribution des constituants purs dans leur état standard, et le second est la contribution des changements de pression et de mélange.
+
+\subsubsection{Quotient réactionnel $Q$}
+\begin{equation}
+    Q \equiv \frac{\prod_{prod} (\frac{p_j}{p^{\circ}})^{\nu_j}}{\prod_{reac} (\frac{p_i}{p^{\circ}})^{\nu_i}}
+\end{equation}
+Et on a donc une nouvelle formule de l'énergie libre de la réaction : 
+\begin{equation}
+    \Delta_rG = \Delta_rG^{\circ} + RT \ln{Q}
+\end{equation}
+A l'équilibre, $\Delta_rG = 0$ :
+\begin{equation}
+    \Delta_rG^{\circ} = -RT \ln{K}
+\end{equation}
+avec $K$ la constante d'équilibre.
+
+\subsection{Equilibre chimique entre phases condensées}
+L'équilibre chimique entre phases condensées est la généralisation du formalisme thermodynamique décrivant l'équilibre chimique pour des réactions en environnement autre que des gaz parfaits. Dans cette section, le système réactionnel est un mélange de n'importe quel(le)s états et phases.
+
+\subsubsection{Activité}
+L'expression générale du potentiel chimique d'un constituant $i$ dans n'importe quel environnement est 
+\begin{equation}
+    \mu_i = \mu_i^{\circ} + RT \ln{a_i}
+\end{equation}
+avec $a_i$ l'activité du constituant $i$. Pour un gaz parfait, l'activité est donc $a_i \equiv \frac{p_i}{p^{\circ}}$.
+L'activité est la concentration effective dans le milieu concerné, i.e. la concentration tenant compte des interactions entre les constituants de la même phase. \\
+Par définition, dans l'état de référence, $a_i = 1$.
+
+\subsubsection{Activités et solutions (non-)idéales}
+\begin{equation}
+    a_i = \gamma_i x_i
+\end{equation}
+$\gamma_i$ est le coefficient d'activité. 
+Si $\gamma_i = 1$, la solution est idéale et $p_A = x_A p^{\circ}_A$\\
+Si $\gamma_i \neq 1$, la solution est non-idéale. Elle est stable si $\gamma_i<1$ et a une tendance de séparation des constituants si $\gamma_i>1$.
+
+\subsubsection{Potentiel chimique dans une solution liquide idéale}
+Une solution liquide idéale peut être assimilée à une solution très diulée.
+
+\begin{equation}
+    \mu_{i(liq)} = \mu_i^{\circ} + RT\ln{\left(\frac{m_i}{m_i^{\circ}}\right)}
+\end{equation}
+Avec $m_i$ la molarité, ou concentration.
+
+\subsubsection{Potentiel chimique dans une solution solide}
+En solution idéale : 
+\begin{equation}
+    \mu_{i(sol)} = \mu_i^{\circ} + RT \ln{\left(\frac{x_i}{x_i^{\circ}}\right)}
+\end{equation}
+
+En solution non-idéale : 
+\begin{equation}
+    \mu_i = \mu_i^{\circ} + RT \ln{a_i} = \mu_i^{\circ} + RT \ln{(\gamma_i x_i)}
+\end{equation}
+
+\subsubsection{Evolution de $K$ avec la température - Equation de Van 't Hoff}
+\begin{equation}
+    \frac{d (\ln{K})}{dt} = \frac{\Delta_rH^{\circ}}{RT^2}
+\end{equation}
+Si $\Delta_rH^{\circ}$ est indépendant de $T$,
+
+\begin{equation}
+    \ln{K_{T_2}} = \ln{K_{T_1}} - \frac{\Delta_rH^{\circ}}{R} \left(\frac{1}{T_2} - \frac{1}{T_1}\right)
+\end{equation}
+
+\subsubsection{Principe de Le Châtelier}
+Une réaction endothermique (resp. exothermique) est favorisée lorsque $T$ augmente (resp. diminue).
+Un équilibre chimique réagit toujours à une perturbation extérieure de façon à minimiser son effet.
+
+\subsubsection{Tension de vapeur}
+La tension de vapeur intervient dans les réactions d'équilibre entre les phases liquide et gazeuse d'un composé pur : \\
+La pression de vapeur $p_{\text{éq}}^{A}$ est la pression partielle d'équilibre. 
+\begin{equation}
+    \ln{(p^{A}_{\text{éq}})} = -\frac{\Delta_rH^{\circ}}{RT_{\text{ébul}}} + \frac{\Delta_rS^{\circ}}{R}
+\end{equation}
+Equation de Clausius-Clapeyron : 
+\begin{equation}
+    \frac{d(\ln{(\frac{p_{\text{vap,éq}}}{p^{\circ}})})}{dT} = \frac{\Delta_{vap}H^{\circ}}{RT^2}
+\end{equation}
+
+\subsubsection{Entropie standard de réaction}
+
+On sait que $S^{\circ}_{m,T=0K} = 0 [J/molK]$. Dans les calculs de $S_m^{\circ}(T)$, on prend donc une valeur de référence nulle, en $T=0K$.
+
+\subsubsection{Enthalpie standard de réaction}
+Par convention, l'enthalpie standard de formation à $298K$ d'un corps simple sous sa forme la plus stable est considérée égale à $0$.
+
+\section{Equilibre électrochimique}
+\subsection{Réactions rédox}
+Une réaction électrochimique est une réaction d'oxydoréduction effectuée en milieu aqueux. 
+
+Les électrons vont de l'anode (libéré par oxydation) vers la cathode (captés par réduction). Les électrons sont donc toujours produits en oxydation, et toujours réactifs en réduction.
+
+Une réaction rédox est une réaction nécessitant un transfert d'électrons suite à une diminution du degré d'oxydation (=valence de l'élément) d'au moins un élément, couplé à une augmentation du degré d'oxydation d'au moins un autre élément.\\
+
+\begin{itemize}
+    \item Une diminution du degré d'oxydation $z$ équivaut à un gain d'électrons et donc à une demi-réaction de réduction (cathodique).
+    \item Une augmentation du degré d'oxydation $z$équivaut à une perte d'électrons et donc à une demi-réaction d'oxydation (anodique).
+\end{itemize}
+
+La réaction rédox globale est la somme des deux demi-réactions, avec le même nombre d'électrons échangés dans les deux.
+
+\subsubsection{Déterminer la valence}
+\begin{center}
+    \begin{tabular}{|c|c|}
+        \hline
+        Element dans une molécule/composé & Valence \\
+        \hline\hline
+        Element pur & 0\\
+        \hline
+        Ion monoatomique & Charge de l'ion \\
+        \hline
+        Alcalins & +1\\
+        \hline
+        Fluor & -1\\
+        \hline
+        Alcalino-terreux, Zn et Cd & +2\\
+        \hline
+        Hydrogène lié à un non métal & +1\\
+        Hydrogène lié à un métal & -1\\
+        \hline
+        Oxygène & -2 \\
+        sauf dans les peroxydes & -1 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsubsection{Compléter une demi-réaction rédox}
+\begin{equation}
+    M^{z^+}_{(aq)} + ze^- = M_{(s)}
+\end{equation}
+\begin{enumerate}
+    \item Ecrire le couple rédox.
+    \item Balancer le nombre de moles de l'élément qui change de valence.
+    \item Balancer le bilan d'oxygène par ajout d'$H_2O$.
+    \item Balancer le bilan d'hydrogène par ajout d'$H^+$.
+    \item Balancer le bilan de charge par ajout d'$e^-$.
+    \item Pour un milieu alcalin, éliminer les $H^+$ par ajout d'$OH^-$.
+\end{enumerate}
+
+\subsubsection{Cellule électrochimique}
+En cellule électrochimique, les demi-réactions aux deux électrodes sont séparées physiquement, pour que les électrons circulent dans un circuit extérieur. Si un potentiel est appliqué, il s'agit d'une électrolyse, et sinon le système est un générateur de courant, le déchargement est spontané (=pile).
+
+\subsection{Lois de Nernst}
+\subsubsection{Energie libre électrochimique}
+En équilibre électrochimique, \(dU = \delta Q + \delta W \leq TdS - pdV - \phi dq\), avec $q$ la charge et $\phi$ la différence de potentiel. $\phi dq$ est donc le travail électrique (= déplacement de charges). 
+\begin{equation}
+    d(U-TS+pV+\phi q)_{T,p,\phi} \leq 0 \Longrightarrow d(G+zF\phi)_{T,p,\phi} \leq 0
+\end{equation}
+avec $z$ la valence et $F$ la constante de Faraday (\(F = e N_A\)).
+
+\begin{equation}
+    \begin{cases}
+        G^* \equiv G + zF\phi\\
+        \mu_I^* \equiv \mu_i + z_iF\phi_i
+    \end{cases}
+\end{equation}
+En équilibre électrochimique, on a donc 
+\begin{equation}
+    \color{red}\boxed{\color{black} \Delta_rG^*_{T,p,\phi} \equiv \sum_i{\nu_i\mu_i^*} = 0}\color{black}
+\end{equation}
+et le courant est nul (équilibre).\\
+
+Pour la demi-réaction générale, on a\\
+\begin{minipage}{.6\textwidth}
+\begin{equation}
+    \mu_M^* - z \mu_e^* - \mu^*_{M^{z^+}} = 0 \Rightarrow 
+    \begin{cases}
+        \mu^*_M = \mu_M\\
+        \mu_e^* = \mu_e - F\phi_M\\
+        \mu^*_{M^{z^+}} + z F\phi_{sol}\\
+    \end{cases}
+\end{equation}
+\begin{equation}
+    \Longrightarrow \mu_M = \mu_{M^{z^+}} + z \mu_e - zF(\phi_M - \phi_{sol})
+\end{equation}
+On pose \(\mu_{M^{z^+}} + z \mu_e - \mu_M \equiv - \Delta_r G\) et \(\phi_M - \phi_{sol} \equiv \Delta\phi\). \\
+
+On en déduit la première loi de Nernst :
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width = 0.7\textwidth]{img/Demi-réaction.png}
+\end{minipage}
+\begin{equation}
+    \color{red}\boxed{\color{black}\Delta \phi_{\text{éq}} = \frac{-\Delta_rG}{zF}}\color{black}
+\end{equation}
+
+Avec la formule \(\mu_i = \mu_i^{\circ} + RT\ln{a_i}\), on trouve 
+\begin{equation}
+    \Delta\phi_{\text{éq}} = \frac{\mu_{M^{z^+}}^{\circ} + z \mu_e^{\circ} - \mu_M^{\circ}}{zF} + \frac{RT}{zF} \left(\ln{a_{M^{z^+}}} + z \ln{a_e} - \ln{a_M}\right)
+\end{equation}
+avec \(a_M\equiv 1 \) car le métal est pur et donc en état standard, et \(a_e \equiv 1\) car, par convention, un électron libre est dans son état standard.\\
+
+Pour la réaction générale \(\nu_{ox} Ox + ze^- = \nu_{\text{réd}} R\text{é}d\), on a la seconde loi de Nernst à partir de l'égalité ci-dessus : 
+\begin{equation}
+    \color{red}\boxed{\color{black}\delta\phi_{\text{éq}} = \delta\phi_{\text{éq}}^{\circ} + \frac{RT}{zF} \ln{\frac{a_{ox}^{\nu_{ox}}}{a_{red}^{\nu_{red}}}}}\color{black}
+\end{equation}
+
+\subsection{Potentiel d'électrode et potentiel de cellule}
+
+Le potentiel d'électrode est défini comme étant \(\phi_M - \phi_{sol}\). C'est la différence de potentiel à travers une seule interface électrolyte. 
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : un métal noble est un métal qui s'oxyde/se corrode difficilement.
+\end{itemize}
+
+\subsubsection{Potentiel de cellule}
+Le potentiel de cellule est noté \(E_{(\text{éq})}\). Faison en sorte que la contribution de la seconde électrode au potentiel de la cellule soit constante et reproductible (=Standard Hydrogen Electrode). On a alors un potentiel de cellule 
+\begin{equation}
+    E_{(\text{éq})} = E_{(\text{éq})}^{\circ} + \frac{RT}{zF} \ln{a_{M^{z^+}}}
+\end{equation}
+C'est l'équivalent pratique de la seconde loi de Nernst.
+
+Dans des conditions standard, i.e. \(a_{M^{z^+}} = 1\), ce potentiel est appelé potentiel d'équilibre standard.
+
+Pour une demi-réaction rédox générale \(\nu_{ox} Ox + ze^- = \nu_{red} Red\): 
+\begin{equation}
+    E_{eq} = E_{eq}^{\circ} + \frac{RT}{zF}\ln{\frac{a_{ox}^{\nu_{ox}}}{a_{red}^{\nu_{red}}}}
+\end{equation}
+
+Cette formule est correcte car, en toute généralité, \(\Delta_rG = \Delta_rG^{\circ} + RT\ln{Q}\), et avec la première loi de Nernst, on obtient 
+\begin{equation}
+    E_{eq} = E_{eq}^{\circ} + \frac{RT}{zF}\ln{\frac{1}{Q}}
+\end{equation}
+
+\subsection{Tableau de Nernst et échelle rédox}
+
+Le tableau de Nernst est le tableau des valeurs \(E_{\text{éq}}^{\circ}\) à 25°C pour les demi-réactions du type \(M^{z^{+}} + ze^- = M\) (donc dans le sens de la réduction). Il faut donc prendre les valeurs opposées pour les oxydations.
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : les électrons vont toujours de l'anode vers la cathode.
+\end{itemize}
+
+L'échelle rédox est le tableau généralisé des valeurs \(E_{\text{éq}}^{\circ}\) pour des demi-réactions du type \(Ox + ze^- = Red\).
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : \(E_{\text{éq}}^{\circ}\) et \(E_{\text{éq}}\) sont des fonctions intensives.
+\end{itemize}
+
+\subsubsection{Potentiel de cellule}
+
+\begin{equation}
+    E_{(\text{éq}), cel} = E_{(\text{éq}), cathode} - E_{(\text{éq}), anode}
+\end{equation}
+
+C'est le potentiel pour une réaction rédox globale. 
+
+\begin{equation}
+    \color{red} \boxed{\color{black}E_{(\text{éq}), cel} = E_{(\text{éq}), cel}^{\circ} + \frac{RT}{zF} \ln{\left(\frac{a_{ox, cathode}a_{red, anode}}{a_{red, cathode} a_{ox, anode}}\right)}}\color{black}
+\end{equation}
+
+\subsubsection{Force électromotrice}
+
+La force électromotrice d'une cellule est le potentiel de cellule à courant nul, donc le potentiel d'équilibre de la cellule. C'est la différence de potentiel permettant d'annuler la circulation du courant dans la cellule. Sa formule est donc l'équation 4.14.\\
+
+Si on trouve un \(E_{(\text{éq}), cel} < 0\), il faut simplement inverser cathode et anode.
+
+\subsection{Application -- La corrosion}
+
+\subsubsection{La corrosion du fer en milieu alcalin}
+
+\begin{equation}
+    \begin{cases}
+        O_2 + 2H_2O + 4e^- = 4OH^-\\
+        2Fe = 2Fe^{++} + 4e^-\\
+        \Longrightarrow 2Fe^{++} + 4 OH^- = 2Fe(OH)_2
+    \end{cases}
+\end{equation}
+L'hydroxyde de fer est "la rouille". C'est une réaction d'oxydation (donc anodique) spontanée.
+
+Une solution pour éviter la rouille est la galvanisation de l'acier : les électrons nécessaires à la réduction de l'oxygène sont fournis par oxydation du zinc, et le produit de cette réaction réagit ensuite avec le \(CO_2\) pour former du carbonate de zinc solide, qui protège le fer en-dessous.
+
+\subsubsection{Loi de Faraday}
+
+La loi de Faraday permet de convertir un courant \(i\), i.e. le nombre d'électrons échangés par unité de temps, en une vitesse massique \(R\) : 
+
+\begin{equation}
+    R = i \times \frac{1}{zF} \times M = [g/s]
+\end{equation}
+avec \(M\) la masse molaire.
+
+\section{Equilibre entre phases}
+
+\subsection{Composés purs - Transitions entre phases}
+\begin{minipage}{.6\textwidth}
+    Considérons un système fermé à pression et température constantes et uniformes, divisé en deux sous-systèmes séparés par une membrane perméable : \(dG = -SdT + Vdp + \sum_i{\mu_idn_i} = \sum_i{\mu_idn_i} \). \\
+    \begin{equation}
+        dn_{A,1} = dn_{A,2} \Rightarrow dG = dG_1 + dG_2 = \left(\mu_{A,1}-\mu_{A,2}\right) dn_{}
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width = \textwidth]{img/Composé pur équilibre.png}
+\end{minipage}
+\begin{itemize}
+    \item Si \(\mu_{A,1} < \mu_{A,2} \Rightarrow dn_{A,1} >0\) et il y a migration de l'espèce \(A\) vers la phase 1.
+    \item Si \(\mu_{A,1} > \mu_{A,2} \Rightarrow dn_{A,1} <0\) et il y a migration de l'espèce \(A\) vers la phase 2.
+\end{itemize}
+
+Toute espèce migre vers l'endroit où son potentiel chimique est le plus faible, c'est donc le gradient de potentiel chimique qui est le moteur du déplacement des espèces.
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : la condition d'équilibre est l'uniformité, partout dans le système, du potentiel chimique de chaque espèce.
+\end{itemize}
+
+\subsubsection{Variation de \(\mu\) avec la température }
+Considérons une transformation (= transition) entre deux phases \(\alpha\) et \(\beta\) d'une substance pure à une pression donnée. A la température d'équilibre \(T_{tr}\), les potentiels chimiques \(\mu^{\alpha}\) et \(\mu^{\beta}\) doivent être identiques :
+
+\begin{equation}
+    \color{red}\boxed{\color{black}\Delta_{tr}\mu = \Delta_{tr}G_m = 0 \Longrightarrow \Delta_{tr}S_m = \frac{\Delta_{tr}H_m}{T_{tr}}}\color{black}
+\end{equation}
+
+\subsubsection{Variation d'entropie liée à un changement de phase}
+Si la transformation est endothermique, l'entropie augmente.\\
+Si la transformation est exothermique, l'entropie diminiue.\\
+
+Loi de Richards : l'entropie molaire de fusion des métaux purs est approximativement constante (\(\Delta_{fus}S_m \approx 9J/molK\)).
+
+\includegraphics[width = \textwidth]{img/Evolution de phase.png}
+
+\begin{equation}
+    S_{m(g)} >> S_{m, (liq)} > S_{m, (sol)}
+\end{equation}
+
+\subsubsection{Force motrice pour une transition entre phases}
+
+Soit \(\Delta T = T- T_{tr} < 0\) (= refroidissement). Soit \(\Delta G_m <0\) la différence entre \(G_m\) des phases à la température \(T\). 
+
+\begin{equation}
+    T < T_{tr} \Rightarrow \Delta G_m = G_m^{\alpha} - G_m^{\beta} = \Delta H_m - T \Delta S_m <0 
+\end{equation}
+
+La phase \(\alpha\) est donc plus stable que la phase \(\beta\).
+
+Entre phases condensées, on a \(C_{p,m}^{\beta} \approx C_{p,m}^{\alpha} \rightarrow \)
+\begin{equation}
+    \Delta G_m = \Delta H_m - T \Delta S_m \approx \Delta _{tr}H_m - T \Delta_{tr}S_m = \Delta_{tr}H_m - T \frac{\Delta_{tr}H_m}{T_{tr}} = \Delta_{tr}H_m \frac{T_{tr} - T}{T_{tr}}
+\end{equation}
+
+\begin{equation}
+    \Delta G_m = \frac{-\Delta_{tr} H_m}{T_{tr}} \Delta T
+\end{equation}
+
+Lors d'un refroidissement, une transition de phase devra donc nécessairement aller dans le sens d'une diminution d'entropie, avec un dégagement de la chaleur latente (\(\Delta_{tr}H_m < 0\)). 
+
+\subsubsection{Variation de \(\mu\) avec la pression}
+
+\begin{equation}
+    V_{m, (g)} >> V_{m, (liq)} \geq V_{m, (sol)}
+\end{equation}
+
+\subsubsection{Cas particulier - Equilibre d'un solide/liquide avec sa vapeur :}
+
+A l'équilibre, si l'on peut négliger le volume molaire du solide/liquide par rapport à celui de la vapeur : 
+
+\begin{equation}
+    G_{m, sol/liq} \approx G_{m, sol/liq}^{\circ} = G_{m, vap}^{\circ} + RT \ln{\left(\frac{p_{vap, \text{éq}}}{p^{\circ}}\right)}
+\end{equation}
+
+\subsubsection{Composés purs - Diagrammes de phase}
+
+\begin{minipage}{.6\textwidth}
+    \includegraphics[width = .7\textwidth]{img/Diagrammes de phase.png}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    Le point triple correspond à un équilibre entre les 3 phases. Au point critique, la différence entre les deux phases disparait et il n'y a plus de distinction entre le gaz et le liquide.
+\end{minipage}
+
+\subsubsection{Tracé expérimental des limites de phase}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = .5\textwidth]{img/Limites de phase.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{itemize}
+        \item [$\rightarrow$] La partie constante à l'ébullition s'explique par le fait que l'entropie de transition est plus élevée pour l'ébullition.
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Fluide supercritique}
+
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Fluide supercritique.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    A partir du point critique, les densités de la vapeur et du liquide sont égales, il n'y a donc plus d'interface entre les deux phases. \\
+    Un gaz est une vapeur à \(T > T_c\), qui ne peut donc pas être liquéfiée par compression isotherme.\\
+    Un gaz/fluide au-dessus de \((p_c,T_c)\) est appelé un fluide supercritique. 
+\end{minipage}
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : \(\Delta_{vap} H_m\) est maximal au point triple et nul au point critique.
+\end{itemize}
+
+\subsection{Composés purs - Limites de phase}
+
+\underline{Formule de Clapeyron :}\\
+
+Soit deux états \((p,T)\) et \((p + dp, T + dT)\) situés sur une même limite de phase : 
+\begin{equation*}
+    \begin{cases}
+        G_m^{\alpha} = G_m^{\beta}\\
+        G_m^{\alpha} +dG_m^{\alpha} = G_m^{\beta} + G_m^{\beta}\\
+    \end{cases}
+\end{equation*}
+
+Donc \(dG_m^{\alpha} = dG_m^{\beta}\) : 
+\begin{equation}
+    -S_m^{\alpha} dT + V_m^{\alpha} dp = -S_m^{\beta} dT + V_m^{\beta} dp \Rightarrow \frac{dp}{dT} = \frac{S_m^{\beta} - S_m^{\alpha}}{V_m^{\beta} - V_m^{\alpha}} = \frac{\Delta_{tr}S_m}{\Delta_{tr}V_m}
+\end{equation}
+
+Puisque \(\Delta_{r} = \frac{\Delta_{tr}H_m}{T_{tr}}\), 
+
+\begin{equation}
+    \color{red}\boxed{\color{black}\frac{dp}{dT} = \frac{\Delta_{tr}H_m}{T \Delta_{tr}V_m}}\color{black}
+\end{equation}
+
+\subsubsection{Formule de Clausius - Clapeyron}
+
+Pour une transition liquide/vapeur : \(p \equiv p_{vap, \text{éq}}\)
+
+Si la vapeur se comporte comme un gaz parfait, par la formule de Clapeyron :
+\begin{equation}
+    \frac{d \ln{\left(\frac{p_{vap,\text{éq}}}{p^{\circ}}\right)}}{dT} = \frac{\Delta_{vap}H_m}{RT^2}
+\end{equation}
+
+\subsection{Mélanges et solutions - Grandeurs molaires partielles}
+
+On appelle mélange ou solution une phase contenant plusieurs espèces chimiques différentes. Pour toute grandeur extensive \(X(pT,n_1,...n_i)\) d'un mélange de \(i\) constituants, on peut définir sa grandeur molaire partielle :
+\begin{equation}
+    X_{m,i} = \left(\frac{\partial X}{\partial n_i}\right)_{p,T, n_{j\neq i}}
+\end{equation}
+
+\subsubsection{Théorème d'Euler sur les fonctions homogènes}
+
+La fonction \(f(x,y,z,...)\) est dite homogène par rapport à ses variables lorsqu'elle vérifie \(f(tx,ty,tz,...) = t^m f(x,y,z,...)\). L'exposant \(m\) est le degré d'homogénéité. Pour \(t=1)\), on a 
+
+\begin{equation}
+    xf_x + yf_y + ... = m f
+\end{equation}
+La somme des produits des dérivées partielles d'une fonction homogène avec les variables correspondantes est égale à la fonction elle-même, multipliée par son degré d'homogénéité.
+
+Une grandeur extensive est une fonction homogène de degré 1 par rapport aux variables \(n_i\). Mathématiquement, on a donc 
+
+\begin{equation}
+    X = \sum_{i}{n_i \left(\frac{\partial X}{\partial n_i}\right)_{p,T,n_{j\neq i}}} = \sum_i n_i X_{m,i}
+\end{equation}
+\end{document}

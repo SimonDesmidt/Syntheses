@@ -1,0 +1,835 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{xfrac}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\renewcommand{\contentsname}{Table des matières}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.6]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LMECA1100 Mécanique des solides déformables \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2023-2024 - Q1}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\chapter{Bases des tenseurs, mécanique continue et élasticité linéaire}
+\section{Poutres}
+\begin{minipage}{.5\textwidth}
+    Les bâtiments sont constitués de poutres et de plaques (pour les éléments plats) ou de coques (pour les coupoles). Une poutre est un élément dont la longueur est grande devant les autres dimensions.\\
+    \begin{itemize}
+        \item [\(\rightarrow\)] Remarque : une poutre peut elle-même être constitutée de poutres pour diminuer son poids et ajouter de la résistance.
+    \end{itemize}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = .8\textwidth]{img/Poutres.png}
+\end{minipage}
+\subsection{Stabilité}
+Lorsque les poutres subissent de la compression, du flambement peut apparaître, i.e. elles plient et deviennent instables.
+\section{Système fondamental du ressort}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Amortisseur.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Le système est composé d'une masse attachée à un ressort, dont le mouvement est régulé par un amortisseur. La masse peut être en vibration libre (on tire puis on lache), ou en vibration forcée (une force est continuellement appliquée sur la masse). Sans amortisseur et en vibration libre, le mouvement de la masse est décrit par : 
+\end{minipage}
+\begin{equation}
+    x(t) = X\cos{(\omega_nt+\varphi)} \qquad \omega_n = \sqrt{k/m}
+\end{equation}
+En vibration forcée sans amortisseur, dépendant de la valeur de la pulsation, on peut créer un phénomène de résonance augmentant l'amplitude de déplacement.
+\section{Hypothèse des petites perturbations}
+Sous cette hypothèse, les configurations actuelle et de référence sont très proches, les déformations faibles et la partie non linéaire du tenseur de Green-Lagrange peut donc être négligée. On obtient alors le tenseur de déformation suivant : 
+\begin{equation}
+    \varepsilon = \frac{1}{2}\left(\frac{\partial u}{\partial \textbf{X}}+\left(\frac{\partial u}{\partial \textbf{X}}\right)^T\right)
+\end{equation}
+Le reste du cours se fera sous cette hypothèse, ainsi que sous l'hypothèse que les matériaux sont isotropes et linéairement élastiques. Les charges seront toujours (quasi-)statiques.\\
+
+Pour des rappels concernant les matrices de transformation et les tenseurs d'ordre 2, voir MMC ou CM1, slides 37-48.
+\section{Elasticité linéaire unidimensionnelle}
+Un matériau est élastique si, lorsqu'on relache la charge appliquée, il reprend sa forme initiale. La relation contrainte-déformation est linéaire en cas de traction simple : \(\sigma_{xx} = E \varepsilon_{xx}\).
+\section{Elasticité linéaire tridimensionnelle}
+En multiaxial, les relations sont les suivantes : 
+\begin{equation}
+    \sigma = \textbf{c}:\varepsilon \qquad W(\varepsilon) = \frac{1}{2}\varepsilon:\sigma
+\end{equation}
+avec \(W(\varepsilon)\) l'énergie de déformation par unité de volume et \(\textbf{c}\) l'opérateur de Hooke, un tenseur d'ordre 4.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : pour déterminer les conditions d'équilibre d'un solide en déformation, il faut utiliser les équations de conservation de la quantité de mouvement.
+\end{itemize}
+\subsection{Opérateur de Hooke}
+Les symétries de l'opérateur de Hooke sont décomposées en deux catégories : les symétries mineures (\(c_{ijkl} = c_{jikl}\)), et les symétries majeures (\(c_{ijkl} = c_{klij}\)). Ce tenseur est également défini positif, i.e. pour un tenseur d'ordre 2 \(\nu\) symétrique, \(c_{ijkl}\nu_{ij}\nu_{kl} \ge 0\) et \(c_{ijkl}\nu_{ij}n_{kl} = 0 \Rightarrow \nu_{ij} = 0\). Il est également inversible; son inverse est le tenseur de compliance linéaire élastique et il conserve les propriétés ci-dessus.
+\subsection{Elasticité linéaire isotropique}
+En élasticité linéaire isotropique, les équations liant les contraintes aux déformations sont les suivantes :
+\begin{equation}
+    \sigma = 2\mu \varepsilon + \lambda (tr\varepsilon)\textbf{1}\qquad \qquad \varepsilon = \frac{1+\nu}{E}\sigma - \frac{\nu}{E}(tr\sigma)\textbf{1}
+\end{equation}
+Où on définit les coefficients de Lamé \(\lambda\) et \(\mu\) (module de cisaillement) par 
+\begin{equation}
+    \lambda = \frac{E\nu}{(1-2\nu)(1+\nu)} \qquad \mu = \frac{E}{2(1+\nu)} = \frac{\sigma_{12}}{2\varepsilon_{12}}
+\end{equation}
+avec \(\nu\) le coefficient de Poisson exprimant la contraction latérale : \(\nu = -\varepsilon_{22}(t)/\varepsilon_{11}(t)\) et \(E\) le module de Young exprimant la raideur axiale : \(E = \sigma_{11}(t)/\varepsilon_{11}(t)\).\\
+
+On définit également le module de compressibilité \(\kappa\) par la relation le liant à la variation relative de volume : \(tr\varepsilon = \frac{tr\sigma}{3\kappa} \Longleftrightarrow 3\kappa = 3\lambda + 2\mu\)
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : si \(\nu\rightarrow 1/2\), la variation de volume tend vers 0 et le matériau est dit incompressible.
+\end{itemize}
+L'énergie de déformation (par unité de volume) en élasticité linéaire isotropique est définie par la relation suivante : 
+\begin{equation}
+    W(\varepsilon) = \frac{\kappa}{2}\varepsilon_{mm}^2 + \mu e_{ij}e_{ji}
+\end{equation}
+Le premier terme désigne l'énergie liée à la variation de volume, tandis que le second désigne l'énergie liée à la variation de géométrie.
+\chapter{Formulations variationnelles et théorèmes de travail et d'énergie}
+\section{Formulation locale}\label{Locale}
+\begin{minipage}{.35\textwidth}
+    \includegraphics[width = \textwidth]{img/Formulation.jpg}
+\end{minipage}
+\begin{minipage}{.65\textwidth}
+    Les équations constitutives sont les suivantes :
+    \begin{equation}
+        \begin{cases}
+            u_I = U_i \text{ sur }\Gamma_U\qquad \text{ Condition frontière en déplacement forcés}\\
+            \frac{\partial \sigma_{ij}}{\partial x_j} + f_i = 0 \text{ sur } \Omega \qquad \text{Condition d'équilibre}\\
+            \sigma_{ij}n_j = F_i \text{ sur } \Gamma_F \qquad \text{Condition frontière de force}\\
+            \varepsilon_{ij} = \frac{1}{2}\left(\frac{\partial u_i}{\partial x_j} + \frac{\partial u_j}{\partial x_i}\right)\equiv u_{(i,j)} \qquad \text{ Déformations infinitésimales}\\
+        \end{cases}
+    \end{equation}
+\end{minipage}
+\section{Formulation globale}
+\begin{equation}\label{eq1}
+    \int_{\Omega}\left(\frac{\partial \sigma_{ij}}{\partial x_j}+f_i\right)w_i d\Omega = 0
+\end{equation}
+avec \(w(x)\) un champ de vecteurs suffisamment régulier (i.e. dérivable et intégrable).\\
+
+A partir de l'équation \autoref{eq1}, on utilise le théorème de la divergence, les propriétés de symétries et les conditions frontières, et on trouve la formulation globale suivante, vérifiée pour tout champ \(w(x)\) :
+\begin{equation}
+    \int_{\Omega}\sigma_{ij}w_{(i,j)}d\Omega = \int_\Omega f_iw_id\Omega + \int_{\Gamma_F}F_iw_id\Gamma + \int_{\Gamma_U} \sigma_{ij}n_jw_id\Gamma
+\end{equation}
+Soit un champ de déplacement cinématiquement admissible \(\mathcal{U} = \{\textbf{v}(x)\) suffisamment régulier et tel que \(\textbf{v}(x) = \textbf{U}(x)\) sur \(\Gamma_U\), avec \(\textbf{U}(x)\) les déplacements imposés. Appliquons le résultat général trouvé plus haut au champ \(w(x) = v(x) \in \mathcal{U}\).
+\begin{equation}
+    \int_{\Omega}\sigma(x) : \varepsilon(v(x))dV + \int_\Omega \textbf{f}(x) \cdot \textbf{v}(x) dx + \int_{\Gamma_F}\textbf{F}(x)\cdot \textbf{v}(x) dA + \int_{\Gamma_U} (\sigma^T \cdot \textbf{n})\cdot \textbf{v}(x) dA = 0 \qquad \forall \textbf{v}(x) \in \mathcal{U}
+\end{equation}
+Dans l'ordre, les termes valent : 
+\begin{enumerate}
+    \item Le travail des contraintes (i.e. les efforts surfaciques internes) dans les déformations dues à \(\textbf{v}(x)\).
+    \item + 3. Le travail des efforts externes dans les déplacements.
+\end{enumerate}
+\begin{enumerate}\setcounter{enumi}{3}
+    \item Le travail des efforts de réaction dans les déplacements.
+\end{enumerate}
+\section{Théorème des travaux virtuels}
+Ce théorème est valable pour tout problème de constitution et est équivalent à la formulation locale de la section \autoref{Locale}. Noter que \(u(x)\) désigne le champ de déplacement réel, tandis que \(\textbf{v}(x)\) et \(\textbf{v}^*(x)\) désignent des champs virtuels.
+\subsection{Forme 1}
+Soit un champ de déplacement cinématiquement admissible \(\mathcal{U} = \{\textbf{v}(x)\) suffisamment régulier et tel que \(\textbf{v}(x) = \textbf{U}(x)\) sur \(\Gamma_U\), avec \(\textbf{U}(x)\) les déplacements imposés sur \(\Gamma_U\). \\
+
+Il s'agit de trouver le champ de déplacement \(\textbf{u}(x)\) vérifiant 
+\begin{equation}
+    \int_{\Omega}\sigma(x) : \varepsilon(v(x))dV = \int_\Omega \textbf{f}(x) \cdot \textbf{v}(x) dx + \int_{\Gamma_F}\textbf{F}(x)\cdot \textbf{v}(x) dA + \int_{\Gamma_U} (\sigma^T \cdot \textbf{n})\cdot \textbf{u}(x) dA \qquad \forall \textbf{v}(x) \in \mathcal{U}
+\end{equation}
+\subsection{Forme 2}
+Soit la variation de champ de déplacement cinématiquement admissible \(\mathcal{U^*} = \{\textbf{v}^*(x)\) suffisamment régulier et tel que \(\textbf{v}^*(x) = 0\) sur \(\Gamma_U\), avec \(\textbf{U}(x)\) les déplacements imposés sur \(\Gamma_U\). \\
+
+Il s'agit de trouver le champ de déplacement \(\textbf{u}(x)\) vérifiant 
+\begin{equation}
+    \int_{\Omega}\sigma(x) : \varepsilon(v^*(x))dV = \int_\Omega \textbf{f}(x) \cdot \textbf{v}^*(x) dx + \int_{\Gamma_F}\textbf{F}(x)\cdot \textbf{v}^*(x) dA \qquad \forall \textbf{v}^*(x) \in \mathcal{U^*}
+\end{equation}
+\section{Elasticité linéaire}
+\subsection{Poser le problème}
+En statique, un problème est bien posé si
+\begin{itemize}
+    \item \(\sum \textbf{F} = 0\)
+    \item \(\sum \textbf{M} = 0\)
+    \item On a une condition frontière
+\end{itemize}
+Cela équivaut à dire qu'en un même point et dans une même direction, on ne peut pas imposer à la fois une force et un déplacement.\\
+
+Résultat: en élasticité linéaire, si un problème est bien posé, alors la solution de champ de déplacement est unique.
+\subsection{Relations}
+\begin{itemize}
+    \item \(\sigma_{ij} = c_{ijkl}\textbf{u}_{(k,l)}\)
+    \item \(c_{ijkl} = c_{jikl} = c_{ijlk} = c_{klij}\)
+    \item \(c_{ijkl}\eta_{ij}\eta_{kl}\ge0\), et \(c_{ijkl}\eta_{ij} = 0\Longrightarrow \eta_{ij}= 0\) avec \(\eta\) un tenseur symétrique quelconque.
+\end{itemize}
+Pour la suite, utilisons les notations suivantes :
+\begin{itemize}
+    \item \(a(u,w) = \int_\Omega c_{ijkl} u_{(k,l)}x_{(i,j)}d\Omega\)
+    \item \(\langle f,w\rangle = \int_\Omega f_iw_i d\Omega\) et \(\langle f,w\rangle_{\Gamma_F} = \int_{\Gamma_F} f_iw_i d\Gamma\)
+\end{itemize}
+Le TTV sous forme 2 devient 
+\begin{equation}
+    a(u,v^*) = \langle f,v^*\rangle + \langle F,v^*\rangle_{\Gamma_F} \qquad \forall v^*\in \mathcal{U^*}
+\end{equation}
+\section{Théorème de l'énergie potentielle}
+Soit \(I(w)\) l'énergie potentielle associée au champ de déplacement \(w(x)\).
+\begin{equation}
+    I(w) = \frac{1}{2}a(w,w) - \langle f,w\rangle - \langle F,w\rangle_{\Gamma_F}
+\end{equation}
+avec le premier terme l'énergie des efforts dus à \(w(x)\) et les autres le travail des efforts externes dans les déplacements \(w(x)\). Le théorème de l'énergie potentielle est 
+\begin{equation}
+    u\in \mathcal{U} \qquad I(u) \le I(v) \qquad\forall v\in \mathcal{U}
+\end{equation}
+Cela signifie que parmi tous les champs de déplacements \(v(x)\) cinématiquement admissibles, la solution \(u(x)\) minimise l'énergie potentielle.
+\section{Thoérème de réciprocité de Maxwell-Betti}
+\begin{minipage}{.35\textwidth}
+    \includegraphics[width = \textwidth]{img/MB.png}
+\end{minipage}
+\begin{minipage}{.65\textwidth}
+    Soient deux corps de même géométrie et composé du même matériau. Soit la contrainte de déplacement \(\mathcal{U}\) sur \(\Gamma_U\) identique également. Et soient les chargements \(F^{(1)}\) et \(F^{(2)}\) sur \(\Gamma_F\) différents. Les deux problèmes ont des solutions différentes \(\textbf{u}^{(1)}(x)\) et \(\textbf{u}^{(2)}(x)\).
+\end{minipage}
+Le théorème de réciprocité se trouve en partant du TTV\_1 du problème 1 (resp. 2) et en l'appliquant avec la solution du problème 2 (resp.1) \(\textbf{u}^{(2)}(x)\) (resp. \(\textbf{u}^{(1)}(x)\)). Le thoérème est alors
+\begin{equation}
+    \int_\Omega \textbf{f}^{(1)}(x) \cdot \textbf{u}^{(2)}(x) dV + \int_{\Gamma_F}\textbf{F}^{(1)}(x)\cdot \textbf{u}^{(2)}(x)dV + \int_{\Gamma_U} (\sigma^{(1)} \cdot \textbf{n}(x))\cdot \mathcal{\textbf{U}}(x) dA 
+\end{equation}
+\begin{equation}
+    = \int_\Omega \textbf{f}^{(2)}(x) \cdot \textbf{u}^{(1)}(x) dV + \int_{\Gamma_F}\textbf{F}^{(2)}(x)\cdot \textbf{u}^{(1)}(x)dV + \int_{\Gamma_U} (\sigma^{(2)} \cdot \textbf{n}(x))\cdot \mathcal{\textbf{U}}(x) dA
+\end{equation}
+Cela signifie que le travail des efforts externes et de réaction du problème 1 dans les déplacements dûs au problème 2 est exactement égal au travail des efforts externes et de réaction du problème 2 dans les déplacements dûs au problème 1. Cela permet de résoudre un problème compliqué à partir d'un problème simple.
+\section{Méthode de Ritz}
+La méthode de Ritz est une méthode numérique appliquant le théorème de l'énergie potentielle à une classe de \(\textbf{v}^{(R)}(\textbf{x}\) cinématiquement admissibles.\\
+
+On se donne les \(\psi^{(i)}(x)\), \(i = \{1,\dots,n\}\) cinématiquement admissibles, et on cherche \(\textbf{v}^{(R)}(\textbf{x}) = \sum_{A=1}^Nb_A \psi^{(A)}(\textbf{x})\). Il nous faut calculer les coefficients \(b_A\) de telle manière qu'on minimise l'expression de l'énergie potentielle \(E_p(\textbf{v}^{(R)}(\textbf{x})\) et on suppose que \(\textbf{v}^{(R)}(\textbf{x} \approx \textbf{u}(\textbf{x})\)\footnote{Il s'agit de l'approximation de Ritz.}. Pour calculer les \(b_A\), on annule le gradient de l'énergie potentielle selon \(b_A\). 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : La méthode de Ritz ne permet pas de déterminer la qualité de la solution et ne donne aucune manière de l'améliorer.
+\end{itemize}
+\chapter{Thoérie des poutres}
+\section{Géométrie d'une poutre}
+\begin{minipage}{.7\textwidth}
+    Une poutre est un solide dont une dimension est "grande" devant les autres dimensions. Elle est caractérisée par une fible moyenne \(\mathcal{L}\) et une section droite \(S\), i.e. une surface plane de centre de gravité géométrique \(G\). La poutre est le solide obtenu lorsque \(G\) parcourt \(\mathcal{L}\), avec \(S\) qui reste orthogonale à \(\mathcal{L}\).
+\end{minipage}
+\begin{minipage}{.3\textwidth}
+    \includegraphics[width = \textwidth]{img/Poutre.png}
+\end{minipage}
+Si la section droite de la poutre se trouve dans le plan \((G,y,z)\), alors les moments d'inertie sont
+\begin{equation}
+    \begin{cases}
+        I_z = \int_S Y^2dYdZ\\
+        I_y = \int_S Z^2dYdZ\\
+        I_{yz} = \int_S YZdYdZ\\
+    \end{cases}
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : si la section a un axe de symétrie, alors \(I_{yz} =0\).
+\end{itemize}
+\section{Flexion pure d'une poutre droite à section homogène}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : on est sous hypothèse des petites déformations.
+\end{itemize}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Torsion pure.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    La partie supérieure de la poutre est en compression et la partie inférieure en traction. Faisons l'hypothèse que la contrainte est linéaire : 
+\end{minipage}
+\begin{equation}
+    \begin{cases}
+        \sigma_xx = \alpha y \\
+        \sigma_{ij} = 0 \\ 
+    \end{cases}
+    \Longrightarrow [\sigma_{(x,y,z)}] = \begin{pmatrix}
+        \alpha y & 0 & 0\\
+        0 & 0 & 0\\
+        0 & 0 & 0\\
+    \end{pmatrix}
+\end{equation}
+De plus, en négligeant les forces de volume\footnote{Réaliste car les poutres soutiennent des masses bien supérieures à la leur.}, les équations d'équilibre en tout point sont respectées : \(\frac{\partial \sigma_{ij}}{\partial x_j} = 0\) \(\forall (x,y,z)\in\) poutre. En outre, les conditions de compatibilité sous la forme de Beltrami-Mitchell sont respectées : \(\Delta \Delta \sigma_{ij}(x,y,z) = 0\) \(\forall (x,y,z)\in\) poutre.\\
+
+On trouve par le principe de Saint-Venant que, pour que l'égalité soit vérifiée, \(\alpha = M/I_z\).\\
+Et le champ de déformation est 
+\begin{equation}
+    \varepsilon = \begin{pmatrix}
+        \frac{M}{EI}y & 0 & 0\\
+        0 & -\frac{\nu M}{EI}y & 0\\
+        0 & 0 & -\frac{\nu M}{EI}y\\
+    \end{pmatrix}
+\end{equation}
+avec \(E\) le module de Young et \(I\) l'inertie.\\
+On définit le rayon de courbure \(R\) et la courbure \(1/R\) par
+\begin{equation}
+    \frac{1}{R(x)} = \frac{-f''(x)}{(1+(f'(x))^2)^{\sfrac{3}{2}}}
+\end{equation}
+Et on a donc \(\frac{1}{R(x,0,0)} = -\frac{\partial^2 v}{\partial x^2}(x,0,0) = \frac{M}{EI}\). 
+\section{Efforts externes}
+Dans ce cours, les efforts externes sont des forces dans le plan \((G,x,y)\) et des moments autour de l'axe \((G,z)\). On les suppose appliqués directement sur la fibre.
+\subsection{Efforts des contraintes internes}\label{Contraintes}
+On fait l'hypothèse que les composantes \(\sigma_{xx}\) et \(\sigma_{xy}\) sont indépendantes de \(z\) et que les autres composantes sont négligeables. Les contraintes résultantes sont
+\begin{equation}
+    N(x) = \int_S \sigma_xx dydz \qquad Q(x) = \int_S \sigma_xydydz \qquad M(x) = \int_S y\sigma_{xx}dydz
+\end{equation}
+On appelle \(N(x)\) l'effort normal, \(Q(x)\) l'effort tranchant, et \(M(x)\) le moment fléchissant.
+\subsubsection{Convention de signes}
+\begin{itemize}
+    \item Si l'effort normal \(N(x)\) est positif, alors la section droite est en traction et elle est en compression s'il est négatif.
+    \item Si le moment fléchissant \(M(x)\) est positif, alors il comprime la partie supérieure de la poutre, et il comprime sa partie inférieure s'il est négatif.
+    \item Le signe n'est pas important pour \(Q(x)\).
+\end{itemize}
+\subsection{Equations d'équilibre}
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width = \textwidth]{img/EqEq.png}
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    \(p(x)\) est une force normale par unité de longueur et \(\gamma(x)\) une force de cisaillement par unité de longueur. Les équations d'équilibre sont 
+    \begin{equation}
+        \begin{cases}
+            \frac{dN}{dx}(x) = -\gamma(x)\\
+            \frac{dQ}{dx}(x) = -p(x)\\
+            \frac{dM}{dx}(x) = Q(x)\\
+        \end{cases}
+    \end{equation}
+\end{minipage}
+On peut faire intervenir l'équation du rayon de courbure \(M(x) = \frac{EI}{R(x)}\), et on obtient par définition de \(R(x)\)
+\begin{equation}
+    M(x) = -EI \frac{d^2v}{dx^2}
+\end{equation}
+si \(E\) et \(I\) sont constants. Par les équations d'équilibre,
+\begin{equation}
+    \frac{d^4v}{dx^4} = \frac{p(x)}{EI}
+\end{equation} 
+et on appelle \(v(x)\) la flèche de la poutre. La formule du déplacement axial est
+\begin{equation}
+    \frac{du}{dx} = \frac{N(x)}{EA}
+\end{equation}
+\subsection{Conditions frontières}
+\begin{minipage}{.7\textwidth}
+    \begin{itemize}
+        \item Support simple : \(v(0) = 0\)
+    \end{itemize}
+\end{minipage}
+\begin{minipage}{.3\textwidth}
+    \includegraphics[width = \textwidth]{img/SS.png}
+\end{minipage}\\
+
+\begin{minipage}{.7\textwidth}
+    \begin{itemize}
+        \item Support simple à résistance élastique : \(v(0) = \frac{V_A}{k}\), avec \(k\) la constante d'élasticité du ressort.
+    \end{itemize}
+\end{minipage}
+\begin{minipage}{.3\textwidth}
+    \includegraphics[width = \textwidth]{img/SSR.png}
+\end{minipage}\\
+
+\begin{minipage}{.7\textwidth}
+    \begin{itemize}
+        \item Articulation : \(u(0) = v(0) = 0\).
+    \end{itemize}
+\end{minipage}
+\begin{minipage}{.3\textwidth}
+    \includegraphics[width = \textwidth]{img/Articulation.png}
+\end{minipage}
+\subsection{Conditions de continuité}
+La continuité de la flèche et de sa dérivée première doivent toujours être vérifiées. Si la flèche n'est pas continue, il y a rupture, et si sa dérivée n'est pas continue, il y a un point anguleux (pas possible physiquement).
+\section{Reconstruction du champ de contraintes à partir des efforts internes}
+Faisons l'hypothèse (raisonnable) que 
+\begin{equation}
+    \sigma_{xx} = \frac{M(x)}{I_z(x)} y + \frac{N(x)}{A(x)}
+\end{equation}
+avec \(A(x)\) la section droite; et que \(\sigma_{xy}(x,y,z) = \sigma_{xy}(x,y)\)
+
+Les contraintes de cisaillement \(\sigma_{xy}(x,y)\) sont alors
+\begin{equation}
+    \sigma_{xy}(x,y) = \frac{Q(x)}{Ib(y)}\int_{S^*}y^*dy^*dz
+\end{equation}
+avec \(b(y)\) la largeur de la section droite pour une certaine valeur de \(y\).\\
+
+Pour une section rectangulaire de hauteur \(h\) et de largeur \(b\), on a
+\begin{equation}
+    \sigma_{xy}(x,y) = \frac{3}{2}\frac{Q(x)}{A}\left(1-\left(\frac{y}{h/2}\right)^2\right) \qquad \sigma_{xy}^{\max} = \sigma_{xy}(x,y=0) = \frac{3}{2}\frac{Q(x)}{A}
+\end{equation}
+Puisque \(\sigma_{xy}^{moy} = \frac{Q(x)}{A}\), on ne peut pas approximer \(sigma_{xy}\) par sa valeur moyenne, pour des questions de sécurité lors de la conception.
+\section{Energie de déformation}
+Pour rappel, l'énergie de déformation \(W\) se définit
+\begin{equation}
+    W = \frac{1}{2}\int_\Omega \sigma(x,y,z):\varepsilon(x,y,z)dV
+\end{equation}
+Dans le cas des poutres isotropes, on a 
+\begin{equation}
+    \varepsilon_{ij} = \frac{1+\lambda}{E}\sigma_{ij} - \frac{\lambda}{E}tr(\sigma) \delta_ij \qquad |\sigma_{22}|;|\sigma_{33}|;|\sigma_{23}|;|\sigma_{13}|\text{ négligés devant }|\sigma_{11}|
+\end{equation}
+On a donc 
+\begin{equation}
+    W = \frac{1}{2}\int_{\Omega}\left(\frac{1}{E}\sigma_{11}^2+\frac{1}{\mu}\sigma_{12}^2\right)dV
+\end{equation}
+Par les définitions des contraintes à la \autoref{Contraintes}, on obtient
+\begin{equation}
+    W = \frac{1}{2}\int_{\mathcal{L}} \frac{1}{E(x)} \frac{M^2(x)}{I_{Gz}(x)}dx + \frac{1}{2}\int_{\mathcal{L}} \frac{1}{E(x)} \frac{N^2(x)}{A(x)}dx + \frac{1}{2}\int_{\Omega}\frac{1}{\mu(x)}\left(\frac{Q(x)}{I_{Gz}(x)b(y)}\int_{S^*}y^*dy^*dz\right)^2dxdydz
+\end{equation}
+\begin{itemize}
+    \item Le premier terme est l'énergie de déformation due au moment fléchissant.
+    \item Le second term est l'énergie de déformation due à l'effort normal.
+    \item Le dernier terme est l'énergie de déformation due à l'effort tranchant.
+    \item [\(\rightarrow\)] Remarque : On appelle \(E(x)I_{Gz}(x)\) la raideur en flexion et \(E(x)A(x)\) la raideur en traction/compression.
+\end{itemize}
+Définissons \(A^{red}(x)\) l'aire réduite à l'effort tranchant (son expression varie selon la forme de la section droite).
+Admettons que le dernier terme s'écrive sous la forme 
+\begin{equation}
+    \frac{1}{2} \int_{\mathcal{L}} \frac{1}{\mu(x)}\frac{Q(x)}{A^{red}(x)}dx
+\end{equation}
+et sous hypothèse que le mode de déformation prépondérant soit la flexion\footnote{Obligatoire pour appliquer la théorie des poutres.}. On réduit l'expression de l'énergie de déformation à ceci:
+\begin{equation}
+    W\approx \frac{1}{2}\int_{\mathcal{L}} \frac{M^2(x)}{E(x)I_{Gz}(x)}dx
+\end{equation}
+\section{Théorème de Castigliano}
+Soit une force ponctuelle \(F\) appliquée dans une direction quelconque sur un point \(x_0\) de la poutre. Le déplacement de la poutre en ce point est 
+\begin{equation}
+    u(x_0) = \frac{\partial W}{\partial F}
+\end{equation}
+\begin{itemize}
+    \item Lorsque la force qui nous intéresse n'est pas ponctuelle, mais continue, alors on ajoute une force \(P\) en \(x = l/2\) verticalement, et la flèche en ce point est \(v(l/2) = \frac{\partial W}{\partial P}|_{P=0}\).
+    \item Si une force \(P\) est appliquée en deux points différents, on renomme une des deux forces \(F\), pour qu'elle puisse varier indépendamment de \(P\); puis on calcule \(v(x_A) = \frac{\partial W}{\partial P}\) et \(v(x_B) = \frac{\partial W}{\partial F}\) et on termine par poser \(F=P\).
+\end{itemize}
+\section{Structures iso- et hyperstatiques}
+La statique comme appliquée précédemment nous donne toujours 3 équations. Un problème est isostatique si les équations donnent la solution à toutes les réactions et efforts internes. Sinon, il est dit hyperstatique. Son degré est [le nombre de réactions] - [le nombre d'équations].
+\subsection{Méthode de résolution de problèmes hyperstatiques}
+\begin{enumerate}
+    \item Ecrire la statique sur la structure de départ. 
+    \item Libérer une des réactions (la fixer en paramètre) et écrire la structure isostatique associée. 
+    \item Calculer les efforts dans cette structure, toujours sous hypothèse que la réaction est connue.
+    \item Se ramener au problème de départ avec toutes les réactions et utiliser Castigliano ou Maxwell-Betti pour résoudre la dernière inconnue, couplé à des conditions limites.
+\end{enumerate}
+\subsection{Déterminer l'allure de la flèche}
+On peut déterminer l'allule de la courbe \(v(x)\) à partir de l'expression du moment fléchissant, des conditions limites et de \(M(x)=-EIv''(x)\) : le signe de \(M(x)\) nous donne la courbure et les points d'inflexion et les conditions limites nous donne les points par lesquels passer.
+\section{Charges mobiles}
+Soit une charge ponctuelle \(P\) appliquée sur une poutre en \(x=a\). On peut exprimer les efforts aux appuis en fonction de la position de cette charge sur la poutre (=\(a\)).
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : si la charge n'est pas ponctuelle mais répartie, on remplace \(P\) par \(qda\) et on fait l'intégrale sur la longueur de la poutre où s'applique la charge.
+\end{itemize}
+\chapter{Flambement}
+Le flambement est le déplacement perpendiculaire à l'axe de la poutre lorsqu'une charge est appliquée à ses extrémités parallèlement à son axe.
+\section{Stabilité}
+Soit une position d'équilibre. Si l'on applique une petite perturbation qui respecte les liaisons (= cinématiquement admissible, CA), l'équilibre est stable lorsque le corps revient à ce point d'équilibre, et instable sinon. De manière équivalente, si l'énergie potentielle augmente strictement lors de la perturbation CA, alors l'équilibre est stable. 
+\section{Flambement dans une poutre}
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Flambement.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    En calculant les efforts aux appuis et les efforts internes, on peut déterminer grâce aux conditions initiales que la charge critique \(Q_c\) que l'on peut appliquer aux extrémités de la poutre est \(Q_c = \pi^2\frac{EI}{l^2}\), avec \(l\) la longueur de la poutre. De plus, le premier mode de flambement est \(v(x) = B\sin{(\pi x/l)}\).
+\end{minipage}
+\section{Contrainte maximale}
+La contrainte de flambement maximale dans l'exemple ci-dessus est, par définition,
+\begin{equation}
+    \sigma_c = \frac{F_c}{A} = \frac{\pi^2EI}{l^2A}
+\end{equation}
+On appelle rayon de giration de la section droite \(r\coloneqq \sqrt{I/A}\) et élancement de la poutre le ratio \(\lambda\coloneqq l/r\). \\
+Cela implique que \(\sigma_c = \frac{\pi^2E}{\lambda^2}\). Afin d'augmenter la résistance au flambement d'une poutre, on peut changer de matériau pour augmenter \(E\) (cher et contraintes extérieures) ou diminuer la valeur de \(\lambda\) en diminuant la longueur de la poutre (pas toujours faisable) ou augmenter le rayon de giration (solution préférable).\\
+
+Si l'on veut augmenter le rayon de giration tout en gardant le même matériau et la même quantité de matière (même aire de section droite et même longueur de poutre), on peut comparer la valeur de l'inertie \(I\) pour différentes formes de section droite. \\
+\begin{itemize}
+    \item On choisit toujours la valeur minimale des trois inerties autour des axes pour la valeur de \(I\) utilisée dans les formules ci-dessus.
+\end{itemize}
+Si la contrainte maximale est \(\sigma_Y\), alors la valeur minimale de \(\lambda\) dans le design de la poutre est \(\lambda_{\min} = \pi \sqrt{E/\sigma_Y}\). 
+\section{Conditions frontière}
+L'expression générale de la charge critique sous forme générale, ne dépendant donc pas des appuis, est 
+\begin{equation}
+    Q_c = \pi^2 \frac{EI}{(\alpha l)^2}
+\end{equation}
+avec \(\alpha\) un coefficient dépendant lui des appuis. Plus les conditions frontières (donc les appuis) sont restreignant (\(\alpha\) diminue), i.e. moins il y a de degrés de liberté, plus la charge critique est élevée.\\
+\section{Méthode de l'énergie potentielle}
+Un point d'équilibre est stable si la différence d'énergie potentielle par rapport à tout déplacement CA entrainé par une petite perturbation est positive : \(\delta \mathcal{E}_{pot}>0 \Longleftrightarrow \delta W-\delta \mathcal{E}_{ext}>0\). En développant cette forme, on arrive à la condition suivante :
+\begin{equation}
+    Q_c = \inf_{v(x) \text{ CA}} \frac{\int_0^lEI\left(v''(x)\right)^2dx}{\int_0^l\left(v'(x)\right)^2dx}
+\end{equation}
+Il est impossible de calculer les valeurs pour tous les \(v(x)\) cinématiquement admissible. On introduit donc \(\Tilde{v}(x)\) qui est tel que le champ de déformation de la poutre est similaire à celui du premier mode de flambement (inconnu) :
+\begin{equation}
+    Q_c\approx \Tilde{Q}_c = \frac{\int_0^lEI\left(\Tilde{v}''(x)\right)^2dx}{\int_0^l\left(\Tilde{v}'(x)\right)^2dx}
+\end{equation}
+\chapter{Vibrations de systèmes linéaires}
+\section{Systèmes à un degré de liberté}
+Le système fondamental de vibration à un seul degré de liberté est le système composé d'une masse liée à un ressort et un amortisseur:\\
+\begin{minipage}{.5\textwidth}
+    \includegraphics[width = \textwidth]{img/Ressort.png}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    Les forces qui s'appliquent sur la masse sont les suivantes :
+    \begin{equation}
+        \begin{cases}
+            \text{ Ressort : } F_s(t) = kx(t)\\
+            \text{Amortisseur : } F_A(t) = c\Dot{x}(t)\\
+            \text{Force externe : } F(t)\\
+        \end{cases}
+    \end{equation}
+\end{minipage}
+Et l'équation du mouvement est 
+    \begin{equation}
+        m\Ddot{x}(t) + c\Dot{x}(t)+kx(t) = F(t) \qquad x(0)=x_0\qquad \Dot{x}(0)=v_0
+    \end{equation}
+\subsection{Vibration libre, sans amortisseur}
+Dans ce cas, on a \(F(t)=F_A(t)=0\) et l'équation du mouvement devient
+\begin{equation}
+    m\Ddot{x}(t) + kx(t) = 0
+\end{equation}
+La solution générale est
+\begin{equation}
+    x(t) = X\cos{(\omega_nt+\varphi)} \qquad \omega_n = \sqrt{\frac{k}{m}}
+\end{equation}
+avec \(\omega_n\) la pulsation naturelle, \(X\) l'amplitude et \(\varphi\) la phase. Ces deux dernières sont déterminées par les conditions initiales. 
+\subsection{Vibration libre avec amortisseur}\label{VLAA}
+Dans ce cas, \(F(t)=0\) et l'équation du mouvement est 
+\begin{equation}
+    m\Ddot{x}(t) + c\Dot{x}(t)+kx(t) = 0
+\end{equation}
+On définit l'amortissement critique \(c_0\) comme la valeur du coefficient d'amortissement \(c\) pour laquelle le discriminant de l'équation du mouvement s'annule : 
+\begin{equation}
+    \Delta = (c/m)^2-4k/m = 0\Longleftrightarrow c_0 = 2\sqrt{km}
+\end{equation}
+On définit également le facteur d'amortissement \(\xi = c/c_0 = \frac{c}{2\sqrt{km}}\). Le système est dit sous-amorti (ou sous-critique) si \(\xi <1\), critique si \(\xi=1\) et sur-amorti (ou sur-critique) si \(\xi>1\). L'équation du mouvement varie selon la valeur de \(\xi\) : 
+\begin{itemize}
+    \item Cas sous-amorti :
+\end{itemize}
+\begin{equation}
+    x(t)=Xe^{-\xi\omega_nt}\cos{\left(\omega_dt+\varphi\right)} \qquad \omega_d = \omega_n\sqrt{1-\xi^2}
+\end{equation}
+\begin{itemize}
+    \item Cas critique :
+\end{itemize}
+\begin{equation}
+    x(t) = (At+B)e^{-\omega_nt}
+\end{equation}
+\begin{itemize}
+    \item Cas sur-amorti :
+\end{itemize}
+\begin{equation}
+    x(t) = Ae^{-\left(\xi+\sqrt{\xi^2-1}\right)\omega_nt} + Be^{-\left(\xi-\sqrt{\xi^2-1}\right)\omega_nt}
+\end{equation}
+Dans les cas critique et sur-amorti, le mouvement n'est pas oscillant.
+\subsection{Vibration forcée sans amortisseur}
+Dans le cas d'une force extérieure sinusoïdale d'amplitude \(F\) et de pulsation \(\omega\), l'équation du mouvement est 
+\begin{equation}
+    m\Ddot{x}(t) + ku(t) = F\cos{\omega t}
+\end{equation}
+La solution générale se décompose en une solution homogène \(x_h(t)\)et une solution particulière \(x_p(t)\) (qu'on cherche sous la forme \(x_p(t) = X\cos{(\omega t+\varphi)}\). On trouve
+\begin{multline}
+    x_h(t) = A\cos{(\omega_n t+\phi)} \qquad \omega_n=\sqrt{\frac{k}{m}} \\ x_p(t) = X\cos{(\omega t+\varphi)} \qquad \cos{\varphi} = \begin{cases}
+        1\text{ si } \omega < \omega_n\\
+        -1 \text{ si } \omega>\omega_n\\
+    \end{cases} \qquad X = \frac{F/k}{\left|1-\left(\frac{\omega}{\omega_n}\right)^2\right|}
+\end{multline}
+\begin{itemize}
+    \item Basse fréquence (\(\omega\ll \omega_n\)) : il n'y a pas de déphasage et le système se comporte comme un simple ressort.
+\end{itemize}
+\begin{equation}
+    \varphi = 0 \qquad X \approx F/k
+\end{equation}
+\begin{itemize}
+    \item Haute fréquence (\(\omega\gg \omega_n\)) : il y a opposition de phase et le système se comporte comme une simple masse.
+\end{itemize}
+\begin{equation}
+    \varepsilon=\pi \qquad X \approx F/m\omega^2 
+\end{equation}
+\begin{itemize}
+    \item Résonance : si la pulsation de la force imposée s'approche de la pulsation propre, l'amplitude du déplacement tend vers l'infini : \(X\xrightarrow{\omega\rightarrow \omega_n} \infty \).
+\end{itemize}
+
+\subsection{Vibration forcée avec amortisseur}
+Dans le cas d'une force xtérieure sinusoïdale d'amplitude \(F\) et de pulsation \(\omega\), l'équation du mouvement est 
+\begin{equation}
+    m\Ddot{x}(t) + c\Dot{x}(t)+kx(t) = F\cos{\omega t}
+\end{equation}
+La solution homogène est la même qu'à la \autoref{VLAA} et on trouve comme solution particulière
+\begin{equation}
+    x_p(t) = U_p \cos{(\omega t+\varphi)}\qquad \tan\varphi = \frac{-c\omega}{k-m\omega^2} \qquad U_p = \frac{-F\sin{\varphi}}{c\omega}
+\end{equation}
+On peut réécrire les coefficients :
+\begin{equation}
+    U_p = \frac{F/k}{\sqrt{\left(-\left(\frac{\omega}{\omega_n}\right)^2\right)^2+\left(2\zeta \frac{\omega}{\omega_n}\right)}} \qquad \tan\varphi = \frac{-2\zeta\frac{\omega}{\omega_n}}{1-\left(\frac{\omega}{\omega_n}\right)}
+\end{equation}
+\begin{itemize}
+    \item Basse fréquence (\(\omega\ll \omega_n\)) : il n'y a presque pas de déphasage et le système se cmporte comme un simple ressort.
+\end{itemize}
+\begin{equation}
+    \varphi \approx 0\qquad U_p \approx F/k
+\end{equation}
+\begin{itemize}
+    \item Haute fréquence (\(\omega \gg \omega_n\)) : il y a preqque opposition exacte de phase et le système se comporte comme une simple masse.
+\end{itemize}
+\begin{equation}
+    \varphi \approx \pi \qquad U_p \approx F/m\omega^2
+\end{equation}
+\begin{itemize}
+    \item Quand la pulsation de la force impose s'approche de la pulsation propre (\(\omega \approx \omega_n\)) et le facteur d'amortissement est faible, l'amplitude du déplacement peut devenir très élevée.
+\end{itemize}
+\begin{equation}
+    U_p \approx F/2k\zeta
+\end{equation}
+\section{Systèmes à \(n\) degrés de liberté}
+Soit un système de deux masses et trois ressorts servant d'illustration. \\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width = \textwidth]{img/2ddl.png}
+\end{figure}\\
+Notons \(x_1\) et \(x_2\) les positions des deux masses par rapport à leurs positions d'équilibre. En isolant chaque masse par coupes fictives, on peut écrire les équations du mouvement :
+\begin{multline}
+    m_1 \Ddot{x}_1 = -kx_1 - c\Dot{x}_1 + k(x_2-x_1) + c(\Dot{x}_2-\Dot{x}_1)+f_1(t)\\
+    m_2 \Ddot{x}_2 = -kx_2 - c\Dot{x}_2 - k(x_2-x_1) - c(\Dot{x}_2-\Dot{x}_1)+f_2(t)
+\end{multline}
+Que l'on peut réécrire sous forme matricielle : 
+\begin{multline}
+    \begin{pmatrix}
+        m_1 & 0 \\
+        0 & m_2\\
+    \end{pmatrix}
+    \begin{pmatrix}
+        \Ddot{x}_1\\
+        \Ddot{x}_2\\
+    \end{pmatrix}
+    +\begin{pmatrix}
+        2c & -c \\
+        -c & 2c\\
+    \end{pmatrix}
+    \begin{pmatrix}
+        \Dot{x}_1\\
+        \Dot{x}_2\\
+    \end{pmatrix}
+    + \begin{pmatrix}
+        2k & -k\\
+        -k & 2k\\
+    \end{pmatrix}
+    \begin{pmatrix}
+        x_1\\
+        x_2\\
+    \end{pmatrix}
+    \begin{pmatrix}
+        f_1(t)\\
+        f_2(t)\\
+    \end{pmatrix}
+    \\
+    \textbf{M}\Ddot{\textbf{x}} + \textbf{C}\Dot{\textbf{x}} + \textbf{K}\textbf{x} = \textbf{F}(t)
+\end{multline}
+On définit les matrices de coefficients comme suit : \(M\) est la matrice de masse, \(C\) la matrice d'amortissement (ou freinage, ou viscosité) et \(K\) la matrice de raideur. On définit \(x(t)\) comme le vecteur de coordonnées généralisées et \(F(t)\) le vecteur de forces.
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : les matrices \(M,C,K\) sont toujours symétriques. \(M\) peut également être diagonale, mais ce n'est pas toujours le cas.
+\end{itemize}
+\subsection{Cas général}
+Dans le cas général,
+\begin{itemize}
+    \item La matrice \(M\) est symétrique définie positive 
+    \item Les matrices \(K,C\) sont symétriques semi-définies positives.
+\end{itemize}
+On peut toujours introduire un changement de variables \(\textbf{X}(t) = \textbf{AY}(t)\). Les matrices du systèmes changent évidemment aussi.
+\subsection{Vibration libre sans amortissement}
+L'équation du mouvement est 
+\begin{equation}
+    \textbf{M}\Ddot{\textbf{X}} (t) + \textbf{KX}(t) = 0
+\end{equation}
+On cherche des solutions dites synchrones à ce système, i.e. \(\textbf{X}(t) = \Psi\alpha (t)\), avec \(\Psi\in \mathbb{R}^n\) et \(\alpha(t)\) scalaire. On a alors l'EDO suivante :
+\begin{equation}
+    \Ddot{\alpha}(t) + \omega^2 \alpha(t) = 0\qquad \omega^2 = \frac{\Psi^T\textbf{K}\Psi}{\Psi^TM\Psi}\ge 0
+\end{equation}
+La solution est une sinusoïde. Si on remplace son expression, on obtient un problème aux valeurs propres :
+\begin{equation}\label{eq:vap}
+    (\textbf{K}-\lambda \textbf{M})\Psi = 0\qquad \lambda = \omega^2 
+\end{equation}
+Les solutions sont les \(n\) \(\lambda_i\) vérifiant l'équation \(det(K-\lambda M) =0\) et les vecteurs propres associés sont les \(\Phi_i\) vérifiant l'\autoref{eq:vap}. 
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : Les \(\lambda_i\) sont également les valeurs propres de la matrice \(M^{-1}K\) et les \(Psi_i\) ses vecteurs propres.
+\end{itemize}
+Par propriétés des matrices, les valeurs propres sont réelles positives, et les composantes des \(\Phi_i\) sont réelles. Par convention, on renge les \(\omega_i\) par ordre croissant. \\
+
+De plus, on s'arrange en général pour que les \(Psi_i\) soient unitaires par \(M\) : \(\Phi_i^TM\Phi_i = 1\). Si on a \(\Phi_i^TM\Phi = C_i\), on pose les nouveaux vecteurs propres \(\Phi_i' = \Phi_i/\sqrt{C_i}\). Dès lors, les vecteurs propres sont tels que 
+\begin{equation}
+    \Phi_i^TM\Phi_j = \delta_ij
+\end{equation}
+et ils forment une base orthonormée par \(M\). De plus, ils sont égalements orthogonaux par \(K\). 
+\subsubsection{Problème de la base modale}
+Soit \(U(t)\) la solution du problème. On le décompose dans la base des vecteurs propres \(\Phi_i\) : 
+\begin{equation}
+    U(t) = \sum_{j=1}^n\Phi_j\alpha_j(t) = Q\alpha(t)
+\end{equation}
+La matrice \(Q\) a pour colonnes les modes propres \(\Phi_i\) et le vecteur d'inconnues \(\alpha(t)\) contient les coefficients scalaires \(\alpha_i(t)\). On a 
+\begin{equation}
+    \alpha_i(t) = \Phi_i^TMU(t)
+\end{equation}
+En remplaçant \(U(t)\) par \(Q\alpha(t)\) dans l'équation du mouvement, on a 
+\begin{equation}
+    I\Ddot{\alpha}(t) + \Lambda \alpha(t) = 0\qquad \Lambda = Q^TKQ
+\end{equation}
+avec \(\Lambda\) contenant les \(\omega_i^2\) sur sa diagonale. Cela nous donne \(n\) équations scalaires de la forme
+\begin{equation}
+    \Ddot{\alpha}_i(t) + \omega_i^2\alpha_i(t) = 0
+\end{equation}
+On peut donc décomposer \(U(t)\) dans la base des modes propres comme : 
+\begin{equation}
+    U(t) = \sum_{i=1}^n\Phi_ia_i\cos{(\omega_it+\varphi_i)}
+\end{equation}
+avec les conditions initiales suivantes : 
+\begin{equation}
+    U(0)=U_0 = \sum_{i=1}^n\Phi_ia_i\cos\varphi_i\qquad \Dot{U}(0)= \Dot{U}_0 = -\sum_{i=1}^n\Phi_ia_i\sin{\varphi_i}
+\end{equation}
+Cela nous permet de calcules les coefficients inconnus \(a_i\) et \(\varphi_i\) :
+\begin{equation}
+    a_i\cos{\varphi_i} = \Phi_i^TMU_0 \qquad a_i\omega_i \sin{\varphi_i}=-\Phi_i^TM\Dot{U}_0
+\end{equation}
+\subsubsection{Théorème de Rayleigh}
+Ce théorème est utile lorsque le calcul complet des pulsaitons et modes propres est trop difficile et/ou pas vraiment nécessaires. 
+\begin{enumerate}
+    \item Prendre un vecteur \(\Psi(n\times1)\), e.g. proche du premier mode propre \(\Phi_1\) présumé. 
+    \item Chercher \(U(t)\) sous la forme synchrone \(U(t) = \Psi a\cos{(\omega t+\varphi)}\).
+    \item Calculer la pulsation \(\omega\) telle que le maximum d'énergie cinétique soit égal au maximum d'énergie potentielle : 
+\end{enumerate}
+\begin{equation}
+    \left(\frac{1}{2}\Dot{U}^T(t)M\Dot{U}(t)\right)_{\max} = \left(\frac{1}{2}U^T(t)KU(t)\right)_{\max}
+\end{equation}
+\(\omega^2\) est alors égale au facteur de Rayleigh \(\mathcal{R}(\Psi) = \frac{\Psi^TK\Psi}{\Psi^TM\Psi} \ge0\).\\
+
+Remarques sur le facteur de Rayleigh : 
+\begin{itemize}
+    \item Il dépend de \(\Psi\), mais pas de sa norme.
+    \item Pour l'augmenter, il faut augmenter le rapport raideur/masse.
+    \item Si \(\Psi=\Phi_i\), alors \(\mathcal{R}(\Phi_i) = \omega_i^2\).
+\end{itemize}
+Le facteur de Rayleigh peut être encadré par les pulsations naturelles du système rangées par ordre croissant : 
+\begin{equation}
+    \omega_1^2\le \mathcal{R(\Psi)}\le \omega_n^2 \qquad \forall \Psi
+\end{equation}
+Par conséquent, les plus petite et grande pulsations propres sont 
+\begin{equation}
+    \omega_1 = \inf_\Psi\sqrt{\mathcal{R}(\Psi)} \qquad \omega_1 = \sup_\Psi\sqrt{\mathcal{R}(\Psi)}
+\end{equation}
+De plus, si on choisit de travailler uniquement avec \(\Psi\) orthogonal par \(M\) au premier mode propre \(\Phi_1\), i.e. \(\Psi^TM\Phi_1 = 0\), alors on peut encadrer le facteur de Rayleigh par 
+\begin{equation}
+    \omega_2^2\le \mathcal{R}(\Psi)\le \omega_n^2 \qquad\forall \Psi \text{ orthogonal à }\Phi_1
+\end{equation}
+\subsection{Vibration libre avec amortissement}
+L'équation du mouvement sous forme matricielle est
+\begin{equation}
+    M\Ddot{U}(t)+C\Dot{U}(t)+KU(t)=0
+\end{equation}
+Dans le cas d'un amortissement quelconque, le problème est trop compliqué pour ce cours. On se limite au cas d'un amortissement faible et proportionnel : \(C = a_sK+am_M\).
+\subsection{Vibration forcée sans amortissement, charge sinusoïdale}
+L'équation du mouvement est 
+\begin{equation}
+    M\Ddot{U}(t)+KU(t)  = F(t) = f\cos(\omega t)
+\end{equation}
+La solution homogène est la solution du problème en vibration libre. On cherche donc une solution particulière sous la forme :
+\begin{equation}
+    U_p(t) = Q\alpha(t)
+\end{equation}
+On remplace dans l'équation du mouvement et on trouve 
+\begin{equation}
+    I\Ddot{\alpha}(t) + \Lambda \alpha(t) = P\cos(\omega t) \qquad P=Q^Tf
+\end{equation}
+Puisque les matrices sont toutes diagonales, on trouve \(n\) équations différentielles scalaires :
+\begin{equation}
+    \Ddot{\alpha}_i(t) + \omega_i^2\alpha_i(t) = P_i\cos(\omega t)
+\end{equation}
+Une solution particulière est donc 
+\begin{equation}
+    U_p(t) = \sum_{i=1}^n\Phi_i\frac{P_i}{\omega_i^2-\omega^2}\cos(\omega t)
+\end{equation}
+Si \(\omega\rightarrow \omega_i\), un phénomène de résonance apparaît. Cependant, si \(\Phi^Tf=0\), alors \(P_i=0\) \(\forall \omega\) et la résonance n'a plus lieu pour ce mode propre. 
+\subsection{Equations de Lagrange}
+On peut retrouver les équations du mouvement à partir des équations de Lagrange : 
+\begin{equation}
+    \frac{d}{dt}\left(\frac{\partial L}{\partial \Dot{\textbf{x}}} \right)-\frac{\partial L}{\partial \textbf{x}} = F_{nc}(t)
+\end{equation}
+avec \(L\) le lagrangien (\(L=\) [énergie cinétique] - [énergie potentielle] et avec \(F_{nc}\) la force no-conservative : \(F_{nc}(t)=-C\Dot{\textbf{x}}(t)\). On a de plus :
+\begin{itemize}
+    \item Energie cinétique :  \(\frac{1}{2}\Dot{\textbf{x}}(t)^TM\Dot{\textbf{x}}(t)\).
+    \item Energie potentielle : [énergie de déformation élastique] - [travail des efforts conservateurs] = \(\frac{1}{2}\textbf{x}(t)^TK\textbf{x}(t) - \textbf{x}(t)^TF(t)\).
+\end{itemize}
+\section{Poutres élastiques}
+Les hypothèses de cette sections sont celles du chapitre de théorie des poutres. 
+\subsection{Vibration axiale libre}
+En combinant les équations selon l'axe \(x\) de ce chapitre, on a
+\begin{align}
+    \frac{\partial N}{\partial x}(x,t) + \gamma (x,t) &= \rho A\frac{\partial^2u}{\partial t^2}(x,t)\\
+    \frac{N(x,t)}{A} &= E\frac{\partial u}{\partial x}(x,t)\\
+    \Longrightarrow \frac{E}{\rho}\frac{\partial^2u}{\partial x^2}(x,t)+\frac{\gamma(x,t)}{\rho A}&=\frac{\partial^2u}{\partial t^2}(x,t)
+\end{align}
+En vibration libre, \(\gamma(x,t)=0\). On a donc l'EDO
+\begin{equation}
+    \frac{E}{\rho}\frac{\partial^2u}{\partial x^2}(x,t)+=\frac{\partial^2u}{\partial t^2}(x,t)
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] Remarque : \(\sqrt{\frac{E}{\rho}}\) est la vitesse du son dans le matériau (si élastique linéaire isotrope).
+\end{itemize}
+En utilisant la méthode de séparation des variables, on obtient la solution finale 
+\begin{align}
+    u(x,t) = f(x)g(t) \qquad f(x) &=A\sin\left(\omega \sqrt{\frac{\rho}{E}}x\right) + B\cos \left(\omega \sqrt{\frac{\rho}{E}}x\right)\\
+    g(t) & = U\cos(\omega t+\varphi)
+\end{align}
+\subsubsection{D'une poutre droite encastrée-libre}
+La poutre est encastrée en \(x=0\) et libre en \(x=L\). Les conditions frontière sont donc 
+\begin{equation}
+    \forall t\ge0\qquad u(0,t)=0\qquad N(L,t) = 0\Longrightarrow  \frac{\partial u}{\partial x}(L,t)=0
+\end{equation}
+On trouve donc \(B=0\) et \(\cos\left(\omega \sqrt{\frac{\rho}{E}}L\right) = 0\).\\
+En se limitant aux valeurs positives de la pulsation \(\omega\), on trouve les racines 
+\begin{equation}
+    \omega_r = \frac{2r-1}{2}\frac{\pi}{L}\sqrt{\frac{E}{\rho}} \qquad r\in \mathbb{N}\setminus \{0\}
+\end{equation}
+La solution générale pour la vibration libre axiale d'une poutre encastrée-libre est donc 
+\begin{equation}
+    u(x,t) = \sum_{r=1}^\infty U_r\sin\left(\frac{2r-1}{2}\pi \frac{x}{L}\right) \cos (\omega_r t+\varphi_r)
+\end{equation}
+Chaque mode \(r\) possède des noeuds, i.e. des points \(x\) de la fibre moyenne de la poutre qui restent immobiles pour toute valeur du temps \(t\).
+\subsection{Vibration en flexion}
+Les équations du mouvement selon l'axe \(y\) trouvées dans le chapitre de théorie des poutres sont 
+\begin{align}
+    \frac{\partial Q}{\partial x}(x,t) + p(x,t)  &= \rho A\frac{\partial^2v}{\partial t^2}(x,t)\\
+    Q(x,t) &= \frac{\partial M}{\partial x}(x,t)\\
+    M(x,t) &= -EI \frac{\partial^2v}{\partial x^2}(x,t)
+\end{align}
+En combinant ces équations, l'équation du mouvement selon l'axe \(y\) devient
+\begin{equation}
+    -EI\frac{\partial^4v}{\partial x^4}(x,t) + p(x,t) = \rho A\frac{\partial^2v}{\partial t^2}(x,t)
+\end{equation}
+\subsubsection{Vibration de flexion libre}
+En vibration libre, \(p(x,t)=0\)
+\begin{equation}
+    -\frac{EI}{\rho A}\frac{\partial^4v}{\partial x^4}(x,t) = \frac{\partial^2v}{\partial t^2}(x,t)
+\end{equation}
+De nouveau, par méthode de séparation des variables, on  a
+\begin{align}
+    v(x,t) &= f(x)g(t)\\
+    g(t) &= V\cos(\omega t+\varphi)\\
+    f(x) &= A\sinh\left(\gamma \frac{x}{L}\right)+B\cosh\left(\gamma \frac{x}{L}\right) +C\sin \left(\gamma \frac{x}{L}\right) + D\cos \left(\gamma \frac{x}{L}\right)\\
+\end{align}
+\subsubsection{D'une poutre droite encastrée-libre}
+Les conditions frontières sont, pour une poutre encastrée en \(x=0\) et libre en \(x=L\) : 
+\begin{multline}
+    \forall t\ge0\qquad v(0,t)=0\qquad \frac{\partial v}{\partial x}(0,t)=0\\
+    \forall t\ge0\qquad M(L,t) = 0\Longrightarrow \frac{\partial^2v}{\partial x^2}(L,t) = 0\qquad Q(L,t) = 0\Longrightarrow \frac{\partial^3v}{\partial x^3}(L,t)=0
+\end{multline}
+\end{document}

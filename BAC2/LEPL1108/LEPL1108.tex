@@ -1,0 +1,1699 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage[]{titletoc}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\renewcommand{\contentsname}{Table des matières}
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.4]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LEPL1108 Mathématiques discrètes et probabilité \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2022-2023 - Q1}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+\begin{itemize}
+\item
+  Remarque : ce cours demande souvent, pour les démonstrations, de
+  passer par l'absurde.
+\end{itemize}
+
+\chapter{Graphes}
+
+\section{Définitions}
+
+\begin{itemize}
+    \item Un graphe est un triple :
+    \begin{itemize}
+        \item[$\bullet$] \(N\): un ensemble fini de nœuds
+        \item[$\bullet$] \(R\) : un ensemble fini d'arêtes
+        \item[$\bullet$] \(I\) : une relation d'incidence \(\subset N \times R\). Cette relation est généralement sous-entendue.
+    \end{itemize}
+\end{itemize}
+On écrit : \(I = \left\{ \left( i_{1},\alpha_{1} \right),\left( i_{1},\alpha_{2} \right),\ldots \right\}\) ou \(i_{1} I \alpha_{1}\) \((//\ (i_{1},\alpha_{1})\  \in I)\ \)
+
+\begin{itemize}
+    \item \(\alpha \in R\) est une boucle si ses deux extrémités sont un même nœud.
+    \item \(\left| N \right|\) est l'ordre du graphe, c'est le nombre de nœuds.
+    \item Le degré d'un nœud \(n\), \(deg(n)\) est le nombres d'arêtes incidentes au nœud \(n\), les boucles comptant double.
+    \item Un graphe est simple si il n'a ni boucle, ni nœuds reliés par des arêtes multiples.
+\end{itemize}
+\(\alpha = \left\{ i,j \right\}\) identifie alors l'unique arête telle que \(\left( i,\alpha \right) \in I\) et \(\left( j,\alpha \right) \in I\).
+
+\begin{itemize}
+    \item Un parcours \(P\) de longueur \(k\) dans \(G\) est une suite alternée \(P \coloneqq \left( i_{0},\alpha_{1},i_{1},\ldots,\alpha_{k},i_{k} \right)\) de \(k + 1\) nœuds et \(k\) arêtes de \(G\).
+    \item Un parcours est fermé\footnote{Un graphe fermé n'a jamais de nœud de degré impair.} si \(i_{0} = i_{k}\), et ouvert sinon. 
+    \item Un cycle est un parcours dont tous les nœuds et arêtes sont distincts, à l'exception du premier et du dernier nœud.
+    \item Une piste est un parcours dont les arêtes sont distinctes.
+    \item Un circuit est une piste fermée. 
+    \item Un circuit/piste eulérien(ne) sur un graphe sans nœud isolé est un circuit/piste qui passe par toutes les arêtes de ce graphe.
+    \item Un graphe simple \(G = \left( N,R \right)\) est appelé graphe biparti s'il existe une partition de \(N\) en deux classes \(N_{0},N_{1}\) telles que si \(\left\{ i,j \right\} \in R,\ \)alors \(i \in N_{0}\) et \(j \in N_{1}\).
+    \item Un graphe simple \(G\) d'ordre \(\geq 2\) est biparti ssi \(G\) ne possède aucun cycle de longueur impaire. 
+    \item Un graphe est dit connexe s'il existe un parcours reliant toute paire de nœuds.
+    \item Si le graphe \(G = (N,R)\) n'est pas connexe, il peut être formé de composantes connexes. C'est un ensemble de graphes \(\left\{ G_{1} = \left( N_{1},R_{1} \right),\ldots,G_{n} = \left( N_{n},R_{n} \right) \right\}\) tel que :
+    \begin{itemize}
+        \item [$\bullet$] \(\left\{ N_{1},\ldots,N_{n} \right\}\) forme une partition de \(N\).
+        \item [$\bullet$] \(R_{i}\) contient toutes les arêtes incidentes à des nœuds de \(N_{i}\).
+        \item [$\bullet$] Les ensembles \(R_{i}\) sont disjoints.
+        \item [$\bullet$] Chaque graphe \(G_{i}\) est connexe.
+    \end{itemize}
+    \item [$\rightarrow$] Remarque : il n'existe pas de graphe connexe contenant un nombre impair de nœuds de degré impair.
+    \item Un chemin est un parcours ouvert dont tous les nœuds sont distincts.
+    \item Un graphe simple possède un chemin hamiltonien s'il possède un parcours passant par chacun de ses nœuds 1! fois.
+    \item Un graphe simple possède un cycle hamiltonien si il possède un cycle passant par chacun de ses nœuds.
+    \item Un graphe hamiltonien est un graphe simple possédant un cycle hamiltonien.
+    \item Un graphe orienté est une paire de :
+    \begin{itemize} 
+        \item [$\bullet$] \(N\) un ensemble fini de nœuds \(\left( i,j,\ldots \right)\).
+        \item [$\bullet$] \(R \subseteq \left( N \times N \right)\) un ensemble d'arêtes (ayant une direction).
+    \end{itemize}
+    \item Un graphe orienté pondéré est un graphe orienté auquel on adjoint une fonction de coût \(c:R\rightarrow \mathbb{R}\).
+    \item Les graphes simples \(G = \left( N,R \right)\) et \(G' = \left( N',R' \right)\) sont isomorphes si :
+    \begin{itemize}
+        \item [$\bullet$] Il existe une bijection \(f:N \rightarrow N'\)
+        \item [$\bullet$] \(\left\{ i,j \right\} \in R \Longleftrightarrow \left\{ f\left( i \right),f\left( j \right) \right\} \in R'\)
+    \end{itemize}
+    \item [$\rightarrow$] Remarque : la relation d'isomorphisme est une relation d'équivalence sur les graphes. il est facile de vérifier si \(f\) définit un isomorphisme, mais il reste difficile de décider si deux graphes sont isomorphes.
+\end{itemize}
+
+\section{Théorème des pistes eulériennes}
+
+Le graphe \(G\) sans nœud isolé possède une piste eulérienne ssi il est connexe et contient au maximum deux nœuds de degré impair.\footnote{Voir \autoref{demo1}.}
+
+\section{Algorithme de Dijkstra -- CM 1, slides 22-28}
+- In : \(G = \left( N,R \right)\) un graphe orienté pondéré\(\ ^{\geq 0}\) et \(s \in N\). \\
+- Out : le coût du plus court chemin de \(s\) vers tout \(n \in N\). \\
+- Init : soit \(N_{s} \coloneqq \left\{ s \right\},{\overline{N}}_{s} \coloneqq N - N_{s},\ d\left( i \right) \coloneqq c\left( s,i \right)\ \forall i \in N\). \\
+- Loop : tant que \({\overline{N}}_{s} \neq \emptyset\ \): 
+\begin{itemize}
+    \item \(v \coloneqq \ \) élément de \({\overline{N}}_{s}\) qui minimise \(d\left( v \right)\)
+    \item \(N_{s} \coloneqq N_{s} \cup \left\{ v \right\}\) et \({\overline{N}}_{s} = N - N_{s}\)
+    \item \(\forall i \in {\overline{N}}_{s}\ :d\left( i \right) \coloneqq \min\left( d\left( i \right),\ d\left( v \right) + c\left( v,i \right) \right)\)
+\end{itemize} 
+- Return : \(d\) fournit les coûts recherchés pour chaque nœud \(n\).
+
+\section{Algorithme de Bellman-Ford}
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : la différence entre Dijkstra et BF est la condition \(\geq 0\) sur la pondération des arêtes. 
+\end{itemize}
+- In : \(G = \left( N,R \right)\) un graphe orienté pondéré sans cycle négatif et \(s \in N\). \\
+- Out : le coût du plus court chemin de \(s\) vers tout \(n \in N\). \\
+- Init : \(d\left( s \right) \coloneqq 0,\ d\left( i \right) \coloneqq \infty\ \forall i \in N - \left\{ s \right\}\). \\
+- Loop, répétée \(\left| N \right| - 1\) fois : 
+\begin{itemize}
+    \item \(\forall\left( i,j \right) \in R\) : Si \(d\left( i \right) + c\left( \left( i,j \right) \right) < d\left( j \right)\), alors \(d\left( j \right) \coloneqq d\left( i \right) + c\left( \left( i,j \right) \right)\).
+\end{itemize}
+- Return : \(d\) fournit les coûts recherchés.
+
+\section{Arbres}
+
+Un arbre est un graphe connexe qui ne possède pas de cycle. Les propriétés suivantes sont équivalentes :
+
+\begin{itemize}
+    \item \(G\) est connexe et sans cycle.
+    \item \(G\) est connexe et \(\left| R \right| = \left| N \right| - 1.\)
+    \item \(G\) est sans cycle et \(\left| R \right| = \left| N \right| - 1\).
+    \item \(G\) est sans cycle et lui ajouter une arête crée un et un seul cycle.
+    \item \(G\) est connexe et supprimer une arête quelconque le déconnecte.
+    \item Deux nœuds distincts de \(G\) sont reliés par un et un seul chemin (et \(G\) est sans boucles).
+\end{itemize}
+\subsection{Arbres sous-tendants}
+
+L'arbre \(G' = \left( N',R' \right)\) est un arbre sous-tendant de \(G = \left( N,R \right)\) si \(N = N'\) et \(R' \subseteq R\).
+
+\(G\) est connexe ssi \(G\) possède un arbre sous-tendant.
+
+\(A\) est un arbre sous-tendant de poids minimum de \(G\) ssi \(A\) sous-tend \(G\) et tout arbre \(A'\) sous-tendant \(G\) est tel que \(c\left( A \right) \leq c\left( A' \right)\).
+
+\subsection{Algorithme de Kruskal} 
+Pour un graphe \(G = \left( N,R \right)\) connexe.\\ \newline
+- Init : \(R_{\text{ord}} \coloneqq \ \)trier\(\left( R \right)\), \(R' \coloneqq \emptyset\)\\
+- Loop : tant que \(\left| R' \right| < \left| N \right| - 1\ : \)
+\begin{itemize}
+    \item \(\left( \alpha,R_{\text{ord}} \right) \coloneqq R_{\text{ord}}\)
+    \item Si \(\left( N,R' \cup \left\{ \alpha \right\} \right)\) est sans cycle, alors \(R' \coloneqq R' \cup \left\{ \alpha \right\}\)
+\end{itemize}
+- Return : \(\left( N,R' \right)\) est un arbre sous-tendant \(G\) de poids minimum.\\
+
+== On met toutes les arêtes avec un poids le moins élevé, sauf quand ça
+crée un cycle, jusqu'à avoir un arbre.
+
+\section{Représentation matricielle}
+\subsection{Matrice d'adjacence}
+
+La matrice adjacente \(A\) est de genre \(\left| N \right| \times \left| N \right|\) :
+
+\begin{itemize}
+    \item \(a_{i,j} \coloneqq\) nombre d'arêtes reliant \(i\) et \(j\) si \(i \neq j\)
+    \item \(a_{i,i} \coloneqq\) deux fois le nombre de boucles sur \(i\)
+\end{itemize}
+\subsection{Matrice d'incidence}
+La matrice d'incidence \(M\) d'un graphe \(G = \left( N,R \right)\) est la matrice dont l'entrée \(m_{i,\alpha}\) est telle que :
+
+\begin{itemize}
+\item
+  \(m_{i,\alpha} \coloneqq 2\) si \(\alpha\) est une boucle sur \(i\).
+\item
+  \(m_{i,\alpha} \coloneqq 1\) si \(\alpha\) relie \(i\) à un autre nœud.
+\item
+  \(M_{i,\alpha} \coloneqq 0\) si \(\alpha\) n'est pas incidente au nœud \(i\).
+\end{itemize}
+
+Dans la matrice d'incidence d'un graphe, la somme des entrées d'une colonne vaut 2 et la somme des entrées d'une ligne vaut le degré du nœud correspondant.
+
+\subsection{Propriétés}
+
+\begin{itemize}
+    \item \(\sum_{j \in N}^{}a_{i,j} = \sum_{j \in N}^{}a_{j,i} = \deg\left( i \right)\)
+    \item \(\sum_{\left( i,j \right) \in N^{2}}^{}a_{i,j} = 2\left| R \right|\)
+    \item \(\sum_{i \in N}^{}{\deg\left( i \right)} = 2\left| R \right|\)
+    \item Le nombre de nœuds de degré impair d'un graphe est pair.
+    \item Si \(G\) est un graphe simple, le nombre de parcours de longueur \(k\) entre ses nœuds \(i\) et \(j\) est donné par \(\left( A^{k} \right)_{i,j}\).
+\end{itemize}
+
+\chapter{Structures algébriques}
+
+\section{Définitions}
+
+\begin{minipage}{.8 \textwidth}
+    \begin{itemize}
+        \item Une structure algébrique est une paire :
+        \begin{itemize}
+            \item \(A\), un ensemble
+            \item \(\circ\), un opérateur sur \(A\), i.e. une fonction \(\circ \ :A \times A \rightarrow A\)
+        \end{itemize}
+        \item Représentation par table de Cayley\footnote{Possible uniquement dans le cas fini.} :
+    \end{itemize}
+\end{minipage}
+\begin{minipage}{.2\textwidth}
+    \includegraphics[width=\textwidth]{img/Structures algébriques.png}
+\end{minipage}
+\begin{itemize}
+    \item Un monoïde est une structure \(\left( A, \circ \right)\) telle que : 
+    \begin{itemize} 
+        \item [$\bullet$] \(\circ\) est associatif : \(a \circ \left( b \circ c \right) = \left( a \circ b \right) \circ c = a \circ b \circ c\)
+        \item [$\bullet$] \(\circ\) admet un neutre, noté \(1_{A}\) ou \(\epsilon \in A\), tel que \(\epsilon \circ a = a \circ \epsilon = a,\ \forall a \in A\).
+    \end{itemize}
+    \item Sous-structure : \(B \subseteq A\) est un sous-monoïde de \(\left( A,\  \circ \right)\) si :
+    \begin{itemize} 
+        \item [$\bullet$] \(\forall x,y \in B\), on a \(x \circ y \in B\) (stabilité)
+        \item [$\bullet$] \(1_{A} \in B\) 
+    \end{itemize}
+    \item Soit \(\left( A, \circ \right)\) un monoïde et \(\left( a,b \right) \in A\). \(a\) est l'inverse de \(b\) si \(a \circ b = b \circ a = \epsilon\).
+    \item Un groupe est un monoïde \(\left( G, \cdot \right)\) tel que tous les éléments de \(G\) possèdent un inverse par rapport à \(\cdot\).
+    \item Un groupe \(\left( G, \cdot \right)\) est commutatif si \(a \cdot b = b \cdot a,\ \forall a,b \in G\).
+    \item \(H \subseteq G\) est un sous-groupe de \(\left( G, \cdot \right)\) si :
+    \begin{itemize} 
+        \item [$\bullet$] \(\forall x,y \in H\), on a \(x \cdot y \in H\)
+        \item [$\bullet$] \(1_{G} \in H\)
+        \item [$\bullet$] Si \(x \in H\), alors \(x^{- 1} \in H\)
+    \end{itemize}
+    \item Soit \(H\) un sous-groupe de \(G\). La classe latérale de \(a \in G\) modulo\(H\) est \(aH = \left\{ax \middle| x \in H \right\}\). Quand \(H\) est clair dans le contexte, on écrit \(\left\lbrack a \right\rbrack\) pour \(aH\).
+    \item Si \(G\) est commutatif, alors \(\left( ax \right)\left( by \right) = \left( ab\right)\left( xy \right)\). En supposant que \(x,y \in H\), \(a' = ax\) et \(b' = by\), cela implique que \(a' \in aH\) et \(b' \in bH \Rightarrow \left( a'b' \right) \in \left( ab \right)H\). Le groupe quotient \(G/H\) est le groupe commutatif formé de
+    \begin{itemize}
+        \item [$\bullet$] L'ensemble des classes latérales de \(G\) modulo \(H\)
+        \item [$\bullet$] L'opérateur défini par \(\left\lbrack a \right\rbrack\left\lbrack b \right\rbrack = \left\lbrack ab \right\rbrack\) 
+    \end{itemize}
+\end{itemize}
+
+\section{Théorèmes}
+
+\begin{itemize}
+    \item Le neutre d'un monoïde est unique : Soient \(\epsilon,\epsilon'\) neutres pour \(\left( A, \circ \right)\). Alors \(\epsilon \circ \epsilon' = \epsilon'\) et \(\epsilon \circ \epsilon' = \epsilon \Longrightarrow \epsilon = \epsilon'\).
+    \item Si \(b\) possède un inverse, alors cet inverse est unique : Soient \(a_{1},a_{2}\) tels que \(a_{1} \circ b = b \circ a_{2} = 1_{A}\). Alors \(a_{1} = a_{1} \circ 1_{A} = a_{1} \circ \left( b \circ a_{2} \right) = \left( a_{1} \circ b \right) \circ a_{2} = 1_{A} \circ a_{2} = a_{2}\).
+    \item On peut simplifier les équations dans les groupes : si \(ac = cb\), alors \(a = b\) : Soit \(d = c^{- 1}\). Alors \(ac = bc \Longrightarrow a = a\epsilon = acd = bcd = b\epsilon = b\).
+    \item Les inverses dans un groupe sont symétriques : Si \(ab = \epsilon\), alors \(a = b^{- 1}\) et \(b = a^{- 1}\) : \(ab = \epsilon \Longrightarrow bab = b = babb^{- 1} \Longrightarrow ba = \epsilon\).
+    \item Il existe une bijection entre \(aH\) et \(H\), et les classes latérales distinctes modulo \(H\) forment une partition de \(G\).\footnote{Démonstration 1.}
+    \item Les classes latérales distinctes modulo \(H\) forment une partition de \(G\). \footnote{\autoref{demo2}.}
+\end{itemize}
+\begin{minipage}{.7 \textwidth}
+    \begin{itemize}
+        \item \underline{Théorème de Lagrange :} soient \(G\) un groupe fini et \(H\) un sous-groupe de \(G\) tels que \(\left| G \right| = n\) et \(\left| H \right| = m\), alors \(m\) divise \(n\) : les classes latérales de \(H\) sont toutes de taille \(m\) et forment une partition de \(G\), donc \(\left| G \right| = k\left| H \right|\) où \(k\) est le nombre de classes latérales de \(H \Rightarrow \left| G/H \right| = \left| G \right|/\left| H \right|\).
+    \end{itemize}
+\end{minipage}
+\begin{minipage}{.3 \textwidth}
+    \includegraphics[width=1.44444in,height=1.42361in]{img/Modulo.png}
+\end{minipage}
+
+\section{Groupes}
+\subsection{Sous-groupes des entiers}
+
+Soient \(a\in \mathbb{Z}\) et \(n \in \mathbb{N}^{> 1}\). \(a\ mod\ n\) est le reste de la division de \(a\) par \(n\). \\
+
+Soit \(\mathbb{Z}_{n} = \left\{ 0,\ldots,n - 1 \right\}\) muni de l'addition modulo \(n\) : \(a + b = r\ mod\ n\). \\
+
+\(\mathbb{Z}_{n}\) est isomorphe à \(\mathbb{Z/}n\mathbb{Z}\) : considérer \(f\ :\ \mathbb{Z}_{n}\mathbb{\rightarrow Z/}n\mathbb{Z}\) telle que \(f\left( a \right) = \left\lbrack a \right\rbrack\).
+
+\subsection{Sous-groupes finis}
+
+Soit \(H\) un sous-ensemble fini non-vide d'un groupe \(G\). Si \(H\) est stable, alors \(H\) est un sous-groupe de \(G\) : Soit \(a \in H\) et \(f\ :H \rightarrow H:x \rightarrow ax\).
+
+\begin{itemize} 
+    \item Présence du neutre : comme \(f\) est bijective, \(\exists b \in H:f\left( b \right) = a = ab \Rightarrow b = \epsilon\).
+    \item Présence de l'inverse \(\exists b \in H\ :f\left( b \right) = \epsilon \Rightarrow b = a^{- 1}\).
+\end{itemize}
+
+\subsection{Groupes cycliques}
+
+Soit \(G\) un groupe fini et \(g \in G\). Le sous-groupe \(\left\langle g \right\rangle\ \)engendré par \(g\) est \(\left\langle g \right\rangle = \left\{ g,g^{2},g^{3},\ldots \right\}\)
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : si \(\circ\) est \(+\), alors \(g^{2}\) est \(2g\).
+\end{itemize}
+
+Il existe \(m:g^{m} = \epsilon\), vu que \(\left\langle g \right\rangle\ \)est un sous-groupe de \(G\). L'ordre de \(g\) est la plus petite valeur de \(m\) telle que \(g^{m} = \epsilon\), i.e. \(\left| \left\langle g \right\rangle \right|\). Pour tout \(g \in G\), l'ordre de \(g\) divise \(\left| G \right|.\) \\
+
+Le groupe \(G\) est cyclique si il existe \(g\) tel que \(\left\langle g \right\rangle = G\). Si \(G = \left\langle g \right\rangle\) d'ordre fini \(n\), alors \(g^{n} = \epsilon\).
+
+Soit \(G\) cyclique et \(\left| G \right| = n\). \(G\) possède un unique sous-groupe \(H\) d'ordre \(m\) pour tout \(m\) divisant \(n\) et \(H\) est cyclique.
+
+\subsection{Résoudre une équation modulo}
+
+\begin{equation}
+    ax^2 + bx + c = 0 \text{ mod }n
+\end{equation}
+\begin{itemize}
+    \item Multiplier pour avoir une équation du type \(x^2 + b'x + c' = 0 mod n\).
+    \item Factoriser : \((x + \alpha)^2 + \beta = 0\text{ mod }n\).
+    \item Isoler : \((x^2 + \alpha)^2 = - \beta\text{ mod }n\).
+    \item Chercher les valeurs de \(x + \alpha\).
+    \item Isoler \(x\).
+\end{itemize}
+
+\section{Protocole de Diffie-Hoffman}
+
+\begin{minipage}{.6\textwidth}
+    Soit \(G = \left\langle g \right\rangle\) un groupe cyclique d'ordre \(n\).
+    \begin{itemize}
+    \item \(A\) choisit \(x \leftarrow \left\{ 0,1,\ldots,n - 1 \right\}\)
+    \item \(B\) choisit \(y \leftarrow \left\{ 0,1,\ldots,n - 1 \right\}\)
+    \item Après échange de \(g^{x}\) et \(g^{y}\), chacun calcule \(g^{xy}\).
+\end{itemize}
+\end{minipage}
+\begin{minipage}{.2 \textwidth}
+    \includegraphics[width=\textwidth]{img/Diffie-Hoffman.png}
+\end{minipage}\\
+
+On peut facilement retrouver \(x\) et \(y\) avec un logarithme discret lorsque \(g < 3072\ bits\).
+
+\subsection{Problème décisionnel de Diffie-Hoffman}
+
+Soit \(G = \left\langle g \right\rangle\) un groupe cyclique d'ordre \(n\). Soit \(h = g^{x}\) un élément de \(G\) pioché au hasard. 
+
+\(\left( G \times G \right)\) est un groupe, et \(\left\langle \left( g,h \right) \right\rangle\) en est un sous-groupe. Peut-on distinguer un élément aléatoire de \(\left( G \times G \right)\) d'un élément aléatoire de \(\left\langle \left( g,h \right) \right\rangle\ \)?
+
+\section{Anneau et corps}
+
+\subsection{Anneau}
+
+Un anneau est une structure \(\left( A, + , \cdot \right)\) telle que :
+
+\begin{itemize}
+    \item \(\left( A, + \right)\) est un groupe commutatif, on écrit 0 pour son neutre.
+    \item \(\left( A, \cdot \right)\) est un monoïde, on écrit 1 pour son neutre.
+    \item La multiplication se distribue sur l'addition, à gauche et à droite.
+\end{itemize} 
+Un anneau est commutatif si la multiplication est commutative.
+
+\subsection{Propriétés des anneaux}
+
+\begin{itemize}
+    \item \(0\) est absorbant : \(\forall r,\ 0 \cdot r = r \cdot 0 = 0\)
+    \item Si \(A\) est un anneau et \(0 = 1\), alors \(A = \left\{ 0 \right\}\)
+    \item Si \(\left( A, + , \cdot \right)\) est un anneau tel que \(0 \neq 1\), alors \(\left( A, \cdot \right)\) n'est pas un groupe.
+\end{itemize}
+
+\subsection{Corps}
+Un corps est un anneau \(\left( A, + , \cdot \right)\) tel que \(\left( A \setminus \left\{ 0 \right\}, \cdot \right)\) est un groupe. \\
+
+Un corps est commutatif si \(\left( A \setminus \left\{ 0 \right\}, \cdot \right)\) est un groupe commutatif.
+
+\subsection{Propriétés}
+
+\begin{itemize}
+    \item \(a \in A\) est un diviseur de \(0\) si il existe \(b \neq 0:ab = 0\).
+    \item Soit \(A\) un anneau. Si \(a \in A\) est un diviseur de 0, alors \(a\) n'est pas inversible.
+    \item Soit \(A\) un anneau fini. \(a \in A\) est un diviseur de 0 \(\Longleftrightarrow a \in A\) n'est pas inversible.
+\end{itemize}
+
+\subsection{Anneau \(\mathbb{Z}_{n}\)}
+
+\(\mathbb{Z}_{n} = \left\{ 0,1,\ldots,n - 1 \right\}\) muni de l'addition modulaire et de la 
+ multiplication modulaire forme un anneau commutatif.
+
+\begin{itemize}
+    \item Si \(n\) est premier, alors \(\mathbb{Z}_{n}\) est un corps, noté \(\mathbb{F}_{n}\).
+    \item Si \(n\) est composé, alors \(\mathbb{Z}_{n}\) n'est pas un corps.
+    \item \(a \in \mathbb{Z}_{n}\) est inversible ssi \(\text{pgcd}\left( a,n \right) = 1\).
+\end{itemize}
+
+\subsection{Anneau des polynômes}
+
+On peut définir les opération sur les polynômes au départ de celles sur un anneau sous-jacent.
+
+Soit \(A\) un anneau, et \(A\left\lbrack X \right\rbrack\) l'anneau des polynômes sur \(A\). Les opérations sont héritées des polynômes classiques et de l'anneau sous-jacent.
+
+\subsection{Racines des polynômes}
+
+Si \(\mathbb{F}\) est un corps, tout polynôme \(p \in \mathbb{F}\left\lbrack X \right\rbrack\) de degré \(n > 0\) possède au plus \(n\) racines.
+
+\section{Codes de Reed-Solomon}
+
+Un code est défini par une fonction \(c\ :\left( \mathbb{F}_{q} \right)^{k} \rightarrow \left( \mathbb{F}_{q} \right)^{n}\ :\)
+
+\begin{itemize}
+    \item \(q\) est la taille de l'alphabet qu'on emploie pour décrire le message.
+    \item Chaque élément de l'alphabet est appelé symbole.
+    \item \(k\) est la dimension des messages que l'on veut encoder.
+    \item \(n\) est la taille de bloc que l'on va transmettre \((n > k)\).
+\end{itemize}
+
+Idée : couper le message en séquences de \(k\) symboles, appliquer \(c\) et obtenir les \(n > k\) symboles à transmettre sur le canal. On pourra corriger jusqu'à \(\left( n - k \right)\) symboles.\\
+
+On peut définir un code de Reed-Solomon \(c\ :\left( \mathbb{F}_{q} \right)^{k} \rightarrow \left( \mathbb{F}_{q} \right)^{n}\ :\ \)
+
+\begin{itemize}
+    \item Interpréter un message \(a_{0},\ldots,a_{k - 1} \in \mathbb{F}_{q}\) comme un polynôme \(a = \sum_{i = 0}^{k - 1}{a_{i}X^{i}} \in \mathbb{F}_{q}\left\lbrack X \right\rbrack\) 
+    \item Choisir \(n\) points distincts \(x_{1},\ldots x_{n} \in \mathbb{F}_{q}\).
+    \item Calculer le mode-code \(a\left( x_{1} \right),\ldots a\left( x_{n} \right)\).
+\end{itemize}
+
+À partir de n'importe quels \(k\) symboles parmi \(n\), on peut reconstruire le message original par interprétation polynomiale. Cela fonctionne car tout ensemble de \(k\) points définit un unique polynôme
+de degré au plus \(k - 1\).\footnote{Si \(k = 3\) et \(n = 5\), on a une parabole. On peut perdre les informations de 2 des 5 points, car 3 points forment toujours une et une seule parabole (=information).}
+
+\chapter{Dénombrement et probabilités}
+\section{Dénombrer}
+
+\begin{itemize}
+    \item \underline{Équipotence :}
+\end{itemize}
+\(A\) et \(B\) sont équipotents ssi il existe une bijection de \(A\) vers \(B\). L'équipotence est notée \(A \approx B\). \\
+\(A\) est fini si \(A \approx \left\{ 1,\ldots,n \right\}\) pour \(n\mathbb{\in N}\). \(n\) est alors le cardinal de \(A\) et est noté \(\left| A \right|\). \\
+\(A\) est infini dénombrable si \(A\mathbb{\approx N}\). 
+
+\begin{itemize}
+    \item \(\mathbb{Z \approx N}\){ :}
+\end{itemize}
+Il existe une bijection \(f\mathbb{ : N \rightarrow Z:}\ x \rightarrow \left\{ \begin{matrix}
+\left( x + 1 \right)/2\ \text{si } x \text{ impair}  \\
+ - x/2\ \text{si } x \text{ pair} \\
+\end{matrix} \right.\ \).
+
+\begin{itemize}
+    \item \(\mathbb{Q \approx N}\){ :}
+\end{itemize}
+\begin{minipage}{.4 \textwidth}
+    \includegraphics[width=2.26389in,height=2.04444in]{img/Bijection.png}
+\end{minipage}
+\begin{minipage}{.6\textwidth}
+    Si on supprime tous les éléments rouges (fractions pouvant être réduites), on a un bijection de \(\mathbb{Q \rightarrow N}\). On peut ajouter une partie symétrique à gauche avec les rationnels négatifs.\\
+    
+    Puisqu'on a deux bijection \(\mathbb{Q \rightarrow N}\) et \(\mathbb{Z \rightarrow N}\), on a également la bijection \(\mathbb{Q \rightarrow Z}\).
+\end{minipage}
+
+\begin{itemize}
+ \item \(\mathbb{R \not \approx N}\){ :}
+\end{itemize}
+
+Voir \autoref{demo3}.
+
+\underline{Protocole pour prouver \(A \approx \mathbb{N}\) :}
+
+\begin{enumerate}
+    \item Grouper les éléments de \(A\) selon une caractéristique commune et ordonner les groupes.
+    \item Indexer les éléments d'un même groupe (\( = g(a)\)).
+    \item Pour un certain groupe, calculer le nombre total d'éléments dans les groupes précédents (\( = h(a)\)).
+    \item \(f : A \rightarrow \mathbb{N} : a \rightarrow g(a) + h(a)\)
+\end{enumerate}
+
+\section{Probabilités : définitions }
+
+Soit \(f\ :A \rightarrow \mathbb{R}^{\geq 0}\ :a \rightarrow 1\). On définit \(\left| A \right| \coloneqq \sum_{a \in A}^{}{f\left( a \right)}\). \\
+
+La fonction \(f\) donne une mesure unitaire à chaque élément de l'ensemble. On peut donner d'autres mesures à ces éléments (coût d'un graphe : \(c\left( G \right) = \sum_{r \in R}^{}{c\left( r \right)}\),\ldots). La mesure pourrait donc aussi être la probabilité d'un événement.\\
+
+Soit \(\Omega\) l'univers, i.e. l'ensemble des résultats possibles et \(\omega\) le résultat. Il existe une bijection \(p\ :\Omega \rightarrow \mathbb{R}^{\geq 0}\ :\omega \rightarrow p\left( \omega \right)\). Avec \(p\) la fonction de probabilité. \\
+
+Soit un événement \(B\), i.e. un ensemble de résultats \(b\) possibles. On définit \(P\left( B \right) \coloneqq \sum_{b \in B}^{}{p\left( b \right)}\).
+
+\subsection{Espace probabilisé}
+
+Un espace probabilisé est composé de : 
+\begin{itemize}
+    \item Un univers \(\Omega\).
+    \item Un ensemble \(\mathcal{A}\) de sous-ensembles de \(\Omega\) reprenant tous les événements auxquels on peut s'intéresser.
+    \item Une mesure de probabilité \(P\ :\mathcal{A \rightarrow}\left\lbrack 0,1 \right\rbrack\) qui assigne une probabilité à chaque événement. 
+\end{itemize}
+Exigences sur la manière de définir \(\mathcal{A}\): 
+\begin{itemize}
+    \item Si \(A \in \mathcal{A}\), alors \(\Omega - A \in \mathcal{A}\).
+    \item Si \(A,B \in \mathcal{A,}\) alors \(A \cup B \in \mathcal{A}\).
+    \item \(\Omega\mathcal{\in A}\).
+\end{itemize}
+
+\subsection{\(\sigma\)-algèbre}
+On demande que l'ensemble des événements forme une \(\sigma\)-algèbre sur \(\Omega\) :\\
+\(\mathcal{A \subseteq P}\left( \Omega \right)\)\footnote{\(\mathcal{P(\cdot)}\) est le power set, i.e. l’ensemble des sous-ensembles possibles.} est une \(\sigma\)-alèbre sur \(\Omega\) si :
+
+\begin{itemize}
+    \item \(\Omega\mathcal{\in A}\).
+    \item \(A \in \mathcal{A \Longrightarrow}\Omega - A \in \mathcal{A}\).
+    \item Si \(A_{1},A_{2},\ldots\) est un ensemble dénombrable d'éléments de \(\mathcal{A}\), alors
+  \(A = A_{1} \cup A_{2}\mathcal{\cup \ldots \in A}\).
+\end{itemize}
+Conséquences :
+
+\begin{itemize}
+    \item \(\emptyset \in \mathcal{A}\) car \(\Omega \in \mathcal{A}\) et \(\emptyset = \ \Omega - \Omega\).
+    \item Si \(A,B \in \mathcal{A}\), alors \(A \cap B = \overline{\overline{A} \cup \overline{B}}\mathcal{\in A}\), avec \(\overline{X} = \Omega - X\).
+    \item Si \(A,B \in \mathcal{A}\), alors \(A - B = A \cap \overline{B}\mathcal{\in A}\).
+\end{itemize}
+
+\subsection{Mesure de probabilité}
+
+Une mesure de probabilité \(P\ :\mathcal{A \rightarrow}\mathbb{R}^{\geq 0}\) qui assigne une probabilité à chaque événement d'une \(\sigma\)-algèbre doit satisfaire les 3 axiomes de Kolmogorov :
+
+\begin{itemize}
+    \item \(0 \leq P\left( A \right) \leq 1\ \forall A \in \mathcal{A}\)
+    \item \(P\left( \Omega \right) = 1\)
+    \item Si \(A_{1},A_{2},\ldots\) est une famille dénombrable d'événements disjoints (\(A_{i} \cap A_{j} = \emptyset\ \forall i \neq j\)), alors \(P\left( A_{1} \cup A_{2} \cup \ldots \right) = \sum_{i}^{}{P\left( A_{i} \right)}\)
+\end{itemize}
+
+\subsection{Mesure de probabilité uniforme}
+
+Soit \(\Omega\) un ensemble fini, \(\mathcal{A = P}\left( \Omega \right)\), et \(P\left( \left\{ \omega \right\} \right) = \frac{1}{\left| \Omega \right|}\ \forall\omega \in \Omega\).
+Alors \(P\left( A \right) = \frac{\left| A \right|}{\left| \Omega \right|}\) avec \(A \in \mathcal{A}\). Il s'agit de la mesure de probabilité uniforme sur \(\Omega\).
+
+\subsection{Mesure positive}
+
+Une mesure positive \(\mu\ :\mathcal{A \rightarrow}\mathbb{R}^{\geq 0}\) qui assigne un nombre réel (ou infini) à chaque événement d'une \(\sigma\)-algèbre doit satisfaire les 2 axiomes suivants :
+
+\begin{itemize}
+    \item \(\mu\left( \emptyset \right) = 0\).
+    \item Si \(A_{1},A_{2},\ldots\) est une famille dénombrable d'événements disjoints, \(\mu\left( A_{1} \cup A_{2} \cup \ldots \right) = \sum_{i}^{}{\mu\left( A_{i} \right)}\).
+\end{itemize}
+
+\section{Somme et union}
+\subsection{Règle de la somme}
+\begin{itemize}
+    \item \(A \cap B = \emptyset \Longrightarrow \left| A \cup B \right| = \left| A \right| + \left| B \right|\)
+    \item \(A \cap B = \emptyset \Longrightarrow P\left( A \cup B \right) = P\left( A \right) + P\left( B \right)\) (// Axiome 3 de Kolmogorov).
+\end{itemize}
+
+\subsection{Règle du produit}
+
+\begin{itemize}
+    \item \(\left| A \times B \right| = \left| A \right| \cdot \left| B \right|\)
+\end{itemize}
+
+\subsection{Principe d'inclusion et d'exclusion}
+
+\begin{itemize}
+    \item \(\left| A \cup B \right| = \left| A \right| + \left| B \right| - \left| A \cap B \right|\)
+    \item \(P\left( A \cup B \right) = P\left( A \right) + P\left( B \right) - P\left( A \cap B \right)\)
+    \item \(\left| A \cup B \cup C \right| = \left| A \right| + \left| B \right| + \left| C \right| - \left| A \cap B \right| - \left| A \cap C \right| - \left| B \cap C \right| + \left| A \cap B \cap C \right|\)
+\end{itemize}
+\underline{Généralisation :}\\
+Soit \(R_{n} \coloneqq \left\{ 1,\ldots,n \right\}\) et \(S_{I} \coloneqq \  \cap_{i \in I}S_{i}\)
+
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \left| \bigcup_{i \in R_{n}}^{}S_{i} \right| = \sum_{r = 1}^{n}\left( \left( - 1 \right)^{r - 1}\sum_{I \subset R_{n},\ \left| I \right| = r}^{}\left| S_{I} \right| \right)
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5 \textwidth}
+    \begin{equation}
+        P \left( \bigcup_{i \in R_{n}}^{}S_{i} \right) = \sum_{r = 1}^{n}\left( \left( - 1 \right)^{r - 1}\sum_{I \subset R_{n},\ \left| I \right| = r}^{}{P\left( S_{I} \right)} \right)
+    \end{equation}
+\end{minipage}
+
+\section{Nombres binomiaux}
+
+\(B\left( n,k \right)\) est le nombre de sous-ensembles de cardinal
+\(k\) d'un ensemble de cardinal \(n\). On le note
+\(B\left( n,k \right) = \begin{pmatrix}
+n \\
+k \\
+\end{pmatrix} = C_{n}^{k}\).
+
+Il s'agit par exemple du nombre d'ordres possibles dans lesquels on peut placer \(k\) croix sur une grille de \(n\) cases.
+
+\begin{equation}
+    \color{red}\boxed{\color{black}B\left( n,k \right) = \frac{n!}{k!\left( n - k \right)!}}\color{black}
+\end{equation}
+
+\subsection{Propriétés}
+
+\begin{itemize}
+    \item Par symétrie, \(B\left( n,k \right) = B\left( n,n - k \right)\). Chaque sous-ensemble de taille \(k\) définit un unique sous-ensemble de taille \(n - k\), et inversement.
+    \item Soient \(A\) un \(n\)-ensemble, \(\mathcal{A}_{k}\) l'ensemble de ses \(k\)-sous-ensembles et \(\mathcal{A}_{n - k}\) l'ensemble de ses \(\left( n - k \right)\)-sous-ensembles. La fonction \(f:\mathcal{A}_{k} \rightarrow \mathcal{A}_{n - k}\ :x \rightarrow A\backslash x\) est une bijection.
+\end{itemize}
+\begin{minipage}{.6\textwidth}
+    \begin{itemize}
+        \item Par récurrence, \(B\left( n , k \right) = B\left( n - 1,k - 1 \right) + B\left( n - 1,k \right)\). Les sous-ensembles de \(A\) de taille \(k\) sont exclusivement, soit des sous-ensembles de taille \(k\) de \(A\backslash\left\{ x \right\}\), soit des sous-ensembles de taille \(k - 1\) de \(A\backslash\left\{ x \right\}\) auxquels on ajoute \(x\).
+        \item Triangle de Pascal :
+        \item \(\sum_{k = 0}^{n}{B\left( n,k \right)} = 2^{n}\)
+    \end{itemize}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width=2.75in,height=1.21597in]{img/Pascal.png}
+\end{minipage}
+    
+\subsection{Mot caractéristique}
+
+\("01011"\) est le mot caractéristique du sous-ensemble si le 
+\begin{itemize}
+    \item \(i\)-ème symbole est \("1"\) si l'élément \(a_{i}\) est dans le sous-ensemble.
+    \item \(i\)-ème symbole est \("0"\) si l'élément \(a_{i}\) n'est pas dans le sous-ensemble.
+\end{itemize}
+Toute séquence de \(n\) \("0"\) et\(\ "1"\) définit un unique sous-ensemble \(2^{n}\) sous-ensembles.
+
+\begin{itemize} 
+    \item[$\rightarrow$] Remarque : \(B\left( n,k \right)\) est le nombre de mots binaires de longueur \(n\) et de poids (nombre de \("1"\)) \(k\).
+\end{itemize}
+
+\subsection{Binôme de Newton}
+
+\begin{equation}
+    \color {red}\boxed{\color{black}\left( x + y \right)^{n} = \sum_{k = 0}^{n}{B\left( n,k \right)x^{k}y^{n - k}}} \color{black} \Longrightarrow \sum_{k = 0}^{n}{\left( - 1 \right)^{k}B\left( n,k \right)} = 0\ si\ n \geq 1 
+\end{equation}
+
+\subsection{Matrice des nombres binomiaux}
+Si on définit une matrice triangulaire dont les lignes sont celles du triangle de Pascal, on obtient un inverse très similaire : 
+\begin{center}
+    \includegraphics[width=3.16667in,height=0.88125in]{img/Nombres binomiaux.png}
+\end{center}
+
+\subsection{\(k\)-sélections d'un \(n\)-ensemble}\footnote{Avec répétitions.}
+
+Chaque élément du \(n\)-ensemble peut apparaitre plusieurs fois, on peut donc avoir \(k > n\).
+
+Une sélection sur l'ensemble \(A\) est une fonction \(s\ :A\mathbb{\rightarrow N}\). Une \(k\)-sélection est telle que \(\sum_{a \in A}^{}{s\left( a \right)} = k\). Si \(A \coloneqq \left\{ a_{1},\ldots,a_{n} \right\}\), on note \(s \coloneqq a_{1}^{\left( k_{1} \right)}\ldots a_{n}^{\left( k_{n} \right)}\)
+où \(k_{i} = s\left( a_{i} \right)\) et on note le nombre de \(k\)-sélections d'un \(n\)-ensemble \(B^{*}\left( n,k \right)\).\\ \newline
+On peut représenter la \(k\)-sélection \(s\) par son mot caractéristique : \(11\ldots 101\ldots 10\ldots 01\ldots 1\).\\
+On écrit \(k_{1}\ "1"\), puis un \("0"\), puis \(k_{2}"1"\),\ldots{} jusque \(k_{n}\ "1"\).
+
+\begin{itemize}
+    \item Chaque sélection donne un mot contenant \(k\ "1"\) et \(n - 1\ "0"\).
+    \item Chaque mot contenant \(k\ "1"\) et \(n - 1\ "0"\) donne une sélection.
+    \item Chaque mot de ce type définit aussi un \(k\)-sous-ensemble d'un \((k + n - 1)\)-ensemble.
+\end{itemize}
+
+\begin{equation}
+    \Longrightarrow B^{*}\left( n,k \right) \coloneqq B\left( k + n - 1,k \right)
+\end{equation}
+
+\section{Fonctions : injections et surjections}
+\subsection{Dénombrer les fonctions}
+Une relation \(R\) de \(A\) vers \(B\) est un ensemble \(R \subset A \times B\). \\
+
+Une fonction de \(A\) vers \(B\) est un triple \(\left( A,B,R \right)\), avec \(R\) une relation de \(A\) vers \(B\), telle que \(\forall a \in A,\exists \text{1! }b \in B\ :aRb\).
+
+\subsection{Injections}
+
+Soient \(A\) et \(B\) finis, \(\left| A \right| = n,\ \left| B \right| = k\). On a 
+\begin{itemize}
+    \item Le nombre \(\left( A^{B} \right)\) de fonctions de \(B\) vers \(A\) est noté \(n^{k}\), car \(\left| A^{B} \right| = \left| A \right|^{\left| B \right|} = n^{k}\).
+    \item Le nombre \(\text{In}\left( n \leftarrow k \right)\) d'injections de \(B\) vers \(A\) est \(\left\lbrack n \right\rbrack_{k} \coloneqq n\left( n - 1 \right)\ldots\left( n - k + 1 \right)\).
+    \item Le nombre de bijections de \(B\) vers \(A\) (\(\text{si}\ k = n\)) est \(n!\).
+    \item Le nombre de bijections de \(A\) vers \(A\) (ou permutations de \(A\)) est \(n!\).
+\end{itemize}
+
+\subsection{Surjections}
+
+Soient \(A\) et \(B\) finis, \(\left| A \right| = n,\ \left| B \right| = k\), avec \(k \leq n\). On a 
+
+\begin{itemize}
+    \item Le nombre \(\text{Sur}\left( n \rightarrow k \right)\) de surjections de \(A\) vers \(B\) est \(\sum_{r = 0}^{k}{\left( - 1 \right)^{r}B\left( k,r \right)\left( k - r \right)^{n}}\)
+    \item Soient \(S = \{\) fonctions de \(A \rightarrow B\} = B^{A}\) et \(S_{i} \subset S\) tel que aucun élément de \(A\) n'est envoyé sur \(b_{i}\). On a \(\text{Sur}\left( n \rightarrow k \right) = \left| S \right| - \left| S_{1} \cup \ldots \cup S_{k} \right|\)
+\end{itemize}
+
+\begin{equation}
+    \left| S \right| = k^{n},\ \left| \bigcup_{i \in \left\{ 1,\ldots k \right\}}^{}S_{i} \right| = \sum_{r = 1}^{k}\left( \left( - 1 \right)^{r - 1}\sum_{I \subset \left\{ 1,\ldots,k \right\},\ \left| I \right| = r}^{}\left| S_{I} \right| \right)
+\end{equation}
+
+Avec \(S_{I} = \bigcap_{i \in I}^{}S_{i}\). Par développement, on a finalement
+
+\begin{equation}
+    \color{red}\boxed{\color{black}\text{Sur}\left( n \rightarrow k \right) = \sum_{r = 0}^{k}{\left( - 1 \right)^{r}B\left( k,r \right)\left( k - r \right)^{n}}}\color{black}
+\end{equation}
+
+\subsection{Dérangements}
+
+Un dérangement sur \(A\) est une permutation \(f\) de \(A\) sans point fixe (sans qu'un \(a\) ne reste à sa place) : \(\forall a \in A\ :f\left( a \right) \neq a\).\\
+Le nombre de dérangements d'un \(n\)-ensemble est 
+\begin{equation}
+    d_{n} \coloneqq n!\sum_{r = 0}^{n}\frac{\left( - 1 \right)^{r}}{r!}
+\end{equation}
+
+On a donc \(\lim_{n \rightarrow \infty}\frac{d_{n}}{n!} = \frac{1}{e}\). \\
+
+On peut définir le nombre de \(k\)-partitions d'un ensemble de cardinal \(n\) : \(S\left( n,k \right) \coloneqq \frac{1}{k!}\text{Sur}\left( n \rightarrow k \right)\).
+
+\subsection{Nombres de Stirling}
+
+On a par récurrence \(S\left( n,k \right) = S\left( n - 1\ ,k - 1 \right) + k\ S\left( n - 1,k \right)\).
+Toute répartition de l'ensemble \(A\) de cardinal \(n\) en \(k\) blocs est :
+
+\begin{itemize}
+    \item Soit une partition de \(A\backslash\left\{ x \right\}\) en \(k - 1\) blocs, à laquelle on ajoute le bloc \(x\) (premier terme de la somme). 
+    \item Soit une partition de \(A\backslash\left\{ x \right\}\) en \(k\) blocs, modifiée en ajoutant \(x\) à l'un des blocs (second terme de la somme).
+\end{itemize}
+
+\subsection{Nombres de Bell}
+
+Soit \(b_{n}\) le nombre de partitions distinctes sur \(n\) éléments. \(b_{n} \coloneqq \sum_{i = 0}^{n}{S\left( n,i \right)}\). Par récurrence, \(b_{n} = \sum_{i = 0}^{n - 1}{B\left( n - 1,i \right)b_{i}}\).
+
+\section{Approximation de Stirling}
+
+On peut évaluer les factorielles par la relation suivante : 
+
+\begin{equation}
+    n! \approx \sqrt{2\pi n}\left( \frac{n}{e} \right)^{n} \Longrightarrow \lim_{n \rightarrow \infty}\frac{n!}{\sqrt{2\pi n}\left( \frac{n}{e} \right)^{n}} = 1
+\end{equation}
+
+On a donc des bornes pour les factorielles et les nombres binomiaux :
+
+\begin{equation}
+    n! \geq \left( \frac{n}{e} \right)^{n},\ \left( \frac{n}{k} \right)^{k} \leq B\left( n,k \right) \leq \left( \frac{ne}{k} \right)^{k}
+\end{equation}
+
+\section{Lois et variables aléatoires discrètes}
+
+Pour des combinaisons équiprobables, la probabilité \(= \frac{\text{nombre\ de\ cas\ favorables}}{\text{nombre\ de\ cas\ totaux}}\). Pour un lancer de dés, la probabilité de gagner \(k\) fois parmi \(n\)
+manches est 
+\begin{equation}
+    P = \frac{B\left( n,k \right)}{2^{n}}
+\end{equation}
+
+\subsection{Épreuve et schéma de Bernoulli}
+
+On définit un espace probabilisé (épreuve de Bernoulli):
+
+\begin{itemize}
+    \item \(\Omega = \left\{ E,S \right\}\)
+    \item \(E\) pour échec et \(S\) pour succès
+    \item La \(\sigma\)-algèbre des événements est \(P\left( \Omega \right) = \left\{ \emptyset,\left\{ E \right\},\left\{ S \right\},\Omega \right\}\)
+    \item Si la probabilité de succès est \(p\), la probabilité d'échec est \(q = 1 - p\)
+\end{itemize}
+
+Pour un espace probabilisé \(\Omega = \left\{ E,S \right\}^{n}\) (schéma de Bernoulli), la \(\sigma\)-algèbre des événements est \(\mathcal{P}\left( \Omega \right)\) et la probabilité d'un mot à \(k\) succès et \(n - k\) échecs est \(P = p^{k}q^{n - k}\).
+
+\subsection{Événements indépendants}
+
+Dans un espace probabilisé \(\left( \Omega\mathcal{,A,}P \right)\) quelconque, deux événements \(A,B\) sont indépendants si \(P\left( A \cap B \right) = P\left( A \right)P\left( B \right)\). On note l'indépendance \(A \independent B\).\\
+
+Trois événements \(A,B,C\) sont indépendants si :
+
+\begin{itemize}
+    \item \(P\left( A \cap B \right) = P\left( A \right)P\left( B \right)\)
+    \item \(P\left( B \cap C \right) = P\left( B \right)P\left( C \right)\)
+    \item \(P\left( A \cap C \right) = P\left( A \right)P\left( C \right)\)
+    \item \(P\left( A \cap B \cap C \right) = P\left( A \right)P\left( B \right)P\left( C \right)\)
+\end{itemize}
+!! Des événements peuvent être indépendants deux à deux, sans l'être à trois.
+
+\subsection{Variables aléatoires}
+
+Soient un espace probabilisé \(\left( \Omega\mathcal{,A,}P \right)\) et un espace \(\left( \Omega',\mathcal{A}' \right)\) avec une \(\sigma\)-algèbre d'événements, mais pas de mesure de probabilité. Une variable aléatoire est une fonction \(X:\Omega \rightarrow \Omega'\) telle que pour tout événement \(A' \subseteq \Omega'\), la préimage \(X^{- 1}\left( A' \right)\) est un événement de \(\Omega\). La variable aléatoire de l'espace \(\Omega'\) attribue une probabilité \(P'\left( A' \right)\) à chaque événement \(A'\) de \(\Omega'\) : \(P'\left( A' \right) = P\left( X^{- 1}\left( A \right) \right)\).\\
+
+\(P'\left( A' \right)\) peut également s'écrire \(P\left( X \in A' \right),\ P\left( \left\{ \omega \in \Omega:X\left( \omega \right) \in A' \right\} \right)\).
+
+\subsection{Épreuve d'un schéma de Bernoulli}
+Soit la variable aléatoire \(X_{k}:\Omega \rightarrow \Omega'\) où 
+\begin{itemize}
+    \item \(\Omega = \left\{ E,S \right\}^{n}\) muni d'un schéma de Bernoulli, avec probabilité \(p\) de succès.
+    \item \(\Omega' = \left\{ E,S \right\}\), épreuve de Bernoulli de probabilité \(p\) de succès.
+    \item [$\Rightarrow$] \(X_{k}\) indique le résultat de la \(k\)ème épreuve pour \(1 \leq k \leq n\).
+\end{itemize}
+Ces notations sont alors équivalentes :
+
+\begin{itemize}
+    \item \(P(\)"La \(k\)ème épreuve est un succès"\() = p\)
+    \item \(P\left( X_{k} = S \right) = p\)
+    \item \(P'\left( S \right) = p\)
+\end{itemize}
+
+\subsection{Loi binomiale}
+Soit la variable aléatoire \(N:\Omega \rightarrow \Omega'\), où 
+
+\begin{itemize}
+    \item \(\Omega = \left\{ E,S \right\}^{n}\) muni d'un schéma de Bernoulli, avec probabilité \(p\) de succès. 
+    \item \(\Omega' = \left\{ E,S \right\}\), épreuve de Bernoulli de probabilité \(p\) de succès.
+    \item \(N\) est le nombre de succès.
+\end{itemize}
+
+\begin{equation}
+    \color{red}\boxed{\color{black}P\left( N = k \right) = B\left( n,k \right)p^{k}q^{n - k}}\color{black}
+\end{equation}
+
+On dit que \(N\) est une variable aléatoire binomiale, ou encore qu'elle suit une loi/distribution binomiale.
+
+\subsection{Variable indicatrice d'un événement}
+
+On considère un espace probabilisé quelconque \(\left( \Omega,\mathcal{A},P \right)\) et un événement quelconque \(A \in \mathcal{A}\). Alors la fonction caractéristique de \(A\) est définie par \(1_{A}:\Omega \rightarrow \left\{ 0,1 \right\}:\omega \rightarrow 1\) ssi \(\omega \in A\), et s'appelle aussi variable (aléatoire) indicatrice de l'événement \(A\). On a \(P\left( 1_{A} = A \right) = P\left( A \right)\).
+
+\subsection{Variables aléatoires indépendantes}
+
+Soient trois espaces probabilisés \(\left( \Omega,\mathcal{A},P \right),\ \left( \Omega_{0},\mathcal{A}_{0},P_{0} \right),\ \left( \Omega_{1},\mathcal{A}_{1},P_{1} \right),\) avec deux variables aléatoires \(X_{0}:\Omega \rightarrow \Omega_{0}\) et \(X_{1}:\Omega \rightarrow \Omega_{1}\). Ces deux variables aléatoires sont indépendantes si pour tous événements \(A_{0} \subseteq \Omega_{0},\ A_{1} \subseteq \Omega_{1}\), on a que \(X_{0}^{- 1}\left( A_{0} \right)\) et \(X_{1}^{- 1}\left( A_{1} \right)\) sont des événements indépendants dans \(\Omega\), i.e. si tout événement de la forme \(X_{0} \in A_{0}\) est indépendant de tout événement de la forme \(X_{1} \in A_{1}\).\\
+
+Les variables aléatoires sont donc indépendantes si 
+\begin{equation}
+    P\left( X_{0}^{- 1}\left( A_{0} \right) \cap X_{1}^{- 1}\left( A_{1} \right) \right) = P\left( X_{0}^{- 1}\left( A_{0} \right) \right)P\left( X_{1}^{- 1}\left( A_{1} \right) \right) = P_{0}\left( A_{0} \right)P_{1}\left( A_{1} \right)
+\end{equation}
+
+\subsection{Produits d'espaces probabilisés}
+
+Soient deux espaces probabilisés \(\left( \Omega_{0},\mathcal{A}_{0},P_{0} \right)\) et \(\left( \Omega_{1},\mathcal{A}_{1},P_{1} \right)\). Leur produits est l'espace probabilisé \(\left( \Omega,\mathcal{A},P \right)\) défini tel que :
+
+\begin{itemize}
+    \item \(\Omega = \Omega_{0} \times \Omega_{1}\)
+    \item La \(\sigma\)-algèbre des événements \(A\) comprend tous les produits cartésiens d'événements \(A_{0} \times A_{1}\), et toutes leurs unions dénombrables, compléments, intersection dénombrables.
+    \item \(P\) est définie par \(P\left( A_{0} \times A_{1} \right) = P_{0}\left( A_{0} \right)P_{1}\left( A_{1} \right)\) et étendue aux autres événements par les axiomes de Kolmogorov.
+\end{itemize}
+
+\underline{Propriété :} soient espaces probabilisés \(\left( \Omega_{0},\mathcal{A}_{0},P_{0} \right)\) et \(\left( \Omega_{1},\mathcal{A}_{1},P_{1} \right)\) et leur produit sur \(\Omega_{0} \times \Omega_{1}\). Alors les projections sur la première composante, \(X_{0}:\Omega_{0} \times \Omega_{1} \rightarrow \Omega_{0}\) et sur la deuxième composante \(X_{1}:\Omega_{0} \times \Omega_{1} \rightarrow \Omega_{1}\) sont des variables aléatoires indépendantes. 
+
+\subsection{Mesure de probabilité conditionnelle}
+
+Soient un espace probabilisé \(\left( \Omega,\mathcal{A,}P \right)\) et un événement \(A \subseteq \Omega\) de probabilité non nulle. Il est possible de définir une mesure de probabilité sur \(A\) : 
+
+\begin{itemize}
+    \item L'univers est \(A\)
+    \item Les événements sont les événements de \(\Omega \cap A\)
+    \item La probabilité de l'événement \(B \subseteq \Omega\), notée \(P\left( B \middle| A \right)\), est \(\frac{P\left( A \cap B \right)}{P\left( A \right)}\)
+\end{itemize}
+
+\subsection{Indépendance et probabilité conditionnelle}
+
+Dans un espace probabilisé \(\left( \Omega,\mathcal{A,}P \right)\) quelconque, soient deux événements \(A,B\) de probabilités non nulles. Ils sont indépendants ssi \(P\left( B \right) = P\left( B \middle| A \right)\) ssi \(P\left( A \right) = P\left( A \middle| B \right)\).
+
+\subsection{Schéma de Bernoulli infini}
+
+On peut imaginer un nombre infini d'épreuves indépendantes. L'univers est \(\Omega\left\{ S,E \right\}^{\mathbb{N}}\). On définit des événements de base de la forme \(X_{i} \in A_{i}\), \(i = 1,\ldots,n\), avec \(n\) non borné fini pour tout ensemble \(A_{k} \subseteq \left\{ E,S \right\}\), avec \(X_{k}\) indiquant le résultat de la \(k\)ème épreuve.
+
+On génère tous les événements par unions dénombrables, compléments et intersections dénombrables. On définit \(P\left( X_{i} \in A_{i} \right) = \prod_{i = 1}^{n}{P\left( X_{i} \in A_{i} \right)}\).
+
+\subsection{Loi géométrique}
+
+Soit un schéma de Bernoulli infini, avec \(p\) probabilité de succès, \(q = 1 - p\ \)probabilité d'échec. Le nombre d'essais infructueux avant d'obtenir un premier succès est \(X:\Omega \rightarrow \mathbb{N \cup}\left\{ + \infty \right\}\). La probabilité de \(k\) échecs suivis d'un succès est \(q^{k}p = P\left( EE\ldots ES \right) = P\left( X = k \right)\).\\ 
+
+On a une série géométrique infinie si \(k = +\infty\) : \(1 + q + q^{2} + \ldots = \frac{1}{1 - q}\), donc la probabilité de ne jamais avoir de succès est \(1 - p\cdot\frac{1}{1 - q} = 0\). L'événement n'est pas impossible, mais il a une probabilité nulle. L'ensemble vide n'est donc pas le seul ensemble à avoir une probabilité nulle. 
+
+\section{Lois et variables aléatoires réelles}
+
+\subsection{L'aiguille de Buffon}
+
+Imaginons la situation où nous devons lancer une aiguille de longueur 1 sur un parquet de lattes de largeur 2. Quelle serait la probabilité pour l'aiguille de se trouver à cheval sur deux lattes ? 
+
+\underline{Hypothèses de calcul :}
+
+\begin{itemize}
+    \item Les arêtes du plancher sont des droites de coordonnées \(x = 0,\ x = \pm 2\), etc.
+    \item L'aiguille est caractérisée par la coordonnée en \(x\) de sa tête, et l'angle \(\theta\) de l'aiguille avec l'horizontale. 
+    \item On suppose la coordonnée \(x\) dans l'intervalle  \(\left\lbrack 0,1 \right\rbrack\), les autres cas pouvant s'y réduire par symétrie.
+    \item Toute configuration \(\left( x,\theta \right)\) de l'aiguille dans \(\left\lbrack 0,1 \right\rbrack \times \left\lbrack 0,\pi \right\rbrack\) a la même probabilité de subvenir.
+\end{itemize}
+
+On définit la probabilité comme : 
+
+\begin{equation}
+    P = \frac{\text{Surface\ des\ cas\ }\left( x,\theta \right)\text{\ favorables}}{\text{Surface\ des\ cas\ }\left( x,\theta \right)\text{\ totaux}}
+\end{equation}
+
+Dans notre cas, \(P = 1/\pi\), voir \autoref{demo4}.
+
+\subsection{Mesure de probabilité uniforme -- cas discret}
+
+Pour la mesure de probabilité uniforme sur un ensemble fini \(\Omega\), nous avons besoin d'un univers \(\Omega\), d'une \(\sigma\)-algèbre \(\mathcal{P}\left( \Omega \right)\), et pour tout événement \(A\), nous avons \(P\left( A \right) = \frac{\left| A \right|}{\left| \Omega \right|}\).
+
+\subsection{Mesure de probabilité uniforme -- cas continu}
+Dans \(\mathbb{R}^{n}\), on définit une \(\sigma\)-algèbre \(\mathcal{B}\) de parties mesurables, dite \(\sigma\)-algèbre de Borel-Lebesgue :
+
+\begin{itemize}
+    \item Les produits cartésiens d'intervalles sont mesurables.
+    \item Les unions finies/dénombrables et les compléments d'ensembles mesurables sont mesurables.
+\end{itemize}
+On peut maintenant définir une mesure \(\mu\mathcal{:B \rightarrow}\mathbb{R \cup}\left\{ \infty \right\}\) :
+
+\begin{itemize}
+    \item \(\mu\left( \left\lbrack a_{1},b_{1} \right\rbrack \times \ldots \times \left\lbrack a_{n},b_{n} \right\rbrack \right) = \left| b_{1} - a_{1} \right|\ldots\left| b_{n} - a_{n} \right|\)
+    \item Si \(A\) est une union finie ou dénombrables de mesurables \(A_{i}\) disjoints deux à deux, alors \(\mu\left( A \right) = \sum_{i}^{}{\mu\left( A_{i} \right)}\) 
+\end{itemize}
+De cette mesure viennent les notions de longueur, surface,\ldots{} \\
+
+Pour la mesure de probabilité uniforme sur un ensemble mesurable \(\Omega \subseteq \mathbb{R}^{n}\) de mesure \(\mu\left( \Omega \right)\) finie, nous avons besoin d'un univers \(\Omega\), d'une \(\sigma\)-algèhbre des événements : mesurables de \(\mathbb{R}^{n}\) intersectés avec \(\Omega\), et pour tout événement \(A \subseteq \Omega:P\left( A \right) = \frac{\mu\left( A \right)}{\mu\left( \Omega \right)}\left( = \frac{\text{surface}_{A}}{\text{surface}_{\Omega}} \right)\).
+
+\subsection{Lien entre les cas discret et continu}
+
+Considérons la mesure de probabilité uniforme sur \(\Omega = \left\lbrack 0,1 \right\rbrack\). Pour \(x \in \left\lbrack 0,1 \right\rbrack\), on peut écrire \(x = 0.b_{1}b_{2}b_{3}\ldots\), où \(b_{i} \in \left\{ 0,1 \right\}\) est le \(i\)ème bit du développement binaire de \(x\). Chaque \(b_{i}\) prend la valeur \(b_{i} = 0\) ou \(b_{i} = 1\), avec probabilité \(1/2\). \(\forall i \neq j,\ b_{i}\) et \(b_{j}\) sont indépendants.\\
+
+Donc la suite \(b_{1}b_{2}b_{3}\ldots\) forme un schéma de Bernoulli infini avec une probabilité de succès \(1/2\).
+
+\subsection{Produits d'espaces de probabilité -- cas uniforme discret}
+
+Les projections \(\Omega \rightarrow \Omega_{0}\) et \(\Omega \rightarrow \Omega_{1}\) sur chaque composante sont des variables aléatoires indépendantes. Le produit de deux ensembles finis munis de la mesure de probabilité uniforme est un ensemble fini avec la mesure de probabilité uniforme.
+
+\subsection{Produits d'espaces de probabilité -- cas uniforme continu}
+
+Le produit de deux ensembles \(\Omega_{0} \subseteq \mathbb{R}^{m}\) et \(\Omega_{1} \in \mathbb{R}^{n}\) chacun muni de la mesure de probabilité uniforme est l'ensemble \(\Omega = \Omega_{0} \times \Omega_{1} \subseteq \mathbb{R}^{m + n}\) muni de la mesure de probabilité uniforme. En effet,
+
+\begin{equation}
+    P\left( A_{0} \times A_{1} \right) = P_{0}\left( A_{0} \right)P_{1}\left( A_{1} \right) = \frac{\mu\left( A_{0} \right)}{\mu\left( \Omega_{0} \right)}\frac{\mu\left( A_{1} \right)}{\mu\left( \Omega_{1} \right)} = \frac{\mu\left( A_{0} \times A_{1} \right)}{\mu\left( \Omega_{0} \times \Omega_{1} \right)}
+\end{equation}
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : les deux projections \(\Omega \rightarrow \Omega_{0},\ \Omega \rightarrow \Omega_{1}\) sur les deux composantes sont des variables aléatoires indépendantes.
+\end{itemize}
+
+\subsection{Approximation de la binomiale par une loi de Poisson}
+
+Pour rappel, la loi binomiale est \(P\left( N = k \right) = B\left( n,k \right)p^{k}q^{n - k}\). On note
+\(N\sim Bin\left( n,p \right)\). \\
+
+Pour un \(n \gg 1\) et un \(p \ll 1\), on peut approximer la binomiale par
+
+\begin{equation}
+    P\left( N = k \right) \approx \frac{\mu^{k}}{k!}e^{- \mu}
+\end{equation}
+
+On appelle cette variable aléatoire entière une variable aléatoire de Poisson de paramètre \(\mu\), notée \(N\sim \text{Po}\left( \mu \right)\). \\
+
+Pour un événement \(A\mathbb{\subseteq N}\), \(\left| P\left( N \in A \right) - P\left( N' \in A \right) \right| < \min\left( p,\ np^{2} \right)\)
+\\
+En pratique, l'approximation n'est bonne que si \(p\) est petit : l'erreur absolue reste toujours petite, mais l'erreur relative peut devenir grande. \\
+
+Supposons que dans chaque très petit intervalle de temps \(\Delta t\) choisi arbitrairement, on ait un succès ("arrivée") avec probabilité \(p = \lambda\Delta t\), et deux succès ou plus avec une probabilité \(\mathcal{O}\left( \Delta t^{2} \right)\) négligeable. On considère un intervalle de temps \(T\), découpé en \(n = T/\Delta t\) intervalles de temps.
+
+Lorsque \(\Delta t \rightarrow 0\), le nombre d'arrivées \(N\) dans un intervalle de temps \(\left\lbrack 0,T \right\rbrack\) est 
+\begin{equation}
+    P\left( N = k \right) = \frac{\left( \lambda T \right)^{k}}{k!}e^{- \lambda T}
+\end{equation}
+
+Ici, la loi de Poisson est exacte, car l'erreur commise est 0, puisque l'on choisit arbitrairement le \(\Delta t\).
+
+Par le point suivant lorsque \(\Delta t \rightarrow 0\), pour un temps \(\tau\) entre deux arrivées, \(P(\tau \in \lbrack t + \Delta t\left\lbrack \  \right) = \lambda e^{- \lambda t}\Delta t\).
+\\
+Il s'agit de la loi exponentielle : \(\tau\sim \text{Exp}\left( \lambda \right)\).
+
+\subsection{Variable aléatoire géométrique -- limite \(p \ll 1\)}
+
+Soit un schéma de Bernoulli infini, avec \(p\) la probabilité de succès, et \(q = 1 - p\) la probabilité d'échec. Soit \(K\) le nombre d'essais infructueux avant d'obtenir un premier succès. La probabilité de \(k\) échecs suivis d'un succès est \(q^{k}p\). On note \(K\sim Geo\left( p \right)\).
+
+Si \(p \rightarrow 0\) et \(k \rightarrow \infty\), avec \(pk\) constant, on a \(q^{k}p = \left( 1 - p \right)^{\frac{kp}{p}}p \rightarrow pe^{- kp}\).
+
+\subsection{Variable aléatoire réelle sans mémoire}
+
+Une variable aléatoire réelle positive \(X\) est dite sans mémoire si \(P\left( X \geq s + t \right|X \geq t) = P(X \geq s)\ \forall s,t \in \mathbb{R}^{+}\). Cela signifie que le temps déjà attendu n'aide en rien à prédire le temps encore à attendre. La loi exponentielle est le seul exemple de variable aléatoire réelle continue sans mémoire.
+
+\begin{equation}
+    P\left( X \geq t \right) = \int_{t}^{\infty}{\lambda e^{- \lambda r}dr} = e^{- \lambda T}
+\end{equation}
+
+\subsection{Variable aléatoire entière sans mémoire}
+
+Une variable aléatoire entière positive \(X\) est dite sans mémoire si \(P\left( X \geq s + t \right|X \geq t) = P(X \geq s)\ \forall s,t\mathbb{\in N}\). \\
+L'interprétation est la même que dans le cas réel.
+
+\begin{equation}
+    P\left( X \geq t \right) = q^{t}
+\end{equation}
+
+\subsection{Temps d'attente indépendants}
+
+Dans un schéma de Bernoulli infini, soit \(X_{1}\) le nombre d'échecs avant le premier succès, \(X_{2}\) entre le premier et le second,\ldots{} Les temps d'attentes sont tous de même loi géométrique, et tous indépendants entre eux. Les variables \(X_{i}\) sont indépendantes et identiquement distribuées (i.d.d.).
+
+\subsection{Fonction de répartition -- cas réel}
+
+Pour définir une mesure de probabilité sur \(\mathbb{R}\), il suffit de la définir sur tous les intervalles. La fonction de répartition de cette mesure est définie par 
+
+\begin{equation}
+    F\left( x \right) = P\left( \  \right\rbrack\infty,x\rbrack) = P\left( X \leq x \right)
+\end{equation}
+
+\underline{Propriétés :}
+
+\begin{itemize}
+    \item \(\lim_{x \rightarrow - \infty}{F\left( x \right)} = 0\)
+    \item \(\lim_{x \rightarrow + \infty}{F\left( x \right)} = 1\)
+    \item \(F\left( x \right)\) est croissante
+    \item Pour \(y < x\), \(F\left( x \right) - F\left( y \right) = P\left( \rbrack y,x\lbrack \right)\)
+    \item \(\forall x\), \(\sup_{y < x}{F\left( y \right)} = P\left( \rbrack - \infty,x\lbrack \right) = P\left( X < x \right)\)
+    \item \(\forall x,\ F\left( x \right)\) est continue à droite : \(\inf_{y > x}{F\left( y \right)} = F\left( x \right)\)
+\end{itemize}
+Donc connaître \(F\) permet de calculer la probabilité de tout intervalle, et donc de tout événement.
+
+\subsection{Densité de probabilité -- cas réel}
+
+Pour certains \(F\left( x \right)\), il existe une fonction \(\mathbb{R \rightarrow R}\) telle que \(F\left( x \right) = \int_{- \infty}^{x}{f\left( t \right)dt}\). On dit que \(f\) est une fonction de densité de probabilité, et la variable aléatoire est dite continue.
+
+La probabilité d'un événement \(A\mathbb{\subseteq R}\) est \(\int_{A}^{}{f\left( x \right)dx}\).
+
+\subsection{Probabilités individuelles -- cas entier}
+
+Dans certains cas, la mesure de probabilité est concentrée sur un ensemble dénombrable \(S\mathbb{\subseteq R}\), i.e. \(P\left( S \right) = 1\). La mesure de probabilité est discrète. Chaque élément \(s \in S\) est de probabilité \(p_{s} = P\left( \left\{ s \right\} \right)\), et \(\sum_{s \in S}^{}p_{s} = 1\).
+
+La fonction caractéristique \(F\) est alors constante par morceaux, et discontinue en chaque \(s \in S\). Il n'existe donc pas de fonction de densité de probabilité.
+
+\section{Caractéristiques des variables aléatoire réelles}
+\subsection{Espérance d'une variable aléatoire réelle}
+
+Si la variable discrète \(X\) prend des valeurs dans un ensemble dénombrable \(S\mathbb{\subseteq R}\), l'espérance (ou moyenne, valeur attendue ou espérée) de \(X\) est définie par
+
+\begin{equation}
+    \mathbb{E}X = \sum_{s \in S}^{}{sp_{s}}
+\end{equation}
+
+Dans le cas continu de densité de probabilité \(f\), elle est définie par
+
+\begin{equation}
+    \mathbb{E}X = \int_{\mathbb{R}}^{}{xf\left( x \right)dx}
+\end{equation}
+
+En toute généralité, 
+\begin{equation}
+    \mathbb{E}X = \lim_{\Delta x \rightarrow 0}{\sum_{x = k\Delta x,\ k\mathbb{\in Z}}^{}{xP\left( X \in \rbrack x - \Delta x/2,\ x + \Delta x/2\rbrack \right)}}
+\end{equation}
+
+Si \(X\) est positive l'espérance s'interprète comme la surface entre la fonction de répartition et la droite horizontale \(y = 1\), i.e. 
+\begin{equation}
+    \mathbb{E}X = \int_{}^{}{1 - F\left( x \right)dx}
+\end{equation}
+
+\subsection{Espérance d'une variable aléatoire réelle géométrique}
+
+Soit la variable aléatoire géométrique \(X\) le nombre attendu d'échecs avant un succès dans un schéma de Bernoulli. 
+
+\begin{equation}
+    \mathbb{E}X = \sum_{k}^{}{kq^{k}p} = \frac{1}{p} - 1
+\end{equation}
+
+\subsection{Fonction de répartition d'une fonction de variable réelle}
+
+La fonction d'une variable aléatoire réelle est une variable aléatoire réelle.\\
+Supposons \(h\mathbb{:R \rightarrow R}\) et \(X:\Omega\mathbb{\rightarrow R}\) une variable aléatoire réelle. Alors on peut définir la variable \(Y = h\left( X \right):\Omega\mathbb{\rightarrow R}\).
+
+La fonction de répartition de \(Y\) est 
+\begin{equation}
+    F_{Y}\left( y \right) = P\left( Y \leq y \right) = P\left( X \in h^{- 1}\left( \rbrack - \infty,y\lbrack \right) \right) = P\left( \left\{ \omega \in \Omega|\ h\left( X\left( \omega \right) \right) \leq y \right\} \right)
+\end{equation}
+
+\subsection{Densité de répartition d'une fonction de variable réelle}
+
+Supposons \(h\ :\mathbb{R \rightarrow R}\) et \(X\ :\Omega\mathbb{\rightarrow R}\) une variable aléatoire réelle continue de densité \(f\). La variable aléatoire \(Y = h\left( X \right)\ :\Omega\mathbb{\rightarrow R}\) n'est pas forcément continue, mais si \(h\) est une bijection dérivable, alors la densité existe et est \(g\left( y \right) = \frac{f\left( x \right)}{\left| h'\left( x \right) \right|}\) pour \(y = h\left( x \right)\).
+
+\subsection{Espérance d'une fonction de variable aléatoire réelle}
+Supposons $h : \mathbb{R} \rightarrow \mathbb{R}$ et $X : \Omega \rightarrow \mathbb{R}$ une variable aléatoire réelle. Alors on peut définir la variable $Y = h(X) : \Omega \rightarrow \mathbb{R}$
+
+
+\begin{minipage}{.45\textwidth}
+    Si $Y$ est discrète sur un ensemble $S_Y$ : 
+    \begin{equation}
+        \mathbb{E}Y = \sum_{y\in S_Y} yP(Y = y)
+    \end{equation}
+    Et si $Y$ est continue et de fonction de densité $g$ : 
+    \begin{equation}
+        \mathbb{E}Y = \int yg(y)dy
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.1\textwidth}
+    \color{white} fneizogv
+\end{minipage}
+\begin{minipage}{.45 \textwidth}
+    Si $X$ est discrète sur un ensemble $S_X$ : 
+    \begin{equation}
+        \mathbb{E}Y = \sum_{x\in S_X} h(x) P(X=x)
+    \end{equation}
+    Et si $Y$ est continue et de fonction de densité $f$ :
+    \begin{equation}
+        \mathbb{E} Y = \int h(x)f(x)dx
+    \end{equation}
+\end{minipage}
+
+\subsection{Mesure de probabilité conjointe}
+Si on s'intéresse à deux variables aléatoires (= vecteur aléatoire) $X : \Omega \rightarrow \mathbb{R}$ et $Y : \Omega \rightarrow \mathbb{R}$, on peut regarder la mesure de probabilité créée sur $\mathbb{R}^2$ par le vecteur aléatoire $(X,Y) : \Omega \rightarrow \mathbb{R}^2 : \omega \rightarrow (X(\omega), Y(\omega))$. C'est la mesure de probabilité conjointe de $X$ et $Y$. 
+
+On peut la caractériser par la fonction de répartition $F(x,y) = P(X \leq x, Y \leq y)$.
+
+Indépendance : $X \independent Y$ ssi $F(x,y) = F_X(x)F_Y(y)$ pour tous $x,y$, avec $F_I$ la fonction de répartition de $I$.\\
+
+\underline{Cas discret :}
+
+S'il y a $S \subseteq \mathbb{R}^2$ dénombrable de probabilité 1, alors chaque $(x,y) \in S$ a une probabilité $p_{xy} = P(X= x , Y=y)$. Dans ce cas, la mesure de probabilité sur $X$ (resp. $Y$) est aussi discrète, avec $p_x = \sum_{y:(x,y)\in S} p_{xy}$. \\
+
+On peut aussi définir une probabilité conditionnelle :
+\begin{equation}
+    p_{y|x} = \frac{p_{xy}}{p_x} = P(Y = y | X = x)
+\end{equation}
+de sorte que $p_{xy} = p_xp_{y|x}$. \\
+
+Indépendance : $X \independent Y$ ssi $p_{xy} = p_xp_y$, $\forall (x,y) \in S$.\\
+
+\underline{Cas continu}
+
+S'il y a une fonction de densité de probabilité $f : \mathbb{R}^2 \rightarrow \mathbb{R}$ telle que $F(x,y) = \int_{-\infty}^y \int_{-\infty}^x f(x',y')dx'dy'$, alors chaque $(x,y) \in S$ a une probabilité $p_{xy} = P(X= x , Y=y)$. Dans ce cas, la mesure de probabilité sur $X$ (resp. $Y$) est aussi continue, avec $f_X = \int_{\mathbb{R}} f(x,y)dy$. \\
+
+On peut aussi définir une probabilité conditionnelle : 
+\begin{equation}
+    f(y|x) = \frac{f(x,y)}{f_X(x)}
+\end{equation}
+de sorte que $f(x,y) = f_X(x)f(y|x)$.\\
+Indépendance : $X \independent Y$ ssi $f(x,y) = f_X(x)f_Y(y)$, $\forall (x,y)$. 
+
+\subsection{Composition de vecteurs aléatoires réels}
+Soit $(X,y) : \Omega \rightarrow \mathbb{R}^2$ un vecteur aléatoire réel, et $h : \mathbb{R}^2 \rightarrow \mathbb{R}$. On peut composer ces fonction et obtenir une nouvelle variable aléatoire réelle $Z : \Omega \rightarrow \mathbb{R} : \omega \rightarrow h(X(\omega), Y(\omega))$. On note $Z = h(X,Y)$. \\
+
+Si $(X,Y)$ est une variable aléatoire discrète sur $S \subset \mathbb{R}^2$, alors 
+\begin{equation}
+    \mathbb{E}Z = \sum_{(x,y) \in S} {p_{xy}h(x,y)}
+\end{equation}
+
+Si $(X,Y)$ est une variable continue sur $\mathbb{R}^2$ de densité de probabilité $f$, alors 
+
+\begin{equation}
+    \mathbb{E}Z = \int_{\mathbb{R}} {h(x,y)f(x,y) dxdy}
+\end{equation}
+
+\subsection{Linéarité de l'espérance}
+La combinaison linéaire de variables aléatoires reste une variable aléatoire. On en déduit une espérance : 
+\begin{equation}
+    \mathbb{E}(aX + bY) = a \mathbb{E}(X) + b\mathbb{E}(Y)
+\end{equation}
+
+\subsection{Espérance d'une binomiale}
+
+Soit un schéma de Bernoulli à $n$ épreuves, de probabilité de succès $p$. Soit $X_i$ la variable indicatrice d'un succès à l'épreuve $i$, donc $X_i = 1$ si succès et 0 sinon. C'est une "indicatrice de Bernoulli". Son espérance est $\mathbb{E}X_i = p$. \\
+Alors $X = \sum_i X_i$ est la variable binomiale, et son espérance est 
+\begin{equation}
+    \mathbb{E}X = np
+\end{equation}
+
+\subsection{Espérance d'une Poisson}
+
+Une variable $X$ de Poisson de paramètre $\mu$ peut être obtenue comme la limite d'une binomiale $Bin(n,p)$ pour $\mu = pn$, avec $p\rightarrow 0, n \rightarrow \infty$. On a donc 
+\begin{equation}
+    \mathbb{E}X = \mu
+\end{equation}
+Cela donne une interprétation au paramètre $\mu$. 
+
+\subsection{Moments et variance d'une variable aléatoire réelle}
+Soit une variable aléatoire réelle $X : \Omega \rightarrow \mathbb{R}$. Considérons ses puissances. \\
+
+\begin{itemize}
+    \item Le moment d'ordre $k$ de $X$ est $\mathbb{E}(X^k)$.
+    \item La variance est $\text{Var}(X) = \sigma_X^2 = \mathbb{E}((X - \mathbb{E}X)^2) = \mathbb{E}(X^2) - (\mathbb{E})^2$. 
+    \item La déviation standard (ou écart-type) est $\sigma_X = \sqrt{\text{Var}(X)}$
+\end{itemize}
+
+La déviation standard quantifie les fluctuations typiques autour de l'espérance.
+
+\subsection{Corrélation des variables aléatoires}
+Soit \(Cov(X,Y)\) la covariance des variables aléatoires \(X,Y\). Elle est définie par 
+\begin{equation}
+    Cov(X,Y) = \mathbb{E}(X-\mathbb{E}X)\cdot \mathbb{E}(Y-\mathbb{E}Y)
+\end{equation}
+ou 
+\begin{equation}
+    Cov(X,Y) = \mathbb{E}XY - \mathbb{E}X \cdot \mathbb{E}Y
+\end{equation}
+Soit \(\rho\) la corrélation entre les variables aléatoires \(X\) et \(Y\). 
+
+\begin{equation}
+    \rho(X,Y) = \frac{Cov(X,Y)}{\sigma(X)\sigma(Y)}
+\end{equation}
+\underline{Propriétés : }
+
+\begin{itemize}
+    \item \(\rho(X,Y) = 1\) ssi \(Y = aX + b\), pour \(a>0\)
+    \item \(\rho(X,Y) = -1\) ssi \(Y = aX + b\), pour \(a<0\)
+    \item \(\rho(X,Y)  = \rho (aX+bY) \text{ } \forall a>0,b\)
+    \item On peut trouver \(a,b\in\mathbb{R}\) et une variable aléatoire \(\epsilon\) d'espérance nulle, décorrélée de \(X\) et de variance \(1-\rho^2)\text{Var}(Y)\) telle que \(Y = aX+ b+ \epsilon\)
+    \item C'est la meilleure relation linéaire entre \(X\) et \(Y\) : toute relation \(Y = cX+d+\delta\) a une variance \(\text{Var}(\delta) \geq \text{Var}(\epsilon)\)
+\end{itemize}
+
+\subsection{Corrélation de deux variables aléatoires réelles centrées réduites}
+
+Une variable aléatoire est centrée réduite lorsque son espérance est nulle et sa variance est l'unité : 
+
+\begin{equation}
+    \begin{cases}
+        X' = (X - \mathbb{E}X)/\sigma(X)\\
+        Y' = (Y - \mathbb{E}X)/\sigma(Y)\\
+    \end{cases}
+\end{equation}
+
+
+Alors 
+\begin{equation}
+    \begin{cases}
+        \mathbb{E}X'Y' = Cov(X',Y') = \rho(X',Y') = \rho(X,Y)\\
+        Y' = \rho X' + \epsilon'\\
+    \end{cases}
+\end{equation}
+avec \(\epsilon'\) une variable aléatoire d'espérance nulle, de variance \(1-\rho^2\) et décorrélée de \(X\).
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque \(\rho X'\) est la projection orthogonale de \(Y'\) le long de \(X'\) qui crée l'erreur de plus petite norme.
+\end{itemize}
+
+On déduit de cela que dans la relation \(Y = aX+b+\epsilon\), \(a = \rho(X,Y)\sigma(Y)/\sigma(X)\).
+
+\subsection{Corrélation et indépendance}
+
+Si les variables aléatoires \(X\) et \(Y\) sont indépendantes, le coefficient de corrélation, et donc la covariance également, est nulle.\\
+
+\subsection{Variance d'une somme de variables aléatoires indépendantes}
+Soient deux variables aléatoires \(X : \Omega \rightarrow \mathbb{R}\) et \(Y : \Omega \rightarrow \mathbb{R}\) indépendantes. La variance de leur combinaison linéaire est \\
+\begin{equation}
+    \color{red}\boxed{\color{black}\text{Var}(aX+bY) = a^2\text{Var}(X) + b^2\text{Var}(Y)}\color{black}
+\end{equation}
+
+\begin{itemize}
+    \item Pour une variable binomiale, on a une variance \(npq\).
+    \item Pour une loi de Poisson, on a une variance \(\mu\).
+\end{itemize}
+
+\subsection{Espérance conditionnelle}
+\begin{equation}
+    p_{y|x} = P(Y = y|X=x)
+\end{equation}
+
+L'espérance conditionnelle de \(Y\) sachant que \(X=x\) est \(\mathbb{E}(Y|X=x) = \sum_y yp_{y|x}\), et est un nombre réel qui dépend de \(x\).
+
+\begin{equation}
+    \mathbb{E}(Y|X=x) = \sum_y yp_{y|x}
+\end{equation}
+
+La fonction \(x \rightarrow \mathbb{E}(Y|X=x)\) est une variable aléatoire réelle et l'espérance conditionnelle de \(Y\) sachant $X$ est \(\mathbb{E} (Y|X)\). L'espérance totale de \(Y\) est donc \(\mathbb{E} Y = \mathbb{E}(\mathbb{E}(Y|X))\). Autrement dit
+
+\begin{equation}
+    \mathbb{E} Y = \sum_x p_x\mathbb{E} (Y|X=x)
+\end{equation}
+
+Dans le cas continu, on a alors
+
+\begin{equation}
+    \begin{cases}
+        \mathbb{E}(Y|X=x) = \int_y yf(y|x)dy\\
+        \mathbb{E} Y = \int_x f_X(x)\mathbb{E} (Y|X=x)dx\\
+    \end{cases}
+\end{equation}
+
+\subsection{Variance conditionnelle}
+
+La variance conditionnelle de $Y$ sachant que $X=x$ est 
+\begin{itemize}
+    \item \underline{Cas continu :}
+\end{itemize}
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \text{Var}(Y|X=x) = \sum_y (y-\mathbb{E}(Y|X=x))^2p_{y|x}
+    \end{equation}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{equation}
+        \text{Var}(Y|X=x) = \int_y (y-\mathbb{E}(Y|X=x))^2f(y|x)dy
+    \end{equation}
+\end{minipage}
+
+Loi de la variance totale : \\
+
+\begin{equation}
+    \color{red}\boxed{\color{black}\text{Var}Y = \mathbb{E}(\text{Var}(Y|X)) + \text{Var}(\mathbb{E}(Y|X))}\color{black}
+\end{equation}
+Pour la variable $Y^2$, la formule devient : 
+
+\begin{equation}
+    \mathbb{E}(Y^2) = \mathbb{E}(\mathbb{E}(Y^2|X)) = \mathbb{E}(\text{Var}(Y|X)) + \text{Var}(\mathbb{E}(Y|X)) + \mathbb{E}(Y)^2
+\end{equation}
+
+\section{Théorèmes de concentration}
+\subsection{Concentration autour de la moyenne}
+- \underline{Inégalité de Markov :}\\
+
+Pour une variable aléatoire réelle positive $X$, on a 
+
+\begin{equation}
+    \color{red}\boxed{\color{black} P(X\geq a\mathbb{E}(X)) \leq \frac{1}{a},  \forall a>0}\color{black}
+\end{equation}
+
+- \underline{Inégalité de Bienaymé-Tchebychev : }\\
+
+Pour une variable aléatoire réelle $X$, on a
+\begin{equation}
+    P(|X-\mathbb{E}(X)| \geq a\sigma(X)) \leq \frac{1}{a^2}, \forall a>0
+\end{equation}
+
+\subsection{Loi des grands nombres}
+
+Etant donnée une suite $X_i$ de variales i.i.d. d'espérance $\mu$, les moyennes empiriques partielles convergent vers l'espérance : 
+
+\begin{equation}
+    P\left(\left|\frac{\sum_{i=1}^n X_i}{n} - \mu\right| \geq \epsilon\right) \rightarrow 0 \text{ }\forall \epsilon>0
+\end{equation}
+
+Cela signifie que la moyenne empirique sur un grand nombre d'expériences indépendantes converge vers l'espérance. 
+
+Si les $X_i$ sont des variables indicatrices d'un événement de probabilité $p$, alors $X = \sum_{i=1}^{n} X_i$ est une binomiale $Bin(n,p)$, et $P(|\frac{X}{n} - p| \geq \epsilon) \rightarrow 0 \forall \epsilon>0$
+
+Cela signifie que la fréquence empirique de réalisation d'un événement sur un grand nombres d'expériences i.i.d. converge vers la probabilité de cet événement.
+
+\underline{Cas général : }\\
+Soit la variance de chaque $X_i$ finie.
+
+\begin{itemize}
+    \item La variance de $\frac{\sum_{n=1}^n X_i}{n}$ est $\frac{\text{Var}X_1}{n}$.
+    \item L'écart-type de $\frac{\sum_{n=1}^n X_i}{n}$ est $\frac{\sigma(X_1)}{\sqrt{n}}$
+\end{itemize}
+
+Fixons un certain $\epsilon$. A mesure que $n$ augmente et que la variance de la moyenne empirique diminue, on obtient que $\epsilon \geq a\frac{\sigma(X_1)}{\sqrt{n}}$, pour un $a$ aussi grand qu'on veut. Alors 
+
+\begin{equation}
+    P\left(\left|\frac{\sum_(i=1)^n X_i} {n} - \mathbb{E}(X_1)\right|\geq \epsilon\right) \leq \frac{1}{a^2}
+\end{equation}
+
+Cette valeur converge bien vers $0$.
+
+\subsection{Théorème central limite}
+
+Soit une suite $X_i$ de variables i.i.d. d'espérance $\mu$ et de variance finie $\sigma^2$. Les moyennes partielles normalisées convergent vers une variable aléatoire universelle : 
+
+Soit $Z_n = \frac{\sum_{i=1}^n X_i}{n}$ la moyenne partielle des $n$ premiers termes, d'espérance $\mu$ et de variance $\sigma^2/n$. On définit la variable centrée réduite 
+
+\begin{equation}
+    P(Z_n'\leq z) \rightarrow \int_{-\infty}^z \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}}dx
+\end{equation}
+
+A la limite, on a une variable aléatoire $x$ de densité de probabilité $f(x) = \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}}$.
+
+\subsection{Loi normale}
+
+Une variable aléatoire $Z$ normale (ou gaussienne) de moyenne $\mu$ et de variance $\sigma^2$ est définie par une densité de probabilité : 
+
+\begin{equation}
+    f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+\end{equation}
+
+Elle se note $Z \sim N(\mu,\sigma^2)$.
+
+On peut également réduire et centrer la variable aléatoire normale \(X\): \(Z = \frac{X - \mu}{\sigma}\). Cela permet de ne pas devoir calculer les valeurs des probabilités, car elles se trouvent dans des tables.
+
+\begin{itemize}
+    \item [$\rightarrow $] Remarque : il n'existe pas de formule explicite pour la fonction de répartition.
+\end{itemize}
+
+\subsection{Convergence}
+
+Il est possible de borner l'erreur commise : 
+
+\begin{equation}
+    \left|P(Z_n'\leq z) - \int_{-\infty}^z \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}}dx \right | < \frac{\rho^3}{\sigma^3\sqrt{n}} = \mathcal{O}(1/\sqrt{n})
+\end{equation}
+avec $\rho^3 = \mathbb{E}(|X_i - \mathbb{E}X_i|^3)$
+
+\underline{Indicatrice de Bernoulli : }\\
+
+Pour l'indicatrice de Bernoulli d'espérance $p$, on a $\sigma^2 = pq$ et $\rho^3 = pq(q^2+p^2) \leq pq$. L'erreur est donc inférieure à $1/\sqrt{npq}$. 
+
+La binomiale est donc bien approximée par une normale si $npq >> 1$. 
+
+\begin{itemize}
+    \item [$\rightarrow$] Une binomiale s'approxime par une Poisson d'espérance $\mu=np$ si $p<<1$, $\forall n$, et par une normale d'espérance $\mu=np$ et de variance $\sigma^2 = npq >>1$, $\forall p$. DONC si $p<<1$ et $\mu = np >>1$, alors la binomiale s'approxime à la fois par une Poisson et par la normale.
+\end{itemize}
+
+\subsection{Méthodes de Monte-Carlo}
+
+Les méthodes de Monte-Carlo consistent en une évaluation numérique de grandeurs par des méthodes probabilistes. L'erreur est tolérée si elle est bornée. Pour une apporoche à $n$ points, l'erreur décroit en $1/\sqrt{n}$. \\
+
+Si on approche l'intégration de fonctions à une dimension par une méthode de Monte-Carlo, la méthode des rectangles, qui décroit en $1/n$ est plus efficace, mais pour une fonction à $d$ dimensions, Monte-Carlo a toujours une erreur qui décroit en $1/\sqrt{n}$. Elle est donc plus efficace que la méode des rectangles lorsque $d>2$.
+
+\section{Probabilités bayésiennes}
+
+\subsection{Théorème de Bayes}
+
+Rappel des probabilités conditionnelles : \(P(A|B) = P(A\cap B)/P(B)\)
+
+Le théorème de Bayes est 
+
+\begin{equation}
+    P(A|B) = \frac{P(A)P(B|A)}{P(B)}
+\end{equation}
+avec $P(A)$ la probabilité a priori de l'événement $A$, et $P(A|B)$ la probabilité a posteriori, i.e. corrigée par la connaissance que $B$ est réalisé.\\
+
+Si \(\Omega = A_1 \cup A_2\cup ... \cup A_k\), $k$ événements disjoints, alors
+\begin{itemize}
+    \item \(P(B) = \sum_i P(A_i)P(B|A_i)\)
+    \item \(P(A_i|B) = \frac{P(A_i)P(B|A_i)}{\sum_i P(A_i)P(B|A_i)} = \frac{P(A_i\cap B)}{P(B)}\)
+\end{itemize}
+
+\begin{equation}
+    P(A) = P(A|B)\cdot P(B) + P(A|\Bar{B})\cdot P(\Bar{B})
+\end{equation}
+
+\subsection{Problème d'inférence}
+
+Soit une urne contenant des boules noires et blanches, dont une proportion $p$ inconnue de boules blanches. Soit $b$ le nombre de boules blanches lorsque l'on tire $n$ boules en les replaçant. Calculer la probabilité que la suivante soit blanche : \\
+
+Comme on n'a aucune informtion sur $p$, supposons que toutes les proportions sont équiprobables : mesure uniforme sur \([0,1]\). On considère donc la valeur de $p$ comme une variable aléatoire. 
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : c'est comme si on avait 101 urnes de proportion $p=0\%,1\%,2\%,...$ et on choisit une urne uniformément au hasard.
+\end{itemize}
+
+\underline{Calculs : }
+
+\begin{itemize}
+    \item Evénement $A_x$ a priori : $p\in [x, x+dx]$ ($P(A) = dx$
+    \item Evénement $B$ : $b$ boules blanches parmi $n$
+    \item \(P(B|A_x) = \begin{pmatrix}
+        n \\
+        b\\
+    \end{pmatrix} x^b (1-x)^{n-b}\) 
+    \item \(P(B) = \int_0^1\begin{pmatrix}
+        n \\
+        b\\
+    \end{pmatrix} x^b (1-x)^{n-b} dx\) 
+\end{itemize}
+
+La probabilité a posteriori est alors
+
+\begin{equation}
+    P(A_x|B) = \frac{\begin{pmatrix}
+        n \\
+        b\\
+    \end{pmatrix} x^b (1-x)^{n-b} dx}{\int_0^1\begin{pmatrix}
+        n \\
+        b\\
+    \end{pmatrix} x^b (1-x)^{n-b} dx}
+\end{equation}
+
+\underline{Règle de succession de Laplace : }\\
+
+La règle de succession de Laplace pour estimer la probabilité de succès d'un schéma de Bernoulli avec $b$ succès observés sur $n$ essais est \\
+
+Sachant $A_x$, la probabilité que la prochaine boule soit blanche est $x$.\\
+Sachant $B$, la probabilité que la prochaine boule soit blanche est \\
+\begin{equation}
+    \mathbb{E}(p|B) = \int pP\left(p\in [x,x+dx]|B\right) = \frac{\int_0^1 x \begin{pmatrix}
+        n \\
+        b\\
+    \end{pmatrix} x^b (1-x)^{n-b} dx}{\int_0^1\begin{pmatrix}
+        n \\
+        b\\
+    \end{pmatrix} x^b (1-x)^{n-b} dx} = \frac{b+1}{n+2}
+\end{equation}
+
+En comparaison, un raisonnement fréquentiste propose une probabilité \(\frac{b}{n}\), ce qui n'apporte pas de contradiction pour un $n$ suffisamment grand. \\
+
+\underline{Inférence statistique : }
+
+L'inférence statistique signifie estimer la mesure de probabilité d'un phénomène du monde réel à partir d'observations.
+
+\begin{itemize}
+    \item Point de vue bayésien : On met une probabilité a priori sur tout ce qu'on ne connait pas, i.e. sur l'ensemble des mesures de probabilités possibles, et on la met à jour à chaque observation empirique, en utilisant le théorème de Bayes.
+    \item On met une probabilité sur des événements qu'on peut observer de manière répétée et i.i.d., et on estime ces probabilités grâce à la loi des grands nombres et au théorème central limite.
+\end{itemize}
+
+\section{Fonctions génératrices}
+\subsection{Fonction génératrice}
+
+Soit \((f_n)^{\infty}_{n=0}\) une suite de réels. La série formelle 
+\begin{equation}
+    \color{red}\boxed{\color{black}f(x) = \sum_{n=0}^{\infty}{f_nx^n}}\color{black}
+\end{equation}
+
+est la fonction génératrice de cette suite. \\
+
+\underline{Opérations : }
+\begin{itemize}
+    \item Somme : \(s(x) = f(x) + g(x)\) telle que \(s_n = f_n + g_n\)
+    \item Multiplication : \(p(x) = f(x) \cdot g(x)\) telle que \(p_n = \sum_{i=0}^n{f_i\cdot g_{n-i}}\)
+\end{itemize}
+
+L'addition est commutative, associative, admet une neutre et est inversible. Elle forme donc un groupe. La multiplication est associative et admet un neutre. Elle forme donc un monoïde. De plus, elle se distribue sur l'addition. \(\Longrightarrow\) Ces opérations forment un anneau commutatif.\\
+
+\underline{Inversion : }
+
+Toutes les fonctions génératrices non nulles ne sont pas inversibles dans l'anneau des fonctions génératrices. Cet anneau n'est donc pas un corps. \\
+Condition d'inversion : la fonction génératrice \(f(x)\) est inversible ssi \(f_0 \neq 0\). 
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : \(\sum_{n=0}^{\infty} x^n = \frac{1}{1-x}\)
+\end{itemize}
+
+\underline{Dérivation : }
+
+On définit l'opération de dérivation sur les fonctions génératrices comme 
+
+\begin{equation}
+    \color{red}\boxed{\color{black}f'(x) = \sum_{n=0}^{\infty}{(n+1)f_{n+1}x^n}}\color{black}
+\end{equation}
+
+\begin{itemize}
+    \item L'opération de multiplication est vérifiée : \((fg)' = f'g + fg'\)
+    \item Développement de Taylor : \(f_n = \frac{1}{n!} \left. \frac{d^nf(x)}{dx^n}\right |_0\)
+\end{itemize}
+
+\subsection{Applications}
+
+\begin{itemize}
+    \item [$\rightarrow$] Remarque : \(f(x) = \frac{x}{(1-x)^2}\) est la fonction génératrice des naturels. En effet, \(f_n = n\) \(\forall n \in \mathbb{N} \). Cette formule est indispensable dans ce chapitre!
+\end{itemize}
+
+\underline {Dénombrement :}\\
+
+On peut retrouver des fonctions de dénombrement vues précédemment en écrivant le problème sous la forme de fonctions génératrices. \\
+
+\underline{Récurrence :}\\
+
+En remplaçant la formule de récurrence des éléments \(f_n\) dans la fonction génératrice, on peut retrouver les termes de la suite. \\
+
+\begin{enumerate}
+    \item Transformer \(f_k \rightarrow \sum_{n \geq 0} {f_k x^n} \rightarrow f(x) - f_0 - f_1x - f_2x^2-...\), \(k-1\) termes venant de la CI.
+    \item isoler \(f(x)\).
+    \item Décomposer en fonctions simples (inverses de premiers degrés).
+    \item \(\sum {f_n x^n} = \sum (...)_1 x^n + \sum {(...)_2 x^n}\).
+    \item \(f_n = (...)_1 + (...)_2\).
+\end{enumerate}
+
+\underline{Fonction génératrice exponentielle :}\\
+
+Soit \((f_n)^{\infty}_{n=0}\) une suite de réels. La série formelle 
+\begin{equation}
+    f(x) = \sum_{n=0}^{\infty}{\frac{f_n}{n!}x^n}
+\end{equation}
+est la fonction génératrice exponentielle de cette suite.
+
+L'addition fonctionne toujours, mais le produit est modifié : \(p = f\cdot g\) telle que \(p_n =\sum_{k=0}^n{B(n,k)f_kg_{n)k}}\). La dérivée est par contre plus simple : \(p = f'\) telle que \(p_n = f_{n+1}\). 
+
+\begin{equation}
+    f_n = \frac{d^nf(x)}{dx^n}
+\end{equation}
+quand \(f\) est la fonction génératrice exponentielle de \((f^n)^{\infty}_{n=0}\).\\
+
+\underline{Fonction génératrice des moments :}\\
+
+Soit $X$ une variable aléatoire. La fonction génératrice des moments est 
+\begin{equation}
+    M_X(t) = \mathbb{E}[e^{tX}] = \mathbb{E}[\sum_{n=0}^{\infty}{\frac{1}{n!}(tX)^n}] = \sum_{n=0}^{\infty} \frac{\mathbb{E}[X^n]}{n!}t^n
+\end{equation}
+où \(\mathbb{E}[X^n]\) est le moment d'ordre $n$ de $X$.
+
+Si $X$ et $Y$ sont indépendantes, pour un $c \in \mathbb{R}$ : 
+\begin{itemize}
+    \item \(M_{X+Y}(t) = M_X(t)MY_(t)\)
+    \item \(M_{cX}(t) = M_X(ct)\)
+\end{itemize}
+
+\underline{Lien avec les sections précédentes :}\\
+
+- Soit $X \sim$ Bernoulli$(p)$ : \(M_x(t) = 1 + (e^t -1)p\).\\
+
+- Soit $Y \sim Bin(n,p)$ : \(M_Y(t) = (1+(e^t-1)p)^n = e^{\mu(e^t-1)}\), pour $\mu = np, n\rightarrow \infty, p\rightarrow 0$.\\
+
+- Soit $Z \sim Po(\mu)$ : \(M_Z(t) = e^{\mu(e^t-1)}\).\\
+
+- Soit $X \sim N(\mu, \sigma^2)$ : \(M_X(t) = e^{t\mu + t^2\sigma^2/2}\).
+
+
+\section{Fonctions de hachage}
+
+Soit \(H : \{0,1\}^{*} \rightarrow \{0,1\}^n\) la fonction de hachage. L'exposant * signifie que le mot binaire d'entrée est de longueur arbitraire, mais finie. La fonction de hachage envoie une chaîne de bits de n'importe quelle longueur vers une chaine de bits de longueur fixée $n$. Elle se comporte comme une fonction aléatoire, mais elle est déterministe. 
+
+\subsection{Collisions}
+
+Soit \(H : \{0,1\}^{*} \rightarrow \{0,1\}^n\) modélisée par une fonction aléatoire. Il est nécessaire d'évaluer $H$ \(2^{n/2}\) fois pour trouver une collision, i.e. \(x_0,x_1 : H(x_0) = H(x,1), x_0\neq x_1\). 
+
+Si on cherche \(P(\)collisions\(>1) \approx 1 - e^{-\frac{k(k-1)}{2*2^n}}\) = 1/2, l'exponentielle vaut \(1/2\), l'exposant vaut donc \(\log{(2)}\) et donc \(k=1.2*2^{n/2}\). 
+
+Conséquence, si \(n=256\) (comme souvent), il est pratiquement impossible de trouver une collision.
+
+\underline{Conclusion :} \\
+Les fonctions de hachage donnent une emprunte digitale unique sur 32 bytes pour un nombre pratiquement illimité de documents.
+
+\subsection{Génération de nombres aléatoires}
+
+Une fonction de hachaqge permet de générer des séquences de bits pseudoaléatoires de longueur quelconque : 
+\begin{enumerate}
+    \item Choisir une graine (seed) \(s\).
+    \item Sortir \(H(s,0), H(s,1),...\)
+\end{enumerate}
+
+\begin{itemize}
+    \item [$\rightarrow$] \(H(s,i)\) est la fonction de hachage sur la concaténation de \(s\) et \(i\).
+\end{itemize}
+
+\underline{Echantillonnage de distributions :}\\
+
+Supposons que l'on dispose de bits aléatoires : \(X_i \sim \text{Ber}(1/2)\). 
+
+Comment piocher un entier uniformément \([0,b[\)? On choisit $n$ tel que \(2^{n-1} \geq b < 2^n\). \\
+
+\underline{Méthode 1 :}
+\begin{itemize}
+    \item Piocher \(n\) \(bits \sim \text{Ber}(1/2)\), en faire un entier \(X : 0 \leq X < 2^n\). Si \(X < b\), sortir \(X\), sinon recommencer. 
+    \item \(X\) est uniformément distribué sur \([0,2^n[\), et l'est donc aussi sur \([0,b[\). 
+    \item \(P(X<b) = \frac{b}{2^n}\leq 1/2\) à chaque itération \(\Rightarrow P(i\) itérations échouent\() \geq 2^{-i}\). 
+    \item En moyenne, \(\frac{2^n}{b}n \geq 2n\) bits aléatoires nécessaires.
+\end{itemize}
+
+\underline{Méthode 2 :}
+\begin{itemize}
+    \item Piocher \(n+m\) bits \(\sim \text{Ber}(1/2)\), en faire un entier \(X : 0 \leq X < 2^{n+m}\). Sortir \(Y = X\) mod \(b\).
+    \item Soit \(2^{n+m} = qb + r\) avec \(r<b\). On a \(q>2^m\) puisque \(b<2^n\). \(P(Y<2^{n+m}\) \(mod\) \(b) = \frac{q+1}{2^{n+m}}\) et \(P(2^{n+m}\) \(mod\) \(b \leq Y < b) = \frac{q}{2^{n+m}}\).
+    \item \(n+m\) bits aléatoires utilisés garantissent \(\frac{P(Y=x_0)}{P(Y = x_1)} \leq 1 + 2^{-m} \forall x_0,x_1\).
+\end{itemize}
+
+Comment piocher uniformément une permutation de \({0,1,..., n-1}\)?
+
+Dans une urne contenant \(n\) boules, en les piochant une à une et en mettant la \(i\)ème boule piochée en position \(n-i-1\) de la permutation en cours de formation. \\
+- Mélange de Fisher-Yates : \\
+\(a = [0,1,2,..., n-1]\)\\
+for \(j\) in range \((n-1, 0, -1)\) :\\
+\leftskip = 1cm
+
+    Pick random \(i \in [0,j]\)\\
+\leftskip = 1cm
+
+    Swap \(a[i]\) and \(a[j]\)\\
+    
+\leftskip = 0cm
+return \(a\)
+
+Chacune des \(n!\) permutations est le résultat d'une unique séquence de choix. On a besoin de \(n-1\) entiers uniformément distribués sur des intervalles quelconques.
+
+\underline{Conclusion :} \\
+Possibilité d'échantilloner, de manière aussi approchée que souhaité, n'importe quelle distribution sur base de bits uniformément aléatoires. 
+
+
+
+
+
+
+
+
+\chapter{Démonstrations}
+
+\section{Démonstration 1} \label{demo1}
+Il existe une bijection entre \(aH\) et \(H\) : \\
+Soit \(f:H \rightarrow aH\) tel que \(f\left( x \right) = ax\)
+
+\begin{itemize}
+    \item \(f\) est injective : vu que \(a\) est inversible, \(ax_{1} = ax_{2} \Longrightarrow x_{1} = x_{2}\)
+    \item \(f\) est surjective : par définition de \(aH\), tout \(y \in aH\) est dans l'image de \(f\). 
+    \item [$\Rightarrow$] \(f\) est bijective.
+\end{itemize}
+
+\section{Démonstration 2}\label{demo2}
+
+Les classes latérales distinctes modulo \(H\) forment une partition de \(G\).\\
+Soient \(a_{1}H,a_{2}H,\ldots\) les classes latérales modulo \(H\).
+
+\begin{itemize}
+    \item Tout élément de \(G\) est dans une classe latérale. Si \(g \in G\), alors \(g \in gH\) puisque \(\epsilon \in H\).
+    \item Les classes latérales \(aH\) et \(bH\) sont disjointes ou identiques : soient \(a,b \in G\) et \(x \in bH\). 
+\end{itemize} 
+On montre que \(x \in aH \Longleftrightarrow b^{- 1}a \in H\) : \\ \newline
+\(\Longrightarrow x = ah_{1} = bh_{2}\) avec \(h_{1},h_{2} \in H\). On a \(ah_{1} = bh_{2} \Longrightarrow a = bh_{2}h_{1}^{- 1} \Longrightarrow b^{- 1}a = h_{2}h_{1}^{- 1} \in H\) \\ \newline
+\(\Longleftarrow b^{- 1}a \in H\) et \(x = bh_{2}\). On a \(b^{- 1}a \in H \Longrightarrow a^{- 1}b \in H\) et \(x = bh_{1} = \left( aa^{- 1} \right)bh_{1} = a\left( \left( a^{- 1}b \right)h_{1} \right) \in aH\)
+
+\section{Démonstration 3}\label{demo3}
+Si \(\lbrack 0,1\lbrack\  \not \approx\mathbb{N}\), \(\mathbb{R \not \approx N}\). \\
+Imaginons une bijection \(f\ :\mathbb{N}^{\geq 1} \rightarrow \lbrack 0,1\lbrack\).
+
+\begin{itemize}
+    \item Soit \(f\left( i \right) = a_{i} = 0.a_{i1}a_{i2}a_{i3}\ldots\) 
+    \item On construit \(b = 0.b_{1}b_{2}b_{3}\ldots\) ne pouvant se trouver dans \(\text{Im}\left( f \right)\).
+    \item Soit \(b_{i} = \left\{ \begin{matrix} 
+        1\ si\ a_{ii} = 0 \\
+        0\ sinon \\
+        \end{matrix} \right.\ \)
+        On veille à ce que \(a_{ii} \neq b_{i}\).
+    \item \(\nexists i\ :f\left( i \right) = b\) : si \(f\left( i \right) = b\), alors \(a_{i} = b\) et en particulier \(a_{ii} = b_{i}\) 
+\end{itemize}
+
+Ceci contredit notre hypothèse d'existence de \(f\) bijective\footnote{\(f\) est injective, mais pas surjective.} et on sait que \(\mathbb{N \approx}\mathbb{N}^{\geq 1}\), donc \(\mathbb{N \not \approx} \lbrack 0,1\lbrack\).
+
+\section{Démonstration 4}\label{demo4}
+\begin{minipage}{.3 \textwidth}
+    \includegraphics[width=1.66535in,height=1.61811in]{img/Buffon.png}
+\end{minipage}
+\begin{minipage}{.7\textwidth}
+    Soit \(x\) la coordonnée en \(x\) de la tête de l'aiguille, et \(\theta\) l'angle formée par celle-ci avec l'horizontale. La coordonnée de la pointe de l'aiguille est \(x + \cos\theta\). L'aiguille ne sera à cheval sur deux lattes que si \(x + \cos\theta < 0\) pour \(x > 0\). \(\Longleftrightarrow x \leq - \cos\theta\). Cette condition est vérifiée sur l'intervalle en \(\theta\) \(\left\lbrack \frac{\pi}{2},\pi \right\rbrack\). La surface sous cette courbe est une intégrale :
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    \includegraphics[width=\textwidth]{img/cos.png}
+\end{minipage}
+\begin{minipage}{.6 \textwidth}
+    \begin{equation}
+        \int_{\pi/2}^{\pi}{- \cos\theta d\theta} = 1
+    \end{equation}
+    La surface des cas totaux est le rectangle de hauteur \(1\) et de longueur \(\pi\). Sa surface vaut donc \(\pi\). \\
+    
+    On trouve finalement un probabilité pour l'aiguille de tomber à cheval sur deux lattes de \(P = 1/\pi\).
+\end{minipage}
+
+\end{document}

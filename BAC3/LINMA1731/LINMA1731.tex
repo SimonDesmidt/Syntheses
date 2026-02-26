@@ -1,0 +1,1321 @@
+\documentclass[12pt, openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[english]{babel}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{pythonhighlight}
+\usepackage[]{titletoc}
+\usepackage{empheq}
+\usepackage{titlesec}
+\usepackage{mathpazo}
+\usepackage{xfrac}
+\usepackage{textcomp}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{tabularray}
+\usepackage{subcaption}
+\usepackage[bottom]{footmisc}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage[skins]{tcolorbox}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+\usepackage{hyperref}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+% Define a new tcolorbox style with a red border and transparent interior
+\tcbset{
+    redbox/.style={
+        enhanced,
+        colframe=red,
+        colback=white,
+        boxrule=1pt,
+        sharp corners,
+        before skip=10pt,
+        after skip=10pt,
+        box align=center,
+        width=\linewidth-2pt, % Adjust the width dynamically
+    }
+}
+\newcommand{\boxedeq}[1]{
+\begin{tcolorbox}[redbox]
+    \begin{align}
+        #1
+    \end{align}
+\end{tcolorbox}
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{sffamily}
+    \begin{center}
+        \includegraphics[scale=0.25]{img/Page de garde.png} \\[1cm]
+        \HRule \\[0.4cm]
+        { \huge \bfseries LINMA1731 Stochastic processes \\[0.4cm] }
+    
+        \HRule \\[1.5cm]
+        \textsc{\LARGE Simon Desmidt}\\[1cm]
+        \vfill
+        \vspace{2cm}
+        {\large Année académique 2023-2024 - Q2}
+        \vspace{0.4cm}
+         
+        \includegraphics[width=0.15\textwidth]{img/epl.png}
+        
+        UCLouvain\\
+    
+    \end{center}
+    \end{sffamily}
+\end{titlepage}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\chapter{Probability - Reminders}
+\section{Probability and event spaces}
+\begin{itemize}
+    \item A sample space \(W\) is a nonempty collection of points called outcomes.
+    \item An event space \(\mathcal{F}\) of a sample space \(W\) is a nonempty collection of subsets of \(W\), called events, that is closed under complementation and countable union, and with \(W\in \mathcal{F}\).
+    \item A measurable space \((W,\mathcal{F})\) is a pair consisting of a sample space \(W\) and an event space \(\mathcal{F}\) of \(W\).
+    \item A probability measure \(P\) on a measurable space \((W,\mathcal{F})\) assigns a number \(P(E)\) to every event \(E\), such that \(P\) obeys the following rules, called axioms of probability : 
+    \begin{itemize}
+        \item \(P(E)\ge0\) for all \(E\in \mathcal{F}\).
+        \item \(P(W)=1\).
+        \item \(P(\cup_{i=1}^\infty E_i) = \sum_{i=1}^\infty P(E_i)\), for all countable collection \(\{E_i\}\) of pairwise disjoint events.
+    \end{itemize}
+    \item A probability space is a triple \(W,\mathcal{F},P)\) consisting of a sample space \(W\), an event space \(\mathcal{F}\), and a probability measure \(P\).
+    \item Two events \(E_1\) and \(E_2\) are called independent if \(P(E_1\cap E_2) = P(E_1)P(E_2)\).
+    \item The conditional probability of event \(F\) given event \(G\) is \(P(F|G) = P(F\cap G)/P(G)\), assuming that \(P(G)>0\).
+    \item Given a probability space \((W,\mathcal{F},P)\), a real-valued random variable (rv) is a function \(X:W\rightarrow \mathbb{R}\) with the property that if \(A\in \mathcal{B}(\mathbb{R})\), then also \(X^{-1}(A)\in \mathcal{F}\). This means that the function is bijective.
+    \item The cumulative distribution function (cdf) of \(X\) is defined by \(F_X(x) = P(\{w:X(w)\le x\})\), \(\forall x\in \mathbb{R}\). The cdf can be either discrete, continuous or mixed. 
+    \item The probability mass function (pmf) or distribution of a discrete random variable \(X\) defined on \((W,\mathcal{F},P)\) is the set fucntion \(P_X\) defined by \(P_X(A) = P(\{w:X(w)\in A\})\), \(\forall A\in \mathcal{B}(\mathbb{R})\).
+    \item For a continuous rv, the function \(T_X\) is called the probability density function (pdf) of \(X\). If moreover \(F_X\) is differentiable at \(x\), then \(T_X(x) = \frac{dF_X}{dx}(x)\). 
+    \item A random vector is  a vector-valued function \(X:W\rightarrow \mathbb{R}^n\), with each of the \(n\) components being a rv.
+    \item Two rv's \(X\) and \(Y\) are independent if \(F_{X,Y}(x,y) = F_X(x)F_Y(y)\) for all \(x,y\), or equivalently, if the pdf's exist : \(T_{X,Y}(x,y) = T_X(x)T_Y(y)\) for all \(x,y\).
+    \item The expectation of a rv \(X\) with pdf \(T_X\) is defined by the following integral, if it exists : \(\mathbb{E}(X) = \int xT_X(x)dx\). 
+    \item The expectation of an \(\mathbb{R}^n\)-valued random vector \(X\) is \(\mathbb{E}(X) = \begin{pmatrix}
+    \mathbb{E}(X_1)\\ \vdots \\ \mathbb{E}(X_n)\end{pmatrix}\).
+    \item [\(\rightarrow\)] N.B.: the expectation may not exist (e.g. \(X\) such that \(X_i = 2i\) with probability \(2i\)). 
+    \item If \(X\) and \(Y\) are independent, then \(\mathbb{E}(XY) = \mathbb{E}(X)\mathbb{E}(Y)\). 
+    \item The conditional pdf of \(Y\) given \(X\) is \(T_{Y|X}(y|x) \coloneqq T_{X,Y}(x,y)/T_X(x)\).
+    \item Bayes theorem : if \(P(B) \neq 0\), \(P(A|B) = P(B|A)P(A)/P(B)\) for events.
+    \item For pdf's, the Bayes theorem is \(T_{X|Y}(x|y) = T_{Y|X}T_X(x)/T_Y(y)\).
+    \item Law of total expectation : \(\mathbb{E}(Y) = \mathbb{E}(\mathbb{E}(Y|X))\).
+    \item The covariance between rv's \(X\) and \(Y\) is \(Voc(X,Y) = \mathbb{E}\left((X-\mathbb{E}(X))(Y-\mathbb{E}(Y))^T\right)\).
+    \item The covariance matrix of a random vector \(X = (X_1 \dots X_n)^T\) is The matrix \(C\) such that \(C_{ij} \coloneqq C(X_i,X_j)\).
+    \item If \(C_{XY} = 0\), then \(X\) and \(Y\) are said to be uncorrelated, or orthogonal. 
+    \item The correlation coefficient of rv's \(X\) and \(Y\) is \(\rho_{XY} = C_{XY}/(\sigma_X\sigma_Y)\). 
+    \item The Gaussian pdf (normal distribution), with mean \(mu\in \mathbb{R}^n\) and covariance \(\Sigma\in \mathbb{R}^{n\times n}\) positive definite, is given by 
+\end{itemize}
+\begin{equation}
+    T_X(X_1,\dots,x_n) = \frac{1}{\sqrt{(2\pi)^n(\det \Sigma)}} \exp{\left(-\frac{1}{2}(x-\mu)^T\Sigma^{-1} (x-\mu)\right)}
+\end{equation}
+\begin{itemize}
+    \item Conditional pdf of bivariate Gaussian : if \(x\) and \(y\) are distributed according to bivariate Gaussian pdf with mean vector \(\begin{pmatrix}
+        \mathbb{E}(x) & \mathbb{E}(y))^T 
+    \end{pmatrix}\) and covariance matrix 
+\end{itemize}
+\begin{equation}
+    C = \begin{pmatrix}
+        C_{XX} & C_{XY}\\
+	C_{YX} & C_{YY}\\
+    \end{pmatrix}
+\end{equation}
+so that 
+\begin{equation}
+	p(x,y) = \frac{1}{2\pi \det^{1/2}(C)} \exp{\left(-\frac{1}{2}\begin{pmatrix} x-\mathbb{E}(x) \\ y-\mathbb{E}(Y)\end{pmatrix}^T C^{-1} \begin{pmatrix} x-\mathbb{E}(x) \\ y-\mathbb{E}(Y)\end{pmatrix}\right)}
+\end{equation}
+then the conditional pdf \(p(y|x)\) is also Gaussian and 
+\begin{equation}
+    \mathbb{E}(y|x) = \mathbb{E}(y) + \frac{C_{XY}}{C_{YY}}(x-\mathbb{E}(x)) \qquad C_{YY|X} = C_{YY} - \frac{C_{XY}^2}{C_{XX}}
+\end{equation}
+This result can be generalized : if \(x\) and \(y\) are joiontly Gaussian, where \(x\) is \(k\times 1\) and \(y\) is \(l\times 1\), with mean vector \([E(x)^T \qquad E(y)^T]\) and partitioned covariance matrix 
+\begin{equation}
+    C = \begin{pmatrix}
+        C_{xx}& C_{xy}\\
+        C_{yx} & C_{yy}\\
+    \end{pmatrix} = \begin{pmatrix}
+        k\times k & k\times l \\
+        l\times k & l \times l \\
+    \end{pmatrix}
+\end{equation}
+then the conditional pdf \(p(y|x)\) is also Gaussian and 
+\begin{equation}
+    \begin{cases}
+        \mathbb{E}(y|x) = \mathbb{E}(y) + C_{yx} C_{xx}^{-1}(x-\mathbb{E}(x))\\
+        C_{Y|X} = C_{YY} - C_{YX} C_{XX}^{-1}C_{XY}\\
+    \end{cases} 
+\end{equation}
+\begin{itemize}
+    \item The uniform pdf over an interval \([a,b]\) is
+\end{itemize}
+\begin{equation}
+    T_X(x) = \begin{cases}
+        \frac{1}{b-a} \text{ for } a\le x\le b\\
+        0 \text{ otherwise}\\
+    \end{cases}
+\end{equation}
+and we write \(X\sim \mathcal{U}(a,b)\).
+\begin{itemize}
+    \item The exponential pdf with rate parameter \(\lambda >0\) is 
+\end{itemize}
+\begin{equation}
+    T_X(x) = \begin{cases}
+        \lambda e^{-\lambda x} \text{ si } x\ge 0\\
+        0\text{ otherwise}
+    \end{cases}
+\end{equation}
+\begin{itemize}
+    \item The Laplace pdf with parameters \(\mu \in \mathbb{R}\) and \(b>0\) is 
+\end{itemize}
+\begin{equation}
+    T_X(x) = \frac{1}{2b}\exp{\left(-\frac{|x-\mu|}{b}\right)}
+\end{equation}
+\subsection{Functions of a random variable}
+Let \(g:\mathbb{R}\rightarrow \mathbb{R}\) be a strictly monotone function, let \(X\) be a random variable and let \(Y=g(X)\). Then 
+\begin{equation}
+    T_Y(y) = \left.\frac{T_X(x)}{|g'(x)|}\right|_{x=g^{-1}(y)}
+\end{equation}
+if \(y\in g(\mathbb{R})\) and \(0\) otherwise. \\
+
+Let \(X\) be an \(n\)-dimensional random vector, \(A\) a constant \(n\times n\) matrix, and \(b\) a constant \(n\)-dimensional vector. Let \(Y=AX+b\). Then 
+\begin{equation}
+    T_Y(y) = T_X(A^{-1}(y-b))\frac{1}{|\det(A)|}
+\end{equation}
+
+Let \(X_1,\dots,X_n\) be a finite set of rv's with pdf's \(T_{X_1},\dots,T_{X_n}\).  Let \(w_1, \dots,,w_n\) be a set of wiehgts such that \(w_i\ge 0\) and \(\sum_{k=1}^n w_k = 1\). Then, the mixture rv \(Z\) is the rv with mixture distirbution:
+\begin{equation}
+    T_Z(z) = w_1T_{X_1}(z) + \dots+ w_n T_{X_n}(z)
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: the distribution of a sum of rv's is not the sum of the distributions of the rv's.
+\end{itemize}
+\chapter{Minimum Variance Unbiased Estimation and Cramer-Rao bound}
+\section{The mathematical estimation problem}
+Given the \(N\)-point data set \(\{x[0],\dots, x[N-1]\}\), which depends on an unkown parameter \(\theta \in \mathbb{R}^p\), we wish to determine an estimator \(\Hat{\theta}\) of \(\theta\) based on the data : \(\Hat{\theta} = g(x[0],\dots,x[N-1])\), where \(g\) is some function to be determined. We then have a parametric model, which is a stochastic description of the data as function of the parameter that generated it.\\
+
+The first step is to model the data: because they are inherently random, we describe it by its pdf : \(p(x[0],\dots,x[N-1];\theta)\). 
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: an estimator is a random variable. Thus it can only be completely described statistically or by its pdf. 
+    \item [\(\rightarrow\)] N.B.: a white Gaussian noise (WGN) is such that each sample \(w[n]\sim \mathcal{N}(0,\sigma^2)\). 
+\end{itemize}
+We must differentiate the Bayesian and Fisher estimation: it is Fisher when \(\theta\) is deterministic, i.e. when there is no prior knowledge on \(\theta\) involved in the estimation of \(g\); and Bayesian when \(\theta\) is a realization of a random vector. 
+\section{Assessing Estimator Performance}
+To estimate the performance of an estimator, we can define its expectation and variance:
+\begin{itemize}
+    \item Its expectation changes according to how it is defined based on \(x[i]\), but it is considered good when close to the actual parameter \(\theta\). We call \(b(\theta) = \mathbb{E}(\Hat{\theta})-\theta\) the bias.
+    \item From its variance we can conclude about the uncertainty; the smaller it is, the less uncertain the model is. 
+\end{itemize}
+\section{Minimum Variance Unbiased Estimation}
+The estimator \(\Hat{\theta}\) of \(\theta\) is unbiased if 
+\begin{equation}
+    \mathbb{E}(\Hat{\theta}_i) = \theta_i \qquad \forall a_i <\theta<b_i
+\end{equation}
+where \((a_i,b_i)\) is the range of possible values of \(\theta_i\). The bias of the estimator is \(b(\theta) = \mathbb{E}(\Hat{\theta})-\theta\).
+\subsection{Minimum variance criterion}
+An approach to find the optimal estimator is to constrain the bias to be zero and find the estimator which minimizes the variance, to have an optimal MSE (\(MSE = \mathbb{V}(\Hat{\theta}) + b^2(\theta)\).\\
+
+The unbiased estimator \(\Hat{\theta}\) is called minimum variance unbiased (MVU) if \(\mathbb{V}(\Hat{\theta}_i)\), for \(i\in \{1,\dots,p\}\), is minimum among all unbiased estimators.
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: it is possible that a MVU estimator does not exist.
+\end{itemize}
+\section{Cramer-Rao Lower bound}
+The Fisher information matrix \(I(\theta)\in \mathbb{R}^{p\times p}\) is 
+\begin{equation}
+    I(\theta)=-\mathbb{E}\left(\frac{\partial^2 \ln{\left(p(x;\theta)\right)}}{\partial\theta^2}\right) \qquad I_{k,j}(\theta)=-\mathbb{E}\left(\frac{\partial^2 \ln{\left(p(x;\theta)\right)}}{\partial\theta_k\partial \theta_j}\right) 
+\end{equation}
+Assume that \(\theta \in \mathbb{R}\) and 
+\begin{equation}
+    \mathbb{E}\left(\frac{\partial \ln{\left(p(x;\theta)\right)}}{\partial \theta}\right) = 0 \qquad \forall \theta\in \mathbb{R}
+\end{equation}
+Then, the variance of any unbiased estimators satisfies: \(\mathbb{V}(\Hat{\theta} \ge 1/I(\theta)\). Moreover, an MVU estimator that attains the bound can be found iff 
+\begin{equation}
+    \frac{\partial \ln\left(p(x;\theta)\right)}{\partial \theta} = I(\theta)(g(x)-\theta)
+\end{equation}
+for som e\(g\). That estimator is \(\Hat{\theta} = g(x)\), its variance is \(1/I(\theta)\) and it is called efficient. 
+\subsection{Vectorisation}
+Assume that 
+\begin{equation}
+    \mathbb{E}\left(\frac{\partial \ln{\left(p(x;\theta)\right)}}{\partial \theta}\right) = 0 \qquad \forall \theta\in \mathbb{R}^p
+\end{equation}
+Then, the variance of any unbiased estimators satisfies 
+\begin{equation}
+    Cov(\Hat{\theta}) - I^{-1}(\theta) \succeq 0
+\end{equation}
+Moreover, an MVU estimator that attains the bound can be found iff 
+\begin{equation}
+    \frac{\partial \ln\left(p(x;\theta)\right)}{\partial \theta} = I(\theta)(g(x)-\theta)
+\end{equation}
+for some \(g\). That estimator is \(\Hat{\theta} = g(x)\), its covariance matrix is \(I^{-1}(\theta)\). 
+\section{Stochastic convergence notions}
+Let \(X_k\in \mathbb{R}^n\), \(k\in \mathbb{Z}_+\) be a random sequence.
+\begin{itemize}
+    \item \(X_k\) is said to converge in distribution to \(X\) if 
+\end{itemize}
+\begin{equation}
+    \lim_{k\rightarrow \infty} P(X_k\in A)=P(X\in A)
+\end{equation}
+for every \(A\) which is a continuity set of \(X\), i.e. every A such that \(P(X\in \partial A) = 0\).
+
+We write \(X_k\xrightarrow[\mathcal{D}]{k\rightarrow \infty}\).
+\begin{itemize}
+    \item \(X_k\) is said to converge in probability to \(X\) if 
+\end{itemize}
+\begin{equation}
+    \forall \epsilon >0 \text{  } : \text{  } \lim_{k\rightarrow \infty}P(\lVert X_k-X\rVert > \epsilon) = 0
+\end{equation}
+We write \(p\lim_{k\rightarrow \infty} X_k = X\).
+\begin{itemize}
+    \item \(X_k\) is said to converge in mean square to \(X\) if 
+\end{itemize}
+\begin{equation}
+    \lim_{k\rightarrow \infty} \mathbb{E}\left(\lVert X_k-X\rVert^2\right) = 0
+\end{equation}
+\begin{itemize}
+    \item \(X_k\) is said to converge to \(X\) almost surely if 
+\end{itemize}
+\begin{equation}
+    P\left(X_k(x)\xrightarrow[k\rightarrow \infty] X(w)\right) = 1 \Longleftrightarrow x_k(w)\xrightarrow[k\rightarrow\infty]x(w) \qquad \forall w\in A\subset W\qquad P(A)=1
+\end{equation}
+\section{Asymptotic properties of estimators}
+The estimator \(\Hat{\theta} = g(x^N)\), based on the vector of observations \(x^N = (x[0],\dots, x[N-1])\) of increasing dimension, is said asymptotically unbiased if 
+\begin{itemize}
+    \item Fisher framework: \(\lim_{N\rightarrow \infty}\mathbb{E}(g(x^N)) = \theta\).
+    \item Bayesian framework : \(\lim_{N\rightarrow \infty} \mathbb{E}(g(x^N)) = \mathbb{E}(\theta)\).
+\end{itemize}
+A sequence \(\{\Hat{\theta}_N(x)\}_{N\in \mathbb{N}}\) of estimators is called consistent if, for all \(\theta\), 
+\begin{equation}
+    p\lim_{N\rightarrow \infty}\Hat{\theta}_N(x) = \theta
+\end{equation}
+A sequence \(\{\Hat{\theta}_N(x)\_{N\in \mathbb{N}}\) of consistent estimators is called asymptotically normal if
+\begin{equation}
+    \sqrt{N}(\Hat{\theta}_N(x)-\theta)\xrightarrow[\mathcal{D}]{N\rightarrow \infty} \mathcal{N}(0,\Sigma)
+\end{equation}
+for some positive-definite matrix \(\Sigma\). It is a best asymptotically normal estimator if \(\Sigma\) is minimal in the class of asymptotically normal estimators.
+\chapter{Fisher estimators}
+\section{Linear models}
+Consider the linear model \(x[n] = A+Bn+Cn^2 + \dots + w[n]\), where \(w[n]\) is WGN. In vector form, we have \(x=H\theta + w\), with \(\theta = (A, B, \dots )^T\). \\
+
+We have: \(x\) is \(N\times 1\), \(H\) is \(N\times p\) (\(N>p\)) and its rank is \(p\), \(w\) is \(N\times 1\) with pdf \(\mathcal{N}(0,\textbf{C})\). Then, the MVU estimators is 
+\begin{equation}
+    \Hat{\theta} = \left(H^TC^{-1}H\right)^{-1} H^TC^{-1}x \qquad C_{\Hat{\theta}} = \sigma^2 \left(H^TC^{-1}H\right)^{-1}
+\end{equation}
+Moreover, this estimator is the MVU estimator and efficient. And, since it is a linear transformation of a Gaussian vector, \(\Hat{\theta} \sim \mathcal{N}(\theta, C_{\Hat{\theta}})\). 
+\section{Best Linear Unbiased Estimator (BLUE)}
+It is frequent that the MVU estimator does not exist or at least cannot be found. We can find a first solution to that problem by looking for a linear estimator instead. The BLUE restricts the estimator to be linear in the data: \(\Hat{\theta = \sum_{n=0}^{N-1}a_nx[n]}\), where \(a_n\) are coefficients to be determined. The BLUE is defined to be the estimator with linear structure that is unbiased and has minimum variance. \\
+As we want the blue to be unbiased and we want to minimise the variance, we write:
+\begin{align}
+    \mathbb{E}(\Hat{\theta}) &= \sum_{n=0}^{N-1} a_n \mathbb{E}(x[n]) = \theta\\
+    \mathbb{V}(\Hat{\theta}) &= \mathbb{E}\left(\left(\sum_{n=0}^{N-1}a_nx[n]-\mathbb{E}\left(\sum_{n=0}^{N-1}a_nx[n]\right)\right)^2\right) = \mathbb{E}\left(\left(a^Tx-a^T\mathbb{E}(x)\right)^2\right) = a^TCa
+\end{align}
+with \(a = (a_0, a_1,\dots, a_{N-1})^T\), and \(C \coloneqq (x-\mathbb{E}(x))(x-\mathbb{E}(x))^T \)
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: for the bias to be null, we must have a linear expectation, i.e. \(\mathbb{E}(x[n]) = s[n]\theta\).
+\end{itemize}
+Combining both expressions, we find that the BLUE can be computed by solving 
+\begin{equation}
+    \min_a a^TCa \qquad a^Ts=1
+\end{equation}
+The solution is \(a_{opt} = \frac{C^{-1}s}{s^TC^{-1}s}\).\\
+
+Assume that the expectation is linear. The BLUE of \(\theta\) is given by 
+\begin{equation}
+    \Hat{\theta} = \frac{s^TC^{-1}x}{s^TC^{-1}s}
+\end{equation}
+Where \(C=(x-\mathbb{E}(x))(x-\mathbb{E}(x))^T\), and has minimum variance 
+\begin{equation}
+    \mathbb{V}(\Hat{\theta}) = \frac{1}{s^TC^{-1}s}
+\end{equation}
+Equivalently, we can say the following:\\
+Assume that \(x[n]=\theta s[n]+w[n]\), where \(w\) has zero mean and covariance \(C\). The BLUE is 
+\begin{equation}
+    \Hat{\theta} = \frac{s^TC^{-1}x}{s^TC^{-1}s}
+\end{equation}
+with \(C= (x-\mathbb{E}(x))(x-\mathbb{E}(x))^T\), and has minimum variance
+\begin{equation}
+    \mathbb{V}(\Hat{\theta}) = \frac{1}{s^TC^{-1}s}
+\end{equation}
+
+\underline{Gauss-Markov Theorem :}\\
+Assume that the data is generated by the linear model \(x=H\theta+w\), where \(H\) is \(N \times p\), \(\theta\) is \(p\times 1\) and \(w\) is \(N\times 1\) with zero mean and covariance \(C\), but arbitrary distribution. The BLUE is
+\begin{equation}
+    \Hat{\theta} = (H^TC^{-1}H)^{-1}H^TC^{-1}x\qquad Cov(\Hat{\theta}) = (H^TC^{-1}H)^{-1}
+\end{equation}
+\section{Maximum Likelihood Estimation}
+The Maximum Likelihood Estimator (MLE) is defined as 
+\begin{equation}
+    \Hat{\theta} \coloneqq \arg\max_\theta p(x;\theta)
+\end{equation}
+If the pdf \(p(x;\theta)\) satisfies some regularity conditions, then the MLE 
+\begin{itemize}
+    \item is consistent, i.e. \(p\lim_{N\rightarrow \infty} \Hat{\theta}_N=\theta\).
+    \item is asymptotically normal and efficient:
+\end{itemize}
+\begin{equation}
+    \sqrt{N}(\Hat{\theta}_N-\theta)\xrightarrow[\mathcal{D}]{N\rightarrow \infty}\mathcal{N}(0,I^{-1}(\theta))
+\end{equation}
+where \(I^{-1}(\theta)\) is the Fisher information matrix evaluated at \(\theta\).\\
+
+Assume \(x=H\theta+w\), where the pdf of \(w\) is \(\mathcal{N}(0,C)\). Then, the MLE of \(\theta\) is 
+\begin{equation}
+    \Hat{\theta} = (H^TC^{-1}H)^{-1}H^TC^{-1}x
+\end{equation}
+\(\Hat{\theta}\) is an efficient estimator and the MVU. Moreover, its pdf is \(\Hat{\theta} \sim \mathcal{N}(\theta, (H^TC^{-1}H)^{-1})\). 
+\section{Least squares}
+For the system 
+\begin{equation}
+    x[n] = s[n;\theta] + w[n]
+\end{equation}
+\(w\) being the noise of the system,
+The least squares (LS) estimator is defined as 
+\begin{equation}
+    \Hat{\theta}^{LS}(z) \coloneqq \arg\min_{\theta} \sum_{n=0}^{N-1}(x[n]-s[n;\theta])^2 \coloneqq J(\theta)
+\end{equation}
+\subsection{LS for linear model}
+Assume that the data is generated by the linear model \(x=H\theta+w\), where \(H\) is \(N\times p\), (\(N>p\)) of rank \(p\), \(\theta\) is \(p\times 1\) and \(w\) is \(N\times 1\) a deterministic signal. The LSE is found by minimizing 
+\begin{equation}
+    J(\theta) = (x-H\theta)^TW(x-H\theta)
+\end{equation}
+We find 
+\begin{equation}
+    \Hat{\theta} = (H^TW^{-1}H)^{-1}H^TW^{-1}x\qquad J_{\min} =x^T(I-WH(H^TWH)^{-1}H^TW)x
+\end{equation}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: if we assume \(w[n]\) to be stochastic with zero mean and covariance \(W\), then we recover the BLUE.
+    \item [\(\rightarrow\)] N.B.: if \(w\sim \mathcal{N}(0,W)\), then we recover the MVU.
+\end{itemize}
+\chapter{Bayesian Estimator}
+In Bayesian estimation, we treat \(\theta\) as a random variable, and our objective is to estimate the particular realization of \(\theta\) that generated the data. The Bayes estimator selects \(\Hat{\theta}\) such that 
+\begin{equation}
+    \Hat{\theta} = \arg\min_\theta \mathbb{E}[C(\varepsilon)]
+\end{equation}
+with \(\varepsilon = \theta-\Hat{\theta}\) and \(C\) a cost function. We take the expectation with respct to the joint distribution in \(x\) and \(\theta\) \(p(x,\theta)\). There are several possibilities for the cost function:
+\begin{itemize}
+    \item \(C(\varepsilon) = \varepsilon^2\), we call it the Bayesian MSE;
+    \item \(C(\varepsilon) = |\varepsilon|\);
+    \item Hit-or-miss: \(C(\varepsilon) = \begin{cases}
+        0 \text{ si }|\varepsilon| < \delta\\
+        1 \text{ si }|\varepsilon| \ge \delta\\
+    \end{cases}\).
+\end{itemize}
+We define the Bayesian risk : 
+\begin{equation}
+    \mathcal{R} = \mathbb{E}(C(\varepsilon)) = \int \left(\int C(\theta-\Hat{\theta})p(\theta|x)\right)p(x)dx
+\end{equation}
+The estimator that miniminzes the Bayesian MSE \(C(\varepsilon)=\varepsilon^2\) is called minimum mean square error (MMSE) estimator and is given by 
+\begin{equation}
+    \Hat{\theta} = \mathbb{E}(\theta|x)
+\end{equation}
+The estimator that minimizes the Bayesian absolute error \(\mathbb{E}(C(\varepsilon))\), \(C(\varepsilon)=|\varepsilon|\) is given by 
+\begin{equation}
+    \Hat{\theta}=\text{median} (p(\theta|x))
+\end{equation}
+The estimator that minimizes the Bayesian hit-or-miss \(\mathbb{E}(C\varepsilon))\), \(C(\varepsilon)=\text{hit-or-miss}(\varepsilon)\) , with \(\delta \rightarrow 0\) is given by 
+\begin{equation}
+    \Hat{\theta} = \text{mode} (p(\theta|x))
+\end{equation}
+with the mode being the point at which \(p(\theta|x)\) is maximum. 
+\section{Minimum MSE Estimator}
+The vector MMSE estimator \(\mathbb{E}(\theta|x)\) minimizes \(\mathbb{E}(\theta_i-\Hat{\theta}_i)^2)\) for all \(i\) and is given by 
+\begin{equation}
+    \Hat{\theta}_i = [\mathbb{E}(\theta|x)]_i
+\end{equation}
+where the expectation is with respect to \(p(\theta|x)\). Moreover, the minimum Bayesian MSE is 
+\begin{equation}
+    Bmse(\Hat{\theta}_i) = \int [C_{\theta|x}]_iip(x)dx \qquad i=1,\dots, p
+\end{equation}
+where 
+\begin{equation}
+    C_{\theta|x} = \mathbb{E}_{\theta|x}\left((\theta-\mathbb{E}(\theta|x))(\theta-\mathbb{E}(\theta|x))^T\right)
+\end{equation}
+\section{MMSE estimators for Gaussian pdf's}
+Assume that \(\theta\) and \(x\) are jointly Gaussian. Then, the MMSE is 
+\begin{equation}
+    \mathbb{E}(\theta|x) = \mathbb{E}(\theta)+C_{\theta x}C_{xx}^{-1}(x-\mathbb{E}(x))
+\end{equation}
+\begin{equation}
+    Bmse(\Hat{\theta}) = C_{\theta|x}=C_{\theta\theta}-C_{\theta x}C_{xx}^{-1}C_{x\theta}
+\end{equation}
+\section{Bayesian Linear Model}
+By application of the theorem in the previous section, let us assume that \(x=H\theta +w\), where \(x\) is a \(N\times 1\) data, \(H\) is known \(N\times p\) matrix, \(\theta\) is \(p\times 1\) random vector with prior pdf \(\mathcal{N}(\mu_\theta, C_\theta)\), and \(w\) is an noise \(N\times 1\) vector with pdf \(\mathcal{N}(0,C_w)\) and independent of \(\theta\). Then, the posterior pdf \(p(\theta|x)\) is Gaussian with mean
+\begin{equation}
+    \mathbb{E}(\theta|x) = \mu_\theta + C_\theta H^T(HC_\theta H^T+C_w)^{-1}+(x-H\mu_\theta)
+\end{equation}
+and covariance 
+\begin{equation}
+    C_{\theta|x} = C_\theta - C_\theta H^T(HC_\theta H^T+C_w)^{-1}HC_\theta
+\end{equation}
+\section{Maximum A Posteriori Estimators}
+In the MAP estimation approach, we choose 
+\begin{equation}
+    \Hat{\theta} = \arg\max_\theta p(\theta|x)
+\end{equation}
+Equivalently, 
+\begin{equation}
+    \Hat{\theta} = \arg\max_\theta\left(\ln p(x|\theta)+\ln p(\theta)\right)
+\end{equation}
+\section{Performance Description}
+In Bayesian estimators, it makes sense to assess the performance by determining the pdf of the error \(\varepsilon\). We can show that if \(\varepsilon\) is Gaussian, then 
+\begin{equation}
+    \varepsilon \sim \mathcal{N} (0, Bmse(\Hat{\theta}))
+\end{equation}
+\section{Linear Bayesian Estimators}
+Assume \(\Hat{\theta}_i = \sum_{n=0}^{N-1} a_{in}x[n] + a_{iN}\) for \(i=1,\dots,p\). The LMMSE estimator that minimizes \(Bmse(\Hat{\theta}_i) = \mathbb{E}\left((\theta_i-\Hat{\theta}_i)^2\right)\) is given by
+\begin{equation}
+    \Hat{\theta} \mathbb{E}(\theta) + C_{\theta x}C_{xx}^{-1}(x-\mathbb{E}(x))
+\end{equation}
+where \(C_{\theta x}\) is a \(p\times N\) matrix. The Bayesian MSE matrix is 
+\begin{equation}
+    M_{\Hat{\theta}} = \mathbb{E}((\theta-\Hat{\theta})(\theta-\Hat{\theta})^T) = C_{\theta\theta}-C_{\theta x}C_{xx}^{-1}C_{x\theta}
+\end{equation}
+where \(C_{\theta\theta}\) is the \(p\times p\) covariance matrix. The minimum Bayesian MSE is 
+\begin{equation}
+    Bmse(\Hat{\theta}_i) = (M_{\Hat{\theta}})_{ii}
+\end{equation}
+Furthermore, if \(x\) is linear \(x=H\theta +w\), we have the Bayesian Gauss-Markov Theorem:\\
+The LMMSE estimator of \(\theta\) is 
+\begin{align}
+    \Hat{\theta} &= \mathbb{E}(\theta) + C_{\theta\theta}H^T(HC_{\theta\theta}H^T+C_w)^{-1}(x-H\mathbb{E}(\theta))\\
+    &= \mathbb{E}(\theta) + (C_{\theta\theta}^{-1}+H^TC_w^{-1}H)^{-1}H^TC_w^{-1}(x-H\mathbb{E}(\theta))
+\end{align}
+The performance of the estimator is measured by the error \(\varepsilon=\theta-\Hat{\theta}\) whose mean is zero and whose covariance matrix is 
+\begin{align}
+    C_\varepsilon &= E_{x,\theta} (\varepsilon\varepsilon^T)\\
+    & = C_{\theta\theta} - C_{\theta\theta} H^T(HC_{\theta\theta}H^T+C_w)^{-1}HC_{\theta\theta}\\
+    & = (C_{\theta\theta}^{-1}+H^TC_w^{-1}H)^{-1}
+\end{align}
+The error covariance matrix is also the minimum MSE matrix \(M_{\Hat{\theta}}\) whose diagonal elements yield the minimum Bayesian MSE 
+\begin{equation}
+    [M_{\Hat{\theta}}]_{ii} = [C_{\varepsilon}]_{ii} = Bmse(\Hat{\theta}_i)
+\end{equation}
+\chapter{Dynamic state estimation}
+\section{State Estimation Problem}
+Until now, we have often used static models, such as \(x[n] =A+w[n]\). In this part, we will consider dynamic models, i.e. the successive time samples of \(x[n]\) can be correlated. 
+\subsection{The vector Gauss-Markov Model}
+The Gauss-Markov model for a \(p\times 1\) vector signal \(s[n]\) is 
+\begin{align}\label{eq:GM}
+    s[n] = As[n-1] + Bu[n]\\
+    x[n] = H[n]s[n] + w[n]
+\end{align}
+for \(n=0,1,\dots\), where
+\begin{itemize}
+    \item \(s[n]\) is a \(p\times 1\) vector signal (state model) that cannot be measured.
+    \item \(x[n]\) is a \(m\times 1\) vector model (observations).
+    \item \(u[n]\) is a \(r\times 1\) vector of WGN: \(\mathcal{N}(0,\mathcal{Q})\), the model noise.
+    \item \(w[n]\) is a \(m\times 1\) vector of WGN: \(\mathcal{N}(0,C[n])\), the output noise (it is independent from sample to sample). 
+    \item \(A\in \mathbb{R}^{p\times p}\), \(B\in \mathbb{R}^{p\times r}\) and \(H[n]\in \mathbb{R}^{M\times p}\) are the system matrices.
+    \item the initial state vector \(s[-1]\sim \mathcal{N}(\mu_s,C_S)\) and independent of \(u[n]\).
+\end{itemize}
+The objective of optimal filtering is to construct a sequential (i.e. at every \(n\)) MMSE estimator of \(s[n]\) based on the data \(\{x[0],\dots,x[n]\}\). \\
+
+The objective of optimal prediction is to construct a sequential MMSE estimator of \(s[k]\), \(k>n\) based on the data \(\{x[0],\dots,x[n]\}\).\\
+
+The objective of optimal smoothing is to construct a sequential MMSE estimator of \(s[k]\), \(k<n\) based on the data \(\{x[0],\dots,x[n]\}\).\\
+\section{Kalman Filter (scalar)}
+We begin with the scalar version of the Gauss-Markov model : 
+\begin{align}
+    s[n] = as[n-1]+u[n]\\
+    x[n] = s[n]+w[n]
+\end{align}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B: the esimator of \(s[n]\) based on the observations \(\{x[0],\dots,x[m]\}\) will be denoted by \(\Hat{s}[n|m]\). 
+\end{itemize}
+The optimality criterion will be the Bayesian MSE:
+\begin{equation}
+    \mathbb{E}\left((s[n]-\Hat{s}[n|n])^2\right)
+\end{equation}
+We defined the innovation as 
+\begin{equation}
+    \Tilde{x}[n] = x[n] - \Hat{x}[n|n-1]
+\end{equation}
+It is the part of \(x[]\) that is uncorrelated with the previous samples \(\{x[0],\dots,x[n-1]\}\). Let \(X[n] = \left(x[0],\dots,x[n]\right)^T\). \\
+We can rewrite the MMSE estimator as 
+\begin{equation}
+    \Hat{s}[n|n] = \mathbb{E}(s[n]|X[n-1],\Hat{x}[n]) = \Hat{s}[n|n] = \underbrace{\mathbb{E}(s[n]|X[n-1])}_{\Hat{s}[n|n-1]}+\mathbb{E}(s[n]|\Tilde{x}[n])
+\end{equation}
+where 
+\begin{equation}
+    \Hat{s}[n|n-1] = a\Hat{s}[n-1|n-1]\\
+\end{equation}
+\color{red}What is a??\color{black}
+We define \(K[n]\) such that 
+\begin{equation}
+    \mathbb{E}(s[n]|\Tilde{x}[n]) = K[n]\Tilde{x}[n]
+\end{equation}
+and we have 
+\begin{equation}
+    K[n] = \frac{\mathbb{E}(s[n](x[n]-\Hat{s}[n|n-1]))}{\mathbb{E}((x[n]-\Hat{s}[n|n-1]]^2)}
+\end{equation}
+We have two properties useful in the derivation of the gain \(K[n]\):
+\begin{multline}
+    \mathbb{E}(s[n](x[n]-\Hat{s}[n|n-1])) = \mathbb{E}((s[n|n-1])(x[n]-\Hat{s}[n|n-1]))\\
+    \mathbb{E}(w[n](s[n]-\Hat{s}[n|n-1])) = 0
+\end{multline}
+Using those, we have 
+\begin{equation}
+    K[n] = \frac{\mathbb{E}((s[n]-\Hat{s}[n|n-1])^2)}{\sigma_n^2 + \underbrace{\mathbb{E}((s[n]-\Hat{s}[n|n-1])^2)}_{\eqqcolon M[n|n-1]}} = \frac{M[n|n-1]}{\sigma_n^2+M[n|n-1]}
+\end{equation}
+where \(\sigma_n^2\) is the variance of \(\sigma_n^2\) and \(M[n|n-1]\) the minimum prediction MSE matrix and \(M[n|n]\) the minimum MSE matrix.\\
+
+We now need to derive an expression for \(M[n|n-1]\). We have by its definition and by some property 
+\begin{equation}
+    M[n|n-1] = \mathbb{E}\left((a(s[n-1]-\Hat{s}[n-1|n-1])+u[n])^2\right)
+\end{equation}
+\begin{equation}
+    M[n|n-1] = a^2M[n-1|n-1] + \sigma_u^2
+\end{equation}
+From this, we can find an expression for \(M[n|n]\):
+\begin{equation}
+    M[n|n] = \mathbb{E}\left((s[n]-\Hat{s}[n|n])^2\right) = (1-K[n])M[n|n-1]
+\end{equation}
+The final equations needed for the Kaman filter are the following:
+\boxedeq{
+    \Hat{s}[n|n-1] = a\Hat{s}[n-1|n-1]\\
+    M([n|n-1] = a^2 M[n-1|n-1]+\sigma_u^2\\
+    K[n] = \frac{M[n|n-1]}{\sigma_n^2 + M[n|n-1]}\\
+    \Hat{s}[n|n] = \Hat{s}[n|n-1] + K[n](x[n]-\Hat{s}[n|n-1])\\
+    M[n|n] = (1-K[n]) M[n|n-1]
+}
+With the initial conditions:
+\begin{equation}
+    \begin{cases}
+        s[-1] \sim \mathcal{N}(\mu_s,\sigma_s^2)\\
+        \Hat{s}[-1|-1] = \mathbb{E}(s[-1]) = \mu_s\\
+        M[-1|-1] = \sigma_s^2\\
+    \end{cases}
+\end{equation}
+\section{Kalman Filter (vector)}
+The model now is 
+\begin{equation}
+    \begin{cases}
+        \textbf{s}[n] = \textbf{As}[n-1]+\textbf{Bu}[n]\\
+        \textbf{x}[n] = \textbf{H}[n]\textbf{s}[n] + \textbf{w}[n]\\
+    \end{cases}
+\end{equation}
+with the same definitions as in \autoref{eq:GM}. \\
+
+The MMSE estimator of \(s[n]\) based on \(\{x[0],\dots,x[n]\}\) is 
+\begin{equation}
+    \Hat{s}[n|n] = \mathbb{E}(s[n]|x[0],\dots,x[n])
+\end{equation}
+and can be computed sequentially in time using the following recursion: 
+\begin{align}
+    &\Hat{s}[n|n-1] = A\Hat{s}[n-1|n-1]\\
+    &M[n|n-1] = AM[n-1|n-1] A^T+BQB^T\\
+    &K[n] = M[n|n-1]H^T[n]\left(C[n] + H[n]M[n|n-1]H^T[n]\right)^{-1}\\
+    &\Hat{s}[n|n] = \Hat{s}[n|n-1] + K[n](x[n]-H[n]\Hat{s}[n|n-1])\\
+    &M[n|n] = (I-K[n]H[n])M[n|n-1]\\
+\end{align}
+The recursion is initialized by \(\Hat{s}[-1|-1] = \mu_s\) and \(M[-1|-1] = C_s\).
+\section{Bayes filters}
+Bayes filters aim to compute the entire distribution \(p(s[n]|X[n])\) instead of just \(\mathbb{E}(s[n]|X[n])\). We will asume the following:
+\begin{itemize}
+    \item \(s[n]\) given \(s[n-1]\) is independent of anything that has happened before the time step \(n-1\). Namely,
+\end{itemize}
+\begin{equation}
+    p(s_n|s_{0:n-1}, x_{0:n-1}) = p(s_n|s_{n-1})
+\end{equation}
+\begin{itemize}
+    \item The past is independent of the future given the present:
+\end{itemize}
+\begin{equation}
+    p(s_{n-1}|s_{n:T},x_{n:T}) = p(s_{n-1}|s_n)
+\end{equation}
+\begin{itemize}
+    \item The current measurement \(x_n\) given the current state \(s_n\) is conditionnally independent of the measurement and state histories:
+\end{itemize}
+\begin{equation}
+    p(x_n|s_{1:n},x_{1:n-1}) = p(x_n|s_n)
+\end{equation}
+From the previous chapter, we can determine all the equations appearing in the theorem:\\
+
+For all \(n\ge 0\), the folllowing algorithm (the Bayesian filter) returns \(g_{n|n}(s_n) = p(s_n|x_{0:n})\).
+\begin{itemize}
+    \item Initialization: \(g_{-1|-1}(s_{-1}) = p(x_{-1})\).
+    \item Prediction:
+\end{itemize}
+\begin{equation}
+    g_{n|n-1}(s_n) = \int p(s_n|s_{n-1})g_{n-1|n-1}(s_{n-1})ds_{n-1}
+\end{equation}
+\begin{itemize}
+    \item Update:
+\end{itemize}
+\begin{equation}
+    g_{n|n}(s_n) = \frac{1}{Z_n}p(x_n|s_n)g_{n|n-1}(s_n)
+\end{equation}
+where \(Z_n = \int p(x_n|s_n)p(s_n|x_{0:n-1})ds_n\). 
+\subsection{For a non linear model}
+For a non linear model such as the following:
+\begin{equation}
+    \begin{cases}
+        s[n] = F(s[n-1]) + u[n-1]\\
+        x[n] = G(s[n]) + w[n]\\
+    \end{cases}
+\end{equation}
+The Bayesian filter is given by
+\begin{itemize}
+    \item Initialization: \(g_{-1|-1}(s_{-1}) = p(x_{-1})\).
+    \item Prediction:
+\end{itemize}
+\begin{equation}
+    g_{n|n-1}(s_n) = \int p_{u[n-1]}(s[n]-F(s[n-1])) g_{n-1|n-1} (s_{n-1})ds_{n-1}
+\end{equation}
+\begin{itemize}
+    \item Update:
+\end{itemize}
+\begin{equation}
+    g_{n|n}(s_n) = \frac{1}{Z_n}p_{w[n]} (x[n]-G(s[n]))g_{n|n-1}(s_n)
+\end{equation}
+where \(Z_n = \int p(x_n|s_n)p(s_n|x_{0:n-1})ds_n\).
+\section{Particle filter}
+\subsection{Monte Carlo approximations}
+Monte Carlo methods is a general class of methods where densities, expected values, \dots are replaced by drawing samples from the distirbution and estimating the quantities by sample quantities. \\
+Assume we want to estimate the pdf \(p(s)\) (here representing \(p(s_n|x_{0:n})\)). We then draw \(N\) idnependent random samples \(s^{(i)} \sim p(s)\), \(i=1,\dots,N\) called particles and estimate the pdf as 
+\begin{equation}
+    \Hat{p}(s) \coloneqq \frac{1}{N}\sum_{i=1}^N \delta \left(s-s^{(i)}\right)
+\end{equation}
+Assume we want to estimate the general expectation \(\mathbb{E}(\varphi(s))\). We draw \(N\) independent random samples \(s^{(i)} \sim p(s)\), \(i=1,\dots,N\) and 
+\begin{equation}
+    \Hat{\mathbb{E}}(\varphi(s)) \coloneqq \frac{1}{N}\sum_{i=1}^N \varphi(s^{(i)})
+\end{equation}
+\underline{Properties:}
+\begin{itemize}
+    \item Unbiased: \(\mathbb{E}(\Hat{\mathbb{E}}(\varphi(s))) = \mathbb{E}(\varphi(s))\);
+    \item Consistent: \(\Hat{\mathbb{E}}(\varphi(s))\xrightarrow{N\rightarrow \infty} \mathbb{E}(\varphi(s))\);
+    \item Asymptotically normal: if \(\mathbb{V}(\varphi(s)) \sigma_\varphi <\infty\), then by the central limit theorem (CLT)
+\end{itemize}
+\begin{equation}
+    \frac{\sqrt{N} \left(\Hat{\mathbb{E}}(\varphi(s))-\mathbb{E}(\varphi(s))\right)}{\sigma_\varphi} \xrightarrow{N\rightarrow \infty} \mathcal{N}(0,1)
+\end{equation}
+Hence, the error in the Monte Carlo estimate decreases as \(\mathcal{O}\left(N^{-1/2}\right)\).
+\subsection{Importance sampling}
+In practice, it is impossible to obtain samples from \(p(s_n|x_{0:n})\). In importance sampling, we use an approximate distribution called the importance distribution \(\pi(s|x_{0:n})\), from which we can easily draw samples. Assume we want to estimate \(\mathbb{E}(\varphi(s))\). IS is based on the following decomposition:
+\begin{equation}
+    \mathbb{E}(\varphi(s)) = \int \varphi(s)p(s)ds = \int \left(\varphi(s) \frac{p(s)}{\pi(s)}\right) \pi(s)ds
+\end{equation}
+assuming that \(pi(s)\) is nonzero whenever \(p(s)\) is nonzero. If \(s^{(i)}\sim \pi(s)\), we can compute the following:
+\begin{equation}
+    \Hat{\mathbb{E}}(\varphi(s)) = \sum_{i=1}^N \underbrace{\frac{1}{N}\frac{p\left(s^{(i)}\right)}{\pi\left(s^{(i)}\right)}}_{\eqqcolon \Tilde{w}^{(i)}} \varphi\left(s^{(i)}\right)
+\end{equation}
+Similarly,
+\begin{equation}
+    \Hat{p}(s) = \sum_{i=1}^N \Tilde{w}^{(i)}\delta \left(s-s^{(i)}\right)
+\end{equation}
+We call \(s^{(i)}\) the particle and \(\Tilde{w}^{(i)}\) the weight of the particle.
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: We can choose \(\pi(s)\), and we need to choose it as close to \(p(s)\) as possible.
+\end{itemize}
+The disadvantage of this technique is that we need to know \(p(s^{(i)})\) to compute the weights. However, by using Bayes rule, we can solve that problem:
+\begin{equation}
+    \mathbb{E}(\varphi(s)|x_{0:n}) = \sum_{i=1}^N \underbrace{\left(\frac{\frac{p\left(x_{0:n}|s^{(i)}\right)p\left(s^{(i)}\right)}{\pi\left(s^{(i)}|x_{0:n}\right)}}{\sum_{j=1}^N\frac{p\left(x_{0:n}|s^{(j)}\right)p\left(s^{(j)}\right)}{\pi\left(s^{(j)}|x_{0:n}\right)}}\right)}_{\eqqcolon w^{(i)}} \varphi\left(s^{(i)}\right)
+\end{equation}
+To simplify notations, we will use 
+\begin{equation}
+    \begin{cases}
+        w^{*(i)} = \frac{p(x_{0:n}|s^{(i)})p\left(s^{(i)}\right)}{\pi(s^{(i)}|x_{0:n})}\\
+        w^{(i)} = \frac{w^{*(i)}}{\sum_{j=1}^N w^{*(j)}}\\
+    \end{cases}
+\end{equation}
+Here is an algorithm for the importance sampling:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{img/is.png}
+    \label{fig:is}
+\end{figure}
+\subsection{Sequential importance sampling}
+Is requires \(N\) samples \(s_n^{(i)}\). Since we are dealing with dynamical systems in this part, we can only collect one sample before time advances, leading to the sample at the next time step. Sequential importance sampling allows to account for this temporal variability. The method is the same as for the IS, but the weights vary with time:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{img/sis.png}
+    \label{fig:sis}
+\end{figure}
+Notice that we now have a loop for what was previously done one time. It is here done for every time step.
+\subsection{Sequential importance resampling}
+The degeneracy probvlem is when we converge to a situation where almost all the particles have zero or nearly zero weights. To solve it, we can draw \(N\) new samples from the discrete distribution defined by the weights and replace the old set of \(N\) samples with this new set.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{img/sir.png}
+    \label{fig:sir}
+\end{figure}
+The variable "criterion" describes how frequently resampling is performed. If we define
+\begin{equation}
+    P_n^{eff} = \frac{1}{\sum_{i=1}^N \left(w_n^{(i)}\right)^2}
+\end{equation}
+we can perform resampling when this value reaches the criterion, e.g. \(P_n^{eff} <N/10\).
+\chapter{Notion of random function}
+\section{Random vector}
+\subsection{Real random variable}
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B. : We denote \(X\) the rv and \(x\) one realization.
+\end{itemize}
+A rv is a correspondance between the result of an experiment and a real/complex scalar value. It is completely described by its probability density function (pdf), denoted \(T_X(x)\). Its associated moments are 
+\begin{itemize}
+    \item Mean : \(m_X = \mathbb{E}(X) = \int_x xT_X(x)dx\)
+    \item Variance : \(\sigma_X^2 = Var(X) = \int_x (x-m_X)^2T_X(x)dx\)
+\end{itemize}
+\subsection{Vectorization}
+We denote the random vector \(V\) of size 2 by \(V = (X\qquad Y)^T\). Each entry is a random variable. The random vector is fully characterized by the joint probability density function denoted by \(T_{XY}(x,y)\). We define the marginal probability density functions:
+\begin{align}
+    T_X(x) &= \int_y T_{XY}(x,y)dy\\
+    T_Y(y) &= \int_x T_{XY}(x,y)dx\\
+\end{align}
+The moments of the random vector are 
+\begin{multline}
+    m_V = (m_X\qquad m_Y)^T \\
+    \begin{cases}
+        m_X = \int_x \int_y xT_{XY}(x,y)dxdy = \int_x xT_X(x)dx\\
+        m_Y = \int_x \int_y yT_{XY}(x,y)dxdy = \int_y yT_Y(y)dy\\
+    \end{cases}
+    C_V = \begin{pmatrix}
+        \sigma^2_X & C_{XY}\\
+        C_{YX} & \sigma_Y^2\\
+    \end{pmatrix}
+    C_{XY} = \mathbb{E}((X-m_X)(Y-m_Y)) = \int_x\int_y (x-m_X)(y-m_Y)T_{XY}(x,y)dxdy
+\end{multline}
+We also define the correlation:
+\begin{equation}
+    R_{XY} = \mathbb{E}(XY) = \int_{x,y} T_{XY}dxdy
+\end{equation}
+Properties of the correlation:
+\begin{itemize}
+    \item Decorrelation if \(C_{XY} = 0\)
+    \item Independence if \(T_{XY}(x,y) = T_X(x)T_Y(y)\)
+    \item Independence \(\rightarrow\) Decorrelation
+    \item Condition probability density function: 
+\end{itemize}
+\begin{equation}
+    T_{X|Y}(x|y) = \frac{T_{XY}(x,y)}{T_Y(y)} \Longrightarrow \begin{cases}
+        T_{XY}(x,y) = T_{X|Y}(x|y) T_Y(y)\\
+        T_X(x) = \int_y T_{X|Y}(x|y)T_Y(y)dy
+    \end{cases}
+\end{equation}
+\subsection{Complex random variable}
+We note a compex random variable \(Z = X+iY\). It is modeled as a particular case of a random vector of size 2: the statistical properties of \(Z\) are those of \(X\) and \(Y\) considered jointly. \\
+Properties:
+\begin{itemize}
+    \item By linearity of the expectation, \(m_Z = m_X + im_Y\)
+    \item \(C_{Z_1Z_2} = \mathbb{E}((Z_1-m_{Z_1})(Z_2-m_{Z_2})^*)\)
+    \item \(\sigma_Z^2 = \sigma_X^2+\sigma_Y^2\)
+\end{itemize}
+\subsection{Generalization to size N}
+The concept of random vector can be generalized to size \(N\): it is fully characterized by the joint pdf 
+\begin{equation}
+    T_V(v) = T_{X_1,\dots,X_N}(x_1,\dots,x_N)
+\end{equation}
+and only partially characterized by the marginal pdfs of each entry:
+\begin{equation}
+    T_{X_1}(x_1),\dots,T_{X_N}(x_N)
+\end{equation}
+The mean is given by \(m_V = (m_{X_1}\qquad \dots \qquad m_{X_N})^T\), and the covariance matrix is 
+\begin{equation}
+    C_V = \begin{pmatrix}
+        \sigma_{X_1}^2 & \dots C_{X_1,X_N}\\
+        \vdots & \ddots & \vdots \\
+        C_{X_N,X_1} & \dots & \sigma_{X_N}^2\\
+    \end{pmatrix}
+\end{equation}
+\section{Random function}
+A random function is the correspondance between the result of an experiment (=draw) and a function \(X(t)\), whose output at each instant \(t\) is not a scalar and deterministic number, but rather a random variable, whose pdf could be different for each instant \(t\). \\
+Let us consider \(n\) different instants, denoted \(t_1,\dots,t_n\). The marginal pdfs associated with these different instants are denoted by
+\begin{equation}
+    T_X(x(t_1)),\dots, T_X(x(t_n))
+\end{equation}
+To fully characterize \(n\) instants simultaneously, one uses once again the joint probability density functions:
+\begin{equation}
+    T_X(x(t_1),\dots,x(t_n))
+\end{equation}
+For a random function which is continuous time, we have \(t\in (-\infty,\infty)\) and thus an infinite number of time instants need to be considered. Therefore, to fully characterise the random function, one should know the joint pdfs of all orders:
+\begin{equation}
+    \lim_{n\rightarrow \infty} T_X(x(t_1,\dots,x(t_n))
+\end{equation}
+This means that a continuous time random function could be seen as a random vector of infinite size. \\
+
+The random function will be said to have independent values for instants \(t_1,\dots,t_n\) if 
+\begin{equation}
+    T_X(x(t_1,\dots,x(t_n)) = T_X(x(t_1)) \times \dots \times T_X(x(t_n))
+\end{equation}
+Let us assume that the instants \(t_1,\dots,t_n\) are in chronological order, that is \(t_1<t_2<\dots<t_n\). Instant \(n\) is independent of past values if 
+\begin{equation}
+    T_X(x(t_n)|x(t_1),\dots,x(t_{n-1})) = T_X(x(t_n))
+\end{equation}
+\chapter{Moments of a random function}
+The mean is a deterministic function which, for \(t\), provides the mean of the rv \(X(t)\) associated with that instant:
+\begin{equation}
+    m_X(t) = \mathbb{E}(X(t)) = \int_{-\infty}^{\infty}xT_X(x(t))dx
+\end{equation}
+The variance has the same interpretation as for random variables, for \(X(t) = X_r(t) + jX_i(t)\).
+\begin{equation}
+    \sigma^2_X(t) = \sigma^2_{X_r}(t) + \sigma_{X_i}^2(t)
+\end{equation}
+Assuming two instants \(t_1\) and \(t_2\), the covariance is 
+\begin{align}
+    C_X(t_1,t_2) &= \mathbb{E}((X(t_1)-m_X(t_1))(X(t_2)-m_X(t_2))^*) \\ 
+    &= \int_{x_1}\int_{x_2} (x_1-m_X(t_1))(x_2-m_X(t_2))^*T_X(x(t_1),x(t_2))dx_1dx_2
+\end{align}
+\underline{Covariance properties :}
+\begin{itemize}
+    \item \(\sigma_X(t) = C_X(t,t)\)
+    \item For a real random function, \(C_X(t_1,t_2) = C_X(t_2,t_1)\)
+    \item For a complex random function, \(C_X(t_1,t_2) = C_X^*(t_2,t_1)\)
+\end{itemize}
+A random function has uncorrelated values if, for all pairs \(t_1, t_2\),
+\begin{equation}
+    C_X(t_1,t_2) = \sigma_X^2\delta (t_1-t_2)
+\end{equation}
+\subsection{Cross Variance properties}
+Assume two random functions \(X(t),Y(t)\). The cross-variance between these two functions is given by
+\begin{align}
+    C_{XY}(t_1,t_2) &= \mathbb{E}((X(t_1)-m_X(t_1))(Y(t_2)-m_Y(t_2))^*)\\ 
+    &= \int_x\int_y (x-m_X(t_1)(y-m_Y(t_2))^*T_{XY}(x(t_1),y(t_2))dxdy
+\end{align}
+We also have
+\begin{equation}
+    C_{XY}(t_1,t_2) = C_{YX}^*(t_2,t_1)
+\end{equation}
+\chapter{Properties of random functions}
+\section{Stationary signals}
+A signal is said to be strong-sense stationary (SSS), if the joint pdfs of all orders do not depend on the time origin \(t=0\):
+\begin{equation}
+    T_X(x(t_1),x(t_2),\dots, x(t_n)) = T_X(x(0),x(t_2-t_1),\dots,x(t_n-t_1))
+\end{equation}
+This means that there is a dependence of the joint pdfs to only the time differences.\\
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: a second order stationary signal is a SSS signal, but limited to order \(n=2\). 
+\end{itemize}
+A signal is said to be weak-sense stationary (WSS) if 
+\begin{itemize}
+    \item The mean is time-independent: \(m_X(t) = m_X\);
+    \item The covariance function only depends on the difference between the two time instants: \(C_X(t_1,t_2) = C_X(\tau=t_1-t_2,0)=C_X(\tau)\)
+\end{itemize}
+\section{Ergodic signals}
+Sometimes, we only have one single recorded realisation \(x_1(t)\) of the process. To estimate the mean in that case, we assume the signal to be WSS.\\
+
+Ergodicity is the framework enabling to investigate whether a signal is ergodic, i.e. under which conditions ensemble averaging\footnote{ensemble averaging means averging on the random nature of the function} can be replaced by mean averaging.
+\subsection{Process ergodic in the mean}
+Let \(\eta_T(t_0)\) be the time-average of the random function \(X(t)\) over the time interval \(T\):
+\begin{equation}
+    \eta_T(t_0) = \frac{1}{T}\int_{t_0}^{t_0+T}X(t)dt
+\end{equation}
+It is therefore a random variable depending in the general case on \(T\) and \(t_0\). The random process is said to be ergodic in the mean when, for \(T\rightarrow\infty\), \(\eta_T(t_0)\) becomes independent of \(t_0\) and \(T\), deterministic, and equal to \(m_X\):
+\begin{equation}
+    \lim_{T\rightarrow \infty} \eta_T(t_0) = m_X\qquad \forall t_0
+\end{equation}
+A necessary and sufficient condition to benefit from egodicity in the mean is
+\begin{equation}
+    \lim_{T\rightarrow \infty} \frac{1}{T}\int_0^T \left(1-\frac{\tau}{T}\right)C_X(\tau)d\tau =0
+\end{equation}
+A condition which is sufficient to benefit from ergodicity in the mean is
+\begin{equation}
+    \lim_{\tau\rightarrow \infty}C_X(\tau)=0
+\end{equation}
+For discrete-time processes, the time average is given by 
+\begin{equation}
+    \eta_N (n_0) = \frac{1}{N}\sum_{n=n_0}^{n_0+N}X(n)
+\end{equation}
+and we have ergodicity in the mean if 
+\begin{equation}
+    \lim_{N\rightarrow \infty}\eta_N(n_0) = m_X \qquad \forall n_0
+\end{equation}
+\subsection{Process ergodic in the auto-correlation function}
+The time auto-correlation function \(\phi_X(\tau,t_0)\) of a WSS signal \(X(t)\) is given by 
+\begin{equation}
+    \phi_T(\tau,t_0) = \frac{1}{T}\int_{t_0}^{t_0+T} \left(X(t+\tau)-\eta_T(t_0+\tau)\right)\left(X(t)-\eta_T(t_0)\right)^* dt
+\end{equation}
+\(\phi_T(\tau,t_0)\) is a random variable, function of \(t_0\) and \(\tau\). There is ergodicity with respect to the auto-correlation function if 
+\begin{itemize}
+    \item ergodicity in the mean is fulfilled;
+    \item for \(T\rightarrow\infty\), the time auto-correlation function becomes independent of \(t_0\), deterministic and equal to the covariance matrix:
+\end{itemize}
+\begin{equation}
+    \lim_{T\rightarrow \infty}\phi_T(\tau,t_0)=C_X(\tau)
+\end{equation}
+\subsubsection{Properties}
+\begin{itemize}
+    \item The ergodicity in the auto-correlation functiuon of a random signal \(X(t)\) actually corresponds to the ergodicity in the mean of 
+\end{itemize}
+\begin{equation}
+    \left(X(t+\tau)-\eta_T(t_0+\tau)\right)\left(X(t)-\eta_T(t_0)\right)^* 
+\end{equation}
+\begin{itemize}
+    \item For gaussian distributed signals, the higher order moments only depend on order 1 and 2 moments.
+    \item A necessary and sufficient condition ot benefit from ergodicity in the auto-correlation function for all gaussian distributed and WSS signals:
+\end{itemize}
+\begin{equation}
+    \lim_{T\rightarrow \infty}\frac{1}{T}\int_0^T \left(1-\frac{\theta}{T}\right)\left(C_X^2(\theta)+C_X(\theta+\tau)C_X(\theta-\tau)\right)d\theta = 0\qquad \forall \tau
+\end{equation}
+\begin{itemize}
+    \item A sufficient condition for similar signals is \(\lim_{\tau \rightarrow\infty} C_X(\tau) = 0\).
+    \item For sequences (discrete signals), the correlation writes
+\end{itemize}
+\begin{equation}
+    \phi_N(k,n_0) = \frac{1}{N}\sum_{n=n_0}^{n_0+N}\left(X(n+k)-\eta_N(n_0+k)\right)\left(X(n)-\eta_N(n_0)\right)^*
+\end{equation}
+\subsubsection{Corollary}
+\begin{align}
+    m_X & = \lim_{T\rightarrow \infty}\eta_T(t_0) = \lim_{T\rightarrow \infty} \frac{1}{T}\int_{t_0}^{t_0+T} X(t)dt\\
+    \sigma_X^2 = \lim_{T\rightarrow \infty}\phi_T(0,t_0) = \lim_{T\rightarrow \infty}\frac{1}{T}\int_{t_0}^{t_0+T} |X(t)-\eta_T(t_0)|^2dt
+\end{align}
+In electricity, with ergodicity in the mean, the statistical mean represents the DC component. With ergodicity in the auto-correlation function, the variance represents the power of the AC component. \\
+
+To conclude, an ergodic WSS process is a WSS process for which the pdf that should be obtained from ensemble averages, i.e. scanning the range of possible values at a given time \(t\), can be reconstructed or estimated by having observations over time, which enable to scan the range of values similarly to what would be done by staying at instant \(t\).
+\chapter{Spectral description of random functions}
+\section{Spectral representation of random signals}
+Let us assume that \(X(t)\) is a random signal and \(X_c(t) = X(t)-m_X(t)\) is its centered version. By means of the Fourier transform applied to \(X_c(t)\), we obtain a new random function named random spectrum:
+\begin{align}
+    \mathcal{X}(\omega) &= \int_{-\infty}^\infty e^{-j\omega t}X_c(t)dt\\
+    X_c(t) &= \frac{1}{2\pi}\int_{-\infty}^\infty e^{j\omega t}\mathcal{X}(\omega)d\omega\\
+\end{align}
+By linearity, and as the mean of \(X_c(t)\) is zero, \(\mathcal{X}(\omega)\) is zero-mean too. \\
+Its covariance is given by the following equation:
+\begin{equation}
+    C_{\mathcal{X}}(\omega,\omega') = \mathbb{E}(\mathcal{X}(\omega)\mathcal{X}^*(\omega') = \int_{-\infty}^\infty \int_{-\infty}^{\infty}C_X(t,t')e^{-j\omega t}e^{j\omega' t'}dtdt'
+\end{equation}
+And if the process is WSS:
+\begin{equation}
+    C_{\mathcal{X}}(\omega,\omega') = \underbrace{\int_{-\infty}^{\infty}C_X(\tau)e^{-j\omega \tau}d\tau}_{\eqqcolon \gamma_X(\omega)} \underbrace{\int_{-\infty}^\infty e^{-j(\omega-\omega')t'}dt'}_{2\pi \delta(\omega-\omega')}
+\end{equation}
+\section{Cramèr Loève theorem}
+\begin{equation}
+    \color{red}\boxed{\color{black}C_{\mathcal{X}}(\omega,\omega') = \gamma_X(\omega)2\pi \delta(\omega-\omega')}\color{black}
+\end{equation}
+where \(\gamma_X(\omega)\) is the Fourier trasform of the covariance \(C_X(\tau)\), named power spectral density (psd).This means that \(\mathcal{X}(\omega)\) has uncorrelated values. Hence, the Fourier transform is the change of basis that transforms the WSS random signal \(X(t)\) with correlated values in another random signal \(\mathcal{X}(\omega)\), with uncorrelated values. \\
+the relation between covariance and power spectral density is 
+\begin{equation}
+    \begin{cases}
+        \gamma_X(\omega) = \int_{-\infty}^{\infty} e^{-j\omega \tau}C_X(\tau)d\tau\\
+        C_X(\tau) = \frac{1}{2\pi} \int_{-\infty}^{\infty}\gamma_X(\omega)d\omega\\
+    \end{cases}
+\end{equation}
+The variance can also be computed from the psd:
+\begin{equation}
+    \sigma_X^2 = \int_{-\infty}^{\infty} \gamma_X(2\pi f)df
+\end{equation}
+Thus the psd can be interpreted as a description of how the power is distributed along the frequency axis. 
+\section{White noise}
+A WSS random signal is said to be a white noise if the values of this signal are uncorrelated. For such a process, the covariance and the psd are the following:
+\begin{multline}
+    C_W(\tau) = N_0 \delta (\tau)\\
+    \gamma_W(\omega) = N_0 \qquad \text{ for }-\infty\le \omega \le \infty
+\end{multline}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/white_noise.png}
+    \caption{White noise covariance and psd}
+    \label{fig:whitenoise}
+\end{figure}
+As the psd is flat, it means that the average white noise power is the same for all frequencies. For discrete time signals, a WSS sequence \(X(n)\) is a white noise if 
+\begin{multline}
+    C_W(n) = N_0\delta(n)\\
+    \gamma_W(e^{j\Omega)} = N_0 \qquad \text{ for }0\le \Omega \le 2\pi
+\end{multline}
+\subsection{Additive White Gaussian Noise}
+A white noise signal \(W(t)\) is said to be an Additive White Gaussian Noise (AWGN) if it fulfills the following two conditions:
+\begin{itemize}
+    \item \(W(t)\) is added to a deterministic \(x(t)\) and corrupts it, and is independent of \(x(t)\).
+    \item \(W(t)\) is Gaussian distributed for all instants \(t\).
+\end{itemize}
+\chapter{Filtering by an LTI system}
+\section{Filtering by means of an LTI system}
+We study here the filtering of a WSS random process \(X(t)\) by a system. The hypotheses on the system are 
+\begin{itemize}
+    \item The system is deterministic;
+    \item the system is LTI;
+    \item its impulse response is noted \(g(t)\).
+\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/filtering.png}
+\end{figure}
+The input/output relation of the system is
+\begin{equation}
+    Y(t) = \int_v X(t-v)g(v)dv
+\end{equation}
+\subsection{Mean of the output}
+The mean of the system output is given by 
+\begin{align}
+    \mathbb{E}(Y(t)) &= \mathbb{E}\left(\int_vX(t-v)g(v)dv\right) = \int_v \mathbb{E}(X(t-v))g(v)dv\\
+     & \int_v m_Xg(v)dv = m_X \underbrace{\int_v g(v) e^{-j0v}dv}_{G(\omega=0}\\
+     & m_XG(0)
+\end{align}
+where \(G(\omega)\) is the transfer function of the system, and \(G(0)\) is named static gain.
+\subsection{Covariance of the system ouput}
+The covariance of the system output is given by
+\begin{align}
+    C_Y(t,t') & = \mathbb{E}(Y(t)Y^*(t'))
+    & = \int_v \int_{v'} \mathbb{E}\left(X_c(t-v)X_c^*(t'-v')\right)g(v)g^*(v')dv'dv
+\end{align}
+For a WSS \(X(t)\), the last relation leads to 
+\begin{align}
+    C_Y(t,t') &= \int_v\int_{v'} C_X(t-t'+v'-v)g(v)g^*(v')dv'dv
+     & = C_Y(t-t') = C_Y(\tau)
+\end{align}
+This means that the system output is also WSS. 
+\subsection{Power spectral density of the system output - Wiener-Khintchine theorem}
+In the spectral domain, we have:
+\begin{align}\label{eq:psd}
+    \gamma_Y(\omega) &= \int_s C_Y(s)e^{-j\omega s}ds\\
+    & = G(\omega)G^*(\omega)\gamma_X(\omega)\\
+    & = |G(\omega)|^2 \gamma_X(\omega)
+\end{align}
+\section{Generate a signal}
+Let \(W(t)\) be a white noise. We have \(C_W(\tau)=N_0\delta(\tau)\) and \(\gamma_W(\omega) = N_0\), \(\forall \omega\). By WK theorem, if the input to an LTI system with a transfer function \(H(\omega)\), the psd of the output will be given by 
+\begin{equation}
+    \gamma_Y(\omega) = |H(\omega)|^2N_0
+\end{equation}
+We need to find the transfer function the filter such that \(|H(\omega)|^2=\gamma_Y(\omega)/N_0\). This is called spectral factorisation.
+\section{Generalisation to joint densities}
+Joint densities have the following properties:
+\begin{align}
+    \gamma_{Y,X}(\omega) &= H(\omega)\gamma_X(\omega)\\
+    \gamma_{X,Y}(\omega) &= \gamma^*_{Y,X}(\omega) = \gamma_X(\omega)H^*(\omega)
+\end{align}
+where \(\gamma_{X,Y}(\omega)\) and \(\gamma_{Y,X}(\omega)\) are the Fourier transforms of their respective cross-covariances.\\
+
+For discrete time processes,
+\begin{align}
+    \gamma_Y(z) &= H(z) \gamma_X(z)H^*(1/z^*)\\
+    \gamma_{Y,X}(z) & = H(z) \gamma_X(z)\\
+    \gamma_{X,Y}(z) & = \gamma_X(z) H^*(1/z^*)
+\end{align}
+where \(\gamma_X(z)\) is the psd of process \(X(n)\) which is discrete time and expressed by means of the \(z\)-transform:
+\begin{equation}
+    \gamma_X(z) = \sum_{p=-\infty}^{\infty}C_X(p)z^{-p}
+\end{equation}
+\chapter{Wiener filtering theory}
+\section{Objective of Wiener problems}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/wiener_problem.png}
+    \caption{Wiener problem}
+    \label{fig:wiener}
+\end{figure}
+The signal \(Y(k)\) is an observation of an original signal \(X(k)\) and therefore correlated with it. It is a noisy or distorted version of \(X(k)\). Our goal here is to estimate \(X(k)\) based on the knowledge of \(Y(k)\). \\
+
+The idea of the theory of Wiener is to process \(Y(k)\) by means of filter \(w(k)\) to obtain an estimate of \(X(k)\):
+\begin{equation}
+    \Hat{x}(k) = \sum_{l=l_1}^{l=l_2} w(l)y(k-l)
+\end{equation}
+And we choose \(w(k)\), the deterministic filter coefficients, in order to minimize the mean square error between \(X(k)\) and \(\Hat{W}(k)\).
+\subsection{Filtering}
+\begin{equation}
+    \Hat{x}(k) = \sum_{l=0}^{l=l_2} w(l)y(k-l)\qquad l_2>0
+\end{equation}
+The estimation of \(x(k)\) is done using observations \(y(j)\) until instant \(j=k\). It relies on present and past observations.
+\subsection{Prediction}
+\begin{equation}
+    \Hat{x}(k) = \sum_{l=l_1}^{l=l_2}w(l)y(k-l)\qquad 0<l_1<l_2
+\end{equation}
+The estimation of \(x(k)\) is done using observations \(y(j)\) until instant \(j<k\). It relies on past observations only.
+\subsection{Smoothing}
+\begin{equation}
+    \Hat{x}(k) = \sum_{l=l_1}^{l=l_2}w(l)y(k-l)\qquad l_1<0<l_2
+\end{equation}
+The estimation of \(x(k)\) is done using observations \(y(j)\) until instant \(j>k\). It relies on past, present and future observations.\\
+
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: we assume the process \(Z(k) = \begin{pmatrix}
+        X(k)\\
+        Y(k)
+    \end{pmatrix}\) to be WSS.
+\end{itemize}
+\section{Orthogonality principle}
+To find the filter coefficients \(w(n)\), we minimize the MSE:
+\begin{equation}
+    \zeta = \mathbb{E}\left(|E(k)|^2\right) = \mathbb{E}\left(|X(k)-\Hat{X}(k)|^2\right)
+\end{equation}
+is called the Wiener criterion. \\
+\begin{itemize}
+    \item [\(\rightarrow\)] N.B.: the coefficients \(w(n)\) can be complex : \(w(k) = w_r(k)+w_i(k)\)
+\end{itemize}
+For the filter to be optimum, we require 
+\begin{align}
+    \frac{\partial \zeta}{\partial w_r(l)} = 0\qquad l=l_1,\dots,l_2
+    \frac{\partial \zeta}{\partial w_i(l)} = 0\qquad l=l_1,\dots,l_2
+\end{align}
+And the second derivatives should be positive for minimum. \\
+
+Computing the derivatives, we find the orthogonality principle:
+\begin{equation}
+    \mathbb{E}\left(E(k)Y^*(k-l)\right) =0\qquad \text{ for } l=l_1,\dots,l_2
+\end{equation}
+Corollary:
+\begin{equation}
+    R_{\Hat{X}E}(0) = \mathbb{E}\left(\Hat{X}(k)E^*(k)\right) = 0
+\end{equation}
+with \(R\) the correlation. Since the estimate \(\Hat{X}(k)\) is a linear combinsation of the observations, it turns out that the mutual correlation \(R_{\Hat{X}E}(0)\), between the error and the estimate, is also equal to zero. 
+\section{Finite impulse response (FIR) filters}
+\subsection{FIR Filter of order $N$}
+Here, we will expand the orthogonality principle in the case of a filtering problem, with a finite number of coefficients: \(l_1=0\) and \(l_2=N-1\). Let us first replace \(E(k)\) with 
+\begin{equation}
+    E(k) = X(k)-\Hat{X}(k) = X(k) - \sum_{j=0}^{N-1} w(j) Y(k-j)
+\end{equation}
+in the orthogonality principle:
+\begin{align}
+    \mathbb{E}\left((X(k)-\Hat{X}(k))Y^*(k-l)\right) &= 0\\
+    &\Longleftrightarrow
+    \mathbb{E}\left(X(k)Y^*(k-l)\right) &= \sum_{j=0}^{N-1} w(j)\mathbb{E}\left(Y(k-j)Y^*(k-l)\right)
+\end{align}
+Which gives the Wiener-Hopf equations:
+\begin{equation}
+    R_{XY}(l) = \sum_{j=0}^{N-1}w(j)R_Y(l-j) \qquad 0\le l\le N-1
+\end{equation}
+By developping this equation, we obtain a linear system:
+\begin{equation}
+    \begin{bmatrix}
+        R_Y(0) & R_Y(-1) & \dots & R_Y(-N+1)\\
+        R_Y(1) & R_Y(0) & \dots & R_Y(-N+2)\\
+        \dots & \dots & \ddots & \vdots \\
+        R_Y(N-1) & \dots & \dots & R_Y(0)\\
+    \end{bmatrix} \begin{bmatrix}
+        w(0)\\
+        w(1)\\
+        \vdots \\
+        w(N-1)\\
+    \end{bmatrix} = \begin{bmatrix}
+        R_{XY}(0)\\
+        R_{XY}(1)\\
+        \vdots \\
+        R_{XY}(N-1)\\
+    \end{bmatrix}
+\end{equation}
+As the correlation function is hermitian, i.e. \(R_Y(-k) = R_Y^*(k)\), then
+\begin{equation}
+    \underbrace{
+    \begin{bmatrix}
+        R_Y(0) & R_Y^*(1) & \dots & R_Y^*(N-1)\\
+        R_Y(1) & R_Y(0) & \dots & R_Y^*(N-2)\\
+        \dots & \dots & \ddots & \vdots \\
+        R_Y(N-1) & \dots & \dots & R_Y(0)\\
+    \end{bmatrix}}_{R_Y} \underbrace{\begin{bmatrix}
+        w(0)\\
+        w(1)\\
+        \vdots \\
+        w(N-1)\\
+    \end{bmatrix}}_{\textbf{w}} = \underbrace{\begin{bmatrix}
+        R_{XY}(0)\\
+        R_{XY}(1)\\
+        \vdots \\
+        R_{XY}(N-1)\\
+    \end{bmatrix}}_{R_{XY}}
+\end{equation}
+The optimal solution then is 
+\begin{equation}
+    \textbf{w}_o = R_Y^{-1} R_{XY}
+\end{equation}
+\subsection{FIR - Analysis of the error}
+For the optimal filter, we have
+\begin{align}
+    \zeta_{\min} &= \mathbb{E}\left(E(k)E^*(k)\right)\\
+    & = \mathbb{E}\left(X(k)X^*(k)\right) - \mathbb{E}\left(\Hat{X}(k)X^*(k)\right)\\
+    & = R_X(0) - w_o^T R^*_{XY}\\
+    & = R_X(0) - R_{XY}^TR^{-T}_Y R_{XY}^*
+\end{align}
+For a non optimal coefficient vector, the error is 
+\begin{equation}
+    \zeta = \zeta_{\min} + \sum_k \lambda_k |\nu_k|^2
+\end{equation}
+with \(\lambda_k\) the eigenvalues of \(R_Y\), and \(\nu_k\) the \(k\)-th component of the vector \(\nu = M(w-w_o)\), \(M\) being the eigenvector matrix of \(R_Y\). 
+\chapter{Spectral factorization}
+The spectral factorization consists in finding, for a given \(\gamma(\omega)\), \(L(\omega)\) such that 
+\begin{equation}
+    \gamma(\omega) = L(\omega)L^*(\omega) \sigma^2
+\end{equation}
+\section{Continuous case}
+A solution \(L(s)\) exists if the Paley-Wiener condition is fulfilled:
+\begin{equation}
+    \int_{-\infty}^{\infty} \frac{|\ln \gamma_Y(\omega)|}{1+\omega^2}d\omega < \infty
+\end{equation}
+
+We focus here on a real and rational process. Therefore, \(C_X(\tau)\) is real and even, and thus \(\gamma(\omega)\) too. This means that \(\gamma(\omega)\) should be function of \(\omega^2\) and rational. We can then write it this way:
+\begin{equation}
+    \gamma_Y(\omega) = \frac{N(\omega^2)}{D(\omega^2)}
+\end{equation}
+and with the Laplace transforms:
+\begin{equation}
+    \gamma_Y(s) = \frac{N(-s^2)}{D(-s^2)}
+\end{equation}
+As \(\gamma(\omega)\) is real, its roots are either real of complex conjugate, meaning they are simetrically distributed in the complex plane. We therefore choose for \(L(s)\) all roots with negative real part:
+\begin{equation}
+    \gamma_Y(s) = \frac{N(-s^2)}{D(-s^2)} = \frac{C(s)C(-s)}{A(s)A(-s)} = L(s)L(-s)
+\end{equation}
+defining 
+\begin{equation}
+    L(s) \coloneqq \frac{C(s)}{A(s)}
+\end{equation}
+With this definition, we can demonstrate that \(L(s)\) is causal and stable, with an inverse also causal and stable.We say that is is a minimal phase filter. 
+\section{Discrete case}
+In the discrete state, we have the same relation between \(\gamma(e^{j\Omega})\) and \(L(e^{j\Omega})\) as in continous time:
+\begin{equation}
+    \gamma_Y\left(e^{j\Omega}\right) = L\left(e^{j\Omega}\right)L^*\left(e^{j\Omega}\right)\sigma^2
+\end{equation}
+The Paley Wiener criterion is also identical:
+\begin{equation}
+    \int_{-\pi}^\pi |\ln \gamma_Y(e^{j\Omega})|d\Omega <\infty 
+\end{equation}
+The factorization becomes 
+\begin{align}
+    \gamma_Y(e^{j\Omega}) &= L(e^{j\Omega})L^*(e^{j\Omega})\sigma_E^2=|L(e^{j\Omega})|^2\sigma_E^2\\
+    \gamma_Y(z) & =L(z)L^*(1/z) \sigma_E^2\\
+\end{align}
+As we did is the continuous case, we can find a \(L(z)\) that is causal and stable, and we can normalise it such that \(\lim_{z\rightarrow \infty} L(z) = 1\). This means that 
+\begin{equation}
+    L(z) = \sum_{i=0}^\infty l(i)z^i
+\end{equation}
+and it is said to be monic. Therefore, the random process can be expressed as 
+\begin{equation}
+    Y(k) = \sum_{j=0}^\infty l(j) E(k-j) = E(k) + \sum_{j=1}^\infty l(j)E(k-j)
+\end{equation}
+defining the innovation E(k) based on the inverse filter:
+\begin{equation}
+    E(k) = \sum_{j=0}^\infty f(j)Y(k-j) = Y(k) + \sum_{j=1}^\infty f(j)Y(k-j)
+\end{equation}
+The relations between all those signals is the following
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/spectral_fact.png}
+    \caption{Discrete spectral factorization}
+    \label{fig:discrete_sf}
+\end{figure}
+Thus, if we know \(Y(k)\), we know \(E(k)\) and that means that knowing one is equivalent to knowing the other. However, working with the innovation is more interesting: the expressions of the predictors are simpler and the innovation elements are uncorrelated, hence containing less redundancy and enabling more compact encoding.
+\subsection{Horizon 1 predictor}
+We know that 
+\begin{equation}
+    Y(k) = E(k) - \sum_{j=1}^\infty f(j)Y(k-j)
+\end{equation}
+Assuming \(Y\) is observed until \(k-1\) and we want to predict \(y(k)\), then we choose the condition expectation of \(Y(k)\) as a predictor:
+\begin{align}
+    &\mathbb{E}(Y(k)|\{Y(j),j\le k-1\})
+    & = \mathbb{E}(E(k)| \{Y(j), j\le k-1\}) - \sum_{j=1}^\infty f(j) y(k-j)
+    & = -\sum_{j=1}^\infty f(j)y(k-j)
+\end{align}
+As the expectation of \(Y(k)\) does not depend on \(E(k)\), observing \(Y\) until \(k-1\) means that we miss the information associated with \(E(k)\).
+\subsection{Real process with rational psd}
+For the reason stated above, we have 
+\begin{equation}
+    \gamma_Y(z) = L(z)L(1/z)\sigma_E^2 = \frac{C(z)C(1/z)}{A(z)A(1/z)}\sigma_E^2
+\end{equation}
+and we have the reccurence equation
+\begin{equation}
+    \sum_{i=0}^{n} a_iY(k-i) = \sum_{i=0}^n c_iE(k-i)
+\end{equation}
+\begin{itemize}
+    \item If \(a_k = 0\) for all \(k\), then we have a moving average on the \(y\) and call it MA.
+    \item If \(c_k = 0\) for all \(k\), then we call it autoregressive (\(AR\)).
+    \item If \(a_k \neq 0\) and \(c_j \neq 0\) for at least one \(k\) and one \(j\) then it is ARMA (autoregressive and moving average).
+    \item [\(\rightarrow\)] N.B.: a first order autoregressive system is \(Y(k) = E(k) + \alpha Y(k-1)\).
+\end{itemize}
+
+
+\end{document}
