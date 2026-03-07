@@ -744,4 +744,13 @@ After defining the variables and the constraints, we can use a constraint solver
 \end{figure}
 \subsection{CoverSize}
 TODO
+\section{Sequence mining}
+\begin{definition}
+    A \textbf{sequence} is an ordered (w.r.t time) list of events and is noted $<e_1 e_2 ... e_n>$, where $e_i$ is an event (called an \textbf{element} of the sequence). An event can be a single item or a set of items that occur together at a specific time.
+\end{definition}
+We consider that an item can occur at most once in an event of a sequence, but can occur multiple times in different events of a sequence.
+\begin{definition}
+    The \textbf{length} of a sequence is the number of items in the sequence.
+\end{definition}
+For example, the length of the sequence $<a (b c) c>$ is 4, because it contains 4 items: $a$, $b$, $c$ and $d$. Even though, there is 3 elements. A sequence with $l$ elements is called a \textbf{l-sequence}.
 \end{document}
