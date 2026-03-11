@@ -816,4 +816,23 @@ First let us define the notations for adding an extension (new edge $e$) of a gr
     \item adding a vertex: called \textbf{forward extension} $g \diamond_{xf} e$
     \item adding an edge between two existing vertices: called \textbf{backward extension} $g \diamond_{xb} e$
 \end{itemize}
+\begin{algorithm}[H]
+    \caption{PatternGrowthGraph algorithm}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Seed of the graph to grow $g$, dataset of graphs $\mathcal{D}$, minimum support threshold $\theta$, current set of frequent graphs $S$
+        \State \textbf{Output:} Set $S$ of frequent itemsets
+        \If{$g \in S$}
+            \State \textbf{return}
+        \Else
+            \State $S = S \cup \{g\}$
+        \EndIf
+        \State Scan $\mathcal{D}$ once, find all the edges $e$ such that $g$ can be extended to $g \diamond_x e$
+        \For{each frequent $g \diamond_x e$}
+            \State PatternGrowthGraph($g \diamond_x e$, $\mathcal{D}$, $\theta$, $S$)
+        \EndFor
+        \State \textbf{return} S
+    \end{algorithmic}
+\end{algorithm}
+\section{Graph-based Substructure Pattern Mining (gSpan)}
+This algorithm is based on the pattern growth method, but it is designed to reduce the generation of duplicates. To do that, it uses a canonical form of the graph called \textbf{DFS code} to represent the graph. The DFS code is a sequence of tuples that represent the edges of the graph in a depth-first search order. 
 \end{document}
