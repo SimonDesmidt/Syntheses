@@ -776,4 +776,44 @@ For example, the length of the sequence $<a (b c) c>$ is 4, because it contains 
         \item $\lambda_E((u, v)) = \lambda_{E'}((M(u), M(v)))$
     \end{itemize}
 \end{definition}
+Finding subgraphs is a computationally hard problem, it is NP-complete. A graph $g$ matches or covers a graph $g'$ from a graph database if $g$ is a subgraph of $g'$.
+\begin{definition}
+    Given a labeled graph data set, $D = \{G_1, G_2, \dots G_n\}$, we define $\texttt{support}(g)$ (or $\texttt{frequency}(g)$) as the percentage (or number) of graphs in a graph database D where g is a subgraph.
+\end{definition}
+A frequent graph is a graph whose support is no less than a minimum support threshold $\theta$.\\
+To find frequent subgraphs, we have two steps:
+\begin{itemize}
+    \item Generate frequent substructure candidates 
+    \item Check the frequency (involves subgraph isomorphism test)
+\end{itemize}
+Usually we used Apriori or pattern growth based method, and we optimize the first step to avoid a maximum the subgraph isomorphism test, which is the most expensive part of the algorithm.
+\section{AprioriGraph}
+Based on the Apriori algorithm, here the generation of the candidate is done by adding either a vertex (with an edge to be connected to the existing graph) or an edge between two existing vertices. 
+\begin{algorithm}[H]
+    \caption{AprioriGraph algorithm}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Transactional dataset $\mathcal{D}$, minimum support threshold $\theta$, set of frequent subgraphs of size $k$ ($S_k$)
+        \State \textbf{Output:} Set $S_{k+1}$ of frequent itemsets
+        \State $S_{k+1} = \emptyset$
+        \For{each frequent $g_i \in S_k$}
+            \For{each frequent $g_j \in S_k$}
+                \For{each size $(k + 1)$ graph $g$ formed by the merge of $g_i$ and $g_j$ }
+                    \If{$g$ is frequent in $\mathcal{D}$ and $g \notin S_{k+1}$}
+                        \State $S_{k+1} = S_{k+1} \cup \{g\}$
+                    \EndIf
+                \EndFor
+            \EndFor
+        \EndFor 
+        \If{$S_{k+1} \neq \emptyset$}
+            \State $S_{k+2}$ = AprioriGraph($\mathcal{D}$, $\theta$, $S_{k+1}$)
+            \State \textbf{Return} $S_{k+2} \cup S_{k+1}$
+        \EndIf
+    \end{algorithmic}
+\end{algorithm}
+\section{PatternGrowthGraph}
+First let us define the notations for adding an extension (new edge $e$) of a graph $g$:
+\begin{itemize}
+    \item adding a vertex: called \textbf{forward extension} $g \diamond_{xf} e$
+    \item adding an edge between two existing vertices: called \textbf{backward extension} $g \diamond_{xb} e$
+\end{itemize}
 \end{document}
