@@ -764,4 +764,16 @@ For example, the length of the sequence $<a (b c) c>$ is 4, because it contains 
         \item a \textbf{label function} $\lambda_e$ mapping each edge to a label
     \end{itemize}
 \end{definition}
+\begin{definition}
+    A graph $g$ is a \textbf{subgraph} of another graph $g'$ if there exists a \textbf{subgraph isomorphism} from $g$ to $g'$.
+\end{definition}
+\begin{definition}
+    A \textbf{subgraph isomorphism} exists if and only if there exist a mapping $M$ from $g$ to $g'$, such that for each vertex $v \in V (g)$ and each edge $(u, v ) \in E (g )$, we have: 
+    \begin{itemize}
+        \item $M(v) \in V(g')$
+        \item $(M(u), M(v)) \in E(g')$
+        \item $\lambda_V(v) = \lambda_{V'}(M(v))$
+        \item $\lambda_E((u, v)) = \lambda_{E'}((M(u), M(v)))$
+    \end{itemize}
+\end{definition}
 \end{document}
