@@ -222,7 +222,7 @@ Let $u_i(t) = A(t) e^{j kx_i}$. Then,
 we call $k^*$ the modified wave number. It is different from $k$ because all the modes do not move at the same speed. For example, for the E2 stencil, its expression is derived in the following way:
 \begin{equation}
 	\begin{aligned}
-		\left. \frac{\partial u}{\partial x}\right|_i = \frac{u_{i+1}-u_i}{2h} = \frac{A}{h} \frac{1}{2}(e^{jkh}-e^{-jkh})e^{jkx_i} = \frac{A}{h} j \sin(kh)e^{ikx_i} = A j k^* e^{jkx_i}\\
+		\left. \frac{\partial u}{\partial x}\right|_i = \frac{u_{i+1}-u_{i-1}}{2h} = \frac{A}{h} \frac{1}{2}(e^{jkh}-e^{-jkh})e^{jkx_i} = \frac{A}{h} j \sin(kh)e^{ikx_i} = A j k^* e^{jkx_i}\\
 		\Longrightarrow k^*h = \sin(kh)
 	\end{aligned}
 \end{equation}

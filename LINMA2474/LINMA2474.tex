@@ -58,7 +58,7 @@
 		{ \huge \bfseries LINMA2474 - High-Dimensional Data Analysis and Optimization \\[0.4cm] }
 	
 		\HRule \\[1.5cm]
-		\textsc{\LARGE Issambre L'Hermite Dumont \\ \LARGE Simon Desmidt}\\[3cm]
+		\textsc{\LARGE Simon Desmidt}\\[3cm]
 		{This summary may not be up-to-date, the newer version is available at this address: \hyperlink{https://github.com/SimonDesmidt/Syntheses}{https://github.com/SimonDesmidt/Syntheses}}
 		\vfill
 		\vspace{2cm}
@@ -290,7 +290,73 @@ And defining $s\coloneqq tv \in \mathcal{T}_x\M$,
 \begin{equation}
 	f(R_x(s)) = f(x) + \langle \text{grad}f(x),s\rangle_x + \O(\|s\|_x^2)
 \end{equation}
-This allows to define the Riemannian gradient descent in the next chapter.
+This allows to define the Riemannian gradient descent in the next chapter (see section \ref{sec:grad-descent}).
+\section{Geometric considerations}
+\subsection{Geodesics}
+\begin{definition}[\textbf{Geodesics}]
+	On a Riemannian manifold $\M$, a geodesic is a smooth curve $c:\mathcal{I}\to \M$ such that $c''(t)=0$ for all $t\in \mathcal{I}$, where $\mathcal{I}$ is an open interval of $\R$. The acceleration $c''(t)$ on a Riemannian submanifold is defined as follows:
+	\begin{equation}
+		c''(t) = \text{Proj}_{c(t)} (\ddot c(t)) \qquad \text{where}\qquad \ddot c(t) \coloneqq \frac{d^2}{dt^2}c(t)
+	\end{equation}
+	For example, the curve $c(t) = \cos(t\|v\|)x + \frac{\sin(t\|v\|)}{\|v\|} v$, where $x$ is the starting point and $v$ the initial velocity ($v\in \mathcal{T}_x\mathcal{S}^{d-1}$), i.e. the curve that traces a great circle on the sphere. 
+	\begin{figure}[H]
+		\centering 
+		\includegraphics[width=.4\textwidth]{img/geodesic.png}
+		\caption{Example of geodesic on the sphere.}
+		\label{fig:geodesic}
+	\end{figure}
+\end{definition}
+\begin{thm}
+	Every geodesic $\gamma$ on $\M$ is locally minimizing, i.e. every $t$ in the domain of $\gamma$ has a neighborhood $\mathcal{I}$ in the domain of $\gamma$ such that, if $a,b\in \mathcal{I}$ with $a<b$, then the restriction $\gamma|_{[a,b]}$ is a minimizing curve. 
+	\begin{itemize}
+		\item [$\to$] Note: not all geodesics are minimizing, e.g. on the sphere, two points are always linked by two geodesics, a long one and a short one (red and black curve on figure \ref{fig:geodesic}).
+	\end{itemize}
+\end{thm}
+\begin{thm}
+	On a Riemannian manifold, for every $(x,v) \in \mathcal{TM}$, there exists a unique maximal geodesic $\gamma : \mathcal{I}\to \M$ with $\gamma(0)=x$ and $\gamma'(0)=v$, where maximal means that the interval $\mathcal{I}$ is as large as possible. This is equivalent to a Cauchy problem: 
+	\begin{equation}
+		\gamma''(t) = 0 \qquad \text{ such that }\begin{cases}
+			\gamma(0) = x \\\gamma'(0)=v
+		\end{cases}
+	\end{equation}
+\end{thm}
+\begin{definition}[\textbf{Exponential map}]
+	Consider the set \[\mathcal{D}=\{(x,v)\in \mathcal{TM} \: : \gamma \text{ is defined on an interval containing } [0,1]\}\] which is a subset of the tangent bundle. The exponential map $Exp:\mathcal{D}\to \M$ is defined by the relation $Exp(x,v) = \gamma(1)$.
+	\begin{itemize}
+		\item [$\to$] Note: the exponential map is a retraction. 
+	\end{itemize}
+\end{definition}
+\subsection{Geodesic convexity}
+As a reminder, in linear space, a set $\mathcal{S}$ is convex if, for all $x,y\in \mathcal{S}$, the line segment $t\to (1-t)x+ty$ for $t\in [0,1]$ is also in $\mathcal{S}$. A function $f:\mathcal{S}\to \R$ is a convex function if $\mathcal{S}$ is convex and for all $x,y\in \mathcal{S}$ we have 
+\begin{equation}
+	f((1-t)x+ty)\le (1-t)f(x)+tf(y)\qquad \forall t\in [0,1]
+\end{equation}
+\begin{definition}[\textbf{Geodesic convexity}]
+	A subset $\mathcal{S}$ of a Riemannian manifold $\M$ is geodesically convex if, for every $x,y\in \mathcal{S}$, there exists a geodesic segment $c:[0,1]\to \M$ such that $c(0)=x$, $c(1)=y$ and $c(t)$ is in $\mathcal{S}$ for all $t\in [0,1]$. 
+\end{definition}
+\begin{definition}[\textbf{Geodesically convex function}]
+	A function $f:\mathcal{S}\to \R$ is geodesically convex if $\mathcal{S}$ is geodesically convex and $f\circ c:[0,1]\to \R$ is convex for each geodesic segment $c:[0,1]\to \M$ whose image is in $\mathcal{S}$. 
+\end{definition}
+\begin{thm}
+	Let $\mathcal{S}$ be a geodesically convex set on a Riemannian manifold $\M$ and let $f:\M\to \R$ be differentiable in a neighborhood of $\mathcal{S}$. Then, the restriction $f|_\mathcal{S}:\mathcal{S}\to \R$ is geodesically convex iff for all geodesic segments $c:[0,1]\to \M$ contained in $\mathcal{S}$, we have (for $x=c(0)$)
+	\begin{equation}
+		f(c(t)) \ge f(x) + t \langle \text{grad}f(x), c'(0)\rangle_x \qquad \forall t\in [0,1]
+	\end{equation}
+\end{thm}
+\begin{thm}
+	If $f$ is differentiable and geodesically convex on an open geodesically convex set, then $x$ is a global minimizer of $f$ iff $\text{grad}f(x)=0$. 
+\end{thm}
+\section{Euclidean and Non-Euclidean geometries}
+In general, in geometry, we say that two lines are parallel iff they are disjoint. In Euclidean geometry, if $L$ is a line and if $P$ is a point not in $L$, then there exists one and only one line through $P$ that is parallel to $L$. However, in a hyperbolic geometry, there exist infinitely many distinct hyperbolic lines through $P$ that are parallel to $L$. Conversely, in elliptic geometries, there exist no line through $P$ that is parallel to $L$. \\
+
+The curvature of a surface is defined by the biggest circle that stays on one side of the curve. 
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.4\textwidth]{img/curvature.png}
+	\caption{Illustration of the curvature and centre of curvature for a function.}
+	\label{fig:curvature} 
+\end{figure}
+The directions in the normal plane where the curvature takes its maximum and minimum values ($k_1$ and $k_2$) are always perpendicular and are called principal directions. The product $k_1k_2$ of the two principal curvatures is called the Gaussian curvature. 
 \chapter{Riemannian gradient descent}
 \section{Topology tools}
 \subsection{General topology}
@@ -325,7 +391,7 @@ This allows to define the Riemannian gradient descent in the next chapter.
 		\item A point $x\in \M$ is an accumulation point of $s$ if it is the limit of a subsequence of $s$. 
 	\end{itemize}
 \end{definition}
-\section{Riemannian gradient descent algorithm}
+\section{Riemannian gradient descent algorithm}\label{sec:grad-descent}
 The basic algorithm is the following:
 \begin{algorithm}[H]
 	\label{algo:RGD}
