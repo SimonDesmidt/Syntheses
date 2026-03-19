@@ -48,6 +48,12 @@
 \newtheorem{proposition}[thm]{Proposition}
 \newtheorem{lem}[thm]{Lemma}
 
+\DeclareFontFamily{U}{wncy}{}
+\DeclareFontShape{U}{wncy}{m}{n}{<->wncyr10}{}
+\DeclareSymbolFont{mcy}{U}{wncy}{m}{n}
+\DeclareMathSymbol{\Sha}{\mathord}{mcy}{"58} 
+
+
 \hbadness=100000
 \begin{document}
 \begin{titlepage}
@@ -484,4 +490,106 @@ and the algorithm is
 	\end{algorithmic}
 \end{algorithm}
 Under an assumption similar to the Lipschitz condition on the gradient, a convergence rate of $\O(1/\epsilon^2)$ can still be guaranteed. \\
+
+\chapter{PAA}
+\section{Dynamical systems}
+Dynamical systems in physics can generally be modelled by a set of differential equations, giving a state-space model:
+\begin{equation}
+	\begin{aligned}
+		\dot x(t) &= f(x(t),u(t))\\
+		y(t) &= g(x(t),u(t))
+	\end{aligned}
+\end{equation}
+where $x\in \R^n$ is the state, $u\in \R^{n_i}$ is the input and $y\in \R^{n_o}$ is the observed output. As their expressions are governed by the system, $x$ and $y$ cannot be free and are restricted to a low-dimensional submanifold in their respective functional space. 
+\subsection{The discrete linear time invariant model}
+This model is 
+\begin{equation}
+	\begin{aligned}
+		x(t+1) &= Ax(t) +Bu(t)\\
+		y(t) &= Cx(t)+Du(t)\\
+	\end{aligned}
+\end{equation}
+Our goal is to determine the dimension $n$ of the state-space model, and the matrix parameters $A,B,C,D$.\\
+For that, let us define two Hankel matrices: 
+\begin{equation}
+	\begin{aligned}	
+		Y &= \begin{bmatrix}
+			y(1) & y(2) & \dots & y(N)\\
+			y(2) & y(3) & \dots & y(N+1)\\
+			\vdots & \vdots & \ddots & \vdots \\
+			y(N) & y(N+1) & \dots & y(2N-1)
+		\end{bmatrix} \in \R^{n_oN\times N} \\ U &= \begin{bmatrix}
+			u(1) & u(2) & \dots & u(N)\\
+			u(2) & u(3) & \dots & u(N+1)\\
+			\vdots & \vdots & \ddots & \vdots \\
+			u(N) & u(N+1) & \dots & u(2N-1)
+		\end{bmatrix} \in \R^{n_iN\times N}
+	\end{aligned}
+\end{equation}
+From the system, we know that 
+\begin{equation}
+	\begin{aligned}
+		y(1) &= Cx(1) + Du(1)\\
+		y(2) &= Cx(2) + Du(2) = C(Ax(1) + Bu(1)) + Du(2)\\
+		\vdots
+	\end{aligned}
+\end{equation}
+By this recurrence, we can see that 
+\begin{equation}
+	\begin{bmatrix}
+	y(1) \\\vdots \\ y(r)
+	\end{bmatrix} = \underbrace{\begin{bmatrix} C\\ CA\\\vdots \\ CA^{r-1}\end{bmatrix}}_{\eqqcolon G}x(1) + \underbrace{\begin{bmatrix}
+		D &&&&\\
+		CB & D &&&\\
+		CAB & CB & D && \\
+		\vdots & \ddots & \ddots & \ddots & \\
+		CA^{r-2}B & CA^{r-3}B & \dots & CB & D
+	\end{bmatrix}}_{\eqqcolon H} \begin{bmatrix}
+		u(1) \\ \vdots \\u(r)
+	\end{bmatrix}
+\end{equation}
+And thus 
+\begin{equation}
+	Y = GX+HU
+\end{equation}
+where $X=[x(1), x(2),\dots,x(N)]\in \R^{n\times N}$. Let $U^\perp$ span the columns of the nullspace of $U$. Then, $UU^\perp=0$, and 
+\begin{equation}
+	YU^\perp = GXU^\perp + HUU^\perp = GXU^\perp
+\end{equation}
+We call $YU^\perp$ the input-output matrix, and this is always of rank lower than the dimension of the state space: $rank(YU^\perp)\le n$. \\
+Man-made structures and object often display patterns and/or symmetries in their making, meaning that their actual information space has a much lower dimensionality. Therefore, using the matrix $YU^\perp$ is much more efficient. 
+\subsection{Discretize a continuous system}
+To discretize a function $x(t):\R\to \R$ to a function $x_T(t):\N\to \R$, we use the Sha function:
+\begin{equation}
+	\Sha(t) \coloneqq \sum_{k=-\infty}^\infty \delta (t-k)
+\end{equation}
+With that function, the discretization is straightforward:
+\begin{equation}
+	x_T(t) = x(t) \cdot \Sha\left(\frac{t}{T}\right)
+\end{equation}
+And in the frequency domain:
+\begin{equation}
+	\mathcal{F}(x_T(t)) = \hat x(\nu) \star T\Sha(t\nu)
+\end{equation}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.55\textwidth]{img/sha.pdf}
+	\caption{Discretization using the Sha function.}
+	\label{fig:sha}
+\end{figure}
+\subsection{Latent variables}
+A set of random variables $x_o\in  \R^{n_o}$ can be given by a probability distribution that depends on other hidden (or latent) variables $x_h\in \R^{n_h}$. In that case, the structure of the data is fully described by the joint distribution of the vector $x=(x_o,x_h)\in \R^n$, for $n=n_o+n_h$. Assuming that $x\sim \mathcal{N}(0,\Sigma)$, where $\Sigma \in \R^{n\times n}$ is the covariance matrix, we define $\Theta=\Sigma^{-1}$ the precision matrix, or concentration matrix. Let us divide the matrices in blocks: 
+\begin{equation}
+	\Sigma = \begin{bmatrix}
+		\Sigma_o & \Sigma_{o,h}\\ \Sigma_{o,h}^T & \Sigma_h 
+	\end{bmatrix} = \begin{bmatrix}
+		\Theta_o & \Theta_{o,h}\\ \Theta_{o,h}^T & \Theta_h 
+	\end{bmatrix}^{-1} \in \R^{n\times n}
+\end{equation}
+As the matrices of hidden variables are by definition not observed, we need a tool to connect $\Sigma_o$ to $\Theta_o$. This tool is the Schur complement:
+\begin{equation}
+	\Sigma_o^{-1} = \Theta_o - \Theta_{o,h}\Theta_h^{-1}\Theta_{o,h}^T \in \R^{n_o\times n_o}
+\end{equation}
+If the observed random variables are mainly independent, then $\Theta_o$ is sparse. Moreover, the second term has a rank less than the number of hidden variables $n_h$, which itself is often relatively small compared to $n_o$. Therefore, the covariance matrix $\Sigma_o$ of the observed variables is always a decomposable structure $\Sigma_o^{-1} = S+L$, where $S$ is sparse and $L$ is low-rank, two forms that are very useful in high-dimensional analysis. \\
+Section 1.2.
 \end{document}
