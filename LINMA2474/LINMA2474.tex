@@ -591,5 +591,110 @@ As the matrices of hidden variables are by definition not observed, we need a to
 	\Sigma_o^{-1} = \Theta_o - \Theta_{o,h}\Theta_h^{-1}\Theta_{o,h}^T \in \R^{n_o\times n_o}
 \end{equation}
 If the observed random variables are mainly independent, then $\Theta_o$ is sparse. Moreover, the second term has a rank less than the number of hidden variables $n_h$, which itself is often relatively small compared to $n_o$. Therefore, the covariance matrix $\Sigma_o$ of the observed variables is always a decomposable structure $\Sigma_o^{-1} = S+L$, where $S$ is sparse and $L$ is low-rank, two forms that are very useful in high-dimensional analysis. \\
-Section 1.2.
+Earlier results allow us to write the conditional probabilities:\\
+
+If $\begin{pmatrix}
+	x_a\\x_b
+\end{pmatrix} \sim \mathcal{N}\left(\begin{pmatrix}
+	\mu_a\\\mu_b
+\end{pmatrix}, \begin{pmatrix}
+	\Sigma_a& \Sigma_{a,b}\\ \Sigma_{a,b} & \Sigma_b
+\end{pmatrix}\right)$, then 
+\begin{equation}
+	x_a|x_b \sim \mathcal{N}(\bar \mu, \bar \Sigma) \qquad \begin{cases}
+		\bar \mu = \mu_a + \Sigma_{a,b}\Sigma_b^{-1} (x_b-\mu_b)\\
+		\bar \Sigma = \Sigma_a - \Sigma_{a,b}\Sigma_b^{-1}\Sigma_{a,b}^T
+	\end{cases}
+\end{equation}
+\textcolor{red}{Je vois pas quoi écrire sur les sections 1.2 et 1.3. Demander à PAA.}
+\section{Sparse signal modeling}
+Often, the number of unknowns is much larger than the number of observations: we have $y=Ax$, for $y\in \R^n$ the observations, $A\in \R^{m\times n}$ the data generation process and $x\in \R^n$ the unkowns. We consider $m\ll n$. The system thus have infinitely many solutions or none. To find the one solution that we want, we need to leverage some additional properties such as sparsity. \\
+\subsection{Example in medical imaging}
+Consider a digital $N\times N$ image $I\in \R^{N^2}$ (not the identity matrix!). This image, in an MRI, corresponds to the density of protons at a given spatial location in the brain. The input $u$ denotes how the magnetic field we applied varies over space. Denote $\mathcal{F}$ the 2D Fourier transform, we have
+\begin{equation}\label{eq:irm}
+	y = \mathcal{F}[I](u)
+\end{equation}
+By changing the applied magnetic field, $u$ varies and we can collect $m$ samples of the Fourier transform: $\{u_1,\dots,u_m\}$. This gives \eqref{eq:irm} in $m$ dimensions. The system seems impossible to solve, but we can use a known structure about it: the wavelet transform. 
+\begin{equation}
+	I = \Psi x
+\end{equation}
+where $\Psi$ is a matrix defined from $\psi\in L^2(\R)$, with 
+\begin{equation}
+	\Psi_{j,k}(x) \eqqcolon 2^{j/2} \psi(2^jx-k)\qquad x\in \R
+\end{equation}
+The function $\psi$ is said to be a wavelet if the system $\{\Psi_{j,k}\}_{j,k\in \Z}$ is an orthonormal basis of $L^2(\R)$\footnote{The scalar product used is $\langle f,g\rangle \eqqcolon \int_{-\infty}^{\infty} f(x)g(x)dx$}. Moreover, $x\in \R^{N^2}$ containts the coefficients of the image $I$ with respect to the basis $\Psi$. Many of these coefficients are extremely small, meaning that $x$ is sparse. We can try to reconstruct this vector $x$ by using the observation equation:
+\begin{equation}
+	\begin{aligned}
+		y = \mathcal{F}_U[I] &= \mathcal{F}_U\left[ \psi_1x_1+\dots + \psi_{N^2}x_{N^2}\right]\\
+		&= \mathcal{F}_U[\psi_1]x_1 + \dots + \mathcal{F}_U(\psi_{N^2})x_{N^2}\\
+		&= \begin{bmatrix}
+			\mathcal{F}_U[\psi_1] \dots \mathcal{F}_U[\psi_{N^2}] x = Ax
+		\end{bmatrix}
+	\end{aligned}
+\end{equation}
+for the matrix $A\in \R^{m\times N^2}$.\\
+This system is much underdetermined, but we can use the sparsity of $x$ to solve it: we consider that only its $k$ largest coefficients are significant and the others are negligible. The solution $\hat x$ will be used to define an approximation of $I$:
+\begin{equation}
+	\hat I = \sum_{i=1}^{N^2} \psi_i \hat x_i
+\end{equation}
+\subsection{Recovering a sparse solution}
+Recall the three properties of a norm in a space $V$:
+\begin{itemize}
+	\item Nonnegative homogeneity: $\|\alpha x\| = |\alpha| \|x\|$ for all vector $x\in V$ and scalars $\alpha\in \R$;
+	\item Positive definiteness: $\|x\|\ge 0$ and $\|x\|=0\Longleftrightarrow x=0$;
+	\item Subadditivity: $\|x+y\|\le \|x\| + \|y\|$ for all $x,y\in V$.
+\end{itemize}
+The $\ell_0$ norm is the number of nonzero entries in a vector $x$:
+\begin{equation}
+	\|x\|_0 = \#\{i|x(i)\neq 0\}
+\end{equation}
+It is thus a measure of the sparsity of a vector. It is not a formal norm, as it does not verify the nonnegative homogeneity property, but it can be seen as a limit of the $\ell^p$ norm:
+\begin{equation}
+	\|x\|_0 = \lim_{p\to 0^+} \|x\|_p^p
+\end{equation}
+\subsubsection{Minimizing the $\ell^0$ norm}
+Knowing $y$ and $A$, we want to find $x_o$ by recovering the sparsest $x$ such that $Ax=y$. Namely, we want to find
+\begin{equation}
+	\hat x\in \arg\min \|x\|_0 \qquad \text{ s.t. } Ax=y
+\end{equation}
+\begin{thm}
+	Assuming that $y=Ax_o$, $\|x_o\|_0 \le k$, $\hat x$ exists and $\{\delta \in \R^n | A\delta = 0, \|\delta \|_0 \le 2k\}=\{0\}$, i.e. the nullspace of $A$ has no sparse vector, then $\hat x=x_o$ and is the unique solution of the $\ell^0$ minimization. 
+	\begin{itemize}
+		\item [$\to$] Note: the bound on the sparsity of $\delta$ is $2k$ because the norm of $\hat x-x_o$ is bounded by $2k$: $\|\hat x-x_o\|_0 \le \|\hat x\|_0 + \|x_o\|_0 \le 2k$ and $A\delta = A(\hat x-x_o) = A\hat x-Ax_o = y-y=0$.
+	\end{itemize}
+\end{thm}
+\begin{definition}
+	The Kruskal rank is defined as 
+	\begin{equation}
+		krank(A) \coloneqq \max_r \{r\in \N | \text{ the columns of }A_I \text{ are linearly independent }\color{red}\forall\color{black} I\subset [n]\text{ with } |I| = r\}
+	\end{equation}
+\end{definition}
+The difference with the usual rank is the red $\forall$, that is a $\exists$ for the usual rank. 
+\begin{itemize}
+	\item [$\to$] Note: $0\le krank(A)\le rank(A)\qquad \forall A$.
+\end{itemize}
+\begin{thm}[\textbf{$\ell^0$ recovery.}]
+	Suppose that $y=Ax_o$, with $\|x_o\|_0 \le \frac{1}{2}krank(A)$. Then, $x_o$ is the unique optimal solution to the $\ell^0$ minimization problem. 
+\end{thm}
+All these results make the $\ell^0$ minimization problem well-posed from an initial ill-posed problem, but the worst-case complexity of an algorithm solving this problem is $n^k$, for $k$ the number of nonzero entries that we want to recover: the problem is NP-hard.
+\subsection{Relaxing the sparse recovery problem}
+As the problem is NP-hard, we need a remplacement to make it easier to solve. We can see that in 1D, the absolute value function is the convex hull of the $\ell^0$ norm on the interval $[-1,1]$ (see figure \ref{fig:l1l0}).
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.6\textwidth]{img/l1l0.png}
+	\label{fig:l1l0}
+	\caption{Replacing the $\ell^0$ norm by its convex envelope.}
+\end{figure}
+Then, the $\ell^1$ norm provides a good replacement for the $\ell^0$ norm and simplifies the problem to a convex optimisation problem. 
+\begin{equation}
+	\min_x \|x\|_1 \qquad \text{ such that } y=Ax
+\end{equation}
+To solve this new problem, we can use a projected subgradient method: 
+\begin{equation}
+	x_{t+1} \coloneqq P_\mathcal{C} \left(x_t - \frac{1}{t}sign(x_t)\right)
+\end{equation}
+for $P_\mathcal{C}(z) = \arg \min_{x\in \mathcal{C}} \frac{1}{2}\|z-x\|^2_2$. Here, we use $\mathcal{C} = \{x:Ax=y\}$ and the sign function is the subgradient of the $\ell^1$ norm.\\ If $A$ has full row rank (plausible in the general case), then the projection is easy:
+\begin{equation}
+	\mathcal{P}_{\{x|Ax=y\}} (z) = z - A^T (AA^T)^{-1}(Az-y)
+\end{equation}
 \end{document}
