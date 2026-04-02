@@ -878,6 +878,114 @@ If only one rule is triggered then we say that the rule \textbf{fires} by return
 \begin{definition}
     \textbf{Class-based ordering} is a strategy where the rules are organized based on the label they predict. For example, we can sort the rules based on a \textbf{missclassification cost} or by decreasing importance of the labels.
 \end{definition}
-If no rules fires, we can use a \textbf{default rule} that predicts the most frequent class in the learning set or even predict an "unknown" class, this "unknown" class can be interesting as not knowing something can carry information.\\
+If no rules fires, we can use a \textbf{default rule}. This rules can predicts, for example, the most frequent class or an "unknown" class, this "unknown" class can be interesting as not knowing something this information could be an information itself.\\
+\subsection{Decision tree to rule based}
+The rule based classification, can be seen as a decision tree if those rules are:
+\begin{itemize}
+    \item \textbf{Mutually exclusive}: we cannot have two rules that can fire at the same time because we have one rule for each tuples, so no conflict resolution strategy is needed. 
+    \item \textbf{Exhaustive}: there is one rule for each tuple, so no default rule is needed.
+    \item \textbf{Unordered}: because the rules are mutually exclusive.
+\end{itemize}
+With these rules, we can build a decision tree, where each leaf corresponds to a rule, and the path from the root to the leaf correspond to the rule antecedent. And the class label predicted by the rule is the class label of the leaf.\\
+Based on this decision tree structure, for a given rule antecedent, any condition that does not improve its accuracy can be pruned, and thus it generalises the rule. 
+\subsection{Sequential covering algorithm}
+The sequential covering algorithm is a method to learn a set of rules sequentially where each rues for a given class will ideally cover many of the class tuples.
+\begin{algorithm}[H]
+    \caption{SequentialCovering algorithm}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Dataset of class-labeled tuples $\mathcal{D}$
+        \State \textbf{Output:} Set of rules $S$
+        \State $S = \emptyset$
+        \For{each class $c$}
+            \While{not termination condition}
+                \State rule = \texttt{learn\_one\_rule}($\mathcal{D}$, attributes ,$c$)
+                \State Remove covered tuples from $\mathcal{D}$
+                \State $S = S \cup \{rule\}$
+            \EndWhile
+        \EndFor
+        \State \textbf{return} S
+    \end{algorithmic}
+\end{algorithm}
+Finding the optimal rule set grows exponentially so to simplify that, we can use a greedy DFS or beam search of size $k$ (keep the $k$ best rules).\\
+To analyse the quality of the rules, we can define some measures.
+\begin{definition}
+    The \textbf{entropy} is defined as:
+    \begin{equation}
+        H(D) = - \sum_{i=1}^{n} p_i \log_2 (p_i)
+    \end{equation}
+    with $p_i$ the probability of class $i$ in the dataset $D$.
+\end{definition}
+\begin{definition}
+    The \textbf{information gain} measures the reduction in entropy caused by adding a new condition to a rule.
+\end{definition}
+\begin{definition}
+    The \textbf{FOIL gain} compute the gain of adding a new rule, this favors rules that cover more positive tuples and have high accuracy, it is defined as:
+    \begin{equation}
+        \texttt{FOIL}_{gain}(R, R') = pos' \left( \log_2 \left( \frac{pos'}{pos' + neg'} \right) - \log_2 \left(\frac{pos}{pos + neg}\right) \right)
+    \end{equation}
+    with $pos$ and $neg$ the number of positive and negative tuples covered by the rule before adding the new condition, and $pos'$ and $neg'$ the number of positive and negative tuples covered by the rule after adding the new condition.
+\end{definition}
+We can also define pruning rule like \texttt{FOIL}.
+\begin{definition}
+    The \textbf{FOIL\_prune} is defined as:
+    \begin{equation}
+        \texttt{FOIL}_{prune}(R) = \frac{pos - neg}{pos + neg}
+    \end{equation}
+    Its value increase with the accuracy of R on a prunning set.
+\end{definition} 
+\subsection{Associative classification}
+When mining association rules for classification, we are looking for association rules of the form $p_1 \wedge p_2 \wedge \ldots \wedge p_n \Rightarrow Class$. With this, rule accuracy is the same as the confidence of the rule. To mine those rules, we need to do a few steps:
+\begin{itemize}
+    \item Mine the fata for frequent itemsets
+    \item Analyses the frequent itemsets and generates association rules per class that satisfy a minimum confidence and a minimum support threshold
+    \item Organize the rules into a classifier (e.g., by using a decision list strategy)
+\end{itemize}
+\section{Bayesian belief network}
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \centering
+    \vspace{-0.6cm}
+    \includegraphics[width=\linewidth]{img/BBN.png}
+    \caption{Example of Bayesian Belief Network}\label{fig:BBN}
+    \vspace{-0.5cm}
+\end{wrapfigure}
+Bayesian Belief Networks are probabilistic graphical model representing variables and their conditional dependencies using a Directed Acyclic Graph. The probabilities of a node depends on the values of the parents of the nodes. For example, in the figure \ref{fig:BBN}, we have a network with 3 nodes, and knowing the probabilities of the parents of the nodes ($A$ and $B$), we can compute the probabilities of the child node $C$.\\
+Each nodes represents a variables, and the tables are called \textbf{conditional probability tables}. Each tables represents a set of rules and their probabilities reprenses their confidence. For example, in the figure \ref{fig:BBN}, we have this rule:
+\begin{equation}
+    (A=0) \wedge (B=0) \Rightarrow C=0 \text{ with a confidence of } 0.7
+\end{equation}
+We can easily generate data from such networks by sampling the parents nodes to get their probabilities then given the samples of the parents, sample the childs. 
+\begin{definition}
+    An \textbf{evidence} ($E = \overrightarrow{e}$) consists of a set of variables and an assignment $\overrightarrow{e}$ to those variables assumed given.
+\end{definition}
+Given a set of variables $X$ and an evidence $E = \overrightarrow{e}$, the most probable assignment for the variables $X$ is given by:
+\begin{equation}
+    \arg\max_{x} P(X = x | E = \overrightarrow{e})
+\end{equation}
+This is used to predict missing values in data.
+\textcolor{red}{Voir slides 11 (Learning Bayesian Belief Networks: Strucure)} 
+\newpage
+\section{Model evaluation and selection}
+\subsection{Metrics}
+To evaluate the performance of a classification model, we can use different metrics but first we need to define some terms:\\
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \centering
+    \vspace{0.5cm}
+    \includegraphics[width=\linewidth]{img/confusion_matrix.png}
+    \caption{Confusion Matrix}\label{fig:confusion_matrix}
+    \vspace{-1cm}
+\end{wrapfigure}
+\begin{itemize}
+    \item \textbf{True Positive (TP)}: the number of positive tuples that are correctly classified as positive
+    \item \textbf{True Negative (TN)}: the number of negative tuples that are correctly classified as negative
+    \item \textbf{False Positive (FP)}: the number of negative tuples that are incorrectly classified as positive
+    \item \textbf{False Negative (FN)}: the number of positive tuples that are incorrectly classified as negative
+\end{itemize}
+From that, we can define the confusion matrix, which is a table that summarizes the performance of a classification model by showing the number of true positives, true negatives, false positives and false negatives.\\
+\subsection{Division of the dataset}
+\subsection{Model selection}
+\section{Feature selection}
+\section{Classification with weak supervision}
+\section{Classification with rich data type}
+
 \chapter{Clustering}
 \end{document}
