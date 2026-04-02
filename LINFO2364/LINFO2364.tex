@@ -752,7 +752,8 @@ We consider that an item can occur at most once in an event of a sequence, but c
 \begin{definition}
     The \textbf{length} of a sequence is the number of items in the sequence.
 \end{definition}
-For example, the length of the sequence $<a (b c) c>$ is 4, because it contains 4 items: $a$, $b$, $c$ and $d$. Even though, there is 3 elements. A sequence with $l$ elements is called a \textbf{l-sequence}.
+For example, the length of the sequence $<a (b c) c>$ is 4, because it contains 4 items: $a$, $b$, $c$ and $d$. Even though, there is 3 elements. A sequence with $l$ elements is called a \textbf{l-sequence}.\\
+\textcolor{red}{TODO REST OF SEQUENCE MINING}
 \chapter{Graph mining}
 \section{Definition}
 \begin{definition}
@@ -834,5 +835,49 @@ First let us define the notations for adding an extension (new edge $e$) of a gr
     \end{algorithmic}
 \end{algorithm}
 \section{Graph-based Substructure Pattern Mining (gSpan)}
-This algorithm is based on the pattern growth method, but it is designed to reduce the generation of duplicates. To do that, it uses a canonical form of the graph called \textbf{DFS code} to represent the graph. The DFS code is a sequence of tuples that represent the edges of the graph in a depth-first search order. 
+This algorithm is based on the pattern growth method, but it is designed to reduce the generation of duplicates. To do that, it uses a canonical form of the graph called \textbf{DFS code} to represent the graph. The DFS code is a sequence of tuples that represent the edges of the graph in a depth-first search order. \\
+\textcolor{red}{TODO REST OF GRAPH MINING}
+
+\chapter{Classification}
+\textbf{Classification} is the data analysis task where a model (or \textbf{classifier}) is constructed to \textbf{predict class} (categorical) labels. Classification is done in two steps:
+\begin{itemize}
+    \item \textbf{Learning}: We have a learning set where the class labels are known, and we use this set to learn a model that can predict the class labels. The learning step is also called the training step, and the learning set is also called the training set.
+    \item \textbf{Classification}: the model is used to predict the class label of data tuples in the test set. Concretely, it is a testing phase of the model previously learned. The test set is a set of data tuples where the class labels are unknown, and we want to predict them. 
+\end{itemize}
+The test set is used to prevents \textbf{overfitting}, which is a situation where the model is too complex and fits the training data too well, but does not generalize well to new data.
+There exists different types of learnings:
+\begin{itemize}
+    \item \textbf{Supervised learning}: All of the class labels are known for the data tuples in the learning set. 
+    \item \textbf{Unsupervised learning}: All of the class labels are unknown for the data tuples in the learning set. And sometimes even some values of the attributes are unknown. 
+    \item \textbf{Semi-supervised learning}: When only parts of the class labels are known for the data tuples in the learning set.
+\end{itemize}
+\section{Rule-based and Pattern-based classification}
+A \textbf{rule-based classifier} uses a set of \textbf{IF-THEN rules} for classification. The \textbf{IF} part is called the \textbf{rule antecedent} or \textbf{precondition}. The \textbf{THEN} part is the \textbf{rule consequent} and contains the
+classification.\\
+For a given data tuple, if the condition in a rule antecedent holds true, we say that the rule antecedent is \textbf{satisfied} and that the rule \textbf{covers} the tuple. For that we need to define the \textbf{coverage} and the \textbf{accuracy} of a rule:
+\begin{definition}
+    The \textbf{coverage} of a rule is the percentage of data tuples in the learning set that satisfy the rule antecedent.
+    \begin{equation}
+        \texttt{coverage}(R) = \frac{n_{covers}}{|D|}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{accuracy} of a rule is the percentage of data tuples that satisfy the rule antecedent and are correctly classified by the rule.
+    \begin{equation}
+        \texttt{accuracy}(R) = \frac{n_{correct}}{n_{covers}}
+    \end{equation}
+\end{definition}
+With these definition, now we can understand how the different rules are chosen.
+\begin{definition}
+    A rule is said to be \textbf{triggered} if it satisfies a minimum coverage threshold $\theta$ and a minimum accuracy threshold $\epsilon$.
+\end{definition}
+If only one rule is triggered then we say that the rule \textbf{fires} by returning a class prediction. But if multiple rules are triggered, we need to use a \textbf{conflict resolution strategy} to choose which rule will fire. There is multiple strategies to resolves that.
+\begin{definition}
+    \textbf{Rule-based ordering} is a strategy where all of the possible rules are organized into a priority list before starting the algorithm, the priority list can be based on various criteria such as rule accuracy or coverage or even expert advice. It is known as the \textbf{decision list} strategy. 
+\end{definition}
+\begin{definition}
+    \textbf{Class-based ordering} is a strategy where the rules are organized based on the label they predict. For example, we can sort the rules based on a \textbf{missclassification cost} or by decreasing importance of the labels.
+\end{definition}
+If no rules fires, we can use a \textbf{default rule} that predicts the most frequent class in the learning set or even predict an "unknown" class, this "unknown" class can be interesting as not knowing something can carry information.\\
+\chapter{Clustering}
 \end{document}
