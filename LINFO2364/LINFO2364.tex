@@ -981,11 +981,185 @@ To evaluate the performance of a classification model, we can use different metr
     \item \textbf{False Negative (FN)}: the number of positive tuples that are incorrectly classified as negative
 \end{itemize}
 From that, we can define the confusion matrix, which is a table that summarizes the performance of a classification model by showing the number of true positives, true negatives, false positives and false negatives.\\
+With these, we can define the accuracy and the error rate of a classification model:
+\begin{definition}
+    The \textbf{accuracy} of a classification model is the percentage of correctly classified tuples, it is defined as:
+    \begin{equation}
+        \text{accuracy} = \frac{TP + TN}{P + N}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{error rate} of a classification model is the percentage of incorrectly classified tuples, it is defined as:
+    \begin{equation}
+        \text{error rate} = 1 - \text{accuracy} = \frac{FP + FN}{P + N}
+    \end{equation}
+\end{definition}
+Those metrics are useful when the classes are balanced, but when the classes are imbalanced, we need to introduce new metrics:
+\begin{definition}
+    The \textbf{sensitivity} (or \textbf{true positive rate}) of a classification model is the percentage of positive tuples that are correctly classified as positive, it is defined as:
+    \begin{equation}
+        \text{sensitivity} = \frac{TP}{P}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{specificity} (or \textbf{true negative rate}) of a classification model is the percentage of negative tuples that are correctly classified as negative, it is defined as:
+    \begin{equation}
+        \text{specificity} = \frac{TN}{N}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{precision} of a classification model is the percentage of tuples that are classified as positive that are actually positive, it is defined as:
+    \begin{equation}        
+        \text{precision} = \frac{TP}{TP + FP}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{recall} of a classification model is the percentage of positive tuples that are correctly classified as positive, it is defined as:
+    \begin{equation}
+        \text{recall} = \frac{TP}{TP + FN} = \frac{TP}{P}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{F$_{\beta}$-score} is the harmonic mean of precision and recall, it is defined as:
+    \begin{equation}
+    F_{\beta} =  \frac{(1 + \beta^2) \text{precision} \times \text{recall}}{\beta^2 \times \text{precision} + \text{recall}}
+    \end{equation}
+    $\beta$ is a parameter that determines the weight of precision and recall. Usually, we use $\beta = 1$ to give equal weight to precision and recall, and thus we get the F1-score. But we $\beta = 0.5$ and $\beta = 2$ are also used to give more weight to precision and recall respectively.
+\end{definition}
+Those metrics are useful to evaluate the performance of a classification model, but those are numeric metrics, and sometimes we need to evaluate the performance of a classification model in a more qualitative way. So we can define some other metrics:
+\begin{itemize}
+    \item \textbf{Speed}: computational cost involved in generating and using the given classifier.
+    \item \textbf{Robustness}: ability to make correct prediction given noisy data or data with missing values. Evaluated on series of syntetic sets with increasing degrees of noise and missing values.
+    \item \textbf{Scalability}: ability to construct the classifier efficiently given large amounts of data. Evaluated on increasing size training sets.
+    \item \textbf{Interpretability}: level of understanding and insight that is provided by the classifier or predictor. Subjective metric.
+\end{itemize}
 \subsection{Division of the dataset}
+In order to train the model and evaluate its performance, we need to divide the dataset into multiple sets. There exists different strategies to do that:
+\begin{itemize}
+    \item The \textbf{holdout} method consists of randomly partitioned into two independent sets (training and testing sets). Typically, two-third are used for training and the rest for testing.
+    \item \textbf{Random subsampling} is a variation of the holdout in which the holdout method is repeated $k$ times. The overall accuracy estimate is taken as the average of the accuracies on each iteration.
+    \item In \textbf{$k$-fold cross-validation}, the data are partitionned into k mutually exclusive subsets or "folds" $D_1, D_2,\dots D_k$ , each of approximately equal size. Training and testing are performed $k$ times. In iteration $i$, partition $D_i$ is the test set and the other partitions form the train set.
+    \item \textbf{Leave-one-out cross-validation} is a special case of $k$-fold cross-validation where $k$ is set to the number of initial tuples.
+    \item In \textbf{stratified cross-validation} the folds are stratified so that the class distribution of the tuples in each fold is approximately the same as that in the initial data.
+\end{itemize}
 \subsection{Model selection}
+Given two models $M_1$ and $M_2$, trained on the same dataset with a $k$-fold cross-validation, we can compare them using a student's t-test. 
+\begin{definition}
+    The \textbf{student's t-test} is a statistical test used to determine if there is a significant difference between the means of two groups. Let $err(M_j)_i$ is the error of model $M_j$ on fold $i$. We first need to compute the mean error of each model:
+    \begin{equation}
+    \overline{err}(M_j) = \frac{1}{k} \sum_{i=1}^{k} err(M_j)_i
+    \end{equation}
+    Then we can compute the variance of the errors between the two models:
+    \begin{equation}
+    Var(M_1 -  M_2) = \frac{1}{k-1} \sum_{i=1}^{k} (err(M_1)_i - err(M_2)_i - (\overline{err}(M_1) - \overline{err}(M_2)))^2
+    \end{equation}
+    Finally, we can compute the t-statistic:
+    \begin{equation}
+    t = \frac{\overline{err}(M_1) - \overline{err}(M_2)}{\sqrt{Var(M_1 - M_2) / k}}
+    \end{equation}
+    Then we can compare the t-statistic to a critical value from the t-distribution with $k-1$ degrees of freedom to determine if the difference in performance between the two models is statistically significant. (See table of the t-distribution)
+\end{definition}
+We can also draw the \textbf{ROC curves} (Receiver Operating Characteristic) which represents visually the trade-off between the true positive rate and the false positive rate. The closer the ROC curve is to the diagonal, the less accurate the model is.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/ROC.png}
+    \caption{ROC curve}
+\end{figure}
 \section{Feature selection}
+To filter the features, we can use different methods. A feature is good if it is highly correlated with the class label we want to predict. We can use $\chi^2$ test for categorical features or binarized continuous features. To measure the correlation between a feature and the class label, we can use the Fisher score.
+\begin{definition}
+    The \textbf{Fisher score} of a feature is defined as:
+    \begin{equation}
+        \texttt{Fisher}(f) = \frac{\sum_{i=1}^{n} n_i (\mu_i - \mu)^2}{\sum_{i=1}^{n} n_i \sigma_i^2}
+    \end{equation}
+    with $n_i$ the number of training tuples of class $i$, $\mu_i$ the mean of the feature values for class $i$, $\mu$ the mean of the feature values for all classes, and $\sigma_i^2$ the variance of the feature values for class $i$.
+\end{definition}
+We can also use the Entropy score defined previously to compute the information gain.
+\begin{definition}
+    Given $H(y)$, the entropy of the class label $y$ , and $H(y |x)$, the entropy of class label $y$ given the feature $x$, the information gain can be computed as:
+    \begin{equation}
+        \texttt{Information Gain}(x) = H(y) - H(y | x)
+    \end{equation}
+    A feature with a larger information gain can better reduce the impurity (i.e., the entropy) of the class label $y$
+\end{definition}
+Knowing that we can smartly select features, we can introduce \textbf{wrapper methods}. Those combines feature selection and classifier training. It is an iterative process where at each iteration, we have a current set of selected features, and we train a classifier on those features, then we evaluate the performance of the classifier and use that performance to decide which features to add or remove from the current set of selected features. This process is repeated until we reach a stopping criterion.\\
+We can do \textbf{stepwise forward selection} where we start with an empty set of features and at each iteration, we add the feature that gives the best performance improvement. We can also do \textbf{stepwise backward elimination} where we start with all the features and at each iteration, we remove the feature that gives the best performance improvement. 
 \section{Classification with weak supervision}
+In weak supervision, we have a learning set where the class labels are not known for all the data tuples, it is thus a semi-supervised learning. To deal with that, we can use different methods:
+\begin{itemize}
+    \item \textbf{Self-training}: we train a classifier using the known class labels, then we use that classifier to predict the unknown class labels. The predicted tuples with the highest confidence are added to the training set, and the process is repeated until we reach a stopping criterion.
+    \item \textbf{Co-training}: is when two or more classifiers teach each other. Each learner uses a different and ideally independent set of features. The tuples with the most confidence prediction of one model are added to the training set of the second model.
+\end{itemize}
+Semi-supervised learning is based on 2 assumptions:
+\begin{itemize}
+    \item \textbf{cluster assumption}: data tuples tends to organize in clusters.
+    \item \textbf{manifold assumption}: data tuples that are close to each other are likely to have the same class label.
+\end{itemize}
+But how can select the tuples to label ? Two strategies can be used:
+\begin{itemize}
+    \item \textbf{uncertainty sampling}: uples with the most uncertainty are chosen
+    \item \textbf{query by committee}: simultaneous training of multiple models,  the tuples chosen are the ones that the models disagrees on
+\end{itemize}
+\textcolor{red}{TODO IDK for the rest of the subsection}
 \section{Classification with rich data type}
-
+In \textbf{stream data classification}, the classifier needs to be able to classify the new transactions upon arrival and retrain with the new labeled data. To do that, we can use multiples methods. One of them is to break the stream into chunks and train a classifier on each chunk and keep the $k$ historically relevant chunks.\\
+For \textbf{sequential data classification}, we can transform them into traditionnal vectors to apply traditionnal predictors on it like n-grams or frequent sequence mining.\\
+For \textbf{graph data classification}, we can either classify at graphs level or at node level. And we need to extract features from the nodes.
 \chapter{Clustering}
+First let us define what is clustering:
+\begin{definition}
+    \textbf{Clustering} is the process of grouping a set of data objects into multiple groups (or clusters) so that objects within a cluster have high similarity, but are dissimilar to objects in other clusters.
+\end{definition}
+Similarity and dissimilarity are often based on distance measures on the attributes values.
+\section{K-means and variants}
+K-means and its variants are what we call \textbf{partitional methods} because they partition the data into $k$ clusters. They are based on the concept of \textbf{centroid}, which is the mean of the data points in a cluster, and this centroid can be interpreted as the representative of the cluster.\\
+The quality of a cluster $C_i$ can be measured by the \textbf{within-cluster variation} with the centroid $c_i$ defined as:
+\begin{equation}
+    E(C_i) = \sum_{i=1}^{k}\sum_{x \in C_i} d(x, c_i)^2
+\end{equation}
+\subsection{K-means}
+The K-means algorithm is an iterative algorithm that starts with $k$ initial centroids chosen randomly from the data points, then it alternates between two steps at each iteration $t$:
+\begin{itemize}
+    \item \textbf{Assignment step}: each data point is assigned to the cluster with the closest centroid.
+    \item \textbf{Update step}: the centroids are updated by computing the mean of the data points in each cluster.
+\end{itemize}
+The algorithm converges when the centroids do not change anymore or when the maximum number of iterations is reached. It is an algorithm simple and with a garanty of convergence to a local minimum. It is sensible to the initial centroids, but it can be warm-started by giving an itinial guess of the centroids. It is also scalable to large datasets as the complexity is $\mathcal{O}(nkt)$, so it is quasi linear in the number of data points $n$. But it presents some limitations, the number of clusters $k$ needs to be specified in advance, it struggles when the clusters are of different sizes and densities, and it is not robust to outliers.
+\subsection{K-medoids}
+To overcome the problem of outliers in K-means, we can use K-medoids, which is a variant of K-means that uses the medoid instead of the mean as the representative of the cluster. The medoid is the data point in the cluster that minimizes the sum of distances to all other data points in the cluster. So the quality of a cluster $C_i$ can be measured by the \textbf{within-cluster variation} with the medoid $o_i$ defined as:
+\begin{equation}
+    E(C_i) = \sum_{i=1}^{k}\sum_{x \in C_i} d(x, o_i)^2
+\end{equation}
+The K-medoids algorithm likes this:
+\begin{itemize}
+    \item \textbf{Initialization step}: choose $k$ initial medoids randomly from the data points.
+    \item \textbf{Repeat until convergence}:
+    \begin{itemize}        
+        \item \textbf{Assignment step}: each data point is assigned to the cluster with the closest medoid.
+        \item \textbf{Select and swap step}: select a new medoid $o_{nr}$ and compute the total cost of swapping $o_{nr}$ with each of the current medoids. If one of the swaps improves the total cost, then perform the swap and update the medoids. Otherwise, keep the current medoids.
+    \end{itemize}
+\end{itemize}
+\subsection{K-modes}
+\textcolor{red}{TODO: idk what to say}
+\subsection{Estimating the number of clusters}
+To improve the performance of K-means and its variants, we can try to estimate the number of clusters $k$ instead of giving it in advance. For that, we can use the \textbf{Calinski-Harabasz index}.
+\begin{definition}
+    The \textbf{Calinski-Harabasz index} is defined as:
+    \begin{equation}
+        CH(k) = \frac{B(k) / (k - 1)}{W(k) / (n - k)}
+    \end{equation}
+    with $B(k)$ the between-cluster variation and $W(k)$ the within-cluster variation. The between-cluster variation is defined as:
+    \begin{equation}
+        B(k) = \sum_{i=1}^{k} n_i \|c_i - \bar{c}\|^2
+    \end{equation}
+    with $n_i$ the number of data points in cluster $C_i$, $c_i$ the centroid of cluster $C_i$, and $\bar{c}$ the centroid of the centroids. And the within-cluster variation, defined as:
+    \begin{equation}
+        W(k) = \sum_{i=1}^{k} \sum_{x \in C_i} \|x - c_i\|^2
+    \end{equation}
+    The optimal number of clusters $k$ is the one that maximizes the Calinski-Harabasz index.
+\end{definition}
+\section{Hierachical methods}
+\section{Density-based and Grid-based methods}
+\section{Evaluation of clustering}
+\subsection{Assessing clustering tendency}
+\subsection{Measuring clustering quality}
 \end{document}
