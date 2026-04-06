@@ -1158,8 +1158,178 @@ To improve the performance of K-means and its variants, we can try to estimate t
     The optimal number of clusters $k$ is the one that maximizes the Calinski-Harabasz index.
 \end{definition}
 \section{Hierachical methods}
+\begin{definition}
+    A \textbf{hierarchical method} creates a \textbf{hierarchical decomposition} of a given set of data objects.
+\end{definition}
+There are two types of hierarchical methods, the \textbf{agglomerative} and the \textbf{divisive} methods. 
+\begin{definition}
+    An \textbf{agglomerative hierarchical} clustering method uses a \textbf{bottom-up} strategy. It starts with each object is its own cluster and \textbf{iteratively merges} clusters until either there is only one cluster left, or some conditions are reached.
+\end{definition}
+\begin{definition}
+    A \textbf{divisive hierarchical} clustering method employs a \textbf{top-down} strategy. It starts by placing every object in one cluster, \textbf{recursively partitions} clusters into smaller one until every items has their own clusters, or some conditions are reached.
+\end{definition}
+To choose how to merge or split clusters, we can use different measures based on the distance between the elements of the clusters.
+\begin{definition}
+    The \textbf{neirest-neighbor clustering} algorithm (or \textbf{single-linkage} algorithm) uses the minimum distance to measure the distance between clusters
+    \begin{equation}
+        dist_{min}(C_i, C_j) = \min_{p \in C_i, p' \in C_j} \{\|p - p'\|\}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{farthest-neighbor clustering} algorithm (or \textbf{complete-linkage} algorithm) uses the maximum distance to measure the distance between clusters
+    \begin{equation}
+        dist_{max}(C_i, C_j) = \max_{p \in C_i, p' \in C_j} \{\|p - p'\|\}
+    \end{equation}
+\end{definition}
+To be less sensitive to outliers, we can also define:
+\begin{definition}
+    The \textbf{average-linkage} algorithm uses the average distance to measure the distance between clusters
+    \begin{equation}
+        dist_{average}(C_i, C_j) = \frac{1}{n_i n_j} \sum_{p \in C_i} \sum_{p' \in C_j} \{\|p - p'\|\}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{mean-linkage} algorithm uses the distance between the centroids to measure the distance between clusters
+    \begin{equation}
+        dist_{mean}(C_i, C_j) = \|m_i - m_j\|
+    \end{equation}
+\end{definition}
+We need to define a criterion to stop the merging or splitting of clusters. 
+\begin{definition}
+    \textbf{Ward's criterion} looks at the increase of the within-cluster variation:
+    \begin{equation}
+        \begin{aligned}
+            W(C_i, C_j) &= \sum_{x \in C_i \cup C_j} \|x - m_{ij}\|^2 - \sum_{x \in C_i} \|x - m_i\|^2 - \sum_{x \in C_j} \|x - m_j\|^2\\
+            &= \frac{n_i n_j}{n_i + n_j} \|m_i - m_j\|^2
+        \end{aligned}
+    \end{equation}
+\end{definition}
+For the divisive hierarchical clustering, we can solve this problem with a minimum spanning tree based approach. This can be solved with Prim's or Kruskal's algorithm. It can be seen like this:
+\begin{itemize}
+    \item Given a set of points, we can construct a weighted graph such that each point is represented by a node in the graph, and the distance between two points is the weights of the edge connecting the two corresponding nodes in the graph.
+    \item A bisecting splitting can be done by splitting one cluster into two by removing the edge with the largest weight.
+\end{itemize}
+Then we can represent visualy this hierarchical clustering using a \textbf{dendrogram}.
 \section{Density-based and Grid-based methods}
+\begin{definition}
+    \textbf{Density-based} clustering have been developed based on the notion of density. Their general idea is to continue growing a given cluster as long as the density (number of data points) in the neighborhood exceeds some threshold.
+\end{definition}
+\begin{definition}
+    \textbf{Grid-based} clustering is based on the fact that we can put all the data points in an finite number of cells forming a uniform grid structure. The clustering operations are performed on the grid structure (i.e., cells are used to assemble clusters).
+\end{definition}
+The \textbf{density} of an object $o$ is measured by the number of objects in its neighborhood. \textbf{Core objects} are the objects that have a high density.\\ 
+\subsection{DBSCAN}
+DBSCAN (Density-Based Spatial Clustering of Applications with Noise) connects core objets and their neighborhoods to form dense regions as clusters. To understand well DBSCAN algorithm, we need to define some concepts. 
+\begin{definition}
+    An object $p$ is a \textbf{core object} if the number of objects in its $\epsilon$-neighborhood is greater than or equal to $minPts$. 
+\end{definition}
+\begin{definition}
+    Two core objects $p$ and $q$ are \textbf{$\epsilon$-reachable} if $d(p, q) \leq \epsilon$, that is $p$ is in the $\epsilon$-neighbor of $q$ and vice versa.
+\end{definition}
+\begin{definition}
+    Two core objects $p$ and $q$ are transitively $\epsilon$-reachable if there exist one or multiple core objects $r_1, \ldots, r_l$ such that $p$ and $r_1$ are $\epsilon$-reachable, $r_k$ and $r_{k+1}$ are $\epsilon$-reachable (for $1 \leq k < l$), and $r_l$ and $q$ are $\epsilon$-reachable.
+\end{definition}
+\begin{definition}
+    Two core objects $p$ and $q$ are \textbf{density-connected} if $p$ and $q$ are $\epsilon$-reachable or transitively $\epsilon$-reachable.
+\end{definition}
+With these definitions, we can now understand the DBSCAN algorithm. Which is described below:
+\begin{algorithm}[H]
+    \caption{DBSCAN}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Dataset of class-labeled tuples $\mathcal{D}$, radius if a neighborhood $\epsilon$, minimum number of points in a neighborhood $minPts$
+        \State \textbf{Output:}
+        \State mark all object as unvisited
+        \While{no object is unvisited}
+            \State randomly select an unvisited object $p$ and mark it visited
+            \If {p is a core object}
+                \State create new cluster $C$ with object $p$ in it
+                \State $N =$ the $\epsilon$-neighborhood of $p$
+                \For {each point $p'$ in $N$}
+                    \If {$p'$ is unvisited}
+                        \State mark $p'$ as visited
+                        \If {if $p'$ is a core object}
+                            \State add the $\epsilon$-neighborhood of $p'$ to $N$
+                        \EndIf
+                    \EndIf
+                \EndFor
+            \Else
+                \State mark $p$ as noise
+            \EndIf
+        \EndWhile
+    \end{algorithmic}
+\end{algorithm}
+\subsection{HDBSCAN}
+\textcolor{red}{TO check}
+HDBSCAN (Hierarchical Density-Based Spatial Clustering of Applications with Noise) it takes only one parameter $minPts$. It is based on the concept of \textbf{mutual reachability distance} defined as:
+\begin{equation}
+    d_{mreach}(p, q) = \max\{d_{core}(p), d_{core}(q), d(p, q)\}
+\end{equation}
+with $d_{core}(p)$ the \textbf{core distance} of $p$ defined as the distance between $p$ and its $minPts$-th nearest neighbor. Then, we can define the \textbf{mutual reachability graph}, it is complete graph where every object is a node and weight of the edge between $p$ and $q$ is the mutual reachability distance $d_{mreach}(p, q)$.
+\subsection{CLIQUE}
+\textbf{CLIQUE} (Clustering In QUEst) is a grid-based clustering algorithm that is based on the monotinicity between dimensions. It means that a $k$-dimensional cell $c$ $(k > 1)$ can have at least $l$ points only if every $(k - 1)$-dimensional projection of $c$, which is a cell in a $(k - 1)$-dimensional subspace, has at least $l$ points. And it's algorithm is as follows:
+\begin{itemize}
+    \item Step 1: Partitionning of the d-dimensional sata space into nonoverlapping rectangular units
+    \item Step 2: identifies the dense units among the dimensions. First, for each dimension identify the dense intervals, then join the dense one together to form higher dimension cells
+    \item Step 3: assemble clusters together
+\end{itemize}
 \section{Evaluation of clustering}
+A clustering algorithm always produces a clustering result, but these results are not always good. So we need to evaluate the quality of the clustering result.
 \subsection{Assessing clustering tendency}
+\begin{definition}
+    The \textbf{Hopkins statistic} is a measure of the clustering tendency of a dataset. It is defined as:
+    \begin{equation}
+        H = \frac{\sum_{i=1}^{n} x_i^d}{\sum_{i=1}^{n} x_i^d + \sum_{i=1}^{n} y_i^d}
+    \end{equation}
+    if the points are uniformly distributed, H tends to be around 0.5. If D is highly skewed, then H tends to be close to 1. Where $x_i$ is the distance from a randomly selected point in the dataset to its nearest neighbor, and $y_i$ is the distance from a randomly generated point in the same space to its nearest neighbor in the dataset.
+    \begin{equation}
+        x_i = \min_{v \in D} \{dist(p_i,v)\}
+    \end{equation}
+    \begin{equation}
+        y_i = \min_{v \in D, v \neq q_i} \{dist(q_i,v)\}
+    \end{equation}
+\end{definition}
 \subsection{Measuring clustering quality}
+To measure the quality of a clustering result, we can define some metrics:
+\begin{definition}
+    The \textbf{compactness} (maximum in-cluster distance) of clusters is the maximum distance between two points that belong to the same cluster.
+    \begin{equation}
+        \Delta = \max_{C(o_i)=C(o_j)} \{dist(o_i, o_j)\}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{degree of separation} (minimum inter-cluster distance) among different clusters is the minimum distance between two points that belong to different clusters.
+    \begin{equation}
+        \delta = \min_{C(o_i) \neq C(o_j)} \{dist(o_i, o_j)\}
+    \end{equation}
+\end{definition}
+From that, we can define the \textbf{Dunn index}.
+\begin{definition}
+    The \textbf{Dunn index} is defined as:
+    \begin{equation}
+        D = \frac{\delta}{\Delta}
+    \end{equation}
+    A higher Dunn index indicates better clustering results, as it means that the clusters are well separated and compact. The Dunn index is sensitive to noise and outliers.
+\end{definition}
+We can also define the \textbf{silhouette coefficient}. But first, we need to define two concepts:
+\begin{definition}
+    $a(o)$ is the average distance from $o$ ($o \in C_i$) to all points in the same cluster ($C_i$):
+    \begin{equation}
+        a(o) = \frac{\sum_{o' \in C_i, o \neq o'} dist(o, o')}{|C_i| - 1}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    $b(o)$ is the minimum average distance from $o$ ($o \in C_i$) to all clusters to which $o$ does not belong ($C_j$ with $j \neq i$):
+    \begin{equation}
+        b(o) = \min_{C_j: 1 \leq j \leq k} \{\frac{\sum_{o' \in C_j} dist(o, o')}{|C_j|} \}
+    \end{equation}
+\end{definition}
+And with that, we have:
+\begin{definition}
+    The \textbf{silhouette coefficient} is defined as:
+    \begin{equation}        
+        s(o) = \frac{b(o) - a(o)}{\max\{a(o), b(o)\}}
+    \end{equation}
+    it lies between -1 and 1. A value close to 1 indicates that the object is well clustered, a value close to 0 indicates that the object is on the border of two clusters, and a value close to -1 indicates that the object is possibly misclassified.
+\end{definition}
+The cluster fitness is defined as the average silhouette coefficient value of all objects in the cluster.
 \end{document}
