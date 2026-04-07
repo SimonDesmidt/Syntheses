@@ -1332,4 +1332,77 @@ And with that, we have:
     it lies between -1 and 1. A value close to 1 indicates that the object is well clustered, a value close to 0 indicates that the object is on the border of two clusters, and a value close to -1 indicates that the object is possibly misclassified.
 \end{definition}
 The cluster fitness is defined as the average silhouette coefficient value of all objects in the cluster.
+\section{Fuzzy clustering}
+Until now clustering was focused on assigning each data point to exactly one cluster, but in some cases, it is more appropriate to allow data points to belong to multiple clusters. This is called \textbf{fuzzy or flexible clustering}.
+A fuzzy clustering of $k$ fuzzy clusters ($C_1, \ldots, C_k$) can be represented using a partition matrix $M = [w_{ij}] (1 \leq i \leq n, 1 \leq j \leq k)$, where $w_{ij}$ is the degree of membership of data point $o_i$ to cluster $C_j$.  
+The matrix $M$ must satisfy the following conditions:
+\begin{itemize}
+    \item $w_{ij} \in [0, 1] \: \forall i,j$
+    \item $\sum_{j=1}^{k} w_{ij} = 1 \: \forall i$
+    \item $0 < \sum_{i=1}^{n} w_{ij} < n \: \forall j$
+\end{itemize}
+To compute the degree of membership $w_{ij}$, we can use the following formula:
+\begin{equation}
+    w_{ij} = \frac{1}{\sum_{l=1}^{k} \left(\frac{dist(o_i, c_j)}{dist(o_i, c_l)}\right)^{\frac{2}{p-1}}}
+\end{equation}
+The centroids of the clusters can be computed as:
+\begin{equation}
+    c_j = \frac{\sum_{i=1}^{n} w_{ij}^p o_i}{\sum_{i=1}^{n} w_{ij}^p}
+\end{equation}
+To evaluate the quality of a fuzzy clustering result, we can define the sum of squared errors (SSE), with $p (\geq 1)$ the parameter that controls the fuzzyness of the clusters:
+\begin{itemize}
+    \item For an object $o_i$, the sum of squared errors is defined as:
+    \begin{equation}
+        SSE(o_i) = \sum_{j=1}^{k} w_{ij}^p dist(o_i,c_j)^2
+    \end{equation}
+    \item For a cluster $C_j$, the sum of squared errors is defined as:
+    \begin{equation}        
+        SSE(C_j) = \sum_{i=1}^{n} w_{ij}^p dist(o_i,c_j)^2
+    \end{equation}
+    \item For the whole clustering result, the sum of squared errors is defined as:
+    \begin{equation}
+        SSE = \sum_{i=1}^{n} \sum_{j=1}^{k} w_{ij}^p dist(o_i,c_j)^2
+    \end{equation}
+\end{itemize}
+\subsection{Expectation-Maximization algorithm}
+\begin{definition}
+    In the context of fuzzy clustering, an \textbf{Expectation-Maximization (EM) algorithm} starts with an initial set of parameters and iterates until the clustering cannot be improved (until it converges or changes are sufficiently small).
+\end{definition}
+Each iteration of the EM algorithm consists of two steps:
+\begin{itemize}
+    \item \textbf{Expectation step}: assigns objects to clusters according to the current fuzzy clustering
+    \item \textbf{Maximization step}: finds the new clustering that minimize the SSE
+\end{itemize}
+\section{High dimensionnal data}
+When the data is high dimensionnal, often we encounter the \textbf{curse of dimensionality}, which is the phenomenon that the distance between data points becomes less meaningful as the number of dimensions increases. To overcome this problem, we can use the CLIQUE algorithm.
+\section{Biclustering}
+The biclustering is a type of clustering that allows to cluster to be in two dimensions. \textcolor{red}{TODO: idk what to say}
+\subsection{$\delta$-bicluster algorithm}
+\textcolor{red}{TODO: idk what to say}
+\section{Clustering graph and network data}
+To do clustering on graph and network data, we need to redefine the concept of distance between data points.
+\begin{definition}
+    The \textbf{geodesic distance} $d(u, v)$ is the length of the shortest path between two nodes $u$ and $v$ in a graph. With $d(u,v) = +\infty$
+\end{definition}
+\begin{definition}
+    For a vertex $v \in V$, the \textbf{eccentricity} of $v$, denoted $\texttt{eccen}(v)$, is the largest geodesic distance between $v$ and any other vertex $u \in V - \{v \}$
+    \begin{equation}
+        \texttt{eccen}(v) = \max_{u \in V - \{v\}} d(u, v)
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{radius} of a graph $G$ is the minimum eccentricity of any vertex in $G$:
+    \begin{equation}
+        \texttt{radius}(G) = \min_{v \in V} \texttt{eccen}(v)
+    \end{equation}  
+\end{definition}
+\begin{definition}
+        The \textbf{diameter} of a graph $G$ is the maximum eccentricity of any vertex in $G$:
+    \begin{equation}
+    \texttt{diameter}(G) = \max_{v \in V}texttt{eccen}(v)
+    \end{equation}
+\end{definition}
+\begin{definition}
+    A \textbf{periferal} vertex is a vertex whose eccentricity is equal to the diameter of the graph.
+\end{definition}
 \end{document}
