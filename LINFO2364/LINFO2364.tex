@@ -1405,4 +1405,52 @@ To do clustering on graph and network data, we need to redefine the concept of d
 \begin{definition}
     A \textbf{periferal} vertex is a vertex whose eccentricity is equal to the diameter of the graph.
 \end{definition}
+In some networks, nodes can be considered similar if they have similar neighbors.
+\begin{definition}
+    In a directed graph $G = (V , E )$, the \textbf{individual in-neighborhood} of $v$ is defined as:
+    \begin{equation}
+        I(v) = \{u | (u, v) \in E\}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    In a directed graph $G = (V , E )$, the \textbf{individual out-neighborhood} of $v$ is defined as:
+    \begin{equation}
+        O(v) = \{u | (v, u) \in E\}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{SimRank} similarity measure is based on the idea that two nodes are similar if they are related to similar nodes. For vertices $u,v \in V$ with $u \neq v$, it is defined as:
+    \begin{equation}
+    s(u, v) = \frac{C}{|I(u)| |I(v)|} \sum_{x \in I(u)} \sum_{y \in I(v)}s(x, y)
+    \end{equation}
+    with $C$ a constant between 0 and 1, representing the decay factor of the similarity score. $s(v,v) =1$ for all $v \in V$. and $s(u,v) = 0$ if either $I(u)$ or $I(v)$ is empty.
+\end{definition}
+\begin{definition}
+    Given an undirected graph $G = (V , E )$, for a vertex $u \in V$ , the neighborhood of $u$ is $\Gamma(u) = \{v |(u, v ) \in E \} \cup \{u\}$.
+\end{definition}
+\begin{definition}
+    \textbf{SCAN} (Structural Clustering Algorithm for Networks) measures the similarity between two vertices, $u, v \in V$
+    \begin{equation}
+        \sigma(u, v) = \frac{|\Gamma(u) \cap \Gamma(v)|}{\sqrt{|\Gamma(u)| |\Gamma(v)|}}
+    \end{equation}
+    The larger the value, the most similar the nodes.
+\end{definition}
+\begin{definition}
+    For a vertex, $u \in V$, the \textbf{$\epsilon$-neighborhood} of $u$ is defined as
+    \begin{equation}
+        N_\epsilon(u) = \{v \in \Gamma(u) | \sigma(u, v) \geq \epsilon\}
+    \end{equation}
+    $u \in V$ is a core vertex if $|N_\epsilon(u)| \geq \mu$, where $\mu$ is a popularity threshold.
+\end{definition}
+If a vertex $v$ is in the $\epsilon$-neighborhood of a core $u$, then $v$ is assigned to the same cluster as $u$. 
+\section{Semisupervised clustering}
+\textcolor{red}{TODO: constrained k-means}
+We could also need \textbf{pairwise constraint} such as:
+\begin{definition}
+    \textbf{Must-link constraint} is a constraint that specifies that two data points must be in the same cluster.
+\end{definition}
+\begin{abstract}
+    \textbf{Cannot-link constraint} is a constraint that specifies that two data points cannot be in the same cluster.
+\end{abstract}
+\textcolor{red}{TODO: COP k-means}
 \end{document}
