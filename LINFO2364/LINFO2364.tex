@@ -742,18 +742,69 @@ After defining the variables and the constraints, we can use a constraint solver
     \includegraphics[scale=0.33]{img/search_tree.png}
     \caption{Example of a search tree}
 \end{figure}
-\subsection{CoverSize}
-TODO
+\begin{definition}
+    \textbf{The CoverSize propagator} is a constraint that enforces consistency between a set of item and a cardinality constraint (e.g., minimum support). It is defined as $\texttt{CoverSize}(X,N,D)$ where $X$ is an array of boolean ($D(X_k)=\{0,1\}$) for each item, $N$ is an integer variable that represents the number of transactions covered by the selected items ($D(N) = \{0, \dots, T\}$), and $D$ is the dataset. With that the minimum support constraint becomes $N \geq \theta$ 
+\end{definition}
+We ca
 \section{Sequence mining}
 \begin{definition}
-    A \textbf{sequence} is an ordered (w.r.t time) list of events and is noted $<e_1 e_2 ... e_n>$, where $e_i$ is an event (called an \textbf{element} of the sequence). An event can be a single item or a set of items that occur together at a specific time.
+    A \textbf{sequence} is an ordered (w.r.t time) list of events and is noted $\langle e_1 e_2 \dots e_n \rangle$, where $e_i$ is an event (called an \textbf{element} of the sequence). An event can be a single item or a set of items that occur together at a specific time.
 \end{definition}
 We consider that an item can occur at most once in an event of a sequence, but can occur multiple times in different events of a sequence.
 \begin{definition}
     The \textbf{length} of a sequence is the number of items in the sequence.
 \end{definition}
-For example, the length of the sequence $<a (b c) c>$ is 4, because it contains 4 items: $a$, $b$, $c$ and $d$. Even though, there is 3 elements. A sequence with $l$ elements is called a \textbf{l-sequence}.\\
-\textcolor{red}{TODO REST OF SEQUENCE MINING}
+For example, the length of the sequence $\langle a (b c) c \rangle$ is 4, because it contains 4 items: $a$, $b$, $c$ and $d$. Even though, there is 3 elements. A sequence with $l$ elements is called a \textbf{l-sequence}.\\
+\begin{definition}
+    A sequence $\alpha = \langle a_1a_2 \dots a_n\rangle$ is called a \textbf{subsequence} of another sequence $\beta = \langle b_1b_2 \dots b_m \rangle$, and $\beta$ is a \textbf{supersequence} of $\alpha$, denoted as $\alpha \sqsubseteq \beta$, if there exists integers $1 \leq j_1 < j_2 < \dots < j_n \leq m$ such that $a_1 \subseteq b_{j_1}$, $a_2 \subseteq b_{j_2}$, \dots, $a_n \subseteq b_{j_n}$.
+\end{definition}
+\begin{definition}
+    A \textbf{sequence database} S is a set of tuples $\langle SID, s \rangle$, where $SID$ is a sequence ID and $s$ is a sequence.
+\end{definition}
+A tuple $\langle SID, s \rangle$ is said to \textbf{contain} a sequence $\alpha$ if $\alpha \sqsubseteq s$. 
+\begin{definition}
+    The \textbf{support} of a sequence $\alpha$ in a sequence database S is the number of tuples in S that contain $\alpha$.
+    \begin{equation}
+        \texttt{support}_S(\alpha) = | \{ \langle SID, s \rangle | (\langle SID, s \rangle \in S ) \wedge (\alpha \sqsubseteq s) \} | 
+    \end{equation}
+\end{definition}
+As usual a sequence is \textbf{frequent} in sequence database S if its support is no less than a minimum support threshold $\theta$ ($\texttt{support}_S(\alpha) \geq \theta$). A frequent sequence is called a \textbf{sequential pattern} and an \textbf{l-pattern} is a sequential pattern of length l. \\
+\subsection{Generalize Sequential Patterns (GSP)}
+Based on the Apriori algorithm, the GSP algorithm generates candidate sequences by joining two frequent sequences of size $k$ to generate a sequence of size $k + 1$, then it prunes the candidates based on the minimum support threshold and repeat.
+\subsection{Sequential Pattern Discovery using Equivalent classes (SPADE)}
+In the same idea of the Eclat algorithm, the SPADE algorithm uses a vertical data format to mine sequential patterns. The idea is to represent the sequence database in a vertical format, where we store $(SID, position)$, then we can compute the support of a sequence by intersecting the sets of $(SID, position)$ of its subsequences. And we explore the search space of the sequences by using a depth-first search strategy, which allows us to find all the frequent sequences in the database based on the apriori principle.
+\subsection{PrefixSpan} 
+\begin{definition}
+    The \textbf{prefix} of a sequence $\alpha = \langle a_1a_2 \dots a_n\rangle$ is defined as the sequence $\beta = \langle a_1a_2 \dots a_k\rangle$ with $k < n$. And the \textbf{suffix} of $\alpha$ is defined as the sequence $\gamma = \langle a_{k+1}a_{k+2} \dots a_n\rangle$.
+\end{definition}
+The mining process of sequential patterns can be decomposed into a set of subproblems: 
+\begin{itemize}
+    \item Given the length-1 sequential patterns $\{\langle x_1 \rangle, \langle x_2 \rangle, \dots, \langle x_n \rangle\}$, the complete set of sequential patterns in S can be partitioned into $n$ disjoint subsets. $i^{th}$ subset is the subset of sequences from S with $\langle x_i \rangle$ as prefix
+    \item Given the length-k sequential pattern $\alpha$ and length-(k+1) sequences $\{\beta_1, \beta_2, \dots, \beta_n\}$ with prefix $\alpha$, the complete set of sequential patterns with pattern $\alpha$ can be partitioned into n disjoint subsets. $j^{th}$ subset is the subset of sequences with $\beta_j$ as prefix
+\end{itemize}
+The PrefixSpan algorithm is based on the pattern growth approach, and use the idea of prefix and suffix to mine sequential patterns. The algorithm can be thus described as follows:
+\begin{enumerate}
+    \item Find length-1 sequential patterns and count their support
+    \item Partition of the search space: patterns with prefix $\langle a \rangle$, patterns with prefix $\langle b \rangle$, \dots For each partition, mine the patterns recursively.
+    \item For the given pattern, construct the projected database. To construct the projected database, we match the current pattern with each sequence. If the sequence match, the part matching the pattern is removed, and the remaining is kept into the projected database.
+    \item We mine recursively the projected database by doing:
+    \begin{enumerate}
+        \item Scan the $\langle a \rangle$-projected database for locally frequent items
+        \item Partition of the search space: patterns with prefix $\langle aa \rangle$, patterns with prefix $\langle ab \rangle$, \dots For each partition, mine the patterns recursively.
+        \item Construction of the projected database
+        \item Mine recursively the projected database
+    \end{enumerate}
+\end{enumerate}
+As we can see, the algorithm is based on a depth-first search strategy by recursion.
+\subsection{Constraint sequential patterns}
+Like in the previouses sections, we can also add constraints to the sequential pattern mining process. For example, we can add a constraint on the closeness of the patterns. But there exists more specific constraints for sequential patterns, such as:
+\begin{itemize}
+    \item Constraints on the duration (we want information over a maximum span of x month)
+    \item Constraints on the length (minimum or maximum length for the sequence)
+    \item Constraints on the event folding window w : If event occurs within the same window, they are considered occuring together
+    \item Constraints on the time gap between events (We could be interested in sequences of close event (maximal gap) or spaced events (minimal gap))
+    \item Constraints on the type of sequence (One could wish for some pattern matching a given regular expression)
+\end{itemize}
 \chapter{Graph mining}
 \section{Definition}
 \begin{definition}
@@ -835,9 +886,97 @@ First let us define the notations for adding an extension (new edge $e$) of a gr
     \end{algorithmic}
 \end{algorithm}
 \section{Graph-based Substructure Pattern Mining (gSpan)}
-This algorithm is based on the pattern growth method, but it is designed to reduce the generation of duplicates. To do that, it uses a canonical form of the graph called \textbf{DFS code} to represent the graph. The DFS code is a sequence of tuples that represent the edges of the graph in a depth-first search order. \\
-\textcolor{red}{TODO REST OF GRAPH MINING}
-
+This algorithm is based on the pattern growth method, but it is designed to reduce the generation of duplicates. To do that, it uses a canonical form of the graph called \textbf{DFS code} to represent the graph. The DFS code is a sequence of tuples that represent the edges of the graph in a depth-first search order. This helps to deal with the fact that graphs does not have natural ordering and many isomorphisms.\\
+\subsection{DFS codes}
+\begin{definition}
+    A graph $G$ subscripted with a DFS tree $T$ is written $G_T$. $T$ is called a \textbf{DFS subscription} of $G$. 
+\end{definition}
+\begin{definition}
+    Subscripted graph are then transformed into a \textbf{DFS code}. DFS code are a sequence of tuples $\langle v_i , v_j , \lambda_V (v_i ), \lambda_V (v_j ), \lambda_E ((v_i , v_j ))\rangle$ representing edges.
+\end{definition}
+The construction of the DFS code follows some rules:
+\begin{enumerate}
+    \item Build the DFS tree of the graph by doing a DFS and assigning a number to each vertex in the order they are visited. 
+    \item Add edges in order of the DFS tree. There is two types of edges:
+    \begin{itemize}
+        \item an edge that connects a vertex to a new vertex (not visited yet). It means they are discovered during the build of the DFS tree. They are added in the order they are discovered during the DFS.
+        \item an edge that connects a vertex to an already visited vertex. It means they are not discovered during the build of the DFS tree. They are added after all the forward edges. 
+    \end{itemize}
+\end{enumerate}
+The construction of the DFS code is deterministic, it follows some rules to ensure that the same graph will always have the same DFS code. The rules are as follows:
+\begin{itemize}
+    \item the edges of the DFS tree (forward edges) are ordered in the same order as the discovery of the tree
+    \item the backward edges are ordered after the forward edges, if a vertex has no forward edge, then the backward edges are assigned to the other vertex of the edge after the forward edges of that vertex
+    \item within the same vertex, the edges are ordered by the number of the vertex they are connected to
+\end{itemize}
+We can establish an ordering between two DFS codes, consider:
+\begin{equation}
+    \begin{aligned}
+        t_1 &= \langle v_i , v_j , \lambda_V (v_i ), \lambda_V (v_j ), \lambda_E ((v_i , v_j ))\rangle \\
+        t_2 &= \langle v_k , v_l , \lambda_V (v_k ), \lambda_V (v_l ), \lambda_E ((v_k , v_l ))\rangle
+    \end{aligned}
+\end{equation}
+\begin{definition}
+    We say that $t_1$ is smaller than $t_2$  ($t_1 < t_2$) if and only if one of the following conditions holds:
+    \begin{itemize}
+        \item $(v_i, v_j) <_e (v_k, v_l)$
+        \item $(v_i, v_j) = (v_k, v_l)$ and $\langle \lambda_V (v_i ), \lambda_V (v_j ), \lambda_E ((v_i , v_j ))\rangle <_l \langle \lambda_V (v_k ), \lambda_V (v_l ), \lambda_E ((v_k , v_l ))\rangle$
+    \end{itemize}
+\end{definition}
+Where $<_e$ is an ordering between edges and $<_l$ is the classical lexicographic ordering between tuples.
+\begin{definition}
+    Given $e_{ij} = (v_i, v_j)$ and $e_{kl} = (v_k, v_l)$, we say that $e_{ij} <_e e_{kl}$ if and only if:
+    \begin{itemize}
+        \item If they are both forward edges, then if ($j < l$) or ($j = l$ and $i > k$)
+        \item If they are both backward edges, then if ($i < k$) or ($i = k$ and $j < l$)
+        \item If $e_{ij}$ is a forward edge and $e_{kl}$ is a backward edge, then if  $j \leq l$
+        \item If $e_{ij}$ is a backward edge and $e_{kl}$ is a forward edge, then if  $i \leq l$
+    \end{itemize}
+\end{definition}
+\begin{definition}
+    The \textbf{canonical DFS code} of a graph $G$ is the minimum DFS code among all the DFS codes of $G$.
+\end{definition}
+\begin{definition}
+    Given two graphs $G$ and $G'$, $G$ is \textbf{isomorphic} to $G'$ if and only if their canonical DFS codes are the same.
+\end{definition}
+\subsection{gSpan algorithm}
+The gSpan algorithm is based on the pattern growth method, but it uses the DFS code to avoid the generation of duplicates. The algorithm can be described as follows:
+\begin{algorithm}[H]
+    \caption{gSpan algorithm}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} DFS code of the pattern being grown $s$, dataset of graphs $\mathcal{D}$, minimum support threshold $\theta$, current set of frequent graphs $S$
+        \State \textbf{Output:} Set $S$ of frequent itemsets
+        \If{$s \neq dfs(s)$}
+            \State \textbf{return}
+        \EndIf
+        \State $S = S \cup \{s\}$
+        \State $C = \emptyset$
+        \State Scan $\mathcal{D}$ once, find all the edges $e$ such that $s$ can be rightmost extended to $s \diamond_r e$
+        \State add $s \diamond_r e$ to $C$ and count its frequency
+        \State sort $C$ in DFS lexicographic order
+        \For{each frequent $s \diamond_r e \in C$}
+            \State gSpan($s \diamond_r e$, $\mathcal{D}$, $\theta$, $S$)
+        \EndFor
+        \State \textbf{return} S
+    \end{algorithmic}
+\end{algorithm}
+\section{Mining variant}
+Pattern-growth graph mining algorithms can be addapted to handle different
+types of graphs, such as:
+\begin{itemize}
+    \item \textbf{Mining unlabeled or partially labeled graphs:} Adding a new empty label $\phi$ for each unlabeled edge
+    \item \textbf{Mining non-simple graphs (i.e., graphs with self-loop or multiple edges):} Adapt gSpan, by adapting the growing order to ”backward, self-loop, forward”. For the multiple edges, the lexicographic order can handle it.
+    \item \textbf{Mining directed graphs:} Adapt gSpan by adding a new element to the state giving the direction, growing the pattern now includes more possibilities
+    \item \textbf{Mining disconnected graphs (first case, database contains disconnected graphs):} Adding an edge with an empty label linking the disconnected component.
+    \item \textbf{Mining disconnected graphs (second case, mining disconnected patterns):} As a disconnected graph is a set of connected graphs, gSpan can be modified to handle a set of minimum DFS code
+    \item \textbf{Mining trees:} If gSpan is set to start at the root, it can take advantage of the tree structure
+\end{itemize}
+Like in the previous sections, we can also add constraints to the graph mining process. For example:
+\begin{itemize}
+    \item \textbf{(Set of) Subgraph(s) containment constraints:} requiring that the mined subgraph contain a given (set of) subgraph(s).
+    \item \textbf{Geometric constraints:} constraints on the angles betweens edges in the graph
+    \item \textbf{Value-sum constraints:} constraints on the sum of the values of the edges
+\end{itemize}
 \chapter{Classification}
 \textbf{Classification} is the data analysis task where a model (or \textbf{classifier}) is constructed to \textbf{predict class} (categorical) labels. Classification is done in two steps:
 \begin{itemize}
@@ -940,7 +1079,7 @@ When mining association rules for classification, we are looking for association
     \item Analyses the frequent itemsets and generates association rules per class that satisfy a minimum confidence and a minimum support threshold
     \item Organize the rules into a classifier (e.g., by using a decision list strategy)
 \end{itemize}
-\section{Bayesian belief network}
+\section{Bayesian Belief Network}
 \begin{wrapfigure}{r}{0.4\textwidth}
     \centering
     \vspace{-0.6cm}
@@ -962,8 +1101,19 @@ Given a set of variables $X$ and an evidence $E = \overrightarrow{e}$, the most 
     \arg\max_{x} P(X = x | E = \overrightarrow{e})
 \end{equation}
 This is used to predict missing values in data.
-\textcolor{red}{Voir slides 11 (Learning Bayesian Belief Networks: Strucure)} 
-\newpage
+\subsection{Learning a BBN} 
+To learn a Bayesian Belief Network, we need to learn both the structure of the network and the parameters of the network. To do that, we want to maximize the log-likelihood of the parameters given the data and structure. Here is the algorithm to learn a BBN:
+\begin{enumerate}
+    \item Initialize the graph without any edges, with each node representing a variable.
+    \item Compute S, the log-likelihood of the data
+    \item Repeat until S does not increase anymore:
+    \begin{enumerate}
+        \item Add, delete or reverse and edge in G (without creating cycles)
+        \item Estimate probabilities given the new structure
+        \item Compute the max log-likelihood S’
+        \item If S' > S then update best so far as the new graph
+    \end{enumerate}
+\end{enumerate}
 \section{Model evaluation and selection}
 \subsection{Metrics}
 To evaluate the performance of a classification model, we can use different metrics but first we need to define some terms:\\
@@ -1100,7 +1250,12 @@ But how can select the tuples to label ? Two strategies can be used:
     \item \textbf{uncertainty sampling}: uples with the most uncertainty are chosen
     \item \textbf{query by committee}: simultaneous training of multiple models,  the tuples chosen are the ones that the models disagrees on
 \end{itemize}
-\textcolor{red}{TODO IDK for the rest of the subsection}
+To overcome the difficulty of having a small amount of labeled data, we can use different techniques such as:
+\begin{itemize}
+    \item \textbf{Transfert learning:} We use a trained model on a related task as a starting point for training a model on the target task which has less labeled data. 
+    \item \textbf{Distant supervision:} We use information in the data to automatically generate labeled data, it is faster than manual labeling. For example if we want to label tweets as positive or negative, we can use the presence of certain words or emojis to automatically label the tweets.  
+    \item \textbf{Zero-shot learning:} We want to learn a class label never seen in the training data. To do that, we need to learn characteristics instead of labels, and then we can use those characteristics to predict the class label of the unseen class. For example, given a model trained to classify ”dog”, ”owl” and ”fish”. The classifier predicts the concepts ”has four legs”, ”has wings”, ”has retractable claws” and ”has super night vision”. Dog is predicted when ”has four legs” is the only one of the predicted concept. To predict cat, the unknown class, corresponds to all but ”has wings”.
+\end{itemize}
 \section{Classification with rich data type}
 In \textbf{stream data classification}, the classifier needs to be able to classify the new transactions upon arrival and retrain with the new labeled data. To do that, we can use multiples methods. One of them is to break the stream into chunks and train a classifier on each chunk and keep the $k$ historically relevant chunks.\\
 For \textbf{sequential data classification}, we can transform them into traditionnal vectors to apply traditionnal predictors on it like n-grams or frequent sequence mining.\\
@@ -1139,7 +1294,7 @@ The K-medoids algorithm likes this:
     \end{itemize}
 \end{itemize}
 \subsection{K-modes}
-\textcolor{red}{TODO: idk what to say}
+K-modes is a variant of K-means that is used for clustering categorical data and not numerical data. Instead of using the mean as the representative of the cluster, we use the mode, which is the most frequent value of each attribute in the cluster. The quality of a cluster $C_i$ can be measured by the \textbf{dissimilarity} between the data points. The dissimilarity between two data points is the number of attributes that have different values. K-modes algorithm objectives is to minimize the total dissimilarity between the data points and the mode of their cluster. 
 \subsection{Estimating the number of clusters}
 To improve the performance of K-means and its variants, we can try to estimate the number of clusters $k$ instead of giving it in advance. For that, we can use the \textbf{Calinski-Harabasz index}.
 \begin{definition}
@@ -1259,7 +1414,6 @@ With these definitions, we can now understand the DBSCAN algorithm. Which is des
     \end{algorithmic}
 \end{algorithm}
 \subsection{HDBSCAN}
-\textcolor{red}{TO check}
 HDBSCAN (Hierarchical Density-Based Spatial Clustering of Applications with Noise) it takes only one parameter $minPts$. It is based on the concept of \textbf{mutual reachability distance} defined as:
 \begin{equation}
     d_{mreach}(p, q) = \max\{d_{core}(p), d_{core}(q), d(p, q)\}
@@ -1376,9 +1530,47 @@ Each iteration of the EM algorithm consists of two steps:
 \section{High dimensionnal data}
 When the data is high dimensionnal, often we encounter the \textbf{curse of dimensionality}, which is the phenomenon that the distance between data points becomes less meaningful as the number of dimensions increases. To overcome this problem, we can use the CLIQUE algorithm.
 \section{Biclustering}
-The biclustering is a type of clustering that allows to cluster to be in two dimensions. \textcolor{red}{TODO: idk what to say}
+The biclustering is a type of clustering that allows to cluster to be in two dimensions. It means that instead of saying that two data points are similar, we can say that two data points are similar with respect to a subset of features. \\
+Here are some examples of the simplest biclusters with a matrix representation $I \times J$:
+\begin{itemize}
+    \item \textbf{Bicluster with constant values}: all the data points in the bicluster have the same value for a subset of features.
+    \item \textbf{Bicluster with constant values on rows}: all the data points in the bicluster have the same value for a subset of features on rows, but they can have different values on columns. Mathematically, we have $e_{ij} = c+\alpha_i$.
+    \item \textbf{Bicluster with constant values on columns}: all the data points in the bicluster have the same value for a subset of features on columns, but they can have different values on rows. Mathematically, we have $e_{ij} = c+\beta_j$.
+    \item \textbf{Bicluster with coherent values}: all the data points in the bicluster have a pattern that is coherent with respect to the rows and columns. For example, each row has a pattern and columns shift them (i.e., $e_{ij} = c+\alpha_i+\beta_j$). Equivalently, a bicluster is with coherent values if and only if for any $i_1,i_2 \in I$ and $j_1,j_2 \in J$ then $e_{i_1 j_1} - e_{i_1 j_2} = e_{i_2 j_1} - e_{i_2 j_2}$.
+    \item \textbf{Bicluster with coherent evolutions on rows}: all the data points in the bicluster have a pattern that evolves coherently on rows, but they can have different values on columns. It means that for any $i_1,i_2 \in I$ and $j_1,j_2 \in J$ then $(e_{i_1 j_1} - e_{i_1 j_2})(e_{i_2 j_1} - e_{i_2 j_2}) \geq 0$, Symmetrically, we can define \textbf{bicluster with coherent evolutions on columns}.
+\end{itemize}
+But these cases barely happen in real life due to noise and outliers. To find biclusters in real life data, we can either do it with optimization-based methods or with enumeration methods. 
+First, we need to some means for the submatrix $I \times J$:
+\begin{itemize}
+    \item The mean of the $i^{th}$ row is defined as: $\bar{e}_{iJ} = \frac{1}{|J|} \sum_{j \in J} e_{ij}$
+    \item The mean of the $j^{th}$ column is defined as: $\bar{e}_{Ij} = \frac{1}{|I|} \sum_{i \in I} e_{ij}$
+    \item The mean of the submatrix $I \times J$ is defined as:
+    \begin{equation}    
+        \bar{e}_{IJ} = \frac{1}{|I||J|} \sum_{i \in I} \sum_{j \in J} e_{ij} = \frac{1}{|I|} \sum_{i \in I} \bar{e}_{iJ} = \frac{1}{|J|} \sum_{j \in J} \bar{e}_{Ij}
+    \end{equation}
+\end{itemize}
+\begin{definition}
+    The \textbf{quality} of the submatrix as a bicluster can be measured by the mean-square residue value:
+    \begin{equation}
+        H(I \times J) = \frac{1}{|I||J|} \sum_{i\in I, j \in J} (e_{ij} - \bar{e}_{iJ} - \bar{e}_{Ij} + \bar{e}_{IJ})^2
+    \end{equation}
+\end{definition}
+This quality measure is based on the ideal bicluster with coherent values, because the quality of a bicluster with coherent values is 0. 
 \subsection{$\delta$-bicluster algorithm}
-\textcolor{red}{TODO: idk what to say}
+The idea of the $\delta$-bicluster algorithm is to find a submatrix $I \times J$ representing a bicluster, such that the values are coherent but it allows noise so it finds a bicluster $I \times J$ such that $H(I \times J) \leq \delta$.\\
+\begin{definition}
+    A \textbf{maximal $\delta$-bicluster} is a $\delta$-bicluster $I \times J$ such that there is no $\delta$-bicluster $I' \times J'$ and $I \subseteq I'$ and $J \subseteq J'$ with $I \neq I'$ or $J \neq J'$. 
+\end{definition}
+The algorithm works in two steps, first a deletion part where we try to remove the noisy part until a structure appears, then we have an addition part where we try to add more rows and columns to the bicluster until we cannot add more.\\
+In deletion part, we want to remove the row or column with the highest error. This error is called the \textbf{mean-square residue} and is defined as:
+\begin{equation}
+    d(i) = \frac{1}{|J|} \sum_{j \in J} (e_{ij} - \bar{e}_{iJ} - \bar{e}_{Ij} + \bar{e}_{IJ})^2
+\end{equation}
+\begin{equation}
+    d(j) = \frac{1}{|I|} \sum_{i \in I} (e_{ij} - \bar{e}_{iJ} - \bar{e}_{Ij} + \bar{e}_{IJ})^2
+\end{equation}
+And so for the deletion part, we remove the row or column with the highest mean-square residue until $H(I \times J) \leq \delta$.\\
+Then we have the addition part we add back rows and columns with the lowest mean-square residue as long as $H(I \times J) \leq \delta$.
 \section{Clustering graph and network data}
 To do clustering on graph and network data, we need to redefine the concept of distance between data points.
 \begin{definition}
@@ -1444,13 +1636,200 @@ In some networks, nodes can be considered similar if they have similar neighbors
 \end{definition}
 If a vertex $v$ is in the $\epsilon$-neighborhood of a core $u$, then $v$ is assigned to the same cluster as $u$. 
 \section{Semisupervised clustering}
-\textcolor{red}{TODO: constrained k-means}
-We could also need \textbf{pairwise constraint} such as:
+\subsection{Constrained k-means}
+The constrained k-means is a variant of k-means. We have some prior knowledge about the data, and we want to use this knowledge to improve the clustering result. We have labeled subset $S$ and know that each $S_j$ contains points already known to belong to cluster $C_j$. We know that these subsets are disjoint. The algorithm assigns the labeled points to their corresponding clusters and then assigns the unlabeled points to the closest cluster. The algorithm then updates the centroids of the clusters and repeats until convergence. The labeled points will anchor their corresponding clusters.
+\subsection{COP-k-means algorithm}
+For the COP-k-means algorithm, we need to define \textbf{pairwise constraint} such as:
 \begin{definition}
     \textbf{Must-link constraint} is a constraint that specifies that two data points must be in the same cluster.
 \end{definition}
+By transitivity, we have the following relation:
+\begin{equation}
+    \texttt{mustLink}(x,y) \wedge \texttt{mustLink}(y,z) \Rightarrow \texttt{mustLink}(x,z)
+\end{equation}
 \begin{definition}
     \textbf{Cannot-link constraint} is a constraint that specifies that two data points cannot be in the same cluster.
 \end{definition}
-\textcolor{red}{TODO: COP k-means}
+These two constraints are linked and can be propagated together, for example:
+\begin{equation}
+    \texttt{cannotLink}(x,y) \wedge \texttt{mustLink}(x,x') \wedge \texttt{mustLink}(y,y') \Rightarrow \texttt{cannotLink}(x',y')
+\end{equation}
+The COP-k-means algorithm works as:
+\begin{enumerate}
+    \item Choose k objects in D as the initial clusters centers $c_1, \dots, c_k$ such that there is no must-link between any two of those k objects
+    \item Repeat until convergence:
+    \begin{enumerate}
+        \item Assign each object to the cluster whose mean is the closest, and without pairwise violation constraints
+        \item Update the cluster means
+    \end{enumerate}
+\end{enumerate}
+\section{Mining compressed or approximate patterns}
+When we mine patterns, we often get a large number of patterns, and many of them are similar to each other. For example if we have $(i_2,i_4,i_5)$ with a cover of 205 and $(i_2,i_4,i_5, i_6)$ with a cover of 205, we see that the first pattern is redundant, we can thus only keep the second pattern. To find those redundant patterns, we can define some concepts:
+\begin{definition}
+    The \textbf{pattern distance} between two patterns $P_1$ and $P_2$ is defined as:
+    \begin{equation}
+    d(P_1, P_2) = 1 - \frac{|\texttt{cover}_{\mathcal{D}}(P_1) \cap \texttt{cover}_{\mathcal{D}}(P_2)|}{|\texttt{cover}_{\mathcal{D}}(P_1) \cup \texttt{cover}_{\mathcal{D}}(P_2)|}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    Given two patterns $P_1$ and $P_2$, we say that $P_2$ can be \textbf{expressed} by $P_1$ if the itemset of $P_2$ is a subset of the itemset of $P_1$ ($I(P_2) \subseteq I(P_1)$).
+\end{definition}
+\begin{definition}
+    Given patterns $P_1, P_2, \dots, P_k$ in a same cluster. The \textbf{representative} $P_r$ of the cluster should be able to express all the patterns in the cluster:
+    \begin{equation}
+        \forall i \in \{1, 2, \dots, k\}, I(P_i) \subseteq I(P_r)
+    \end{equation}
+    or 
+    \begin{equation}
+        \bigcup_{i=1}^{k} I(P_i) \subseteq I(P_r)
+    \end{equation}
+\end{definition}
+\begin{definition}
+    A pattern $P$ is \textbf{$\delta$-covered} by a pattern $P'$ if $I(P) \subseteq I(P')$ and $d(P, P') \leq \delta$. 
+\end{definition}
+\begin{definition}
+    A set of patterns form a \textbf{$\delta$-cluster} if there exists a representative $P_r$ such that for each pattern $P$ in the cluster, $P$ is $\delta$-covered by $P_r$. 
+\end{definition}
+\chapter{Outlier detection}
+\begin{definition}
+    \textbf{Outlier detection} (or \textbf{anomaly detection}) is the process of finding data objects with behaviors that are very different from expectation.
+\end{definition}
+Clustering and outliers detections are related tasks, because clustering finds the majority patterns in the dataset, while outlier detection search for points that deviates from the majority patterns. Beware that outlier are different from noise, noise is a random error or variance in a measured variable, while outliers are data points that are significantly different from the rest of the data. Noise is not interesting in data analysis, while outliers can be interesting because they can indicate a rare event or a novel pattern.
+\section{Statistical approaches}
+Statistical methods for outlier detection make assumptions about data normality, it means that it supposes the data is generated by a stochastic process. And so with that, we can deduce that normal data points will have a high probability of being generated by the stochastic process, while outliers will have a low probability of being generated by the stochastic process.
+\subsection{Parametric methods}
+A parametric method assumes that the normal data objects are generated by a parametric distribution with a finite number of parameters $\Theta$.
+\begin{definition}
+    The probability density function of the parametric distribution $f (x, \Theta)$ gives the probability that object $x$ is generated by the distribution.
+\end{definition}
+The smaller this value, the more likely $x$ is an outlier.
+For example for univariate data, we can check using a normal distribution, we would have:
+\begin{equation}
+    \mu = \frac{1}{n} \sum_{i=1}^{n} x_i
+\end{equation}
+\begin{equation}    
+    \sigma = \frac{1}{n} \sum_{i=1}^{n} (x_i - \mu)^2
+\end{equation}
+And we know that the interval $[\mu - 3\sigma, \mu + 3\sigma]$ contains 99.7\% of the data points, so any point outside this interval is considered as an outlier.
+With multivariate data, we can check using a $\chi^2$-test, under the assumption of normal distribution. We have:
+\begin{equation}
+    \chi^2 = \sum_{i=1}^{n} \frac{(o_i - E_i)^2}{E_i}
+\end{equation}
+where $o_i$ is the $i^{th}$ dimension of object $o$ and $E_i$ is the expected value of the $i^{th}$ dimension. If $\chi^2$ is large, then $o$ is an outlier.
+For mixture of two distributions, we can use the following formula:
+\begin{equation}
+    Pr(o|\Theta_1,\Theta_2) = w_1 f_{\Theta_1}(o) + w_2 f_{\Theta_2}(o)
+\end{equation}
+where $w_1$ and $w_2$ are the weights of the two distributions, and $f_{\Theta_1}(o)$ and $f_{\Theta_2}(o)$ are the probability density functions of the two distributions $\Theta_1$ and $\Theta_2$.
+\subsection{Nonparametric methods}
+A nonparametric method does not assume an a priori statistical model with a finite number of parameters. Instead, it tries to determine the model from the input data. It make fewer assumptions about the data distribution.
+\begin{definition}
+    The \textbf{histogram-based method} is a method that divides the data space into a finite number of bins and counts the number of data points in each bin. The bins with a low count are considered as outliers.
+\end{definition}
+This method require an user-specified bin size, and it is sensitive to the choice of the bin size. If the bin size is too small, it could lead to false positives, while if the bin size is too large, it could lead to false negatives.
+\section{Proximity-based Approaches}
+\subsection{Distance-based outlier detection}
+A distance-based outlier detection method consults the neighborhood of an object, which is defined by a radius. An object is then considered as an outlier if its neighborhood does not have enough other points.
+\begin{definition}
+    An object $o$ is a \textbf{$DB(r,\pi)$-outlier} if the number of objects in its neighborhood of radius $r$ is less than $\pi$ percent of the total number of objects in the dataset. Mathematically, we have: 
+    \begin{equation}
+        \frac{|\{o' | dist(o, o') \leq r\}|}{|D|} \leq \pi
+    \end{equation}
+\end{definition}
+\subsection{Density-based outlier detection}
+\begin{definition}
+    The \textbf{k-distance} of an object $o$ denoted $dist_k(o)$ is the distance from $o$ to its $k^{th}$ nearest neighbor. 
+\end{definition}
+\begin{definition}
+    The \textbf{k-distance neighborhood} of an object $o$ is the set of objects that are at a distance less than or equal to $dist_k(o)$.
+    \begin{equation}
+        N_k(o) = \{o' | o' \in D, dist(o, o') \leq dist_k(o)\}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    For two objects $o$ and $o'$, the \textbf{reachability distance} of $o$ with respect to $o'$ is defined as:
+    \begin{equation}           
+        reachdist_k(o, o') = \max\{dist_k(o'), dist(o, o')\}
+    \end{equation}
+\end{definition}
+Beware that the reachability distance is not symmetric, it means that $reachdist_k(o, o') \neq reachdist_k(o', o)$.
+\begin{definition}
+    The \textbf{local reachability density} of an object $o$ is defined as the inverse of the average reachability distance of $o$ with respect to its k-distance neighborhood:
+    \begin{equation}
+        lrd_k(o) = \frac{|N_k(o)|}{\sum_{o' \in N_k(o)} reachdist_k(o, o')}
+    \end{equation}
+\end{definition}
+This measure allows to compute a local density that can change in various regions of the data space.
+\begin{definition}
+    The \textbf{local outlier factor (LOF)} of an object $o$ is defined as:
+    \begin{equation}
+        LOF_k(o) = \frac{\sum_{o' \in N_k(o)} \frac{lrd_k(o')}{lrd_k(o)}}{|N_k(o)|} = \sum_{o' \in N_k(o)} lrd_k(o') \times \sum_{o' \in N_k(o)} reachdist_k(o', o)
+    \end{equation} 
+\end{definition}
+The LOF is:
+\begin{itemize}
+    \item lower than 1 for items with a higher density than neighbors
+    \item close to 1 for items with a similar density as the neighbors
+    \item higher than 1 for items with a lower density than the neighbors
+\end{itemize}
+\section{Learning-based approaches}
+\subsection{Clustering-based approaches}
+Outliers can be discovered by examining the relationship between objects and clusters. There is multiples ways to know if an object is an outlier with respect to a cluster, for example:
+\begin{itemize}
+    \item If an object does not belong to any cluster, then it is an outlier.
+    \item If an object is at an high distance from the closest cluster, then it is an outlier.
+    \item If a small or sparse cluster is formed, then the objects in this cluster are probably outliers.
+\end{itemize}
+\begin{definition}
+    The \textbf{distance ratio} measure how the distance of an object $o$ to the center of its closest cluster compares to the average distance of the objects in the cluster to the center of the cluster. It is defined as:
+    \begin{equation}
+        DR(o) = \frac{dist(o, c_o)}{\frac{1}{|C|} \sum_{o' \in C} dist(o', c_o)}
+    \end{equation}
+\end{definition}
+We also have the method \textbf{FindCBLOF (Find Cluster-Based Local Outlier Factor)}, it is an algorithm that works as follows:
+\begin{enumerate}
+    \item Find clusters in the data
+    \item Sort the cluster by decreasing size.
+    \item For each data point assign a $CBLOF$ value:
+    \begin{itemize}
+        \item in large cluster: it is the product of the cluster’s size and the similarity between the point and the cluster
+        \item in small cluster: it is the product of the cluster’s size and the similarity between the point and the closest large cluster
+    \end{itemize}
+\end{enumerate}
+The lower the $CBLOF$ value, the more probable the point is an outlier.\\ 
+Those techniques requires to compute all the clusters which is expensive. A solution is to use \textbf{fixed-width clustering}, it is less precise but it is computed in linear time. Given a predefined width $\delta$, it works as follows for each data point $o$:
+\begin{itemize}
+    \item If there is a cluster $C$ such that $dist(o, c) \leq \delta$, then assign $o$ to $C$.
+    \item Otherwise, create a new cluster with $o$ as the only member and $o$ as the center.
+\end{itemize}
+\subsection{Classification-based approaches}
+It is possible to use classification techniques to detect outliers, by training a classifier to label the data as "normal" or "outlier". But this comes with some potential problems such as highly imbalanced classes, the outliers present in the training data may not be representative of the outliers in the test data.
+\subsection{Semi-supervised approaches}
+When only few data are labeled, two cases arise:
+\begin{itemize}
+    \item Some normal examples are labeled: With the unlabeled data, they can be used to model the normal data.
+    \item Only outliers examples are labeled: Trickier case, as this might not cover the whole distribution of outliers. Unlabeled data can be used to train a model for the normal data.
+\end{itemize}
+\section{Outlier Detection in High-Dimensional Data}
+As usual the curse of dimensionality makes the distance between data points less meaningful, and so it becomes harder to detect outliers. To overcome this problem, we can use the \textbf{HilOut algorithm}. The HilOut algorithm finds distance-based outliers, but use the ranks of distance instead of the distances themselves. The HilOut algorithm works as follows:
+\begin{itemize}
+    \item For each objects $o$, HilOut finds the k-nearest neighbors of $o$, denoted by $nn_1(o), \dots, nn_k (o)$, where k is a parameter.
+    \item The weights of the object $o$ is defined as:
+    \begin{equation}    
+        w(o) = \sum_{i=1}^{k} dist(o, nn_i(o))
+    \end{equation}
+    \item sort the objects by decreasing weight, and return the top $l$ objects as outliers, where $l$ is a parameter.
+\end{itemize}
+It is also possible to reduce the dimensionality of the data before applying outlier detection techniques such as grid-based methods where we search for subspaces with lower than average density. We will thus be searching for outliers in subspaces. To find such subspace projections, we first discretize the data into a grid in an equal-depth way, i.e., each $\phi$ range contains a fraction $f = 1/\phi$ of the objects. The sparsity of the subspace is then evaluated. Given a k-dimensional subspace with n objects in total, the expected number of object in each k-dimensional cubes is $(\frac{n}{\phi^k})$
+\begin{definition}
+    Given $n(C)$ the number of object in a cube $C$, the \textbf{sparsity coefficient} of $C$ is:
+    \begin{equation}
+        S(C) = \frac{n(C) - f^kn}{\sqrt{f^k(1-f^k)n}}
+    \end{equation}
+\end{definition}
+If $S(C ) < 0$, then $C$ contains fewer objects than expected. The smaller the value of $S(C )$, the sparser $C$ is and the more likely the objects in $C$ are outliers in the subspace.
+We can also use \textbf{Angle-Based Outlier Detection (ABOD)} which is based on the idea that a point in the center of a cluster will have widely diverse set of angles while a a point outside of a cluster will have a very small variation. Thus for each object $o$, compute the angle $\widehat{xoy}$ for each pair of point $x, y$ such as $x \neq o$ and $y \neq o$. Then the variance of these angles is computed, and the smaller the variance, the more likely $o$ is an outlier. It can be mathematically expressed as:
+\begin{equation}
+    ABOF(o) = Var_{x,y \in D\backslash \{o\}} \frac{\langle \vec{ox}, \vec{oy} \rangle}{dist(o, x)^2dist(o, y)^2}
+\end{equation}
 \end{document}
