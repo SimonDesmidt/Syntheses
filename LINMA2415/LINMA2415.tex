@@ -165,8 +165,8 @@ Another way to look at the dual problem is by using the Lagrangian function. Con
     The KKT conditions are a set of necessary conditions for optimality. Consider this problem:
     \begin{equation}
         \begin{aligned}
-            \max &f(x,y) \\
-            \text{s.t.} & Ax + By \leq b \qquad (\lambda) \\
+            \max \: \: &f(x,y) \\
+            \text{s.t.} \: \: &Ax + By \leq b \qquad (\lambda) \\
             & Cx + Dy = d \qquad (\mu) \\
             & x \geq 0 \qquad (\lambda_2)
         \end{aligned}
@@ -185,4 +185,223 @@ Another way to look at the dual problem is by using the Lagrangian function. Con
         L(x,y,\lambda, \mu) = f(x,y) + \lambda^T (b - Ax - By) + \mu^T (d - Cx - Dy) + \lambda_2^Tx
     \end{equation}
 \end{definition}
+\chapter{Power systems}
+In our world, everything works with electricity and to be able to use it, there is complex systems behind it. In this chapter, we will see how the electricity is produced, transmitted and consumed. Usually a power system work like this: Electricity is produced in power plants, then it is transmitted through high voltage lines to substations, where it is transformed to lower voltage and distributed to consumers. The electricity is consumed by households, industries and other consumers. To ensure that the electricity supply meets the demand, there are reserves that can be activated in case of a sudden increase in demand or a decrease in supply. All of this electricity is exchanged throught financial markets, where producers and consumers can buy and sell electricity and other services. 
+\section{Production}
+Electricity can be produced in different ways, there is two main categories of production: renewable and non-renewable. Renewable energy sources are those where the "fuel" is naturally present and is conceptually infinite, such as solar, wind, hydro, geothermal and biomass. Non-renewable energy sources are those where the "fuel" is extracted from the earth and is finite, such as coal, oil and natural gas. Nuclear energy is also considered non-renewable, although it does not emit greenhouse gases. Each type of production has its own characteristics and costs, and they are all important for the functioning of the power system.
+We can measure electricity by two main quantities: power and energy.
+\begin{definition}
+    \textbf{Power} (MW) is the rate at which electricity is produced or consumed at a given moment. It is the instantaneous amount of electricity being generated or used.
+\end{definition} 
+\begin{definition}
+    \textbf{Energy} (MWh) is the total amount of electricity produced or consumed over a period of time. It is the integral of power over time. 
+\end{definition}
+Every type of production has its own structure and thus obey to different constraints to produce electricity. For example, here are some of the constraints that we can find in different types of production:
+\begin{itemize}
+    \item \textbf{Fossil fuel power plants}:
+    \begin{itemize}
+        \item Min/max power output
+        \item Ramp constraints (how fast the power can be increased or decreased)
+        \item Min up/down time (how long the plant must be on or off before it can change state)
+    \end{itemize}
+    \item \textbf{Storage}:
+    \begin{itemize}
+        \item Max charge/discharge power
+        \item Energy capacity (how much energy can be stored)
+    \end{itemize}
+    \item \textbf{Renewables}:
+    \begin{itemize}
+        \item Nameplate capacity (max power output under ideal conditions)
+        \item Capacity factor (actual power output as a fraction of nameplate capacity, depends on weather conditions)
+    \end{itemize}
+\end{itemize}
+But the production of electricity is not free. There are different types of costs associated with the production of electricity, such as fuel costs, fixed costs etc.
+\begin{definition}
+    \textbf{Variable cost} (€/h) is the cost that depends on the amount of electricity produced. For example, fuel costs.
+\end{definition}
+\begin{definition}
+    \textbf{Fixed cost} (€) is the cost that does not depend on the amount of electricity produced. For example, construction costs (€), overnight cost (€/kW (invested kW)).
+\end{definition}
+\begin{definition}
+    \textbf{Marginal cost} (€/MWh) is the cost of producing one additional megawatt-hour of electricity. It is the derivative of the variable cost with respect to the power output. 
+\end{definition}
+\begin{definition}
+    \textbf{Average cost} (€/MWh) is the total cost per unit of electricity outputed.
+\end{definition}
+\begin{definition}
+    The \textbf{merit order curve} is a graph that shows the marginal cost of production for different types of power plants. It is used to determine which power plants should be used to meet the demand at a given time, with the cheapest ones being used first.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\linewidth]{img/moc.png}
+        \caption{Example of merit order curve}
+    \end{figure}
+\end{definition}
+\section{Transmission and distribution}
+\begin{definition}
+    \textbf{Transmission} is the process of transporting electricity from the power plants to the substations. It is done through high voltage lines.
+\end{definition}
+\begin{definition}
+    \textbf{Distribution} is the process of transporting electricity from the substations to the consumers. It is done through low voltage lines.
+\end{definition}
+The transmission and distribution of electricity can be represented by a graph.
+\begin{definition}
+    \textbf{Buses} are the nodes of the graphs, they represent the substations, producers and consumers. The power should be balanced at each bus, meaning that the power injected by the producers should be equal to the power consumed by the consumers and the power flowing through the lines connected to the bus.
+\end{definition}
+\begin{definition}
+    \textbf{Lines} are the edges of the graph, they represent the transmission lines. They have a can have capacity. 
+\end{definition}
+The electricity flows through the lines according to the laws of physics, and the flow on each line is determined by the power injections at the buses and the impedance of the lines.
+\begin{definition}
+    \textbf{Power flow equations} determine a mapping $f = P(r)$ of power injections $r$ at the buses to power flows $f$ on the lines.
+\end{definition}
+\begin{definition}
+    \textbf{DC power flow equations} are an approximation of the power flow equations $f = P(r)$ by a linear mapping. 
+\end{definition}
+\section{Consumption}
+Like the production of electricity, the consumption of electricity also has its own characteristics.
+\begin{definition}
+    \textbf{Consumer benefit} (€/h) is the benefit that a consumer gets from consuming a certain amount of electricity. 
+\end{definition}
+\begin{definition}
+    \textbf{Marginal benefit} (€/MWh) is the benefit of consuming one additional megawatt-hour of electricity. It is the derivative of the consumer benefit with respect to the power consumption.
+\end{definition}
+\begin{definition}
+    \textbf{Inverse demand / marginal benefit function} mapps power consumption $Q$ to marginal benefit $MB(Q)$. 
+\end{definition}
+\begin{definition}
+    \textbf{Demand function} mapps prices of power $v$ to quantity $Q$, $Q(v)$. It is the inverse mapping of the inverse demand function.
+\end{definition}
+\begin{definition}
+    \textbf{Elasticity} is the sensitivity of the demand $Q(v)$ to changes in price $v$. It is defined as:
+    \begin{equation}
+        \epsilon = \frac{\frac{dQ}{dv}}{\frac{Q}{v}}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    \textbf{Average Value of Lost Load} is the average cost to consumers of not having electricity. It is used to estimate the cost of power outages and to determine the value of reliability in the power system.
+\end{definition}
+\begin{definition}
+    \textbf{Value of Lost Load (VOLL)} is the cost to consumers of not having electricity for a specific amount of time. 
+\end{definition}
+\section{Reserves}
+With the rise of renewable energy sources, the uncertainty in the power system has increased, and the need for reserves has become more important. \textbf{Contingencies} (failures of components in the power system) can cause sudden changes in the supply or demand of electricity, and reserves are needed to ensure that the power system can still operate reliably. 
+There are different types of reserves, that can be activated in different time frames:
+\begin{itemize}
+    \item \textbf{Primary reserves} are activated and operationnal within seconds to few minutes after a contingency, they are used to stabilize the frequency of the power system. It is the first line of defense. It is usually provided by batteries for example because they are not limited by ramp constraints and can respond very quickly.
+    \item \textbf{Secondary reserves} are activated within seconds but are only fully available within 5-10 minutes after a contingency. They can be supplied by spining (online generators) or non-spining reserves (offline generators but can be brought online quickly). 
+    \item \textbf{Tertiary reserves} are available within 15 minutes.
+\end{itemize}
+These reserves are activated sequentially. And on the following graph, we can see how the different reserves have been activated over a day in the Belgian power system.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/reserve.png}
+    \caption{Example of activation of reserves in the Belgian power system}
+\end{figure}
+\section{Multi-stage operations}
+The financial markets for electricity are organized in different time frames with different products exchanged at each time frame. This can be resumed in the following figure:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/market.png}
+    \caption{Order of the markets for electricity}
+\end{figure}
+\chapter{Economic Dispatch}
+The economic dispatch problem is the problem of determining the optimal production of electricity by the different power plants to meet the demand at the lowest cost, while respecting the constraints of the power system. It is the simplest model that models a power system.
+\section{Formulation}
+The economic dispatch problem aims to maximize the total welfare of the system, which is the total benefit of the consumers minus the total cost of the producers. It can be formulated as follows:
+\begin{equation}
+    \begin{aligned}
+        \max \quad & \sum_{l \in L} \int_{0}^{d_l} MB_l(x)dx - \sum_{g \in G} \int_{0}^{p_g} MC_g(x)dx \\
+        \text{s.t.} \quad & \sum_{l \in L} d_l - \sum_{g \in G} p_g = 0 \quad [\lambda]\\
+        & 0 \leq d_l \leq D_l, \quad \forall l \in L \quad [\nu_l]\\
+        & 0 \leq p_g \leq P_g, \quad \forall g \in G \quad [\mu_g]
+    \end{aligned}
+\end{equation}
+Where $L$ is the set of loads, $G$ is the set of generators. $MC_g$ is the increasing marginal cost and $MB_l$ is the decreasing marginal benefit. The KKT conditions for this problem are:
+\begin{equation}
+    \begin{aligned}
+        0 \leq p_g &\perp MC_g(p_g) - \lambda + \mu_g \geq 0\\
+        0 \leq \mu_g &\perp P_g - p_g \geq 0\\
+        0 \leq d_l &\perp -MB_l(d_l) + \lambda + \nu_l \geq 0\\
+        0 \leq \nu_l &\perp D_l - d_l \geq 0\\
+        \lambda &\perp \sum_{g \in G} p_g - \sum_{l \in L} d_l = 0 
+    \end{aligned}
+\end{equation}
+There exists a unique price $\lambda$ (except in some cases) that clears the market, meaning that the supply equals the demand. This price is called the \textbf{market clearing price} and it is the price at which the total welfare is maximized. We can find this price by solving the economic dispatch problem or by using the KKT conditions. So there exists a threshold $\lambda$ such that:
+\begin{itemize}
+    \item If $0 < p_g < P_g$, then $MC_g(p_g) = \lambda$.
+    \item If $0 < d_l < D_l$, then $MB_l(d_l) = \lambda$.
+    \item If $p_g = 0$, then $MC_g(p_g) \geq \lambda$.
+    \item If $d_l = 0$, then $MB_l(d_l) \leq \lambda$.
+    \item If $p_g = P_g$, then $MC_g(p_g) \leq \lambda$.
+    \item If $d_l = D_l$, then $MB_l(d_l) \geq \lambda$.
+\end{itemize}
+\section{Competitive market equilibrium}
+\begin{definition}
+    A market is \textbf{perfectly competitive} if 
+    \begin{itemize}
+        \item Agent are price takers, meaning that they cannot influence the market clearing price $\lambda$.
+        \item Variable costs are convex and benefits are concave.
+        \item Agent have access to public information.
+    \end{itemize}
+\end{definition}
+\begin{definition}
+    The \textbf{aggregate cost} is the cheapest way to produce $Q$ MW of power among a set of producers. It is defined as:
+    \begin{equation}
+        \begin{aligned}
+            TC_G(Q) = \min &\sum_{g \in G} \int_{0}^{p_g} MC_g(x)dx \\
+            \text{s.t.} \quad & \sum_{g \in G} p_g = Q \\
+            & p_g \in dom(MC_g)
+        \end{aligned}
+    \end{equation}
+\end{definition}
+And thus the \textbf{aggregate marginal cost} is $MC_G(Q) = TC_G'(Q)$
+\begin{definition}
+    The \textbf{aggregate benefit} is the cheapest way to consume $Q$ MW of power among a set of consumers. It is defined as:
+    \begin{equation}
+        \begin{aligned}
+            TB_L(Q) = \max &\sum_{l \in L} \int_{0}^{d_l} MB_l(x)dx \\
+            \text{s.t.} \quad & \sum_{l \in L} d_l = Q \\
+            & d_l \in dom(MB_l)
+        \end{aligned}
+    \end{equation}
+\end{definition}
+And thus the \textbf{aggregate marginal benefit} is $MB_L(Q) = TB_L'(Q)$.
+In a competitive market, the market clearing price $\lambda$ is decided with the \textbf{market clearing condition}:
+\begin{equation}
+    \lambda \perp \sum_{g \in G} p_g - \sum_{l \in L} d_l = 0
+\end{equation}
+\begin{definition}
+    A market is at \textbf{equilibrium} if 
+    \begin{itemize}
+        \item No profitable opportunities for trade exist, meaning that no agent can increase their welfare by changing their production or consumption.
+        \item The market clearing price is the price of a market in equilibrium.
+        \item Agent have access to public information.
+    \end{itemize}
+    In a competitive market, the equilibrium is also called the \textbf{competitive equilibrium} and the price is the \textbf{competitive price}.
+\end{definition}
+\begin{definition}
+    The \textbf{Producer surplus} is the difference between the revenue of a producer and its variable cost. It is defined as:
+    \begin{equation}
+    PS_G =  \lambda  q_G(\lambda)- \int_{0}^{q_G(\lambda)} MC_G(x)dx
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{Consumer surplus} is the difference between the benefit of a consumer and the price they pay. It is defined as:
+    \begin{equation}
+    CS_L =  \int_{0}^{q_L(\lambda)} MB_L(x)dx - \lambda q_L(\lambda)
+    \end{equation}
+\end{definition}
+% \section{Optimization modeling of market equilibrium}
+\chapter{Power markets}
+Financial markets for electricity are a central part of the power system, they allow producers and consumers to buy and sell electricity and other services. There is 3 different ways to trade electricity:
+\begin{itemize}
+    \item \textbf{Bilateral trade} are agreements between a producer and a consumer to buy/sell a certain amount of electricity at a certain price and time.
+    \item \textbf{Exchange} is a centralized market where producers and consumers can buy and sell electricity by submitting simple bids with simples rules to auctions.
+    \item \textbf{Pool} is a centralized market where producers and consumers can buy and sell electricity by submitting multi-part bids with complex rules to auctions.
+\end{itemize}
+Bilateral trade is the simplest way to trade electricity but it is the least centralised because all the are done in peer to peer. It is not efficient and thus cannot be used in real time. Exchange and pool are more centralised and thus more efficient.
+\section{Exchange VS Pool}
+\section{Electricity auctions}
+\section{Blueprint of an electricity market}
+\section{Characteristics of electricity market}
 \end{document}
