@@ -21,6 +21,7 @@
 \usepackage{xfrac}
 \usepackage{textcomp}
 \usepackage{mathtools}
+\usepackage{eurosym}
 \usepackage{caption}
 \usepackage{tabularray}
 \usepackage{subcaption}
@@ -393,6 +394,7 @@ In a competitive market, the market clearing price $\lambda$ is decided with the
 \end{definition}
 % \section{Optimization modeling of market equilibrium}
 \chapter{Power markets}
+\section{Exchange VS Pool market}
 Financial markets for electricity are a central part of the power system, they allow producers and consumers to buy and sell electricity and other services. There is 3 different ways to trade electricity:
 \begin{itemize}
     \item \textbf{Bilateral trade} are agreements between a producer and a consumer to buy/sell a certain amount of electricity at a certain price and time.
@@ -400,8 +402,185 @@ Financial markets for electricity are a central part of the power system, they a
     \item \textbf{Pool} is a centralized market where producers and consumers can buy and sell electricity by submitting multi-part bids with complex rules to auctions.
 \end{itemize}
 Bilateral trade is the simplest way to trade electricity but it is the least centralised because all the are done in peer to peer. It is not efficient and thus cannot be used in real time. Exchange and pool are more centralised and thus more efficient.
-\section{Exchange VS Pool}
+\subsection{Exchange Market}
+In an exchange market the bids look like this: $(p_b,q_b)$ it is a pair of price and quantity. Positive values indicate a buy bid and negative values indicate a sell bid. The market operator collects all the bids then solves the following problem to determine the market clearing price and quantity:
+\begin{equation}
+    \begin{aligned}
+        \max_{\delta_b} \quad & \sum_{b \in B} p_b |q_b| \delta_b \\
+        \text{s.t.} \quad & \sum_{b \in B} q_b \delta_b = 0 \\
+        & 0 \leq \delta_b \leq 1 \qquad \forall b \in B \\
+    \end{aligned}
+\end{equation}
+\subsection{Pool market}
+In a pool market, the bids are more complex. For example, it can contains start-up costs, marginal costs and capacity. This would generate a triplet of information for each bid: $(SC_g, MC_g, P_g)$, in that case the market operator would solve the following problem to determine the market clearing price and quantity:
+\begin{equation}
+    \begin{aligned}
+        \max_{d_l, p_g, u_g} \quad & \sum_{l \in L} MB_l d_l - \sum_{g \in G} (SC_g u_g + MC_g p_g) \\
+        \text{s.t.} \quad & \sum_{l \in L} d_l - \sum_{g \in G} p_g = 0 \\
+        & 0 \leq d_l \leq D_l, \quad \forall l \in L \\
+        & 0 \leq p_g \leq P_g u_g, \quad \forall g \in G \\
+        & u_g \in \{0,1\}, \quad \forall g \in G
+    \end{aligned}
+\end{equation}
 \section{Electricity auctions}
-\section{Blueprint of an electricity market}
-\section{Characteristics of electricity market}
+In the electricity market, there exists different types of auctions. 
+\begin{definition}
+    The \textbf{uniform price auction} is an auction where an uniform price is decided $\lambda$, and every winning bid will pay or be paid at $\lambda$ €/MWh. It is used in exchange markets.
+\end{definition}
+\begin{definition}
+    The \textbf{second-price auction} is an auction where the price will be decided by the highest rejected bid. 
+\end{definition}
+\begin{definition}
+    The \textbf{first-price auction} is an auction where the price for each winning bid is the price of the bid itself. 
+\end{definition}
+Both the uniform price auction and the pay as bid auction are criticized for different reasons. \textcolor{red}{BUT IDK WHAT TO SAY HERE}
+\subsection{Blueprint of an electricity market}
+An electricity market is organized like this:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/blueprint.png}
+    \caption{Blueprint of an electricity market}
+\end{figure}
+\section{Nodal VS Zonal pricing}
+Until now, we have only considered market clearing problems without considering the physical configuration of the power system. In reality, the power system is a complex network of buses and lines, and the flow of electricity is determined by the laws of physics. This can lead to congestion in the lines. To manage this congestion and establish fair pricing, there are two main approaches: nodal pricing and zonal pricing.
+\subsection{Nodal pricing}
+Nodal pricing, is as the name suggests, a pricing mechanism where the price of electricity is determined at each node (or bus) in the power system. The price at each node reflects the marginal cost of supplying electricity to that node, this takes into account the cost of production, the cost of transmission and the congestion in the lines.
+\subsection{Zonal pricing}
+Zonal pricing, on the other hand, groups multiple nodes into zones and determines a single price for each zone. This approach is motivated by the need to simplify the pricing process and reduce the number of markets to be managed. This approach simplifies the pricing process but may not capture the full complexity of the power system and usually needs to be complemented with other mechanisms to manage congestion, such as financial transmission rights or redispatch.
+\chapter{Power flow}
+\section{Network modeling}
+The power system can be modeled as a graph, where the nodes represent the buses and the edges represent the transmission lines. This graph can be characterized by some matrices. The one that interests us is the \textbf{Laplacian matrix} $L$, but to define it we need to define the \textbf{incidence matrix} $A$ and the \textbf{degree matrix} $D$ first. Let's consider a graph $G=(N,E)$, where $N$ is the set of nodes and $E$ is the set of edges.
+\begin{definition}
+    The \textbf{incidence matrix} $A$ is a matrix that describes the connectivity of the graph. It has one row for each node and one column for each node too. Each element of the matrix is defined as follows:
+    \begin{equation}
+        A_{ij} = \begin{cases}
+            1 & \text{if} (i,j) \in E \\
+            0 & \text{otherwise}
+        \end{cases}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{degree matrix} $D$ is a diagonal matrix that contains the degree of each node. The degree of a node is the number of edges connected to it. It is defined as:
+    \begin{equation}
+        D_{ii} = \sum_{j} A_{ij}
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{Laplacian matrix} $L$ is defined as the difference between the degree matrix and the incidence matrix:
+    \begin{equation}
+        L = D - A
+    \end{equation}
+    It is a positive semi-definite matrix that captures the connectivity of the graph.
+\end{definition}
+\begin{thm}
+    The multiplicity of the eigenvalue $\lambda = 0$ in the Laplacian of a graph is equal to the number of connected components of the graph
+\end{thm}
+\section{Circuits}
+The state of an electrical circuit can be described by the voltage at each node and the current flowing through each edge. The edge have a passive role as electricity flows through them. And the nodes have an active role as they inject or consume electricity. To know the state of a circuit, we need to know the voltage at each node compared to a reference node (usually called the ground) and the current flowing through each edge. 
+\section{The power flow equations}
+The power flow equations are based on the laws of physics, on the Kirchhoff's law.
+\begin{definition}
+    The \textbf{Kirchhoff's current law} states that the total current entering a node must be equal to the total current leaving the node. Mathematically, it can be expressed as:
+    \begin{equation}
+        \sum I = 0
+    \end{equation}
+\end{definition}
+\begin{definition}
+    The \textbf{Kirchhoff's voltage law} states that the total voltage around any closed loop in a circuit must be equal to zero. Mathematically, it can be expressed as:
+    \begin{equation}
+        \sum V = 0
+    \end{equation}
+\end{definition}
+\section{DC power flow using bus angles}
+\textcolor{red}{TODO}
+\section{DC power flow using lines flows}
+\textcolor{red}{TODO}
+\section{DC optimal power flow}
+Until now we have only considered optimization problems without considering the physical configuration of the power system, like in the economic dispatch problem. The DCOPF (DC Optimal Power Flow) problem, is an optimization problem that maximizes the total welfare like in the economic dispatch problem, but it also takes into account the physical configuration of the power system by including a linearization of the kirchhoff's laws and the transmission limits constraints. To modelize that, there is two equivalent model. One based on the PTDF (Power Transfer Distribution Factor) and one based on the bus angles. Let us define how the transmission system is represented as a directed graph:
+\begin{itemize}
+    \item $N$: set of nodes (buses)
+    \item $k$: set of edges (lines) denoted $k = (m,n)$
+    \item $G_n$: set of generators located at node $n$, $G = \cup_{n \in N} G_n$
+    \item $L_n$: set of loads located at node $n$, $L = \cup_{n \in N} L_n$
+\end{itemize}
+The decision variables of the DCOPF problem will be $p_g$ the amount of power produced by generator $g$, $d_l$ the amount of power consumed by load $l$.
+\subsection{Power Transfer Distribution Factor model}
+For the PTDF model, we will interrest us to the nodal injections in the model. For that, we will a chose "hub node", which is a reference node that will absorb all the injections. The nodal injection at node $n$ is defined as:
+\begin{equation}
+    r_n = \sum_{g \in G_n} p_g - \sum_{l \in L_n} d_l
+\end{equation}
+To follow the kirchhoff's laws, we need to add the following constraints:
+\begin{equation}
+    \sum_{n \in N} r_n = 0
+\end{equation}
+Then, based on the PTDF ($F_kn$) that represents the amount of power flowing on line $k$ as a result of shipping unit of power from node $n$ to hub node, we can determine the flow on each line $k$ as follows:
+\begin{equation}
+    f_k = \sum_{n \in N} F_{kn} r_n
+\end{equation}
+And we also need to add the transmission limits constraints:
+\begin{equation}
+    -T_k \leq f_k \leq T_k
+\end{equation}
+The full DCOPF model formulation with the PTDF is as follows:
+\begin{equation}
+    \begin{aligned}
+        \max & \sum_{l \in L}  \int_{0}^{d_l} MB_l(x)dx - \sum_{g \in G} \int_{0}^{p_g} MC_g(x)dx &&\\
+        \text{s.t.} \quad & f_k \leq T_k \quad \forall k \in K  && [\lambda_k^+] \\
+        & -f_k \leq T_k \quad \forall k \in K  && [\lambda_k^-] \\
+        & f_k - \sum_{n \in N} F_{kn} r_n = 0 \quad \forall k \in K  && [\psi_k] \\
+        & r_n - \sum_{g \in G_n} p_g + \sum_{l \in L_n} d_l = 0 \quad \forall n \in N  && [\rho_n] \\
+        & \sum_{n \in N} r_n = 0 && [\phi] \\
+        & 0 \leq p_g \leq P_g \quad \forall g \in G  && [\mu_g] \\
+        & 0 \leq d_l \leq D_l \quad \forall l \in L  && [\nu_l] \\
+    \end{aligned}
+\end{equation}
+\textcolor{red}{TO CHECK} The KKT conditions for this problem are:
+\begin{equation}
+    \begin{aligned}
+        0 \leq p_g &\perp MC_g(p_g) - \rho_{n(g)} + \mu_g \geq 0\\
+        0 \leq d_l &\perp -MB_l(d_l) + \rho_{n(l)} + \nu_l \geq 0\\
+        0 \leq f_k &\perp T_k - f_k \geq 0\\
+        0 \leq -f_k &\perp T_k + f_k \geq 0\\
+        0 \leq \mu_g &\perp P_g - p_g \geq 0\\
+        0 \leq \nu_l &\perp D_l - d_l \geq 0\\
+        f_k &\perp f_k - \sum_{n \in N} F_{kn} r_n = 0\\
+        r_n &\perp r_n - \sum_{g \in G_n} p_g + \sum_{l \in L_n} d_l = 0\\
+    \end{aligned}
+\end{equation}
+With these, we can see that there exists a threshold $\rho_n$ for all $n$ such that:
+\begin{itemize}
+    \item If $0 < p_g < P_g$, then $\rho_n = MC_g(p_g)$
+    \item If $0 < d_l < D_l$, then $\rho_n = MB_l(d_l)$
+    \item If $p_g = 0$, then $\rho_n \leq MC_g(p_g)$
+    \item If $d_l = 0$, then $\rho_n \geq MB_l(d_l)$
+    \item If $p_g = P_g$, then $\rho_n \geq MC_g(p_g)$
+    \item If $d_l = D_l$, then $\rho_n \leq MB_l(d_l)$     
+\end{itemize}
+\textcolor{red}{TO CHECK} We can interpret the dual variables as follows:
+\begin{itemize}
+    \item $\phi$ induce marginal changes in wellfare from marginal increase in production or marginal decrease in consumption.
+    \item $\lambda_k^+$ and $\lambda_k^-$ induces marginal impact of increasing line capacity.
+    \item $\rho_n$ induces marginal impact of marginal increase in consumption or marginal decrease in production at node $n$.
+\end{itemize}
+\subsection{Bus angle model}
+For the bus angle model, also known as the reactance model, we will interrest us to the differences of phase angles in the network. For that, we will chose a "hub node", its choice is independent. The phase angle at node $n$ is denoted $\theta_n$. The flow on line $k = (m,n)$ is defined as:
+\begin{equation}
+    f_{(m,n)} = B_{(m,n)} (\theta_m - \theta_n)
+\end{equation}
+Where $B_{(m,n)}$ is the susceptance of line $(m,n)$ and $\theta_{hub} = 0$. Then, we need to define the conservation of energy constraints at each node:
+\begin{equation}
+    \sum_{g \in G_n} p_g - \sum_{k = (.,n)} f_k = \sum_{k = (n,.)} f_k + \sum_{l \in L_n} d_l
+\end{equation}
+The full DCOPF model formulation with the bus angle is as follows:
+\begin{equation}
+    \begin{aligned}
+        \max & \sum_{l \in L}  \int_{0}^{d_l} MB_l(x)dx - \sum_{g \in G} \int_{0}^{p_g} MC_g(x)dx &&\\
+        \text{s.t.} \quad & f_k \leq T_k \quad \forall k \in K  && [\lambda_k^+] \\
+        & -f_k \leq T_k \quad \forall k \in K  && [\lambda_k^-] \\
+        & f_{(m,n)} - B_{(m,n)} (\theta_m - \theta_n) = 0 \quad \forall (m,n) \in K  && [\gamma_{(m,n)}] \\
+        & \sum_{g \in G_n} p_g - \sum_{k = (.,n)} f_k + \sum_{k = (n,.)} f_k - \sum_{l \in L_n} d_l = 0  && [\rho_n] \\
+        & 0 \leq p_g \leq P_g \quad \forall g \in G  && [\mu_g] \\
+        & 0 \leq d_l \leq D_l \quad \forall l \in L  && [\nu_l] 
+    \end{aligned}
+\end{equation}
 \end{document}
