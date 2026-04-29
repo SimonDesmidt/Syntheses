@@ -583,4 +583,133 @@ The full DCOPF model formulation with the bus angle is as follows:
         & 0 \leq d_l \leq D_l \quad \forall l \in L  && [\nu_l] 
     \end{aligned}
 \end{equation}
+\chapter{Pricing transmission}
+In the DCOPF problem, we have seen that there exists a different price $\rho_n$ for each node $n$, this different price at each node is induced by the transmission constraints. Intuitively, if a node has cheapgeneration and cannot export much, its price will be low and if a node has high demand cannot import enought cheap electricity, its price will be high. With that we can introduce a new market operator.
+\begin{definition}
+    The \textbf{Transmission market operator (TSO)} is the market operator that manages the grid. It can be seen as an agent that buys electricity where it is cheap and sells it where it is expensive while respecting the transmission constraints.
+\end{definition}
+With that, we can rewrite the DCOPF problem as a decentralized problem with different market operators: producers, consumers, TSO and the auctionneer. Each of these agents will solve their own optimization problem and the market clearing condition will be the same as before. The TSO will solve the following problem:
+\begin{equation}
+    \begin{aligned}
+        \max \quad & \sum_{n \in N} -\rho_n r_n \\
+        \text{s.t.} \quad & f_k - \sum_{n \in N} F_{kn} r_n = 0 \quad \forall k \in K \\
+        & \sum_{n \in N} r_n = 0 \\
+        & -T_k \leq f_k \leq T_k\quad \forall k \in K \\
+    \end{aligned}
+\end{equation}
+The producers will solve the following problem:
+\begin{equation}
+    \begin{aligned}
+        \max \quad & p_g \rho_{n(g)} - \int_{0}^{p_g} MC_g(x)dx \\
+        \text{s.t.} \quad & 0 \leq p_g \leq P_g \quad \forall g \in G
+    \end{aligned}
+\end{equation}
+The consumers will solve the following problem:
+\begin{equation}
+    \begin{aligned}
+        \max \quad & \int_{0}^{d_l} MB_l(x)dx -  d_l \ \rho_{n(l)} \\
+        \text{s.t.} \quad & 0 \leq d_l \leq D_l \quad \forall l \in L
+    \end{aligned}
+\end{equation}
+And the auctionneer will solve the following problem:
+\begin{equation}
+    \max \quad \rho_n (r_n + \sum_{l \in L_n} d_l - \sum_{g \in G_n} p_g)
+\end{equation}
+But solving all these problems requires a lot of communication between the different agents, and thus it is not very practical. Plus the TSO needs to take position in the different markets and has lots of opportunities to abuse of its position.
+\section{Nodal pricing}
+In nodal pricing also called local marginal pricing (LMP) , there is an uniform price auction then the TSO will solve the DCOPF that will decide the price $\rho_n$ at each node $n$. If all the agents bid truthfully, then the solution outputed by the LMP, will be the same as the optimal solution of the DCOPF problem. In this configuration, if there is no congestion, prices will tend to be equals at all nodes, but if there is congestion, prices will differ between nodes.\\
+The congestion on the lines and the choices made by the TSO to manage this congestion generates a cost for the consumers and a rent for the producers. 
+\begin{definition}
+    The \textbf{congestion rent} is the profit that the TSO makes by buying electricity where it is cheap and selling it where it is expensive. It is defined as: 
+    \begin{equation}
+        \sum_{n \in N} \rho_n (\sum_{l \in L_n} d_l - \sum_{g \in G_n} p_g)
+    \end{equation}
+\end{definition}
+\section{Zonal pricing}
+Nodal pricing is criticized for being too complex because it generates too many prices. Plus the multiplicity of small markets leads to a lack of liquidity in each market but also to a lot of opportunities for market power abuse. So an altenative to nodal pricing is zonal pricing, where the nodes are grouped into zones and a single price is determined for each zone. The zonal DCOPF problem is formulated as follows:
+\begin{equation}
+    \begin{aligned}
+        \max & \sum_{l \in L}  \int_{0}^{d_l} MB_l(x)dx - \sum_{g \in G} \int_{0}^{p_g} MC_g(x)dx &&\\
+        \text{s.t.} \quad & f_k \leq T_k \quad \forall k \in K  && [\lambda_k^+] \\
+        & -f_k \leq T_k \quad \forall k \in K  && [\lambda_k^-] \\
+        & f_k - \sum_{n \in N} F_{kn} r_n = 0 \quad \forall k \in K  && [\psi_k] \\
+        & r_z - \sum_{g \in G_z} p_g + \sum_{l \in L_z} d_l = 0 \quad \forall z \in Z  && [\rho_z] \\
+        & \sum_{n \in N} r_n = 0 && [\phi] \\
+        & 0 \leq p_g \leq P_g \quad \forall g \in G  && [\mu_g] \\
+        & 0 \leq d_l \leq D_l \quad \forall l \in L  && [\nu_l] \\
+    \end{aligned}
+\end{equation}
+In zonal pricing, there is an uniform price auction then the TSO will solve the zonal DCOPF that will decide the price $\rho_z$ at each zone $z$. Within each zone, Kirchhoff's laws are ignored this can cause congestion problems. These congestion problems needs to be solved by the TSO before the time of delivery by redispatching the production and consumption. The redispatch works with a pay as bid auction, where the market participants are forced to bid their true marginal cost/benefit. The redispatch is thus financially neutral to market participants. The TSO will cover the difference between payments received and made. The \textbf{perfect cost-based redispatch} minimize the redispatch cost for the TSO and given the dispatch obtained under the zonal pricing $(p_g^*,d_l^*)$, it is formulated as follows:
+\begin{equation}
+    \begin{aligned}
+        RD = \max & \sum_{l \in L} \int_{0}^{d_l^* + \Delta d_l} MB_l(x)dx - \sum_{g \in G} \int_{0}^{p_g^* + \Delta p_g} MC_g(x)dx \\
+        \text{s.t.} \quad & f_k \leq T_k \quad \forall k \in K \\
+        & -T_k \leq f_k \leq T_k \quad \forall k \in K \\
+        & P_g - p_g^* - \Delta p_g \quad \forall g \in G \\
+        & D_l - d_l^* - \Delta d_l \quad \forall l \in L \\
+        & r_n + \sum_{g \in G_n(n)} (p_g^* + \Delta p_g) - \sum_{l \in L_n(n)} (d_l^* + \Delta d_l) = 0 \quad \forall n \in N \\
+        & f_k - \sum_{n \in N} F_{kn} r_n = 0 \quad \forall k \in K \\
+        & \sum_{n \in N} r_n = 0
+    \end{aligned}
+\end{equation}
+\section{Other formulations}
+\subsection{Zonal pricing with Availability Transfer Capacities (ATC)}
+The formulation of the zonal pricing with ATC is the same as the one of the zonal pricing, but with an additional constraint that limits the flow between zones. The full formulation is as follows:
+\begin{equation}
+    \begin{aligned}
+        \max & \sum_{l \in L}  \int_{0}^{d_l} MB_l(x)dx - \sum_{g \in G} \int_{0}^{p_g} MC_g(x)dx &&\\
+        \text{s.t.} \quad & \sum_{a=(z,.)} f_a + \sum_{l \in L_z} d_l = \sum_{a=(.,z)} f_a + \sum_{g \in G_z} p_g \quad \forall z \in Z  && [\rho_z] \\
+        & -ATC_a \leq f_a \leq ATC_a \quad \forall a \in A  && [\lambda_a^+, \lambda_a^-] \\
+        & 0 \leq p_g \leq P_g \quad \forall g \in G  && [\mu_g] \\
+        & 0 \leq d_l \leq D_l \quad \forall l \in L  && [\nu_l] \\
+    \end{aligned}
+\end{equation}
+Where $A$ is the set of inter-zonal lines and $ATC_a$ is the capacity of line $a$ that between two zones. 
+\subsection{Flow-based (FB) zonal pricing}
+Unlike the zonal pricing with ATC, the flow-based zonal use the PTDF to model the flow between zones and thus the flow between zones influences the flow between other zones. Using zonal PTDF, the constraints of the flow between zones are as follows:
+\begin{equation}
+    -T_k \leq \sum_{z \in Z} \tilde{F}_{kz} (\sum_{g \in G_z} p_g - \sum_{l \in L_z} d_l) \leq T_k \quad \forall k \in K
+\end{equation}
+We need to define the zonal PTDF $\tilde{F}$, it is defined as follows:
+\begin{equation}
+    \tilde{F}_{kz} = \sum_{n \in N} \frac{\tilde{r}_n}{\sum_{n \in N} \tilde{r}_n}F_{kn}
+\end{equation}
+So the contribution of a node to the zonal PTDF is proportional to its nodal injection to the total nodal injection of the zone.
+\chapter{Unit commitment and nonconvexities}
+Until now, we considered only basic convex problems, like in the economic dispatch. But in reality, real power plant are much more complex systems and their cost functions introduces non-convexities. These non-convexities are for examples start-up costs, no load costs, minimum up and down times, ramping constraints, minimum stable generation, etc. To address these non-convexities, we introduce the unit commitment problem.
+\section{The unit commitment problem}
+The unit commitment problem is an optimization problem that determines the optimal schedule of power plants to meet the demand while minimizing the total cost. For that, we need to introduce times dependant variables:
+\begin{itemize}
+    \item $p_{g,t}$: power output of generator $g$ at time $t$
+    \item $u_{g,t}$: binary variable that indicates whether generator $g$ is on or off at time $t$
+    \item $v_{g,t}$: binary variable that indicates whether generator $g$ is starting up at time $t$
+    \item $w_{g,t}$: binary variable that indicates whether generator $g$ is shutting down at time $t$
+\end{itemize}
+This model with non-convexities uses binary variables and thus is a mixed-integer linear program (MILP). The formulation of the unit commitment problem is as follows:
+\begin{equation}
+    \begin{aligned}
+        \min \sum_{g} \sum_{t} (MC_g p_{g,t} + K_g u_{g,t} + S_g v_{g,t}) \\
+        \text{s.t.} \quad & \sum_{g} p_{g,t} = D_t \quad \forall t \\
+        & P_g^{\min} u_{g,t} \leq p_{g,t} \leq P_g^{\max} u_{g,t} \quad \forall g,t \\
+        & u_{g,t} = u_{g,t-1} + v_{g,t} - w_{g,t} \quad \forall g,t \\
+        & u_{g,t}, v_{g,t}, w_{g,t} \in \{0,1\} \quad \forall g,t
+    \end{aligned}
+\end{equation}
+For additional ramp constraint, we can add the following constraints:
+\begin{equation}
+    \begin{aligned}
+        & p_{g,t} \leq p_{g,t-1} + R_g^{+} - v_{g,t} (R_g^{+} - R_{SU}^+) \quad \forall t \\
+        & p_{g,t} \geq p_{g,t-1} - R_g^{-} + w_{g,t} (R_g^{-} - R_{SD}^-) \quad \forall t
+    \end{aligned}
+\end{equation}
+where $R_g^{+}$ and $R_g^{-}$ are the ramp up and down limits of generator $g$, $R_{SU}^+$ and $R_{SD}^-$ are the ramp up and down limits during start-up and shut-down respectively.\\
+For additional minimum up and down time constraints, we can add the following constraints:
+\begin{equation}
+    \begin{aligned}
+        & \sum_{i = t-UT_g+1}^{t} v_{g,i} \leq u_{g,t} \quad \forall t \geq UT_g \\
+        & \sum_{i = t-DT_g+1}^{t} w_{g,i} \leq 1 - u_{g,t} \quad \forall t \geq DT_g
+    \end{aligned}
+\end{equation}
+\textcolor{red}{slide 13}
+\section{Market equilibrium under non-convexities}
 \end{document}
