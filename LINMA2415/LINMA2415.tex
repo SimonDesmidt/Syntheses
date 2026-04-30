@@ -710,6 +710,53 @@ For additional minimum up and down time constraints, we can add the following co
         & \sum_{i = t-DT_g+1}^{t} w_{g,i} \leq 1 - u_{g,t} \quad \forall t \geq DT_g
     \end{aligned}
 \end{equation}
-\textcolor{red}{slide 13}
+Due to the heaviness of the unit commitment problem, and its time dependancies, the model needs to be solved ahead of time and thus it is used for the day-ahead market. Usually, it is solved once for the whole next day.
 \section{Market equilibrium under non-convexities}
+Finding the market equilibrium under non-convexities is a complex problem. Ideally, we want to obtain the four fundamental properties of markets.
+\begin{itemize}
+    \item \textbf{Efficiency}: the market equilibrium should maximize the total welfare of the market.
+    \item \textbf{Individual rationality}: the agents have no incentive to deviate from the market equilibrium.
+    \item \textbf{Cost recovery}: every agent has a non-negative profit
+    \item \textbf{Revenue adequacy}: the revenue of the market operator is non-negative
+\end{itemize} 
+The \textbf{Impossibility theorem} states that:
+\begin{thm}
+    Once you introduce the discrete nature of power production, it becomes mathematically impossible to find fundamental prices that respect the 4 properties.
+\end{thm}
+There exists multiples relaxation of the unit commitment problem that can be used to solve a convexified version of the problem.
+\subsection{Marginal pricing}
+The marginal pricing is the simplest way to convexify the problem, it consists in solving the unit commitment problem and then fixing the unit commitment variables to their optimal value and then solving the resulting convex problem to find the marginal prices. But the solution will not be an equilibrium. Some agent could still have financial incentives to deviate from the solution. We can measure these financial incentives by the \textbf{lost opportunity cost} of an agent.
+\begin{definition}
+    The \textbf{lost opportunity cost} of an agent is the difference between the maximum possible profit of the agent and it's profit as the market clears.
+    \begin{equation}
+        LOC_g(\pi_t) = \max \quad \sum_{t} (\pi_t - MC_g) p_{g,t} - K_g u_{g,t} - S_g v_{g,t} - \sum_{t} (\pi_t - MC_g) p_{g,t}^* - K_g u_{g,t}^* - S_g v_{g,t}^*
+    \end{equation}
+    with ($p_{g,t}^*, u_{g,t}^*, v_{g,t}^*$) the optimal solution of the unit commitment problem and $\pi_t$ the decided price at time $t$.
+\end{definition}
+\subsection{Convex hull pricing}
+Convex hull pricing is a more complex way to find a market equilibrium under non-convexities. It consists in computing the optimal lagrange multipliers of the market clearing constraints in the nonconvex problem. 
+\begin{thm}
+    \textbf{The Hogan theorem} states that the convex hull prices are the uniform prices that minimize the total lost opportunity costs.
+\end{thm}
+The solution of the convex hull pricing will lead to a dispatch that is the same as the one of the unit commitment problem, but with different prices. Like the marginal pricing, the dispatch obtained are welfare maximizing.
+\subsection{Euphemia pricing}
+\textcolor{red}{TODO}
+\subsection{Comparison between models}
+In the start of the section, we have seen that it is impossible to find a market equilibrium that respect the 4 fundamental properties of markets. But they can respect some of them. Let's compare the different models:
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        Model & MP & MP with uplifts & CHP with uplifts & EUPHEMIA pricing \\
+        \hline
+        Efficiency & Yes & Yes & Yes & No \\
+        \hline
+        Individual Rationality & No & Yes & Yes & No \\
+        \hline
+        Cost Recovery & No & Yes & Yes & Yes \\
+        \hline
+        Revenue Adequacy & Yes & No & No & Yes \\
+        \hline
+    \end{tabular}
+\end{center}
+Cost recovery is very important for incentivizing market participation, which is why uplifts are used.
 \end{document}
