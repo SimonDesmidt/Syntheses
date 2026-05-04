@@ -1,9 +1,7 @@
-import tkinter as tk
-import pandas as pd
-import random
 import os
-from deep_translator import GoogleTranslator
+import random
 import pandas as pd
+import tkinter as tk
 
 # ===== CONFIG =====
 CARTELLA_VERBI = "verbi"
@@ -11,19 +9,21 @@ FILE_CSV = os.path.join(CARTELLA_VERBI, "verbi.csv")
 
 PERSONE = ["io", "tu", "lui/lei", "noi", "voi", "loro"]
 
-# Column ranges for each tense in your new CSV
+# Column ranges for each tense in CSV
 TEMPI = {
     "Gerundio": {"cols": 10, "persons": None}, # Pas de personnes au gérondif
     "Participio passato": {"cols": 9, "persons": None},
 
-    "Presente": {"cols": (2, 7), "persons": PERSONE},
-    "Imperfetto": {"cols": (11, 16), "persons": PERSONE},
-    "Futuro": {"cols": (23, 28), "persons": PERSONE},
+    "Indicativo presente": {"cols": (2, 7), "persons": PERSONE},
+    "Indicativo imperfetto": {"cols": (11, 16), "persons": PERSONE},
+    "Futuro semplice": {"cols": (23, 28), "persons": PERSONE},
 
-    "Imperativo": {
-        "cols": (47, 51),
-        "persons": ["tu", "Lei", "noi", "voi", "loro"]
-    },
+    "Imperativo presente": {"cols": (47, 51), "persons": ["tu", "Lei", "noi", "voi", "loro"]},
+    
+    "Congiuntivo presente" : {"cols": (29,34), "persons": PERSONE},
+    "Congiuntivo imperfetto" : {"cols": (35,40), "persons": PERSONE},
+    
+    "Condizionale presente" : {"cols": (41,46), "persons": PERSONE},
 }
 
 if not os.path.exists(FILE_CSV):
