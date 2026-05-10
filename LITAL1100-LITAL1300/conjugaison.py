@@ -18,7 +18,7 @@ TEMPI = {
     "Indicativo imperfetto": {"cols": (11, 16), "persons": PERSONE},
     "Futuro semplice": {"cols": (23, 28), "persons": PERSONE},
 
-    "Imperativo presente": {"cols": (47, 51), "persons": ["tu", "Lei", "noi", "voi", "loro"]},
+    "Imperativo presente": {"cols": (47, 51), "persons": ["tu", "Lei", "noi", "voi"]},
     
     "Congiuntivo presente" : {"cols": (29,34), "persons": PERSONE},
     "Congiuntivo imperfetto" : {"cols": (35,40), "persons": PERSONE},
