@@ -375,7 +375,7 @@ The directions in the normal plane where the curvature takes its maximum and min
 	\end{itemize}
 \end{definition}
 \begin{definition}[\textbf{Hausdorff topological space.}]
-	A topological space is a couple $(X,T)$ where $X$ is a set and $T$ is a topology on $X$. The topological space $(X,T)$ is Hausdorff if any two distinct points of $X$ have disjoint neighborhoods. If $X$ is Hausdorff, then eveery sequence of points of $X$ converges to at most one point in $X$. 
+	A topological space is a couple $(X,T)$ where $X$ is a set and $T$ is a topology on $X$. The topological space $(X,T)$ is Hausdorff if any two distinct points of $X$ have disjoint neighborhoods. If $X$ is Hausdorff, then every sequence of points of $X$ converges to at most one point in $X$. 
 \end{definition}
 \subsection{Topology for embedded submanifolds}
 \begin{definition}[\textbf{Open set.}]
@@ -388,7 +388,7 @@ The directions in the normal plane where the curvature takes its maximum and min
 \begin{definition}[\textbf{Limit.}]
 	Consider a sequence $s$ of points $x_0,x_1,x_2,\dots$ on a manifold $\M$. 
 	\begin{itemize}
-		\item We way that a point $x$ in $\M$ is a limit of $s$ if, for all neighborhood $\mathcal{U}$ of $x$, there exists some $K\in \Z$ such that $x_k$ is in $\mathcal{U}$ for all $k\ge K$. \\
+		\item We say that a point $x$ in $\M$ is a limit of $s$ if, for all neighborhood $\mathcal{U}$ of $x$, there exists some $K\in \Z$ such that $x_k$ is in $\mathcal{U}$ for all $k\ge K$. \\
 		The topology of a manifold is Hausdorff, hence a sequence has at most one limit. If $x$ is the limit, we write 
 		\begin{equation}
 			\lim_{k\to \infty} x_k = x \qquad \text{ or }\qquad x_k\to x
@@ -405,10 +405,8 @@ The basic algorithm is the following:
 	\begin{algorithmic}[1]
 		\State \textbf{Input:} $x_0\in \M$;
 		\For{$k=0,1,2,\dots$}
-			\State Pick a step size $\alpha_k >0$;
-			\State \begin{equation}
-				x_{k+1} = R_{x_k}\left(-\alpha_k \text{grad} f(x_k)\right)
-			\end{equation}
+			\State Pick a step size $\alpha_k >0$
+			\State $x_{k+1} = R_{x_k}\left(-\alpha_k \text{grad} f(x_k)\right)$
 		\EndFor	
 	\end{algorithmic}
 \end{algorithm}
@@ -456,7 +454,7 @@ On a manifold $\M$, for a given subset $S$ of the tangent bundle $\mathcal{TM}$,
 \begin{equation}
 	f(R_x(s)) \le f(x) + \langle \text{grad} f(x),s\rangle + \frac{L}{2}\|s\|_x^2
 \end{equation}
-From this, we can ensure the assumption of equation \eqref{eq:decrease}: define $x\eqqcolon x_k$, $s\eqqcolon -\alpha_k \text{grad}f(x_k)$ and $R_x(s) \eqqcolon R_x(s)$. Then,
+From this, we can ensure the assumption of equation \eqref{eq:decrease}: define $x\coloneqq x_k$, $s\coloneqq -\alpha_k \text{grad}f(x_k)$ and $x_{k+1} \coloneqq R_x(s)$. Then,
 \begin{equation}
 	f(x_{k+1}) \le f(x_k) - \alpha_k\left(1-\frac{L\alpha_k}{2}\right) \| \text{grad}f(x_k)\|_{x_k}^2
 \end{equation}
@@ -483,7 +481,7 @@ and the algorithm is
 		\State \textbf{Parameters:} $\tau,r\in (0,1)$, e.g. $\tau=1/2$ and $r=10^{-4}$;
 		\State \textbf{Input:} $x\in \M$ and $\bar \alpha >0$;
 		\State Set $\alpha \leftarrow \bar \alpha$;
-		\While{$f(x) - f(R_x(-\alpha \text{grad}f(x))) < r\alpha \|\text{grad}f(x)\|^2$}
+		\While{$f(x) - f(R_x(-\alpha \text{grad}f(x))) < r\alpha \|\text{grad}f(x)\|_x^2$}
 		\State $\alpha \leftarrow \tau \alpha$
 		\EndWhile \\
 		\Return $\alpha$

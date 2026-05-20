@@ -558,7 +558,7 @@ And here is an example of the $\chi^2$, for different confidence values of the p
     \begin{equation}
         \begin{aligned}
             \texttt{cosine}(A,B) &= \frac{\texttt{support}_\texttt{count}(A \cup B)}{\sqrt{\texttt{support}_\texttt{count}(A) \texttt{support}_\texttt{count}(B) }}\\
-            &= \frac{P(A \cup B)}{\sqrt{P(A) P(B)}} = \sqrt{P(A|B)p(B|A)} 
+            &= \frac{P(A \cup B)}{\sqrt{P(A) P(B)}} = \sqrt{P(A|B)P(B|A)} 
         \end{aligned}
     \end{equation}
 \end{definition}
@@ -745,7 +745,7 @@ After defining the variables and the constraints, we can use a constraint solver
 \begin{definition}
     \textbf{The CoverSize propagator} is a constraint that enforces consistency between a set of item and a cardinality constraint (e.g., minimum support). It is defined as $\texttt{CoverSize}(X,N,D)$ where $X$ is an array of boolean ($D(X_k)=\{0,1\}$) for each item, $N$ is an integer variable that represents the number of transactions covered by the selected items ($D(N) = \{0, \dots, T\}$), and $D$ is the dataset. With that the minimum support constraint becomes $N \geq \theta$ 
 \end{definition}
-We ca
+% We ca
 \section{Sequence mining}
 \begin{definition}
     A \textbf{sequence} is an ordered (w.r.t time) list of events and is noted $\langle e_1 e_2 \dots e_n \rangle$, where $e_i$ is an event (called an \textbf{element} of the sequence). An event can be a single item or a set of items that occur together at a specific time.
@@ -832,7 +832,7 @@ Finding subgraphs is a computationally hard problem, it is NP-complete. A graph 
 \begin{definition}
     Given a labeled graph data set, $D = \{G_1, G_2, \dots G_n\}$, we define $\texttt{support}(g)$ (or $\texttt{frequency}(g)$) as the percentage (or number) of graphs in a graph database D where g is a subgraph.
 \end{definition}
-A frequent graph is a graph whose support is no less than a minimum support threshold $\theta$.\\
+A frequent graph is a graph whose support is greater or equal to a minimum support threshold $\theta$.\\
 To find frequent subgraphs, we have two steps:
 \begin{itemize}
     \item Generate frequent substructure candidates 
