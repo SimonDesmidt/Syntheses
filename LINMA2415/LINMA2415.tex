@@ -665,7 +665,7 @@ The consumers will solve the following problem:
 \end{equation}
 And the auctionneer will solve the following problem:
 \begin{equation}
-    \max \quad \rho_n (r_n + \sum_{l \in L_n} d_l - \sum_{g \in G_n} p_g)
+    \max \quad \rho_n \left(r_n + \sum_{l \in L_n} d_l - \sum_{g \in G_n} p_g \right)
 \end{equation}
 But solving all these problems requires a lot of communication between the different agents, and thus it is not very practical. Plus the TSO needs to take position in the different markets and has lots of opportunities to abuse of its position.
 \section{Nodal pricing}
@@ -674,7 +674,7 @@ The congestion on the lines and the choices made by the TSO to manage this conge
 \begin{definition}
     The \textbf{congestion rent} is the profit that the TSO makes by buying electricity where it is cheap and selling it where it is expensive. It is defined as: 
     \begin{equation}
-        \sum_{n \in N} \rho_n (\sum_{l \in L_n} d_l - \sum_{g \in G_n} p_g)
+        \sum_{n \in N} \rho_n \left(\sum_{l \in L_n} d_l - \sum_{g \in G_n} p_g\right)
     \end{equation}
 \end{definition}
 \section{Zonal pricing}
@@ -1023,7 +1023,9 @@ Hence, financial participants profit from differences between day-ahead and real
 \chapter{Ressources adequacy}
 When we look at the planning problem at the long term, it can be interesting to think about the technology mix and especially the investment that we can do in the different technologies. This is what we call the capacity expansion planning problem. 
 \section{Capacity expansion planning}
-The capacity expansion planning problem is a long-term planning problem that aims to determine which is the best technology mix with respect to the demand, the operating costs and the investment costs. It determines the best mix of technologies by minimizing the total cost of expanding and operating the power system over a long-term horizon. In its simplest form, the capacity expansion planning problem can be formulated as a two stage linear program where the first stage is the investment decision and the second stage is the operation decision. But this ignores the demand response. Beware that the demand is the consumption at a given price, but the load is the amount of power consumed if the price is zero. To determine which is the best technology mix, we can solve this graphically with what is called a \textbf{screening curve}. The screening curve is a graphical representation of the total cost of operating a technology as a function of its capacity factor. For example here is the screening curve for these four technologies:
+The capacity expansion planning problem is a long-term planning problem that aims to determine which is the best technology mix with respect to the demand, the operating costs and the investment costs. It determines the best mix of technologies by minimizing the total cost of expanding and operating the power system over a long-term horizon. In its simplest form, the capacity expansion planning problem can be formulated as a two stage linear program where the first stage is the investment decision and the second stage is the operation decision. But this ignores the demand response. Beware that the demand is the consumption at a given price, but the load is the amount of power consumed if the price is zero. 
+\section{Screening curve}
+To determine which is the best technology mix, we can solve this graphically with what is called a \textbf{screening curve}. The screening curve is a graphical representation of the total cost of operating a technology as a function of its capacity factor. For example here is the screening curve for these four technologies:
 \begin{center}
     \begin{tabular}{|c|c|c|}
         \hline 
@@ -1058,9 +1060,46 @@ We can convert the overnight cost to annualized fixed cost by using the followin
 If the investment is paid continuously for $T$ years at a discount rate $r$, the formula is as follows:
 \begin{equation}
     FC = \frac{r \: OC}{1-e^{-rT}}
-\end{equation}.
+\end{equation}
 The hourly fixed cost can be converted to annualized fixed cost by multiplying it by the number of hours in a year divided by the $1000$, which is $8.76$.\\
-\textcolor{red}{TO IMPROVE ?}
-\section{Decentralized capacity expansion planning}
-\section{Market design for ressources adequacy}
+\subsection{Demand Response}
+The previous capacity expansion planning model assumes that demand is fixed and inelastic. However, in reality, consumers may adapt their consumption according to electricity prices. This is called \textbf{demand response}. It is important to distinguish:
+\begin{itemize}
+    \item \textbf{Load}: the amount of electricity that would be consumed if     electricity were free.
+    \item \textbf{Demand}: the actual consumption at a given electricity price.
+\end{itemize}
+Therefore, load is always greater or equal to the demand. In this model, demand response is represented using block bids: $(V_{lj},D_{lj})$ where:
+\begin{itemize}
+    \item $V_{lj}$ is the willingness to pay of load block $l$ during slice $j$,
+    \item $D_{lj}$ is the maximum quantity that can be consumed.
+\end{itemize}
+The centralized capacity expansion problem with demand response becomes:
+\begin{equation}
+    \begin{aligned}
+        \max &\sum_{j=1}^m \Delta T_j \left( \sum_{l\in L} V_{lj} d_{lj} - \sum_{g\in G} C_g p_{gj} \right) - \sum_{g\in G} I_g x_g &&\\
+        \text{s.t. } &\sum_{l\in L} d_{lj} - \sum_{g\in G} p_{gj} = 0 && [\rho_j] \\
+        &p_{gj} \leq x_g && [\mu_{gj}] \\
+        &d_{lj} \leq D_{lj} && [\nu_{lj}] \\
+        &p, x, d \geq 0
+    \end{aligned}
+\end{equation}
+The KKT conditions of this problem are:
+\begin{equation}
+    \begin{aligned}
+        \rho_j free &\perp \sum_{l\in L} d_{lj} - \sum_{g\in G} p_{gj} = 0\\
+        0 \leq \mu_{gj} &\perp p_{gj} - x_g \leq 0\\
+        0 \leq \nu_{lj} &\perp D_{lj} - d_{lj} \leq 0\\
+        0 \leq p_{gj} &\perp \Delta T_jC_g - \rho_j + \mu_{gj} \geq 0\\
+        0 \leq d_{lj} &\perp \rho_j - \Delta T_j V_{lj} + \nu_{lj} \geq 0\\
+        0 \leq x_g &\perp I_g - \sum_j \mu_{gj} \geq 0 
+    \end{aligned}
+\end{equation}
+The KKT conditions provide three important economic criteria:
+\begin{itemize}
+    \item \textbf{Consumption criterion:} consumers consume electricity only if their willingness to pay exceeds the electricity price: $V_{lj}\ge\frac{\rho_j}{\Delta T_j}$
+    \item \textbf{Production criterion:} generators produce electricity only if their marginal cost is lower than the electricity price: $C_g\le\frac{\rho_j}{\Delta T_j}$
+    \item \textbf{Investment criterion:} investments occur only if scarcity rents are sufficient to recover fixed investment costs: $I_g\le\sum_j\mu_{gj}$
+\end{itemize}
+An important implication is that generation investments recover their fixed costs through \textbf{scarcity rents}, i.e. the difference between market revenues and variable operating costs.
+\textcolor{red}{TO FINISH}
 \end{document}
