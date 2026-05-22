@@ -433,7 +433,7 @@ In the electricity market, there exists different types of auctions.
 \begin{definition}
     The \textbf{first-price auction} is an auction where the price for each winning bid is the price of the bid itself. 
 \end{definition}
-Both the uniform price auction and the pay as bid auction are criticized for different reasons. \textcolor{red}{BUT IDK WHAT TO SAY HERE}
+Both the uniform price auction and the pay as bid auction are criticized for different reasons. Uniform pricing is criticized for example for having high price volatility. Where pay-as-bid is criticized for being discriminatory (different price for the same product) and being less efficient.
 \subsection{Blueprint of an electricity market}
 An electricity market is organized like this:
 \begin{figure}[H]
@@ -492,9 +492,59 @@ The power flow equations are based on the laws of physics, on the Kirchhoff's la
     \end{equation}
 \end{definition}
 \section{DC power flow using bus angles}
-\textcolor{red}{TODO}
+AC systems are caracterized by the fact that voltage is a sinusoidal wave, at every bus in the system, this wave can be different. A sinusoidal wave is caracterized by two things at each bus $m$:
+\begin{itemize}
+    \item a magnitude: $|V_m|$
+    \item a phase angle: $\theta_n$
+\end{itemize}
+For this model, we are interrested in the phase angles. We follow the intuition that the power flow on a line is proportional to the difference of phase angles between the two ends of the line (i.e. $P_{mn} \propto \theta_m - \theta_n$). This equation tells us that when the phase angle at bus $m$ is higher than the phase angle at bus $n$, then power will flow from bus $m$ to bus $n$.\\ 
+To caracterize the power flow on each line, we have the AC power flow equations:
+\begin{equation}
+    P_{m} = |V_m| \sum_n |V_n| (G_{mn} \cos(\theta_m - \theta_n) + B_{mn} \sin(\theta_m - \theta_n))
+\end{equation}
+\begin{equation}
+    Q_{m} = |V_m| \sum_n |V_n| (G_{mn} \sin(\theta_m - \theta_n) - B_{mn} \cos(\theta_m - \theta_n))
+\end{equation}
+where $G_{mn}$ and $B_{mn}$ are the conductance and susceptance of the line between bus $m$ and bus $n$. These equations are non-linear and non-convex, which makes them difficult to add in a optimization problem. To simplify them, we can make some assumptions:
+\begin{itemize}
+    \item resistances are negligible: $G_{mn} \approx 0$
+    \item angle differences are small: $\sin(\theta_m - \theta_n) \approx \theta_m - \theta_n$ and $\cos(\theta_m - \theta_n) \approx 1$
+    \item voltage magnitudes are constant: $|V_m| \approx |V_n| \approx 1$
+\end{itemize}
+Theses assumptions lead us to the DC power flow equations:
+\begin{equation}
+    P_{m} = \sum_n B_{mn} (\theta_m - \theta_n)
+\end{equation}
+We can also write this equation in terms of reactance $X_{mn} = \frac{1}{B_{mn}}$:
+\begin{equation}
+    P_{m} = \sum_{n \neq m} \frac{1}{X_{mn}} (\theta_m - \theta_n)
+\end{equation}
+And thus we can write the power flow on each line $k = (m,n)$ as:
+\begin{equation}
+    P_{mn} = \frac{1}{X_{mn}} (\theta_m - \theta_n) = B_{mn} (\theta_m - \theta_n)
+\end{equation}
+When we use these in an optimization problem, we need to define a reference bus, which is a bus where we set the phase angle to zero. This is because the power flow equations are invariant to a shift in all the phase angles, so we need to fix one of them to have a unique solution.\\
+We can also write the DC power flow equations in matrix form as follows:
+\begin{equation}
+    P = T \theta
+\end{equation}
+Where $P$ is the vector of power injections at each bus, $\theta$ is the vector of phase angles at each bus and $T$ is the weighted Laplacian matrix.
 \section{DC power flow using lines flows}
-\textcolor{red}{TODO}
+The previous model with bus angles is criticized because angles are artificial variables and are not directly observable in markets. Plus usually we want to constraint the flow on the lines by these inequalities: $-\bar{F}_k \leq P_k \leq \bar{F}_k$. We want to rewrite $P = T \theta$ in terms of line flows, so we write $P_L = MT^{-1} P$ where $P_L$ is the vector of line flows and $M T^{-1}$ is the PTDF matrix and $P$ is the vector of power injections.\\
+Intuitively, the PTDF matrix represents mathematicaly by this sentence "If I inject $1 MW$ at bus $n$ and remove $1 MW$ at the reference bus, how much flow appears on line $k$?". The PTDF of bus $n$ on line $k$ denoted $F_{kn}$ is defined as follows :
+\begin{equation}
+    F_{kn} = M_k (T^{-1}_n) 
+\end{equation}
+Where $M_k$ is the row $k$ of the matrix $M$ and $T^{-1}_n$ is the column $n$ of the matrix $T^{-1}$. The matrix $T$ is the weighted Laplacian matrix and the matrix $M$ is defined as follows:
+\begin{equation}
+    M_{kn} = \begin{cases}
+        \frac{1}{X_k} & \text{if } k = (n, \dot), n \neq h\\
+        -\frac{1}{X_k} & \text{if } k = (\dot, n), n \neq h\\
+        0 & \text{otherwise}
+    \end{cases}
+\end{equation}
+Where $h$ is the reference bus.
+\textcolor{red}{MAYBE CAN BE IMPROVED}
 \section{DC optimal power flow}
 Until now we have only considered optimization problems without considering the physical configuration of the power system, like in the economic dispatch problem. The DCOPF (DC Optimal Power Flow) problem, is an optimization problem that maximizes the total welfare like in the economic dispatch problem, but it also takes into account the physical configuration of the power system by including a linearization of the kirchhoff's laws and the transmission limits constraints. To modelize that, there is two equivalent model. One based on the PTDF (Power Transfer Distribution Factor) and one based on the bus angles. Let us define how the transmission system is represented as a directed graph:
 \begin{itemize}
@@ -534,17 +584,19 @@ The full DCOPF model formulation with the PTDF is as follows:
         & 0 \leq d_l \leq D_l \quad \forall l \in L  && [\nu_l] \\
     \end{aligned}
 \end{equation}
-\textcolor{red}{TO CHECK} The KKT conditions for this problem are:
+The KKT conditions for this problem are:
 \begin{equation}
     \begin{aligned}
         0 \leq p_g &\perp MC_g(p_g) - \rho_{n(g)} + \mu_g \geq 0\\
         0 \leq d_l &\perp -MB_l(d_l) + \rho_{n(l)} + \nu_l \geq 0\\
-        0 \leq f_k &\perp T_k - f_k \geq 0\\
-        0 \leq -f_k &\perp T_k + f_k \geq 0\\
+        0 \leq \lambda_k^+ &\perp T_k - f_k \geq 0\\
+        0 \leq \lambda_k^- &\perp T_k + f_k \geq 0\\
         0 \leq \mu_g &\perp P_g - p_g \geq 0\\
         0 \leq \nu_l &\perp D_l - d_l \geq 0\\
         f_k &\perp f_k - \sum_{n \in N} F_{kn} r_n = 0\\
         r_n &\perp r_n - \sum_{g \in G_n} p_g + \sum_{l \in L_n} d_l = 0\\
+        &\perp \lambda_k^- - \lambda_k^+ + \psi_k = 0 \\
+        &\perp \phi + \rho_n - \sum_{k \in K} F_{kn} \psi_k = 0
     \end{aligned}
 \end{equation}
 With these, we can see that there exists a threshold $\rho_n$ for all $n$ such that:
@@ -556,11 +608,11 @@ With these, we can see that there exists a threshold $\rho_n$ for all $n$ such t
     \item If $p_g = P_g$, then $\rho_n \geq MC_g(p_g)$
     \item If $d_l = D_l$, then $\rho_n \leq MB_l(d_l)$     
 \end{itemize}
-\textcolor{red}{TO CHECK} We can interpret the dual variables as follows:
+We can interpret the dual variables as follows:
 \begin{itemize}
-    \item $\phi$ induce marginal changes in wellfare from marginal increase in production or marginal decrease in consumption.
-    \item $\lambda_k^+$ and $\lambda_k^-$ induces marginal impact of increasing line capacity.
-    \item $\rho_n$ induces marginal impact of marginal increase in consumption or marginal decrease in production at node $n$.
+    \item $\phi$ is the dual variable associated with the global balance constraint. It acts as a reference price level since only nodal price differences are economically meaningful.
+    \item $\lambda_k^+$ and $\lambda_k^-$ are congestion shadow prices associated with the transmission limits. They measure the marginal welfare gain of increasing the capacity of line $k$.
+    \item $\rho_n$ represents the locational marginal price (LMP) at node $n$, i.e. the marginal value of injecting one additional MW at node $n$.
 \end{itemize}
 \subsection{Bus angle model}
 For the bus angle model, also known as the reactance model, we will interrest us to the differences of phase angles in the network. For that, we will chose a "hub node", its choice is independent. The phase angle at node $n$ is denoted $\theta_n$. The flow on line $k = (m,n)$ is defined as:
@@ -823,11 +875,16 @@ In the exchange version of this new market, the producers and consumers will sub
 \subsection{Sequential clearing of energy and reserve}
 It is also possible to clear the energy and reserve markets sequentially. In this case, the reserve market is cleared first, then the energy market is cleared. 
 \section{Balancing}
-\textcolor{red}{TO IMPROVE}
 \begin{definition}
     \textbf{Balancing} is the task of adjusting power production and consumption in real-time to maintain the balance between supply and demand in the power system.
 \end{definition}
-The balancing is also ruled by a market, where there is increment and decrement bids. In real time, the TSO will activate the bids that are needed to maintain the balance between supply and demand. This lead us to a new optimization problem, the balancing market model:
+Balancing is closely related to reserve markets. Resources that committed reserve capacity in earlier markets can be activated in real time to compensate for forecast errors, renewable uncertainty, or unexpected outages. Two important actors participate in balancing markets:
+\begin{itemize}
+    \item \textbf{Balancing Service Providers (BSPs)}: generators, storage units, or flexible consumers capable of adjusting their production or consumption in real time. BSPs submit balancing bids to the TSO.
+    \item \textbf{Balancing Responsible Parties (BRPs)}: market participants responsible for keeping their portfolio balanced. If their real-time production or consumption deviates from their scheduled position, they must financially compensate the system.
+\end{itemize}
+The balancing market operates using \textbf{increment} and \textbf{decrement} bids. Which are increase in production or decrease in consumption for increment bids, and decrease in production or increase in consumption for decrement bids. The TSO activates these bids in real time to remove system imbalances.\\
+This lead us to a new optimization problem, the balancing market model:
 \begin{equation}
     \begin{aligned}
         \max & \sum_{d \in D} MB_d \delta_d^- \sum_{u \in U} MC_u \delta_u^+ &&\\
@@ -836,7 +893,9 @@ The balancing is also ruled by a market, where there is increment and decrement 
         & 0 \leq \delta_d^- \leq \Delta_d \quad \forall d \in D
     \end{aligned}
 \end{equation}
-Where $\Delta$ is the imbalance that needs to be covered, $D$ is the set of decrement bids, $U$ is the set of increment bids, $\delta_d^-$ is the amount of decrement bid $d$ that is activated and $\delta_u^+$ is the amount of increment bid $u$ that is activated. The market clearing price for balancing will be given by the dual variable $\lambda$ associated with the market clearing constraint, it is called the balancing price.
+Where $\Delta$ is the imbalance that needs to be covered, $D$ is the set of decrement bids, $U$ is the set of increment bids, $\delta_d^-$ is the amount of decrement bid $d$ that is activated and $\delta_u^+$ is the amount of increment bid $u$ that is activated.\\
+The market clearing price for balancing will be given by the dual variable $\lambda$ associated with the market clearing constraint, it is called the \textbf{balancing price}. If the system faces an upward imbalance ($\Delta>0$), the TSO activates increment bids in increasing order of marginal cost. Conversely, if the system faces a downward imbalance ($\Delta<0$), decrement bids are activated.\\
+An important observation is that balancing markets can also be interpreted as a real-time market clearing mechanism. Indeed, clearing increment and decrement bids is equivalent to re-clearing the supply and demand curves in real time after unexpected events occur. 
 \chapter{Hedging risks}
 \section{Forward contract}
 \begin{definition}
@@ -914,8 +973,53 @@ Value at risk is highly sensitive with respect to market data. To overcome this 
 \end{definition}
 The expected value and the worst-case payoff are coherent risk measures, while the value at risk or the Markowitz risk measure are not coherent. Another advantage of conditional value at risk is that it is a coherent risk measure contrary to value at risk.\\
 A risk measure is convex if it satisfies the 3 first properties of a coherent risk measure, in addition the 2 first properties already implies convexity.\\
-\textcolor{red}{IDK WHAT TO SAY FOR THE END OF THIS PART}
-% \section{Day-head as a forward market}
+\subsection{Worst-Case Characterization of Coherent Risk Measures}
+A risk measure $\mathcal{R}$ is coherent if and only if there exists a set of probability measures $\mathcal{M}$ such that the risk measure can be written as the worst expected payoff over all probability distributions in this set:
+\begin{equation}
+    \mathcal{R}(\xi)=\max_{q\in\mathcal{M}} \mathbb{E}_q[\xi] = \max_{q\in\mathcal{M}} \sum_{\omega\in\Omega} q_\omega \xi(\omega)
+\end{equation}
+The probability distribution \(\bar q\) maximizing this expression is called
+the \textbf{risk-adjusted probability measure}.\\
+This interpretation is important because it shows that coherent risk measures behave as if agents evaluated uncertain outcomes under a pessimistic probability distribution that gives more weight to unfavorable scenarios.\\
+For the particular case of CVaR, the set of admissible probability measures is:
+\begin{equation}
+    \mathcal{M} = \left\{ q : q_\omega \le \frac{P_\omega}{\alpha}, \sum_{\omega\in\Omega} q_\omega = 1, q_\omega \ge 0 \right\}
+\end{equation}
+The idea is that probabilities of bad outcomes can be amplified by a factor $1/\alpha$. Therefore, CVaR emphasizes the tail of the distribution and focuses on severe losses.\\
+Another important result is that the maximizing probability measure $\bar q$ is a subgradient of the risk measure. Therefore, derivatives of a risk-adjusted payoff can be computed as:
+\begin{equation}
+    \frac{\partial R(\xi)}{\partial a} = \mathbb{E}_{\bar q} \left[ \frac{\partial \xi}{\partial a} \right]
+\end{equation}
+This means that marginal decisions are evaluated using the risk-adjusted
+probabilities instead of the physical probabilities. 
+\subsection{Back-Propagation}
+\begin{definition}
+    \textbf{Back-propagation} is the process by which forward prices are determined by the expected distribution of real-time prices, rather than the other way around.
+\end{definition}
+Back-propagation highlights the fundamental role of balancing and real-time markets in electricity market design. Even though most electricity is traded in the day-ahead market, prices are ultimately anchored by the expected conditions of the real-time system.
+\subsection{Day-Ahead Market as a Forward Market}
+In the United States, the day-ahead market is interpreted as a financial forward market, while the real-time market is the physical spot market. Financial participants are allowed to trade in the day-ahead market even without owning physical assets.\\
+The day-ahead market solves:
+\begin{equation}
+    \begin{aligned}
+        \min_{p_g} &\sum_g MC_g p_g\\
+        \text{s.t. } \quad &\sum_g p_g = D^{DA} \qquad [\lambda^{DA}] \\
+        &0 \le p_g \le P_g \\
+    \end{aligned}
+\end{equation}
+The real-time market solves:
+\begin{equation}
+    \begin{aligned}
+        \min_{p_g} &\sum_g MC_g p_g\\
+        \text{s.t. } \quad &\sum_g p_g = D^{RT} \qquad [\lambda^{RT}] \\
+        &0 \le p_g \le P_g \\
+    \end{aligned}
+\end{equation}
+The payoff of a market participant is: $\lambda^{DA}p^{DA} + \lambda^{RT}(p^{RT}-p^{DA})$.\\
+For a conventional producer with $p^{DA}=p^{RT}$, the payoff becomes: $\lambda^{DA}p^{DA}$.\\
+For a purely financial participant with $p^{RT}=0$, the payoff becomes: $(\lambda^{DA}-\lambda^{RT})p^{DA}$.\\
+Hence, financial participants profit from differences between day-ahead and real-time prices and therefore contribute to price convergence between the two markets. In Europe, the design is different. The day-ahead market is usually considered as the physical spot market, while balancing markets are used to restore feasibility in real time. However, the economic logic remains equivalent, since balancing prices still reflect real-time system conditions.
+
 \chapter{Ressources adequacy}
 When we look at the planning problem at the long term, it can be interesting to think about the technology mix and especially the investment that we can do in the different technologies. This is what we call the capacity expansion planning problem. 
 \section{Capacity expansion planning}
