@@ -1075,7 +1075,7 @@ We can also define pruning rule like \texttt{FOIL}.
 \subsection{Associative classification}
 When mining association rules for classification, we are looking for association rules of the form $p_1 \wedge p_2 \wedge \ldots \wedge p_n \Rightarrow Class$. With this, rule accuracy is the same as the confidence of the rule. To mine those rules, we need to do a few steps:
 \begin{itemize}
-    \item Mine the fata for frequent itemsets
+    \item Mine the data for frequent itemsets
     \item Analyses the frequent itemsets and generates association rules per class that satisfy a minimum confidence and a minimum support threshold
     \item Organize the rules into a classifier (e.g., by using a decision list strategy)
 \end{itemize}
@@ -1230,7 +1230,7 @@ We can also use the Entropy score defined previously to compute the information 
     \begin{equation}
         \texttt{Information Gain}(x) = H(y) - H(y | x)
     \end{equation}
-    A feature with a larger information gain can better reduce the impurity (i.e., the entropy) of the class label $y$
+    A feature with a larger information gain will reduce more the entropy of the class label $y$.
 \end{definition}
 Knowing that we can smartly select features, we can introduce \textbf{wrapper methods}. Those combines feature selection and classifier training. It is an iterative process where at each iteration, we have a current set of selected features, and we train a classifier on those features, then we evaluate the performance of the classifier and use that performance to decide which features to add or remove from the current set of selected features. This process is repeated until we reach a stopping criterion.\\
 We can do \textbf{stepwise forward selection} where we start with an empty set of features and at each iteration, we add the feature that gives the best performance improvement. We can also do \textbf{stepwise backward elimination} where we start with all the features and at each iteration, we remove the feature that gives the best performance improvement. 
@@ -1247,7 +1247,7 @@ Semi-supervised learning is based on 2 assumptions:
 \end{itemize}
 But how can select the tuples to label ? Two strategies can be used:
 \begin{itemize}
-    \item \textbf{uncertainty sampling}: uples with the most uncertainty are chosen
+    \item \textbf{uncertainty sampling}: tuples with the most uncertainty are chosen
     \item \textbf{query by committee}: simultaneous training of multiple models,  the tuples chosen are the ones that the models disagrees on
 \end{itemize}
 To overcome the difficulty of having a small amount of labeled data, we can use different techniques such as:
@@ -1257,7 +1257,7 @@ To overcome the difficulty of having a small amount of labeled data, we can use 
     \item \textbf{Zero-shot learning:} We want to learn a class label never seen in the training data. To do that, we need to learn characteristics instead of labels, and then we can use those characteristics to predict the class label of the unseen class. For example, given a model trained to classify ”dog”, ”owl” and ”fish”. The classifier predicts the concepts ”has four legs”, ”has wings”, ”has retractable claws” and ”has super night vision”. Dog is predicted when ”has four legs” is the only one of the predicted concept. To predict cat, the unknown class, corresponds to all but ”has wings”.
 \end{itemize}
 \section{Classification with rich data type}
-In \textbf{stream data classification}, the classifier needs to be able to classify the new transactions upon arrival and retrain with the new labeled data. To do that, we can use multiples methods. One of them is to break the stream into chunks and train a classifier on each chunk and keep the $k$ historically relevant chunks.\\
+In \textbf{stream data classification}, the classifier needs to be able to classify the new transactions upon arrival and re-train with the new labeled data. To do that, we can use multiples methods. One of them is to break the stream into chunks and train a classifier on each chunk and keep the $k$ historically relevant chunks.\\
 For \textbf{sequential data classification}, we can transform them into traditionnal vectors to apply traditionnal predictors on it like n-grams or frequent sequence mining.\\
 For \textbf{graph data classification}, we can either classify at graphs level or at node level. And we need to extract features from the nodes.
 \chapter{Clustering}
