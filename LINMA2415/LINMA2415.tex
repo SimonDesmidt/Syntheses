@@ -1101,5 +1101,176 @@ The KKT conditions provide three important economic criteria:
     \item \textbf{Investment criterion:} investments occur only if scarcity rents are sufficient to recover fixed investment costs: $I_g\le\sum_j\mu_{gj}$
 \end{itemize}
 An important implication is that generation investments recover their fixed costs through \textbf{scarcity rents}, i.e. the difference between market revenues and variable operating costs.
-\textcolor{red}{TO FINISH}
+
+% \section{Decentralized Capacity Expansion Planning}
+% Instead of a centralized planner, investments can also emerge from a
+% competitive electricity market. In an \textbf{energy-only market}, generators
+% are remunerated only through energy sales and scarcity rents. There is no
+% separate payment for installed capacity.
+
+% The producer optimization problem is:
+
+% \[
+% \max
+% \sum_{j=1}^m
+% (\rho_j-C_g)\Delta T_j p_{gj}
+% -
+% I_gx_g
+% \]
+
+% subject to
+
+% \[
+% p_{gj}\le x_g
+% \]
+
+% The scarcity rent earned by generator \(g\) in period \(j\) is:
+
+% \[
+% \mu_{gj}
+% =
+% (\rho_j-C_g)\Delta T_j
+% \]
+
+% Therefore, investments are profitable only if total scarcity rents recover
+% investment costs:
+
+% \[
+% I_g=\sum_j\mu_{gj}
+% \]
+
+% An important result is that the competitive equilibrium of the decentralized
+% market satisfies the same KKT conditions as the centralized planner problem.
+% Therefore, under perfect competition, energy-only markets lead to efficient
+% investment and operation decisions. :contentReference[oaicite:4]{index=4}
+
+% However, in practice, energy-only markets suffer from several issues:
+% \begin{itemize}
+%     \item low demand elasticity,
+%     \item high price volatility,
+%     \item uncertain scarcity rents,
+%     \item high investment risk for peaker plants.
+% \end{itemize}
+
+% In particular, peaker technologies such as OCGT recover most of their revenues
+% during a very small number of scarcity hours. :contentReference[oaicite:5]{index=5}
+
+% \section{Market design for resources adequacy}
+% \subsection{Value of Lost Load (VOLL) Pricing}
+
+% The \textbf{Value of Lost Load (VOLL)} represents the social cost of not
+% serving electricity demand. During periods of capacity shortage, prices are set
+% equal to VOLL. :contentReference[oaicite:6]{index=6}
+
+% Load shedding variables \(ls_j\) are introduced:
+
+% \[
+% \sum_{g\in G}p_{gj}+ls_j=D_j
+% \]
+
+% with complementarity condition:
+
+% \[
+% 0\le ls_j \perp VOLL-\rho_j\ge0
+% \]
+
+% This means:
+% \begin{itemize}
+%     \item if load shedding occurs (\(ls_j>0\)), then
+%     \[
+%     \rho_j=VOLL
+%     \]
+%     \item otherwise:
+%     \[
+%     \rho_j\le VOLL
+%     \]
+% \end{itemize}
+
+% The VOLL pricing model is equivalent to a centralized planning model minimizing:
+
+% \[
+% \sum_g I_gx_g
+% +
+% \sum_j\Delta T_j
+% \left(
+% VOLL\cdot ls_j
+% +
+% \sum_g C_gp_{gj}
+% \right)
+% \]
+
+% Therefore, if VOLL is correctly estimated, the market produces the optimal
+% investment level. However, incorrect estimation of VOLL can lead to strong
+% underinvestment or overinvestment. :contentReference[oaicite:7]{index=7}
+
+% \subsection{Capacity Mechanisms}
+
+% Because scarcity rents are uncertain and risky, many electricity markets
+% introduce \textbf{capacity mechanisms}. Their objective is to provide an
+% additional remuneration for installed generation capacity in order to guarantee
+% resource adequacy. :contentReference[oaicite:8]{index=8}
+
+% Examples of capacity mechanisms include:
+% \begin{itemize}
+%     \item capacity auctions,
+%     \item reliability options,
+%     \item strategic reserves,
+%     \item capacity payments.
+% \end{itemize}
+
+% The main challenge is determining the required installed capacity level.
+
+% For peaker technologies, the investment condition approximately becomes:
+
+% \[
+% CONE
+% \approx
+% VOLL\times LOLP
+% \]
+
+% where:
+% \begin{itemize}
+%     \item \(CONE\) is the \textbf{Cost Of New Entry},
+%     \item \(LOLP\) is the \textbf{Loss Of Load Probability}.
+% \end{itemize}
+
+% This relation links reliability targets with investment incentives. :contentReference[oaicite:9]{index=9}
+
+% A capacity market introduces an additional capacity payment \(\rho\) alongside
+% the usual energy prices \(\lambda_j\). The market model becomes:
+
+% \[
+% \max
+% \int_0^{x^d}VC(v)\,dv
+% -
+% \sum_g I_gx_g
+% -
+% \sum_j\Delta T_j
+% \left(
+% VOLL\cdot ls_j
+% +
+% \sum_g C_gp_{gj}
+% \right)
+% \]
+
+% subject to
+
+% \[
+% x^d=\sum_gx_g
+% \qquad [\rho]
+% \]
+
+% \[
+% \sum_gp_{gj}+ls_j=D_j
+% \qquad [\lambda_j]
+% \]
+
+% Hence, generators receive:
+% \begin{itemize}
+%     \item energy revenues through \(\lambda_j\),
+%     \item capacity revenues through \(\rho\).
+% \end{itemize}
+
+% Capacity mechanisms therefore reduce investment risk and improve long-term
+% resource adequacy.
 \end{document}
