@@ -876,12 +876,46 @@ We can reformulate these problem as:
 		&\Longleftrightarrow \exists &&R \in \R^{(n_2-r) \times r} \text{ full rank such that } XR = 0
 	\end{aligned}
 \end{equation}
+\textcolor{red}{IDK to what to say more}
 \subsection{Recovering a low-rank matrix}
 Reminder we want to find $X_0$ such that $y = \mathcal{A}[X_0]$ and $rank(X_0) \leq r$. For that we want to solve the problem:
 \begin{equation}
 	\min_{X\in \R^{n_1\times n_2}} rank(X) \qquad \text{ such that } y = \mathcal{A}[X]
 \end{equation}
+\begin{definition}
+	$\mathcal{A}$ has rank-RIP of rank $r$ with constant $\delta$ if $\exists \gamma > 0 $ such that $\forall X\in \R^{n_1\times n_2}$ with $rank(X) \leq r$, we have
+	\begin{equation}
+		(1-\delta)\|X\|_F^2 \leq \gamma\|\mathcal{A}[X]\|_2^2 \leq (1+\delta)\|X\|_F^2
+	\end{equation}
+	The rank-$r$ RIP constant $\delta_r(\mathcal{A})$ is the smallest $\delta$ such that the above inequality holds.
+\end{definition}
+\begin{thm}
+	If $y = \mathcal{A}[X_0]$, $rank(X_0) \leq r$ and $\delta_{2r}(\mathcal{A}) < 1$, then $X_0$ is the unique solution to the $(\boldsymbol{\sigma}-\ell^0)$ minimization problem.
+\end{thm}
+The existence and the uniqueness of this solution can be proven:
+\begin{itemize}
+	\item \textbf{Existence}: the range of the objective function is finite so there exists a solution to the problem.
+	\item \textbf{Uniqueness}: Let $\hat{X}$ be a solution different from $X_0$. Then, using the rank-RIP property, we have
+	\begin{equation}
+		(1-\delta_{2r}) \|\hat{X}-X_0\|_F^2 \leq \gamma \|\mathcal{A}[\hat{X}-X_0]\|_2^2
+	\end{equation}
+	The left term is positive because $(1-\delta_{2r}) > 0$ and norm is positive definite, and the right term is zero because $\mathcal{A}[\hat{X}-X_0] = \mathcal{A}[\hat{X}] - \mathcal{A}[X_0] = y-y=0$. This is a contradiction, thus $\hat{X}$ cannot be different from $X_0$.  
+\end{itemize} 
+\begin{thm}
+	Let $y = \mathcal{A}[X_0]$, $rank(X_0) \leq r$ and $\delta_{2r}(\mathcal{A}) < \sqrt{2}-1$, then $X_0$ is the unique solution to the $(\boldsymbol{\sigma}-\ell^1)$ minimization problem. 
+\end{thm}
 \subsection{Low-rank matrix completion}
+The problem of low-rank matrix completion can be define as:\\
+Let $X_0 \in \R^{n_1 \times n_2}$ be a low-rank matrix. We are given $(X_0)_{\Omega}$ where $\Omega \subset [n_1]\times [n_2]$ is a subset of the entries $\Omega^c$ of $X_0$. We want to fill the missing entries of $X_0$ by using the low-rank property of $X_0$.\\
+Unilke the previous problems, rank-RIP cannot hold to form such an $\mathcal{A}$. So we need other way to solve this problem, for that, we can use the nuclear norm and define the following optimization problem:
+\begin{equation}
+	\min_{X\in \R^{n_1 \times n_2}} \|X\|_* \qquad \text{ such that } X_\Omega = y
+\end{equation}
+With $y$ the observed entries of $X_0$.\\
+With this problem, we can recover $X_0$, but what if there are some noise in the observed entries $Y_{i,j} = [X_0]_{i,j} + z_{i,j}$ for $(i,j) \in \Omega$ and $\|P_\Omega(z)\|_F \leq \epsilon$ ? Then the optimization problem becomes:
+\begin{equation}
+	\min_{X\in \R^{n_1 \times n_2}} \|X\|_* \qquad \text{ such that } \|P_\Omega(X)-P_\Omega(y)\|_F \leq \epsilon
+\end{equation} 
 \subsection{Manifold of fixed-rank matrices}
 \begin{definition}
 	The manifold of fixed-rank matrices is the set of matrices of rank $r$, it is defined as:
