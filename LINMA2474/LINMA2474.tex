@@ -695,7 +695,8 @@ for $P_\mathcal{C}(z) = \arg \min_{x\in \mathcal{C}} \frac{1}{2}\|z-x\|^2_2$. He
 \begin{equation}
 	\mathcal{P}_{\{x|Ax=y\}} (z) = z - A^T (AA^T)^{-1}(Az-y)
 \end{equation}
-\section{Incoherent matrices}
+\section{Convex method for sparse signal recovery}
+\subsection{Incoherent matrices}
 \begin{definition}
 	The \textbf{mutual coherence} of a matrix $A = \left[ a_1 |\cdots| a_n \right] \in \R^{m \times n}$ with all nonzero columns is defined as:
 	\begin{equation}
@@ -743,7 +744,7 @@ With this result, we can see that if $y = Ax_0$ and $\|x_o\|_0 \leq \frac{1}{2 \
 \begin{equation}
 	\min_x \|x\|_0 \qquad \text{ such that } Ax=y
 \end{equation}
-\begin{thm}[$\ell_1$ succed under incoherence]\label{thm:ell1_inco}
+\begin{thm}[$\ell^1$ succed under incoherence]\label{thm:ell1_inco}
 	Let $A \in \R^{m \times n}$ be an incoherent matrix with mutual coherence $\mu(A)$, with $diag(A^TA) = I$, $y = Ax_0$, and $\|x_0\|_0 \leq \frac{1}{2 \mu(A)}$. Then, $x_0$ is the unique optimal solution to the $\ell^1$ minimization problem.
 \end{thm}
 This theorem can be proven if the three following points are true. Let $x' \in \R^n$ feasible point $\neq 0$, $I = supp(x_0)$, $k = |I|$, we want to show that:
@@ -792,4 +793,103 @@ Combining this result with the theorem \ref{thm:ell1_inco}, we get that with hig
 	\|x_0\|_0 \leq \frac{1}{2C} \sqrt{\frac{m}{log(n)}} 
 \end{equation}
 And we should be able to recover $x_0$ from $m \geq 4C^2k^2log(n)$ observations.
+\subsection{Restricted isometry property}
+\begin{definition}
+	The matrix A satisfies the \textbf{restricted isometry property (RIP)} of order $k$, with constant $\delta \in [0,1)$, if $\forall \|x\|_0 = k$, we have
+	\begin{equation}
+		(1-\delta)\|x\|_2^2 \leq \|Ax\|_2^2 \leq (1+\delta)\|x\|_2^2
+	\end{equation}
+\end{definition}
+\begin{thm}[$\ell^0$ recovery under RIP]\label{thm:ell0_rip}
+	Let $y = Ax_0$ with $k \coloneqq \ \|x_0\|_0$. If $\delta_{2k}(A) < 1$, then $x_0$ is the unique optimal solution to the $\ell^0$ minimization problem.
+\end{thm}
+Let us prove this theorem by contradiction. Let $x'$ be a solution different from $x_0$ to the $\ell^0$ minimization problem. Then using the theorem \ref{thm:ell0_rip}, we have
+\begin{equation}
+	\begin{aligned}
+		(1-\delta_{2k}) \|x'-x_0\|_2^2 &\leq \|A(x'-x_0)\|_2^2\\
+	\end{aligned}
+\end{equation}
+But $A(x'-x_0) = 0$ because $Ax' = y = Ax_0$. Thus, $\|x'-x_0\|_2^2 \leq 0$, which is a contradiction because $x'\neq x_0$.\\
+\begin{thm}[$\ell^1$ recovery under RIP]\label{thm:ell1_rip}
+	Let $y = Ax_0$ with $k \coloneqq \ \|x_0\|_0$. If $\delta_{2k}(A) < \sqrt{2}-1$, then $x_0$ is the unique optimal solution to the $\ell^1$ minimization problem.
+\end{thm}
+\begin{thm}[RIP of Gaussian matrices]
+	Let $A \in \R^{m \times n}$ be a matrix with i.i.d. $\mathcal{N}(0,1/m)$ entries. Then $\exists C > 0$ such that with high probability, $\delta_k(A) < \delta$ provided that $m \geq C \frac{k}{\delta^2} \log(n/k)$.
+\end{thm}
+\subsection{Noisy observations or approximate sparsity}
+First let us define the problem of noisy observations. We have $y = Ax_0 + z$ with $\|z\|_2 \leq \epsilon$ for $\epsilon > 0$. The $\ell^1$ minimization problem in this case is:
+\begin{equation}
+	\min_{x} \|x\|_1 \quad \text{such that } \|y - Ax\|_2 \leq \epsilon.
+\end{equation}
+This is called the basis pursuit denoising (BPDN) problem. Now let us introduce the Lagrangian relaxation of this problem also called the Lasso (Least Absolute Shrinkage and Selection Operator) problem:
+\begin{equation}
+	\min_x \lambda \|x\|_1 + \frac{1}{2}\|y - Ax\|_2^2 
+\end{equation}
+With noise, we cannot expect to recover $x_0$ exactly, but we can hope to recover an approximation of it. However, we can hope that if the noise level $\epsilon$ is small, then the estimation error $\|\hat{x}-x_0\|$ will also be small. We can bound this estimation error like this:
+\begin{equation}
+	\begin{aligned}
+		A_I(\hat{x} - x_0)_I &= A_I (A_I^* A_I)^{-1} A_I^* y - A_I x_{0_I}\\
+		&= A_I (A_I^* A_I)^{-1} A_I^* z
+	\end{aligned}
+\end{equation}
+Hence:
+\begin{equation}
+	\begin{aligned}
+		\sigma_{\min}(A_I) \|(\hat{x} - x_0)_I\|_2 &\leq \|A_I (\hat{x} - x_0)_I\|_2\\
+		&\leq \| A_I (A_I^* A_I)^{-1} A_I^* z\|_2
+		&\leq \|z\|_2 \leq \epsilon
+	\end{aligned}
+\end{equation}
+And so $\|\hat{x} - x_0\|_2 \leq \frac{\epsilon}{\sigma_{\min}(A_I)}$.\\
+\textcolor{red}{jsp cmt rajouter le truc avec h (equation 3.5.12 du livre)}
+\begin{thm}
+	Let $y = Ax_0 + z$ with $\|z\|_2 \leq \epsilon$. Let $\hat{x}$ be the solution to the BPDN problem. Then for any $k$ such that $\delta_{2k}(A) < \sqrt{2}-1$,, we have
+	\begin{equation}
+		\|\hat{x} - x_0\|_2 \leq C \frac{\|x_0 - [x_0]_k\|_1}{\sqrt{k}} + C' \epsilon
+	\end{equation}
+	for some constants $C$ and $C'$ which only depend on $\delta_{2k}(A)$.
+\end{thm}
+\section{Convex methods for Low-rank matrix recovery}
+To recover a low-rank matrix $X_0\in \R^{n_1\times n_2}$ knowing that $y = \mathcal{A}[X_0]$ and $rank(X_0) = \|\boldsymbol{\sigma}(X_0)\|_0 \leq r$. From this, we can define optimization problems similar to the ones we have for sparse recovery:\\
+The $(\boldsymbol{\sigma}-\ell^0)$ minimization problem:
+\begin{equation}
+	\min_{X\in \R^{n_1\times n_2}} \|\boldsymbol{\sigma}(X)\|_0 \qquad \text{ such that } y = \mathcal{A}[X]
+\end{equation}
+The $(\boldsymbol{\sigma}-\ell^1)$ minimization problem:
+\begin{equation}
+	\min_{X\in \R^{n_1\times n_2}} \|\boldsymbol{\sigma}(X)\|_1 \qquad \text{ such that } y = \mathcal{A}[X]
+\end{equation}
+We can reformulate these problem as:
+\begin{equation}
+	\min_{X\in \R^{n_1\times n_2}} \|\mathcal{A}[X]-y\|^2 \qquad \text{ such that } rank(X) \leq r
+\end{equation}
+\subsection{Representing low-rank matrices}
+\begin{equation}
+	\begin{aligned}
+		rank(X) \leq r &\Longleftrightarrow \exists &&U\in St(n_1,r) = \{Y \in \R^{n_1 \times r} | Y^T Y = I_r\},\\
+		& &&V\in St(n_2,r), \Sigma \in \R^{r \times r} \text{ diagonal}\\
+		& &&\text{ such that } X = UV^T\\
+		&\Longleftrightarrow \exists && L \in \R^{n_1 \times r}, R \in \R^{n_2 \times r} \text{ such that } X = LR^T\\
+		&\Longleftrightarrow \exists &&L \in St(n_1,r), R \in \R^{n_2 \times r} \text{ such that } X = LR^T\\
+		&\Longleftrightarrow \exists &&U \in St(n_1,r), V \in St(n_2,r), S\in \R^{r \times r} \text{ such that } X= USV^T\\
+		&\Longleftrightarrow \exists &&L \in \R^{(n_1-r) \times r} \text{ full rank such that } LX = 0\\
+		&\Longleftrightarrow \exists &&R \in \R^{(n_2-r) \times r} \text{ full rank such that } XR = 0
+	\end{aligned}
+\end{equation}
+\subsection{Recovering a low-rank matrix}
+Reminder we want to find $X_0$ such that $y = \mathcal{A}[X_0]$ and $rank(X_0) \leq r$. For that we want to solve the problem:
+\begin{equation}
+	\min_{X\in \R^{n_1\times n_2}} rank(X) \qquad \text{ such that } y = \mathcal{A}[X]
+\end{equation}
+\subsection{Low-rank matrix completion}
+\subsection{Manifold of fixed-rank matrices}
+\begin{definition}
+	The manifold of fixed-rank matrices is the set of matrices of rank $r$, it is defined as:
+	\begin{equation}
+		\R_r^{n_1 \times n_2} = \{X\in \R^{n_1\times n_2} | rank(X) = r\}
+	\end{equation}
+\end{definition}
+\begin{thm}
+	The manifold of fixed-rank matrices $\R_r^{n_1 \times n_2}$ is a smooth embedded submanifold of $\R^{n_1 \times n_2}$.
+\end{thm}
 \end{document}
