@@ -884,7 +884,18 @@ Hence:
 	\end{aligned}
 \end{equation}
 And so $\|\hat{x} - x_0\|_2 \leq \frac{\epsilon}{\sigma_{\min}(A_I)}$.\\
-\textcolor{red}{jsp cmt rajouter le truc avec h (equation 3.5.12 du livre)}
+Because $x_0$ is feasible for the optimization problem and $\hat{x}$ is optimal, $\hat{x}$ must have a lower objective value than $x_0$:
+\begin{equation}
+	\|\hat{x}\|_1 \leq \|x_0\|_1
+\end{equation}
+Consider $h = \hat{x} - x_0$, the perturbation of $x_0$ that we want to bound. Let us define $I = supp(x_0)$ and $I^c$ its complement. We have:
+\begin{equation}
+	\begin{aligned}
+		\|x_0\|_1 &\geq \|\hat{x}\|_1 = \|x_0 + h\|_1\\
+		&\geq \|x_0\|_1 - \|h_I\|_1 + \|h_{I^c}\|_1 \\
+		\|h_I\|_1 &\geq \|h_{I^c}\|_1
+	\end{aligned}
+\end{equation}
 \begin{thm}
 	Let $y = Ax_0 + z$ with $\|z\|_2 \leq \epsilon$. Let $\hat{x}$ be the solution to the BPDN problem. Then for any $k$ such that $\delta_{2k}(A) < \sqrt{2}-1$,, we have
 	\begin{equation}
