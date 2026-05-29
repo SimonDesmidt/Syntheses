@@ -743,31 +743,40 @@ The $\ell_1$ minimization works as a replacement of the $\ell_0$ minimization, b
 \begin{definition}
 	The \textbf{mutual coherence} of a matrix $A = \left[ a_1 |\cdots| a_n \right] \in \R^{m \times n}$ with all nonzero columns is defined as:
 	\begin{equation}
-		\mu(A) = \max_{i \neq j} \left| \langle \frac{a_i}{\|a_i\|_2}, \frac{a_j}{\|a_j\|_2} \rangle \right|
+		\mu(A) = \max_{i \neq j} \left| \langle \frac{a_i}{\|a_i\|_2}, \frac{a_{\mathcal{J}}}{\|a_{\mathcal{J}}\|_2} \rangle \right|
 	\end{equation}
 \end{definition}
-The mutual coherence is useful for sparse recovery because we will show that when $\mu(A)$ is small, the $krank(A)$ will be large. This is because if the columns of $A$ are close to orthogonal, then any subset of them will be linearly independent and it will be well-conditioned as their smallest singular value $\sigma_{\min}$ will be close to their largest singular value $\sigma_{\max}$. Consider that $A_I$ is the full-rank submatrix of $A$ formed by the columns indexed by $I\subset [n]$ with $|I| = k$. To prove that we want to write the matrix under a form that is the sum of the diagonal and off-diagonal ($\Delta$) entries:
+The mutual coherence is useful for sparse recovery because we will show that when $\mu(A)$ is small, the $krank(A)$ will be large. Namely, 
 \begin{equation}
-	A_I^* A_I = I + \Delta
+	krank(A) \ge \frac{1}{\mu(A)}.
+\end{equation}
+This is because if the columns of $A$ are close to orthogonal, then any subset of them will be linearly independent and it will be well-conditioned as their smallest singular value $\sigma_{\min}$ will be close to their largest singular value $\sigma_{\max}$. 
+To prove it, consider $A_{\mathcal{J}}$ is the full-rank submatrix of $A$ formed by the columns indexed by $\mathcal{J}\subset [n]$, with $|\mathcal{J}| = k$. Let us write the matrix under a form that is the sum of the diagonal and off-diagonal ($\Delta$) entries:
+\begin{equation}
+	A_{\mathcal{J}}^* A_{\mathcal{J}} = I + \Delta
 \end{equation}
 We can bound the spectral norm of $\Delta$ by its Frobenius norm, then by the max norm, and finally by the mutual coherence:
 \begin{equation}
-	\|\Delta\|_{SP} \leq \|\Delta\|_F < k \|\Delta\|_{l_{\infty}} \leq k \mu(A)
+	\|\Delta\|_{SP} \leq \|\Delta\|_F < k \|\Delta\|_{\infty} \leq k \mu(A)\\
 \end{equation}
-Then using this result, we can bound the smallest singular value of $A_I^*A_I$. Let $\Delta = U D U^T$ be an EVD then $\|\Delta\|_{SP} = \max_i |d_i|$:
+because
+\begin{equation}
+	\max_i \sigma_i(\Delta) \le \sqrt{\sum_i\sigma_i^2} = \sqrt{\sum_{ij}|\Delta_{ij}^2|} = \sqrt{\sum_{i\neq j} |\Delta_{ij}|^2} \le \sqrt{k(k-1) \|\Delta\|^2_\infty} < k \|\Delta\|_\infty
+\end{equation}
+Then using this result, we can bound the smallest singular value of $A_{\mathcal{J}}^*A_{\mathcal{J}}$. Let $\Delta = U D U^T$ be an eigenvalue decomposition then $\|\Delta\|_{SP} = \max_i |d_i|$:
 \begin{equation}
 	\begin{aligned}
-		\sigma_{\min}(A_I^* A_I) &= \sigma_{\min}(I + \Delta) = \sigma_{\min}(U(I + D) U^T)\\
+		\sigma_{\min}(A_{\mathcal{J}}^* A_{\mathcal{J}}) &= \sigma_{\min}(I + \Delta) = \sigma_{\min}(U(I + D) U^T)\\
 		&= \min_i |1 + d_i| \geq \min_i 1 - |d_i|\\ 
 		&= 1 - \max_i |d_i| = 1 - \|\Delta\|_{SP} \\
 		&> 1 - k \mu(A)
 	\end{aligned}
 \end{equation}
 Then we have:
-\begin{equation}
-	1-k \mu(A) < \sigma_{\min}(A_I^* A_I) \leq \sigma_{\max}(A_I^* A_I) < 1 + k \mu(A)
+\begin{equation}\label{eq:label}
+	1-k \mu(A) < \sigma_{\min}(A_{\mathcal{J}}^* A_{\mathcal{J}}) \leq \sigma_{\max}(A_{\mathcal{J}}^* A_{\mathcal{J}}) < 1 + k \mu(A)
 \end{equation}
-With the previous result, we can see that if $1 - k \mu(A) \geq 0$ or equivalently $k \leq 1/\mu(A)$, then $\sigma_{\min}(A_I^* A_I) > 0$ and thus $A_I$ is full rank.\\
+With the previous result, we can see that if $1 - k \mu(A) \geq 0$ or equivalently $k \leq 1/\mu(A)$, then $\sigma_{\min}(A_{\mathcal{J}}^* A_{\mathcal{J}}) > 0$ and thus $A_{\mathcal{J}}$ is full rank.\\
 Combining these results with the definition of krank, we have the following result:
 \begin{equation}
 	krank(A) \geq \frac{1}{\mu(A)}
@@ -783,123 +792,145 @@ Let $s \coloneqq krank(A) + 1$. We normalize the columns of $A$, this does not c
 		\frac{1}{\mu(A)} &\leq krank(A) 
 	\end{aligned}
 \end{equation}
-With this result, we can see that if $y = Ax_0$ and $\|x_o\|_0 \leq \frac{1}{2 \mu(A)}$ then $x_o$ is the unique optimal solution to the $\ell^0$ minimization problem. 
+With this result, we can see that if $y = Ax_o$ and $\|x_o\|_0 \leq \frac{1}{2 \mu(A)}$ then $x_o$ is the unique optimal solution to the $\ell^0$ minimization problem. 
 \begin{equation}
 	\min_x \|x\|_0 \qquad \text{ such that } Ax=y
 \end{equation}
-\begin{thm}[$\ell^1$ succed under incoherence]\label{thm:ell1_inco}
-	Let $A \in \R^{m \times n}$ be an incoherent matrix with mutual coherence $\mu(A)$, with $diag(A^TA) = I$, $y = Ax_0$, and $\|x_0\|_0 \leq \frac{1}{2 \mu(A)}$. Then, $x_0$ is the unique optimal solution to the $\ell^1$ minimization problem.
+\begin{thm}[$\ell^1$ suceeds under incoherence]\label{thm:ell1_inco}
+	Let $A \in \R^{m \times n}$ be an incoherent matrix with mutual coherence $\mu(A)$, with $diag(A^TA) = I$, $y = Ax_o$, and $\|x_o\|_0 \leq \frac{1}{2 \mu(A)}$. Then, $x_o$ is the unique optimal solution to the $\ell^1$ minimization problem.
 \end{thm}
-This theorem can be proven if the three following points are true. Let $x' \in \R^n$ feasible point $\neq 0$, $I = supp(x_0)$, $k = |I|$, we want to show that:
+This theorem can be proven if the three following points are true. Let $x' \in \R^n$ feasible point $\neq 0$, $\mathcal{J} = supp(x_o)$, $k = |\mathcal{J}|$, we want:
 \begin{enumerate}
 	\item $\exists \lambda \in \R^m$ such that 
-	\begin{equation}
+	\begin{equation}\label{eq:sign-cond}
 		\begin{cases}
-			A_I^T \lambda = sign(x_{0_I})\\
-			\|A_{I^c}^T \lambda\|_\infty < 1
+			A_\mathcal{J}^T \lambda = sign(x_{o,\mathcal{J}})\\
+			\|A_{\mathcal{J}^c}^T \lambda\|_\infty < 1
 		\end{cases}
 	\end{equation}
-	\item $\|x'\|_1 \geq \|x_0\|_1 + (1-\|A_{I^c}^T \lambda\|_\infty) \|[x'-x_0]_{I^c}\|_1$
-	\item $[x'-x_0]_{I^c} \neq 0$
+	\item $\|x'\|_1 \geq \|x_o\|_1 + (1-\|A_{\mathcal{J}^c}^T \lambda\|_\infty) \|[x'-x_o]_{\mathcal{J}^c}\|_1$
+	\item $[x'-x_o]_{\mathcal{J}^c} \neq 0$
 \end{enumerate}
-If these three points are true, then $\|x'\|_1 > \|x_0\|_1$ and thus $x_0$ is the unique optimal solution to the $\ell^1$ minimization problem.\\ Let us prove each point:
+If these three points are true, then $\|x'\|_1 > \|x_o\|_1$ and thus $x_o$ is the unique optimal solution to the $\ell^1$ minimization problem. If conditions 1 and 3 are true, then $\|x'\|_1$ is strictly larger than $\|x_o\|_1$ by condition 2. \\
+
+Let us prove each point:
 \begin{enumerate}
-	\item Let $\lambda = A_I (A_I^*A_I)^{-1} sign(x_{0_I})$, then the first condition of 1 is satisfied. For the second condition, we have for $j \in I^c$, then
+	\item Let $\lambda = A_\mathcal{J} (A_\mathcal{J}^*A_\mathcal{J})^{-1} sign(x_{o,\mathcal{J}})$, then the first condition of \eqref{eq:sign-cond} is satisfied. For the second condition, we have for $j \in \mathcal{J}^c$, 
 	\begin{equation}
 		\begin{aligned}
-			|a_j^* A_I (A_I^*A_I)^{-1} sign(x_{0_I})| &\leq \|A_I^* a_j\|_2 \|(A_I^*A_I)^{-1}\|_{SP} \|sign(x_{0_I})\|_2\\
+			|a_{\mathcal{J}}^* A_\mathcal{J} (A_\mathcal{J}^*A_\mathcal{J})^{-1} sign(x_{o,\mathcal{J}})| &\leq \underbrace{\|A_\mathcal{J}^* a_{\mathcal{J}}\|_2}_{\le \mu(A)} \underbrace{\|(A_\mathcal{J}^*A_\mathcal{J})^{-1}\|_{SP}}_{\le \frac{1}{1-k\mu(A)} \text{by \eqref{eq:label}}} \underbrace{\|sign(x_{o,\mathcal{J}})\|_2}_{\le k}\\
 			&\leq \frac{k \mu(A)}{1- k \mu(A)} \leq 1 
 		\end{aligned}
 	\end{equation}
-	The last inequality is true because $k\mu(A) \leq 1/2$
-	\item Let $v \in \R^{n}$ defined by $v_I = sign(x_{0_I})$ and $v_{I^c} = sign([x'-x_0]_{I^c})$. Then if we observe that $v \in \partial \|\cdot\|_1 (x_0)$ and that by 1) $A^* \lambda \in \partial \|\cdot\|_1 (x_0)$, we have:
+	This proves the \eqref{eq:label} because if all elements of the vector are bounded by 1, then its max norm too. The last inequality is true because $k\mu(A) \leq 1/2$.
+	\item Let $v \in \R^{n}$ defined by $v_\mathcal{J} = sign(x_{o,\mathcal{J}})$ and $v_{\mathcal{J}^c} = sign([x'-x_o]_{\mathcal{J}^c})$. Then if we observe that $v \in \partial \|\cdot\|_1 (x_o)$ and that by 1) $A^* \lambda \in \partial \|\cdot\|_1 (x_o)$, we can use the subgradient inequality:
+	\begin{equation}
+		\|x'\|_1 \ge \|x_o\|_1 + \langle v,x'-x_o\rangle
+	\end{equation}
+	Since $x'-x_o\in \text{null}(A)$, $\langle A^*\lambda, x'-x_o\rangle = 0$ and 
 	\begin{equation}
 		\begin{aligned}
-			\|x'\|_1 &\geq \|x_0\|_1 + \langle v - A^* \lambda, x'-x_0\rangle\\
-			&= \|x_0\|_1 + \langle [v - A^* \lambda]_{I^c}, [x'-x_0]_{I^c}\rangle\\
-			&= \|x_0\|_1 + \langle v_{I^c}, [x'-x_0]_{I^c}\rangle - \langle A_{I^c}^T \lambda, [x'-x_0]_{I^c}\rangle\\
-			&\geq \|x_0\|_1 + (1-\|A_{I^c}^T \lambda\|_\infty) \|[x'-x_0]_{I^c}\|_1
+			\|x'\|_1 &\geq \|x_o\|_1 + \langle v - A^* \lambda, x'-x_o\rangle\\
+			&= \|x_o\|_1 + \langle [v - A^* \lambda]_{\mathcal{J}^c}, [x'-x_o]_{\mathcal{J}^c}\rangle\\
+			&= \|x_o\|_1 + \langle v_{\mathcal{J}^c}, [x'-x_o]_{\mathcal{J}^c}\rangle - \langle A_{\mathcal{J}^c}^T \lambda, [x'-x_o]_{\mathcal{J}^c}\rangle\\
+			&\geq \|x_o\|_1 + (1-\|A_{\mathcal{J}^c}^T \lambda\|_\infty) \|[x'-x_o]_{\mathcal{J}^c}\|_1
 		\end{aligned}
 	\end{equation}
-	\item By contradiction, suppose $[x'-x_0]_{I^c} = 0$. Then $A(x' - x_0) = 0 = A_I [x'-x_0]_I$. Thus $[x'-x_0]_I = 0$ because $A_I$ is full rank, and thus $x' = x_0$, which is a contradiction.
+	\item By contradiction, suppose $[x'-x_o]_{\mathcal{J}^c} = 0$. Then $A(x' - x_o) = 0 = A_\mathcal{J} [x'-x_o]_\mathcal{J}$. Thus $[x'-x_o]_\mathcal{J} = 0$ because $A_\mathcal{J}$ is full rank, and thus $x' = x_o$, which is a contradiction.
 \end{enumerate}
 \subsection{Constructing incoherent matrices}
 \begin{thm}
-	Let $v \backsim Uni(\mathcal{S}^{n-1})$, then $Pr[|v_n| \geq \varepsilon] \leq \frac{1}{n \varepsilon^2} \xrightarrow[n \to \infty]{} 0$
+	Let $v \backsim Uni(\mathcal{S}^{n-1})$, then $Pr[|v_n| \geq \varepsilon] \leq \frac{1}{n \varepsilon^2} \xrightarrow{n \to \infty} 0$
 \end{thm}
-We can proof this theorem by using the fact that $v$ is of norm 1, and thus $\sum_{i=1}^{n} v_i^2 = 1$. We can thus say that $\sum_{i=1}^{n} \mathbb{E}[v_i^2] = 1$ or equivalently $\mathbb{E}[v_n^2] = \frac{1}{n}$. Using the markov inequality $Pr[v_n^2 \geq a] \leq \frac{\mathbb{E}[v_n^2]}{a}$ this gives $Pr[|v_n| \geq \varepsilon] = Pr[v_n^2 \geq \varepsilon^2] \leq \frac{1}{n \varepsilon^2}$.\\
+We can prove this theorem by using the fact that $v$ is of norm 1: $\sum_{i=1}^{n} v_i^2 = 1$.\\
+We can thus say that $\sum_{i=1}^{n} \mathbb{E}[v_i^2] = 1$, or equivalently $\mathbb{E}[v_n^2] = \frac{1}{n}$ because the $v_i$ are i.i.d.\\
+Using the markov inequality $Pr[v_n^2 \geq a] \leq \frac{\mathbb{E}[v_n^2]}{a}$, it yields $Pr[|v_n| \geq \varepsilon] = Pr[v_n^2 \geq \varepsilon^2] \leq \frac{1}{n \varepsilon^2}$.\\
 \begin{thm}
-	Let $A = [a_1 | \dots | a_n]$, $a_i \backsim Uni(\mathcal{S}^{m-1})$ i.i.d., then $\forall \delta > 0: \exists C_\delta, \forall m,n$ s.t. $Pr[\mu(A) \geq C_\delta \sqrt{\frac{log(n)}{m}}] \geq 1 - \delta$ or equivalently $\mu(A) \leq C \sqrt{\frac{log(n)}{m}}$ with high probability.
+	Let $A = [a_1 | \dots | a_n]$, with $a_i \backsim Uni(\mathcal{S}^{m-1})$ i.i.d. Then, $\forall \delta > 0: \exists C_\delta, \forall m,n$ such that 
+	\begin{equation}
+		Pr\left[\mu(A) \geq C_\delta \sqrt{\frac{log(n)}{m}}\right] \geq 1 - \delta
+	\end{equation}
+	or equivalently 
+	\begin{equation}
+		\mu(A) \leq C \sqrt{\frac{log(n)}{m}} \qquad \text{with high probability.}
+	\end{equation}
 \end{thm}
-Combining this result with the theorem \ref{thm:ell1_inco}, we get that with high probability:
+Combining this result with the theorem \ref{thm:ell1_inco}, we get that, with high probability,
 \begin{equation}
-	\|x_0\|_0 \leq \frac{1}{2C} \sqrt{\frac{m}{log(n)}} 
+	\|x_o\|_0 \leq \frac{1}{2C} \sqrt{\frac{m}{log(n)}} 
 \end{equation}
-And we should be able to recover $x_0$ from $m \geq 4C^2k^2log(n)$ observations.
+and we should be able to recover $x_o$ from $m \geq 4C^2k^2log(n)$ observations.
 \subsection{Restricted isometry property}
 \begin{definition}
-	The matrix A satisfies the \textbf{restricted isometry property (RIP)} of order $k$, with constant $\delta \in [0,1)$, if $\forall \|x\|_0 = k$, we have
+	The matrix $A$ satisfies the \textbf{restricted isometry property (RIP)} of order $k$, with constant $\delta_k \in [0,1)$, if $\forall \|x\|_0 = k$, we have
 	\begin{equation}
-		(1-\delta)\|x\|_2^2 \leq \|Ax\|_2^2 \leq (1+\delta)\|x\|_2^2
+		(1-\delta_k)\|x\|_2^2 \leq \|Ax\|_2^2 \leq (1+\delta_k)\|x\|_2^2
 	\end{equation}
 \end{definition}
 \begin{thm}[$\ell^0$ recovery under RIP]\label{thm:ell0_rip}
-	Let $y = Ax_0$ with $k \coloneqq \ \|x_0\|_0$. If $\delta_{2k}(A) < 1$, then $x_0$ is the unique optimal solution to the $\ell^0$ minimization problem.
+	Let $y = Ax_o$ with $k \coloneqq \ \|x_o\|_0$. If $\delta_{2k}(A) < 1$, then $x_o$ is the unique optimal solution to the $\ell^0$ minimization problem.
 \end{thm}
-Let us prove this theorem by contradiction. Let $x'$ be a solution different from $x_0$ to the $\ell^0$ minimization problem. Then using the theorem \ref{thm:ell0_rip}, we have
+Let us prove this theorem by contradiction. Let $x'$ be a solution different from $x_o$ to the $\ell^0$ minimization problem. Then the theorem yields 
 \begin{equation}
 	\begin{aligned}
-		(1-\delta_{2k}) \|x'-x_0\|_2^2 &\leq \|A(x'-x_0)\|_2^2\\
+		(1-\delta_{2k}) \|x'-x_o\|_2^2 &\leq \|A(x'-x_o)\|_2^2\\
 	\end{aligned}
 \end{equation}
-But $A(x'-x_0) = 0$ because $Ax' = y = Ax_0$. Thus, $\|x'-x_0\|_2^2 \leq 0$, which is a contradiction because $x'\neq x_0$.\\
+But $A(x'-x_o) = 0$ because $Ax' = y = Ax_o$. Thus, $\|x'-x_o\|_2^2 \leq 0$, which is a contradiction because $x'\neq x_o$.\\
 \begin{thm}[$\ell^1$ recovery under RIP]\label{thm:ell1_rip}
-	Let $y = Ax_0$ with $k \coloneqq \ \|x_0\|_0$. If $\delta_{2k}(A) < \sqrt{2}-1$, then $x_0$ is the unique optimal solution to the $\ell^1$ minimization problem.
+	Let $y = Ax_o$ with $k \coloneqq \|x_o\|_0$. If $\delta_{2k}(A) < \sqrt{2}-1$, then $x_o$ is the unique optimal solution to the $\ell^1$ minimization problem.
 \end{thm}
 \begin{thm}[RIP of Gaussian matrices]
-	Let $A \in \R^{m \times n}$ be a matrix with i.i.d. $\mathcal{N}(0,1/m)$ entries. Then $\exists C > 0$ such that with high probability, $\delta_k(A) < \delta$ provided that $m \geq C \frac{k}{\delta^2} \log(n/k)$.
+	Let $A \in \R^{m \times n}$ be a matrix with i.i.d. entries following the probability repartition $\mathcal{N}(0,1/m)$. Then $\exists C > 0$ such that, with high probability, $\delta_k(A) < \delta$ provided that $m \geq C \frac{k}{\delta^2} \log(n/k)$.
+\end{thm}
+\begin{thm}
+	Let $v_1,\dots,v_n\in \R^D$. Let $A\in \R^{m\times D}$ be a random matrix whose entries are independent random variables of probability distribution $\mathcal{N}(0,1/m)$. Then, for any $\varepsilon\in (0,1)$, with probability at least $1-1/n^2$, the following holds:
+	\begin{equation}
+		\forall i\neq j, \ (1-\varepsilon)\|v_i-v_j\|_2^2\le \|Av_i-Av_j\|_2^2 \le (1+\varepsilon)\|v_i-v_j\|_2^2
+	\end{equation}
+	provided that $m\ge 32\log(n)/\varepsilon^2$. 
 \end{thm}
 \subsection{Noisy observations or approximate sparsity}
-First let us define the problem of noisy observations. We have $y = Ax_0 + z$ with $\|z\|_2 \leq \epsilon$ for $\epsilon > 0$. The $\ell^1$ minimization problem in this case is:
+First let us define the problem of noisy observations. We have $y = Ax_o + z$ with $\|z\|_2 \leq \epsilon$ for $\epsilon > 0$. The $\ell^1$ minimization problem in this case is:
 \begin{equation}
 	\min_{x} \|x\|_1 \quad \text{such that } \|y - Ax\|_2 \leq \epsilon.
 \end{equation}
-This is called the basis pursuit denoising (BPDN) problem. Now let us introduce the Lagrangian relaxation of this problem also called the Lasso (Least Absolute Shrinkage and Selection Operator) problem:
+This is called the basis pursuit denoising (BPDN) problem. Now let us introduce the Lagrangian relaxation of this problem, also called the Lasso (Least Absolute Shrinkage and Selection Operator) problem:
 \begin{equation}
 	\min_x \lambda \|x\|_1 + \frac{1}{2}\|y - Ax\|_2^2 
 \end{equation}
-With noise, we cannot expect to recover $x_0$ exactly, but we can hope to recover an approximation of it. However, we can hope that if the noise level $\epsilon$ is small, then the estimation error $\|\hat{x}-x_0\|$ will also be small. We can bound this estimation error like this:
+With noise, we cannot expect to recover $x_o$ exactly, but we can hope to recover an approximation of it. However, we can hope that if the noise level $\epsilon$ is small, then the estimation error $\|\hat{x}-x_o\|$ will also be small. We can bound this estimation error like this:
 \begin{equation}
 	\begin{aligned}
-		A_I(\hat{x} - x_0)_I &= A_I (A_I^* A_I)^{-1} A_I^* y - A_I x_{0_I}\\
-		&= A_I (A_I^* A_I)^{-1} A_I^* z
+		A_\mathcal{J}(\hat{x} - x_o)_\mathcal{J} &= A_\mathcal{J} (A_\mathcal{J}^* A_\mathcal{J})^{-1} A_\mathcal{J}^* y - A_\mathcal{J} x_{o,\mathcal{J}}\\
+		&= A_\mathcal{J} (A_\mathcal{J}^* A_\mathcal{J})^{-1} A_\mathcal{J}^* z
 	\end{aligned}
 \end{equation}
 Hence:
 \begin{equation}
 	\begin{aligned}
-		\sigma_{\min}(A_I) \|(\hat{x} - x_0)_I\|_2 &\leq \|A_I (\hat{x} - x_0)_I\|_2\\
-		&\leq \| A_I (A_I^* A_I)^{-1} A_I^* z\|_2
+		\sigma_{\min}(A_\mathcal{J}) \|(\hat{x} - x_o)_\mathcal{J}\|_2 &\leq \|A_\mathcal{J} (\hat{x} - x_o)_\mathcal{J}\|_2\\
+		&\leq \| A_\mathcal{J} (A_\mathcal{J}^* A_\mathcal{J})^{-1} A_\mathcal{J}^* z\|_2
 		&\leq \|z\|_2 \leq \epsilon
 	\end{aligned}
 \end{equation}
-And so $\|\hat{x} - x_0\|_2 \leq \frac{\epsilon}{\sigma_{\min}(A_I)}$.\\
-Because $x_0$ is feasible for the optimization problem and $\hat{x}$ is optimal, $\hat{x}$ must have a lower objective value than $x_0$:
+And so $\|\hat{x} - x_o\|_2 \leq \frac{\epsilon}{\sigma_{\min}(A_I)}$.\\
+Because $x_o$ is feasible for the optimization problem and $\hat{x}$ is optimal, $\hat{x}$ must have a lower objective value than $x_o$:
 \begin{equation}
-	\|\hat{x}\|_1 \leq \|x_0\|_1
+	\|\hat{x}\|_1 \leq \|x_o\|_1
 \end{equation}
-Consider $h = \hat{x} - x_0$, the perturbation of $x_0$ that we want to bound. Let us define $I = supp(x_0)$ and $I^c$ its complement. We have:
+Consider $h = \hat{x} - x_o$, the perturbation of $x_o$ that we want to bound. Let us define again $\mathcal{J} = supp(x_o)$ and $\mathcal{J}^c$ its complement. We have:
 \begin{equation}
 	\begin{aligned}
-		\|x_0\|_1 &\geq \|\hat{x}\|_1 = \|x_0 + h\|_1\\
-		&\geq \|x_0\|_1 - \|h_I\|_1 + \|h_{I^c}\|_1 \\
-		\|h_I\|_1 &\geq \|h_{I^c}\|_1
+		\|x_o\|_1 &\geq \|\hat{x}\|_1 = \|x_o + h\|_1\\
+		&\geq \|x_o\|_1 - \|h_\mathcal{J}\|_1 + \|h_{\mathcal{J}^c}\|_1 \\
+		\|h_\mathcal{J}\|_1 &\geq \|h_{\mathcal{J}^c}\|_1
 	\end{aligned}
 \end{equation}
 \begin{thm}
-	Let $y = Ax_0 + z$ with $\|z\|_2 \leq \epsilon$. Let $\hat{x}$ be the solution to the BPDN problem. Then for any $k$ such that $\delta_{2k}(A) < \sqrt{2}-1$,, we have
+	Let $y = Ax_o + z$ with $\|z\|_2 \leq \epsilon$. Let $\hat{x}$ be the solution to the BPDN problem. Then for any $k$ such that $\delta_{2k}(A) < \sqrt{2}-1$, we have
 	\begin{equation}
-		\|\hat{x} - x_0\|_2 \leq C \frac{\|x_0 - [x_0]_k\|_1}{\sqrt{k}} + C' \epsilon
+		\|\hat{x} - x_o\|_2 \leq C \frac{\|x_o - [x_o]_k\|_1}{\sqrt{k}} + C' \epsilon
 	\end{equation}
 	for some constants $C$ and $C'$ which only depend on $\delta_{2k}(A)$.
 \end{thm}
