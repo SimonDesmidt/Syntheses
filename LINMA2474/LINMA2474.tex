@@ -490,7 +490,6 @@ and the algorithm is
 Under an assumption similar to the Lipschitz condition on the gradient, a convergence rate of $\O(1/\epsilon^2)$ can still be guaranteed. \\
 
 \chapter{PAA}
-\include{temp}
 \section{Dynamical systems}
 The goal is to analyse some high-dimensional system using low-dimensional models, using the hypothesis that some dimensions of the system are correlated. This chapter aims to explain some existing methods to find some intrisic low-dimensional structures. An example is the reconstruction of images, well-researched using SVD, where the columns of pixels are highly correlated and only a few allow to reconstruct the image quite well. 
 
@@ -566,7 +565,7 @@ As numerical methods can only consider discrete-time systems and not continuous 
 
 This comes from the Fourier transform of the signal $x(t)$:
 \begin{equation}
-    x(t) = \frac{1}{2}\int_{-\infty}^\infty \hat x(\omega)\exp{(i\omega t)}d\omega = \frac{1}{2\pi} \int_{-\Omega}^\Omega \hat x(\omega) \exp{(i\omega t)}d\omega 
+    x(t) = \frac{1}{2\pi}\int_{-\infty}^\infty \hat x(\omega)\exp{(i\omega t)}d\omega = \frac{1}{2\pi} \int_{-\Omega}^\Omega \hat x(\omega) \exp{(i\omega t)}d\omega 
 \end{equation}
 If $\hat x(\omega)$ is viewed as a periodic function in the spectral domain with a period $2\Omega$, it is then fully determined by its Fourier coefficients: 
 \begin{equation}
@@ -626,7 +625,7 @@ If $\begin{pmatrix}
 		\bar \Sigma = \Sigma_a - \Sigma_{a,b}\Sigma_b^{-1}\Sigma_{a,b}^T
 	\end{cases}
 \end{equation}
-\textcolor{red}{Je vois pas quoi écrire sur les sections 1.2 et 1.3. Demander à Charles.}
+% \textcolor{red}{Je vois pas quoi écrire sur les sections 1.2 et 1.3. Demander à Charles.}
 \section{Sparse signal modeling}
 Often, the number of unknowns vastly exceeds the number of observations: we have $y=Ax$, for $y\in \R^n$ the observations, $A\in \R^{m\times n}$ the data generation process and $x\in \R^n$ the unkowns. We consider $m\ll n$. The system thus have infinitely many solutions or none. To find the one solution that we want, we need to leverage some additional properties such as sparsity. \\
 \subsection{Example in medical imaging}
@@ -647,9 +646,8 @@ The function $\psi$ is said to be a wavelet if the system $\{\Psi_{j,k}\}_{j,k\i
 	\begin{aligned}
 		y = \mathcal{F}_U[I] &= \mathcal{F}_U\left[ \psi_1x_1+\dots + \psi_{N^2}x_{N^2}\right]\\
 		&= \mathcal{F}_U[\psi_1]x_1 + \dots + \mathcal{F}_U(\psi_{N^2})x_{N^2}\\
-		&= \begin{bmatrix}
-			\mathcal{F}_U[\psi_1] \dots \mathcal{F}_U[\psi_{N^2}] x = Ax
-		\end{bmatrix}
+		&= \begin{bmatrix} \mathcal{F}_U[\psi_1] \dots \mathcal{F}_U[\psi_{N^2}] x \end{bmatrix}\\
+		&= Ax
 	\end{aligned}
 \end{equation}
 for the matrix $A\in \R^{m\times N^2}$.\\
@@ -712,9 +710,9 @@ Then, the $\ell^1$ norm provides a good replacement for the $\ell^0$ norm and si
 \end{equation}
 To solve this new problem, we can use a projected subgradient method: 
 \begin{equation}
-	x_{t+1} \coloneqq P_\mathcal{C} \left(x_t - \frac{1}{t}sign(x_t)\right)
+	x_{t+1} \coloneqq \mathcal{P}_\mathcal{C} \left(x_t - \frac{1}{t}sign(x_t)\right)
 \end{equation}
-for $P_\mathcal{C}(z) = \arg \min_{x\in \mathcal{C}} \frac{1}{2}\|z-x\|^2_2$. Here, we use $\mathcal{C} = \{x:Ax=y\}$ and the sign function is the subgradient of the $\ell^1$ norm.\\ If $A$ has full row rank (plausible in the general case), then the projection is easy:
+for $\mathcal{P}_\mathcal{C}(z) = \arg \min_{x\in \mathcal{C}} \frac{1}{2}\|z-x\|^2_2$. Here, we use $\mathcal{C} = \{x:Ax=y\}$ and the sign function is the subgradient of the $\ell^1$ norm.\\ If $A$ has full row rank (plausible in the general case), then the projection is easy:
 \begin{equation}
 	\mathcal{P}_{\{x|Ax=y\}} (z) = z - A^T (AA^T)^{-1}(Az-y)
 \end{equation}
@@ -935,7 +933,7 @@ Consider $h = \hat{x} - x_o$, the perturbation of $x_o$ that we want to bound. L
 	for some constants $C$ and $C'$ which only depend on $\delta_{2k}(A)$.
 \end{thm}
 \section{Convex methods for Low-rank matrix recovery}
-To recover a low-rank matrix $X_0\in \R^{n_1\times n_2}$ knowing that $y = \mathcal{A}[X_0]$ and $rank(X_0) = \|\boldsymbol{\sigma}(X_0)\|_0 \leq r$. From this, we can define optimization problems similar to the ones we have for sparse recovery:\\
+Now we want to interest ourselves in the recovery of a low-rank matrix $X_o\in \R^{n_1\times n_2}$ based on linear measurements $y = \mathcal{A}[X_o]$. We thus want that $rank(X_o) = \|\boldsymbol{\sigma}(X_o)\|_0 \leq r$. From this, we define the following optimization problems which is similar to the ones we have for sparse recovery:\\
 The $(\boldsymbol{\sigma}-\ell^0)$ minimization problem:
 \begin{equation}
 	\min_{X\in \R^{n_1\times n_2}} \|\boldsymbol{\sigma}(X)\|_0 \qquad \text{ such that } y = \mathcal{A}[X]
@@ -949,11 +947,12 @@ We can reformulate these problem as:
 	\min_{X\in \R^{n_1\times n_2}} \|\mathcal{A}[X]-y\|^2 \qquad \text{ such that } rank(X) \leq r
 \end{equation}
 \subsection{Representing low-rank matrices}
+We have seen in the first part of the course that we can use manifold optimization to solve the problem of low-rank matrix recovery. For that, we can explore the representation of low-rank matrices through manifolds such as the Stiefel manifold.
 \begin{equation}
 	\begin{aligned}
 		rank(X) \leq r &\Longleftrightarrow \exists &&U\in St(n_1,r) = \{Y \in \R^{n_1 \times r} | Y^T Y = I_r\},\\
 		& &&V\in St(n_2,r), \Sigma \in \R^{r \times r} \text{ diagonal}\\
-		& &&\text{ such that } X = UV^T\\
+		& &&\text{ such that } X = U \Sigma V^T\\
 		&\Longleftrightarrow \exists && L \in \R^{n_1 \times r}, R \in \R^{n_2 \times r} \text{ such that } X = LR^T\\
 		&\Longleftrightarrow \exists &&L \in St(n_1,r), R \in \R^{n_2 \times r} \text{ such that } X = LR^T\\
 		&\Longleftrightarrow \exists &&U \in St(n_1,r), V \in St(n_2,r), S\in \R^{r \times r} \text{ such that } X= USV^T\\
@@ -961,12 +960,12 @@ We can reformulate these problem as:
 		&\Longleftrightarrow \exists &&R \in \R^{(n_2-r) \times r} \text{ full rank such that } XR = 0
 	\end{aligned}
 \end{equation}
-\textcolor{red}{IDK to what to say more}
 \subsection{Recovering a low-rank matrix}
-Reminder we want to find $X_0$ such that $y = \mathcal{A}[X_0]$ and $rank(X_0) \leq r$. For that we want to solve the problem:
+Reminder we want to find $X_o$ such that $y = \mathcal{A}[X_o]$ and $rank(X_o) \leq r$. For that we want to solve the problem:
 \begin{equation}
 	\min_{X\in \R^{n_1\times n_2}} rank(X) \qquad \text{ such that } y = \mathcal{A}[X]
 \end{equation}
+We saw in the start of the section that we could relax this problem by replacing the rank minimization by the nuclear norm minimization, because the nuclear norm is the convex envelope of the rank. But how can we guarantee that the solution of the nuclear norm minimization problem is the same as the one of the rank minimization problem? For that, we need to introduce a property of $\mathcal{A}$ called the rank-RIP (Restricted Isometry Property).
 \begin{definition}
 	$\mathcal{A}$ has rank-RIP of rank $r$ with constant $\delta$ if $\exists \gamma > 0 $ such that $\forall X\in \R^{n_1\times n_2}$ with $rank(X) \leq r$, we have
 	\begin{equation}
@@ -974,30 +973,31 @@ Reminder we want to find $X_0$ such that $y = \mathcal{A}[X_0]$ and $rank(X_0) \
 	\end{equation}
 	The rank-$r$ RIP constant $\delta_r(\mathcal{A})$ is the smallest $\delta$ such that the above inequality holds.
 \end{definition}
+he rank-RIP implies uniqueness of structured (low-rank) solutions:
 \begin{thm}
-	If $y = \mathcal{A}[X_0]$, $rank(X_0) \leq r$ and $\delta_{2r}(\mathcal{A}) < 1$, then $X_0$ is the unique solution to the $(\boldsymbol{\sigma}-\ell^0)$ minimization problem.
+	If $y = \mathcal{A}[X_o]$, $rank(X_o) \leq r$ and $\delta_{2r}(\mathcal{A}) < 1$, then $X_o$ is the unique solution to the $(\boldsymbol{\sigma}-\ell^0)$ minimization problem.
 \end{thm}
 The existence and the uniqueness of this solution can be proven:
 \begin{itemize}
 	\item \textbf{Existence}: the range of the objective function is finite so there exists a solution to the problem.
-	\item \textbf{Uniqueness}: Let $\hat{X}$ be a solution different from $X_0$. Then, using the rank-RIP property, we have
+	\item \textbf{Uniqueness}: Let $\hat{X}$ be a solution different from $X_o$. Then, using the rank-RIP property, we have
 	\begin{equation}
-		(1-\delta_{2r}) \|\hat{X}-X_0\|_F^2 \leq \gamma \|\mathcal{A}[\hat{X}-X_0]\|_2^2
+		(1-\delta_{2r}) \|\hat{X}-X_o\|_F^2 \leq \gamma \|\mathcal{A}[\hat{X}-X_o]\|_2^2
 	\end{equation}
-	The left term is positive because $(1-\delta_{2r}) > 0$ and norm is positive definite, and the right term is zero because $\mathcal{A}[\hat{X}-X_0] = \mathcal{A}[\hat{X}] - \mathcal{A}[X_0] = y-y=0$. This is a contradiction, thus $\hat{X}$ cannot be different from $X_0$.  
+	The left term is positive because $(1-\delta_{2r}) > 0$ and norm is positive definite, and the right term is zero because $\mathcal{A}[\hat{X}-X_o] = \mathcal{A}[\hat{X}] - \mathcal{A}[X_o] = y-y=0$. This is a contradiction, thus $\hat{X}$ cannot be different from $X_o$.  
 \end{itemize} 
 \begin{thm}
-	Let $y = \mathcal{A}[X_0]$, $rank(X_0) \leq r$ and $\delta_{2r}(\mathcal{A}) < \sqrt{2}-1$, then $X_0$ is the unique solution to the $(\boldsymbol{\sigma}-\ell^1)$ minimization problem. 
+	Let $y = \mathcal{A}[X_o]$, $rank(X_o) \leq r$ and $\delta_{2r}(\mathcal{A}) < \sqrt{2}-1$, then $X_o$ is the unique solution to the $(\boldsymbol{\sigma}-\ell^1)$ minimization problem. 
 \end{thm}
 \subsection{Low-rank matrix completion}
 The problem of low-rank matrix completion can be define as:\\
-Let $X_0 \in \R^{n_1 \times n_2}$ be a low-rank matrix. We are given $(X_0)_{\Omega}$ where $\Omega \subset [n_1]\times [n_2]$ is a subset of the entries $\Omega^c$ of $X_0$. We want to fill the missing entries of $X_0$ by using the low-rank property of $X_0$.\\
+Let $X_o \in \R^{n_1 \times n_2}$ be a low-rank matrix. We are given $(X_o)_{\Omega}$ where $\Omega \subset [n_1]\times [n_2]$ is a subset of the entries $\Omega^c$ of $X_o$. We want to fill the missing entries of $X_o$ by using the low-rank property of $X_o$.\\
 Unilke the previous problems, rank-RIP cannot hold to form such an $\mathcal{A}$. So we need other way to solve this problem, for that, we can use the nuclear norm and define the following optimization problem:
 \begin{equation}
 	\min_{X\in \R^{n_1 \times n_2}} \|X\|_* \qquad \text{ such that } X_\Omega = y
 \end{equation}
-With $y$ the observed entries of $X_0$.\\
-With this problem, we can recover $X_0$, but what if there are some noise in the observed entries $Y_{i,j} = [X_0]_{i,j} + z_{i,j}$ for $(i,j) \in \Omega$ and $\|P_\Omega(z)\|_F \leq \epsilon$ ? Then the optimization problem becomes:
+With $y$ the observed entries of $X_o$.\\
+With this problem, we can recover $X_o$, but what if there are some noise in the observed entries $Y_{i,j} = [X_o]_{i,j} + z_{i,j}$ for $(i,j) \in \Omega$ and $\|P_\Omega(z)\|_F \leq \epsilon$ ? Then the optimization problem becomes:
 \begin{equation}
 	\min_{X\in \R^{n_1 \times n_2}} \|X\|_* \qquad \text{ such that } \|P_\Omega(X)-P_\Omega(y)\|_F \leq \epsilon
 \end{equation} 

@@ -175,10 +175,10 @@ Another way to look at the dual problem is by using the Lagrangian function. Con
     The KKT conditions are:
     \begin{equation}
         \begin{aligned}
-            Cx + & Dy - d = 0 \\
+            \mu \perp & Cx + Dy - d = 0 \\
             0 \leq \lambda \perp & Ax + By -b \leq 0 \\
             0 \leq x \perp & \lambda^T A + \mu^T C - \nabla_x f(x,y)^T \geq 0 \\
-            \lambda^T B + &  \mu^T D - \nabla_y f(x,y)^T = 0
+            y \perp & \lambda^T B + \mu^T D - \nabla_y f(x,y)^T = 0
         \end{aligned}
     \end{equation}
     And the Lagrangian function can be written as:
@@ -549,7 +549,7 @@ Where $h$ is the reference bus.
 Until now we have only considered optimization problems without considering the physical configuration of the power system, like in the economic dispatch problem. The DCOPF (DC Optimal Power Flow) problem, is an optimization problem that maximizes the total welfare like in the economic dispatch problem, but it also takes into account the physical configuration of the power system by including a linearization of the kirchhoff's laws and the transmission limits constraints. To modelize that, there is two equivalent model. One based on the PTDF (Power Transfer Distribution Factor) and one based on the bus angles. Let us define how the transmission system is represented as a directed graph:
 \begin{itemize}
     \item $N$: set of nodes (buses)
-    \item $k$: set of edges (lines) denoted $k = (m,n)$
+    \item $K$: set of edges (lines) denoted $k = (m,n)$
     \item $G_n$: set of generators located at node $n$, $G = \cup_{n \in N} G_n$
     \item $L_n$: set of loads located at node $n$, $L = \cup_{n \in N} L_n$
 \end{itemize}

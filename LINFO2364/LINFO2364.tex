@@ -1325,7 +1325,7 @@ There are two types of hierarchical methods, the \textbf{agglomerative} and the 
 \end{definition}
 To choose how to merge or split clusters, we can use different measures based on the distance between the elements of the clusters.
 \begin{definition}
-    The \textbf{neirest-neighbor clustering} algorithm (or \textbf{single-linkage} algorithm) uses the minimum distance to measure the distance between clusters
+    The \textbf{nearest-neighbor clustering} algorithm (or \textbf{single-linkage} algorithm) uses the minimum distance to measure the distance between clusters
     \begin{equation}
         dist_{min}(C_i, C_j) = \min_{p \in C_i, p' \in C_j} \{\|p - p'\|\}
     \end{equation}
@@ -1420,9 +1420,9 @@ HDBSCAN (Hierarchical Density-Based Spatial Clustering of Applications with Nois
 \end{equation}
 with $d_{core}(p)$ the \textbf{core distance} of $p$ defined as the distance between $p$ and its $minPts$-th nearest neighbor. Then, we can define the \textbf{mutual reachability graph}, it is complete graph where every object is a node and weight of the edge between $p$ and $q$ is the mutual reachability distance $d_{mreach}(p, q)$.
 \subsection{CLIQUE}
-\textbf{CLIQUE} (Clustering In QUEst) is a grid-based clustering algorithm that is based on the monotinicity between dimensions. It means that a $k$-dimensional cell $c$ $(k > 1)$ can have at least $l$ points only if every $(k - 1)$-dimensional projection of $c$, which is a cell in a $(k - 1)$-dimensional subspace, has at least $l$ points. And it's algorithm is as follows:
+\textbf{CLIQUE} (Clustering In QUEst) is a grid-based clustering algorithm that is based on the monotonicity between dimensions. It means that a $k$-dimensional cell $c$ $(k > 1)$ can have at least $l$ points only if every $(k - 1)$-dimensional projection of $c$, which is a cell in a $(k - 1)$-dimensional subspace, has at least $l$ points. And it's algorithm is as follows:
 \begin{itemize}
-    \item Step 1: Partitionning of the d-dimensional sata space into nonoverlapping rectangular units
+    \item Step 1: Partitionning of the d-dimensional data space into non-overlapping rectangular units
     \item Step 2: identifies the dense units among the dimensions. First, for each dimension identify the dense intervals, then join the dense one together to form higher dimension cells
     \item Step 3: assemble clusters together
 \end{itemize}
@@ -1530,7 +1530,7 @@ Each iteration of the EM algorithm consists of two steps:
 \section{High dimensionnal data}
 When the data is high dimensionnal, often we encounter the \textbf{curse of dimensionality}, which is the phenomenon that the distance between data points becomes less meaningful as the number of dimensions increases. To overcome this problem, we can use the CLIQUE algorithm.
 \section{Biclustering}
-The biclustering is a type of clustering that allows to cluster to be in two dimensions. It means that instead of saying that two data points are similar, we can say that two data points are similar with respect to a subset of features. \\
+The biclustering is a type of clustering that allows cluster to be in two dimensions. It means that instead of saying that two data points are similar, we can say that two data points are similar with respect to a subset of features. \\
 Here are some examples of the simplest biclusters with a matrix representation $I \times J$:
 \begin{itemize}
     \item \textbf{Bicluster with constant values}: all the data points in the bicluster have the same value for a subset of features.
@@ -1708,7 +1708,7 @@ For example for univariate data, we can check using a normal distribution, we wo
     \mu = \frac{1}{n} \sum_{i=1}^{n} x_i
 \end{equation}
 \begin{equation}    
-    \sigma = \frac{1}{n} \sum_{i=1}^{n} (x_i - \mu)^2
+    \sigma^2 = \frac{1}{n} \sum_{i=1}^{n} (x_i - \mu)^2
 \end{equation}
 And we know that the interval $[\mu - 3\sigma, \mu + 3\sigma]$ contains 99.7\% of the data points, so any point outside this interval is considered as an outlier.
 With multivariate data, we can check using a $\chi^2$-test, under the assumption of normal distribution. We have:
@@ -1830,6 +1830,6 @@ It is also possible to reduce the dimensionality of the data before applying out
 If $S(C ) < 0$, then $C$ contains fewer objects than expected. The smaller the value of $S(C )$, the sparser $C$ is and the more likely the objects in $C$ are outliers in the subspace.
 We can also use \textbf{Angle-Based Outlier Detection (ABOD)} which is based on the idea that a point in the center of a cluster will have widely diverse set of angles while a a point outside of a cluster will have a very small variation. Thus for each object $o$, compute the angle $\widehat{xoy}$ for each pair of point $x, y$ such as $x \neq o$ and $y \neq o$. Then the variance of these angles is computed, and the smaller the variance, the more likely $o$ is an outlier. It can be mathematically expressed as:
 \begin{equation}
-    ABOF(o) = Var_{x,y \in D\backslash \{o\}} \frac{\langle \vec{ox}, \vec{oy} \rangle}{dist(o, x)^2dist(o, y)^2}
+    ABOD(o) = Var_{x,y \in D\backslash \{o\}} \frac{\langle \vec{ox}, \vec{oy} \rangle}{dist(o, x)^2dist(o, y)^2}
 \end{equation}
 \end{document}
