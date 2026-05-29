@@ -891,16 +891,17 @@ But $A(x'-x_o) = 0$ because $Ax' = y = Ax_o$. Thus, $\|x'-x_o\|_2^2 \leq 0$, whi
 \subsection{Noisy observations or approximate sparsity}
 First let us define the problem of noisy observations. We have $y = Ax_o + z$ with $\|z\|_2 \leq \epsilon$ for $\epsilon > 0$. The $\ell^1$ minimization problem in this case is:
 \begin{equation}
-	\min_{x} \|x\|_1 \quad \text{such that } \|y - Ax\|_2 \leq \epsilon.
+	\min_{x} \|x\|_1 \quad \text{such that } \|Ax - y\|_2 \leq \epsilon.
 \end{equation}
 This is called the basis pursuit denoising (BPDN) problem. Now let us introduce the Lagrangian relaxation of this problem, also called the Lasso (Least Absolute Shrinkage and Selection Operator) problem:
 \begin{equation}
-	\min_x \lambda \|x\|_1 + \frac{1}{2}\|y - Ax\|_2^2 
+	\min_x \lambda \|x\|_1 + \frac{1}{2}\|Ax - y\|_2^2 
 \end{equation}
 With noise, we cannot expect to recover $x_o$ exactly, but we can hope to recover an approximation of it. However, we can hope that if the noise level $\epsilon$ is small, then the estimation error $\|\hat{x}-x_o\|$ will also be small. We can bound this estimation error like this:
 \begin{equation}
 	\begin{aligned}
 		A_\mathcal{J}(\hat{x} - x_o)_\mathcal{J} &= A_\mathcal{J} (A_\mathcal{J}^* A_\mathcal{J})^{-1} A_\mathcal{J}^* y - A_\mathcal{J} x_{o,\mathcal{J}}\\
+		&= A_\mathcal{J} (A_\mathcal{J}^* A_\mathcal{J})^{-1} A_\mathcal{J}^* (Ax_{o,\mathcal{J}} + z) - A_\mathcal{J} x_{o,\mathcal{J}}\\
 		&= A_\mathcal{J} (A_\mathcal{J}^* A_\mathcal{J})^{-1} A_\mathcal{J}^* z
 	\end{aligned}
 \end{equation}
@@ -973,7 +974,7 @@ We saw in the start of the section that we could relax this problem by replacing
 	\end{equation}
 	The rank-$r$ RIP constant $\delta_r(\mathcal{A})$ is the smallest $\delta$ such that the above inequality holds.
 \end{definition}
-he rank-RIP implies uniqueness of structured (low-rank) solutions:
+The rank-RIP implies uniqueness of low-rank solutions:
 \begin{thm}
 	If $y = \mathcal{A}[X_o]$, $rank(X_o) \leq r$ and $\delta_{2r}(\mathcal{A}) < 1$, then $X_o$ is the unique solution to the $(\boldsymbol{\sigma}-\ell^0)$ minimization problem.
 \end{thm}
@@ -985,23 +986,24 @@ The existence and the uniqueness of this solution can be proven:
 		(1-\delta_{2r}) \|\hat{X}-X_o\|_F^2 \leq \gamma \|\mathcal{A}[\hat{X}-X_o]\|_2^2
 	\end{equation}
 	The left term is positive because $(1-\delta_{2r}) > 0$ and norm is positive definite, and the right term is zero because $\mathcal{A}[\hat{X}-X_o] = \mathcal{A}[\hat{X}] - \mathcal{A}[X_o] = y-y=0$. This is a contradiction, thus $\hat{X}$ cannot be different from $X_o$.  
-\end{itemize} 
+\end{itemize}
+This last theorem tells us that when the rank-RIP holds with a sufficiently small constant $\delta$, we can conclude that nuclear norm minimization will succeed in recovering the low-rank matrix $X_o$ from the linear measurements $y = \mathcal{A}[X_o]$.
 \begin{thm}
 	Let $y = \mathcal{A}[X_o]$, $rank(X_o) \leq r$ and $\delta_{2r}(\mathcal{A}) < \sqrt{2}-1$, then $X_o$ is the unique solution to the $(\boldsymbol{\sigma}-\ell^1)$ minimization problem. 
 \end{thm}
 \subsection{Low-rank matrix completion}
-The problem of low-rank matrix completion can be define as:\\
+The problem of low-rank matrix completion can be defined as:\\
 Let $X_o \in \R^{n_1 \times n_2}$ be a low-rank matrix. We are given $(X_o)_{\Omega}$ where $\Omega \subset [n_1]\times [n_2]$ is a subset of the entries $\Omega^c$ of $X_o$. We want to fill the missing entries of $X_o$ by using the low-rank property of $X_o$.\\
 Unilke the previous problems, rank-RIP cannot hold to form such an $\mathcal{A}$. So we need other way to solve this problem, for that, we can use the nuclear norm and define the following optimization problem:
 \begin{equation}
-	\min_{X\in \R^{n_1 \times n_2}} \|X\|_* \qquad \text{ such that } X_\Omega = y
+	\min_{X\in \R^{n_1 \times n_2}} \|X\|_* \qquad \text{ such that } \mathcal{P}_\Omega[X] = y
 \end{equation}
-With $y$ the observed entries of $X_o$.\\
-With this problem, we can recover $X_o$, but what if there are some noise in the observed entries $Y_{i,j} = [X_o]_{i,j} + z_{i,j}$ for $(i,j) \in \Omega$ and $\|P_\Omega(z)\|_F \leq \epsilon$ ? Then the optimization problem becomes:
+With $y$ the observed entries of $X_o$. This is a special case of the low-rank matrix recovery problem where $\mathcal{A} = \mathcal{P}_\Omega$ is the observation operator. With this problem, we can recover $X_o$, but what if there are some noise in the observed entries $Y_{i,j} = [X_o]_{i,j} + z_{i,j}$ for $(i,j) \in \Omega$ and $\|P_\Omega(z)\|_F \leq \epsilon$ ? Then the optimization problem becomes:
 \begin{equation}
 	\min_{X\in \R^{n_1 \times n_2}} \|X\|_* \qquad \text{ such that } \|P_\Omega(X)-P_\Omega(y)\|_F \leq \epsilon
 \end{equation} 
 \subsection{Manifold of fixed-rank matrices}
+We can also solve the matrix completion problem by using manifold optimization as seen in the first part of the course, but this time using the manifold of fixed-rank matrices.
 \begin{definition}
 	The manifold of fixed-rank matrices is the set of matrices of rank $r$, it is defined as:
 	\begin{equation}
