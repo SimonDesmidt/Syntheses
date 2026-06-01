@@ -549,7 +549,7 @@ Where $h$ is the reference bus.
 Until now we have only considered optimization problems without considering the physical configuration of the power system, like in the economic dispatch problem. The DCOPF (DC Optimal Power Flow) problem, is an optimization problem that maximizes the total welfare like in the economic dispatch problem, but it also takes into account the physical configuration of the power system by including a linearization of the kirchhoff's laws and the transmission limits constraints. To modelize that, there is two equivalent model. One based on the PTDF (Power Transfer Distribution Factor) and one based on the bus angles. Let us define how the transmission system is represented as a directed graph:
 \begin{itemize}
     \item $N$: set of nodes (buses)
-    \item $K$: set of edges (lines) denoted $k = (m,n)$
+    \item $K$: set of edges (lines) denoted $k = (n_1,n_2)$
     \item $G_n$: set of generators located at node $n$, $G = \cup_{n \in N} G_n$
     \item $L_n$: set of loads located at node $n$, $L = \cup_{n \in N} L_n$
 \end{itemize}
@@ -615,13 +615,13 @@ We can interpret the dual variables as follows:
     \item $\rho_n$ represents the locational marginal price (LMP) at node $n$, i.e. the marginal value of injecting one additional MW at node $n$.
 \end{itemize}
 \subsection{Bus angle model}
-For the bus angle model, also known as the reactance model, we will interrest us to the differences of phase angles in the network. For that, we will chose a "hub node", its choice is independent. The phase angle at node $n$ is denoted $\theta_n$. The flow on line $k = (m,n)$ is defined as:
+For the bus angle model, also known as the reactance model, we will interrest us to the differences of phase angles in the network. For that, we will chose a "hub node", its choice won't affect the results. The phase angle at node $n$ is denoted $\theta_n$. The flow on line $k = (m,n)$ is defined as:
 \begin{equation}
     f_{(m,n)} = B_{(m,n)} (\theta_m - \theta_n)
 \end{equation}
 Where $B_{(m,n)}$ is the susceptance of line $(m,n)$ and $\theta_{hub} = 0$. Then, we need to define the conservation of energy constraints at each node:
 \begin{equation}
-    \sum_{g \in G_n} p_g - \sum_{k = (.,n)} f_k = \sum_{k = (n,.)} f_k + \sum_{l \in L_n} d_l
+    \sum_{g \in G_n} p_g + \sum_{k = (.,n)} f_k = \sum_{k = (n,.)} f_k + \sum_{l \in L_n} d_l
 \end{equation}
 The full DCOPF model formulation with the bus angle is as follows:
 \begin{equation}
@@ -630,7 +630,7 @@ The full DCOPF model formulation with the bus angle is as follows:
         \text{s.t.} \quad & f_k \leq T_k \quad \forall k \in K  && [\lambda_k^+] \\
         & -f_k \leq T_k \quad \forall k \in K  && [\lambda_k^-] \\
         & f_{(m,n)} - B_{(m,n)} (\theta_m - \theta_n) = 0 \quad \forall (m,n) \in K  && [\gamma_{(m,n)}] \\
-        & \sum_{g \in G_n} p_g - \sum_{k = (.,n)} f_k + \sum_{k = (n,.)} f_k - \sum_{l \in L_n} d_l = 0  && [\rho_n] \\
+        & \sum_{k = (n,.)} f_k + \sum_{l \in L_n} d_l - \sum_{g \in G_n} p_g - \sum_{k = (.,n)} f_k = 0  && [\rho_n] \\
         & 0 \leq p_g \leq P_g \quad \forall g \in G  && [\mu_g] \\
         & 0 \leq d_l \leq D_l \quad \forall l \in L  && [\nu_l] 
     \end{aligned}
@@ -1101,5 +1101,98 @@ The KKT conditions provide three important economic criteria:
     \item \textbf{Investment criterion:} investments occur only if scarcity rents are sufficient to recover fixed investment costs: $I_g\le\sum_j\mu_{gj}$
 \end{itemize}
 An important implication is that generation investments recover their fixed costs through \textbf{scarcity rents}, i.e. the difference between market revenues and variable operating costs.
-
+\section{Decentralized Capacity Expansion Planning}
+Instead of a centralized planner, investments can also emerge from a competitive electricity market. In an \textbf{energy-only market}, generators are remunerated only through energy sales and scarcity rents. There is no separate payment for installed capacity.\\
+The producer quantity adjustment optimization problem is:
+\begin{equation}
+    \begin{aligned}
+        \max &\sum_{j=1}^m (\rho_j - C_g) \Delta T_j p_{gj} - I_g x_g &&\\
+        \text{s.t. } &p_{gj} - x_g \leq 0 && [\mu_{gj}] \\
+        &p_{gj} \geq 0 &&
+    \end{aligned}
+\end{equation}
+And the consumer quantity adjustment optimization problem is:
+\begin{equation}
+    \begin{aligned}
+        \max &\sum_{j=1}^m (V_{lj} - \rho_j) \Delta T_j d_{lj} &&\\
+        \text{s.t. } &d_{lj} - D_{lj} \leq 0 && [\nu_{lj}] \\
+        &d_{lj} \geq 0 &&
+    \end{aligned}
+\end{equation}
+From the KKT conditions of these two problems, we can derive the scarcity rent earned by generator $g$ in period $j$:
+\begin{equation}
+    \mu_{gj} = (\rho_j-C_g)\Delta T_j
+\end{equation}
+Therefore, investments are profitable only if total scarcity rents recover investment costs:
+\begin{equation}
+    I_g \leq \sum_j \mu_{gj}
+\end{equation}
+An important result is that the competitive equilibrium of the decentralized market satisfies the same KKT conditions as the centralized planner problem. Therefore, under perfect competition, energy-only markets lead to efficient investment and operation decisions. However, in practice, energy-only markets has also disadvantages. These are due to the low demand elasticity which leads to high price volatility, uncertain scarcity rents and high investment risk for some technologies.
+\section{Market design for resources adequacy}
+\subsection{Value of Lost Load (VOLL) Pricing}
+The VOLL pricing are based on the idea of setting prices equal to the VOLL during periods of capacity shortage. This depends crucially on the accurate estimation of VOLL, which can be challenging. To model this problem, we introduce load shedding variables $ls_j$. The market model becomes:
+\begin{equation}
+    \begin{aligned}
+        VOLLP = \min &\sum_{g \in G} I_g x_g + \sum_{j=1}^m \Delta T_j (VOLL \cdot ls_j + \sum_{g\in G} C_g p_{gj}) &&\\
+        \text{s.t. } &\sum_{g\in G} p_{gj} + ls_j = D_{j} && [\rho_j]\\
+        &p_{gj} \leq x_g &&\\
+        &p, x \geq 0
+    \end{aligned}
+\end{equation}
+This model replicates the outcome of ideal centralized planning process, as long as VOLL is correctly estimated but if VOLL is incorrectly estimated this model can be very inefficient.\\
+From this model, we can derive two interesting KKT conditions. The first one is the market clearing condition:
+\begin{equation}
+    \rho_j \perp D_j - ls_j - \sum_{g\in G}p_{gj}
+\end{equation}
+And the second one is the price setting when shortage occurs:
+\begin{equation}
+    0 \leq ls_j \perp VOLL - \rho_j \geq 0
+\end{equation}
+This means:
+\begin{itemize}
+    \item if load shedding occurs ($ls_j>0$), then $\rho_j=VOLL$
+    \item otherwise: $\rho_j\le VOLL$
+\end{itemize}
+\subsection{Capacity Mechanisms}
+Because scarcity rents are uncertain and risky, many electricity markets introduce \textbf{capacity mechanisms}. The idea is to provide an additional payment for installing generation capacity. This mechanism can take various forms such as:
+\begin{itemize}
+    \item Capacity auctions
+    \item Reliability options
+    \item Capacity payments
+    \item Decentralized capacity mechanisms
+    \item Strategic reserves
+\end{itemize}
+The main objective of capacity mechanisms is determining the targeted installed capacity. Consider the investment condition in (VOLLP) for the peaker technology $g^*$:
+\begin{equation}
+    0 \leq x_{g^*} \perp I_{g^*} - \sum_{j=1}^m \mu_{g^*j} \geq 0
+\end{equation}
+The peaker technology is only remunerated in periods of load shedding (for
+which $ls_j > 0$), in which case we have $\rho_j = VOLL$. Therefore,
+\begin{equation}
+    \begin{aligned}
+        I_{g^*} \approx \sum_{j=1}^m \mathbb{1}[ls_j > 0] \cdot \mu_{g^*j} &= \sum_{j=1}^m \mathbb{1}[ls_j > 0] \cdot \Delta T_j (VOLL - MC_{g^*}) \\
+        &= (VOLL - MC_{g^*}) \cdot \sum_{j=1}^m \mathbb{1}[ls_j > 0] \cdot \Delta T_j \\
+    \end{aligned}
+\end{equation}
+This value is called the \textbf{Cost Of New Entry} ($CONE$), which is the minimum revenue required to make a new investment profitable and it can be expressed as:
+\begin{equation}
+    CONE \approx VOLL \cdot LOLP
+\end{equation}
+where $LOLP$ is the \textbf{Loss Of Load Probability}.
+From this, we can derive a new optimization problem that includes a capacity mechanism. The CRM is a model that introduces an additional capacity payment $\rho$ to the usual energy prices $\lambda_j$. The capacity market model is:
+\begin{equation}
+    \begin{aligned}
+        \max &\int_0^{xd}VC(v)dv - \sum_{g \in G} I_gx_g - \sum_{j=1}^m\Delta T_j \left( VOLL\cdot ls_j + \sum_{g \in G} C_g p_{gj} \right) &&\\
+        \text{s.t. } &xd = \sum_{g \in G} x_g && [\rho] \\
+        &\sum_{g \in G} p_{gj} + ls_j = D_j && [\lambda_j] \\
+        &p_{gj} \leq x_g &&\\
+        &p, x \geq 0
+    \end{aligned}
+\end{equation}
+Hence, generators receive:
+\begin{itemize}
+    \item energy revenues through \(\lambda_j\),
+    \item capacity revenues through \(\rho\).
+\end{itemize}
+Capacity mechanisms therefore reduce investment risk and improve long-term resource adequacy.
 \end{document}

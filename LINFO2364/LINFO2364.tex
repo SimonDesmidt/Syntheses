@@ -754,7 +754,7 @@ We consider that an item can occur at most once in an event of a sequence, but c
 \begin{definition}
     The \textbf{length} of a sequence is the number of items in the sequence.
 \end{definition}
-For example, the length of the sequence $\langle a (b c) c \rangle$ is 4, because it contains 4 items: $a$, $b$, $c$ and $d$. Even though, there is 3 elements. A sequence with $l$ elements is called a \textbf{l-sequence}.\\
+For example, the length of the sequence $\langle a (b c) c \rangle$ is 4, because it contains 4 items: $a$, $b$, $c$ and $d$. Even though, there is 3 elements. A sequence with $l$ items is called a \textbf{l-sequence}.\\
 \begin{definition}
     A sequence $\alpha = \langle a_1a_2 \dots a_n\rangle$ is called a \textbf{subsequence} of another sequence $\beta = \langle b_1b_2 \dots b_m \rangle$, and $\beta$ is a \textbf{supersequence} of $\alpha$, denoted as $\alpha \sqsubseteq \beta$, if there exists integers $1 \leq j_1 < j_2 < \dots < j_n \leq m$ such that $a_1 \subseteq b_{j_1}$, $a_2 \subseteq b_{j_2}$, \dots, $a_n \subseteq b_{j_n}$.
 \end{definition}
@@ -1028,7 +1028,7 @@ The rule based classification, can be seen as a decision tree if those rules are
 With these rules, we can build a decision tree, where each leaf corresponds to a rule, and the path from the root to the leaf correspond to the rule antecedent. And the class label predicted by the rule is the class label of the leaf.\\
 Based on this decision tree structure, for a given rule antecedent, any condition that does not improve its accuracy can be pruned, and thus it generalises the rule. 
 \subsection{Sequential covering algorithm}
-The sequential covering algorithm is a method to learn a set of rules sequentially where each rues for a given class will ideally cover many of the class tuples.
+The sequential covering algorithm is a method to learn a set of rules sequentially where each rules for a given class will ideally cover many of the class tuples.
 \begin{algorithm}[H]
     \caption{SequentialCovering algorithm}
     \begin{algorithmic}[1]
@@ -1064,7 +1064,7 @@ To analyse the quality of the rules, we can define some measures.
     \end{equation}
     with $pos$ and $neg$ the number of positive and negative tuples covered by the rule before adding the new condition, and $pos'$ and $neg'$ the number of positive and negative tuples covered by the rule after adding the new condition.
 \end{definition}
-We can also define pruning rule like \texttt{FOIL}.
+We can also define pruning rule working like \texttt{FOIL}.
 \begin{definition}
     The \textbf{FOIL\_prune} is defined as:
     \begin{equation}
@@ -1273,12 +1273,12 @@ The quality of a cluster $C_i$ can be measured by the \textbf{within-cluster var
     E(C_i) = \sum_{i=1}^{k}\sum_{x \in C_i} d(x, c_i)^2
 \end{equation}
 \subsection{K-means}
-The K-means algorithm is an iterative algorithm that starts with $k$ initial centroids chosen randomly from the data points, then it alternates between two steps at each iteration $t$:
+The K-means algorithm is an iterative algorithm that starts with $k$ initial centroids chosen randomly from the data points, then it alternates between two steps at each iteration:
 \begin{itemize}
     \item \textbf{Assignment step}: each data point is assigned to the cluster with the closest centroid.
     \item \textbf{Update step}: the centroids are updated by computing the mean of the data points in each cluster.
 \end{itemize}
-The algorithm converges when the centroids do not change anymore or when the maximum number of iterations is reached. It is an algorithm simple and with a garanty of convergence to a local minimum. It is sensible to the initial centroids, but it can be warm-started by giving an itinial guess of the centroids. It is also scalable to large datasets as the complexity is $\mathcal{O}(nkt)$, so it is quasi linear in the number of data points $n$. But it presents some limitations, the number of clusters $k$ needs to be specified in advance, it struggles when the clusters are of different sizes and densities, and it is not robust to outliers.
+The algorithm converges when the centroids do not change anymore or when the maximum number of iterations is reached. It is an algorithm simple and with a garanty of convergence to a local minimum. It is sensible to the initial centroids, but it can be warm-started by giving an itinial guess of the centroids. It is also scalable to large datasets as the complexity is $\mathcal{O}(nk)$ per iteration, so it is quasi linear in the number of data points $n$. But it presents some limitations, the number of clusters $k$ needs to be specified in advance, it struggles when the clusters are of different sizes and densities, and it is not robust to outliers.
 \subsection{K-medoids}
 To overcome the problem of outliers in K-means, we can use K-medoids, which is a variant of K-means that uses the medoid instead of the mean as the representative of the cluster. The medoid is the data point in the cluster that minimizes the sum of distances to all other data points in the cluster. So the quality of a cluster $C_i$ can be measured by the \textbf{within-cluster variation} with the medoid $o_i$ defined as:
 \begin{equation}
@@ -1306,7 +1306,7 @@ To improve the performance of K-means and its variants, we can try to estimate t
     \begin{equation}
         B(k) = \sum_{i=1}^{k} n_i \|c_i - \bar{c}\|^2
     \end{equation}
-    with $n_i$ the number of data points in cluster $C_i$, $c_i$ the centroid of cluster $C_i$, and $\bar{c}$ the centroid of the centroids. And the within-cluster variation, defined as:
+    with $n_i$ the number of data points in cluster $C_i$, $c_i$ the centroid of cluster $C_i$, and $\bar{c}$ the mean of the centroids. And the within-cluster variation, defined as:
     \begin{equation}
         W(k) = \sum_{i=1}^{k} \sum_{x \in C_i} \|x - c_i\|^2
     \end{equation}
