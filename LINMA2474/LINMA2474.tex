@@ -236,7 +236,7 @@ Consider $\M$ an embedded submanifold of $\mathcal{E}$, $x\in \M$ and the set $\
 	\begin{equation}
 		L(c) = \int_a^b \| c'(t)\|_{c(t)}dt
 	\end{equation}
-	The Riemannian distance is then defined as $dist(x,y) = \inf_c L(c)$. 
+	The Riemannian distance is then defined as $dist(a,b) = \inf_c L(c)$. 
 \end{definition}
 \begin{definition}[\textbf{Riemannian submanifolds}]
 	Let $\M$ be an embedded submanifold of a Euclidean space $\mathcal{E}$. Equipped with the Riemannian metric obtained by restriction of the metric of $\mathcal{E}$, we call $\M$ a Riemannian submanifold of $\mathcal{E}$. 
@@ -257,7 +257,7 @@ Consider $\M$ an embedded submanifold of $\mathcal{E}$, $x\in \M$ and the set $\
 	where $\bar f$ is any smooth extension of $f$ to a neighborhood of $\M$ in $\mathcal{E}$, and $\nabla \bar f(x)$ is the Euclidean gradient of $\bar f$ at $x$.
 \end{thm}
 \begin{itemize}
-	\item [$\to$] Note: for $\mathcal{E} =\R^d$ and using the usual metric $\langle u,v\rangle = u^T v$, the projection operator is 
+	\item [$\to$] Note: for $\mathcal{E} =\R^d$ and using the usual metric $\langle u,v\rangle = u^T v$, the projection operator on the tangent space is 
 	\begin{equation}
 		\text{Proj}_x(v) = v - (x^T v)x
 	\end{equation}
@@ -369,7 +369,7 @@ The directions in the normal plane where the curvature takes its maximum and min
 \begin{definition}[\textbf{Topology}]
 	A topology on a set $X$ is a collection $T$ of subsets of $X$, called open sets, such that 
 	\begin{itemize}
-		\item $X$ and $\emptyset$ belong to $X$;
+		\item $X$ and $\emptyset$ belong to $T$;
 		\item the union of the elements of any subcollection of $T$ is in $T$;
 		\item the intersection of the elements of any finite subcollection of $T$ is in $T$.
 	\end{itemize}
