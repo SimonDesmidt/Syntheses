@@ -740,7 +740,7 @@ The unit commitment problem is an optimization problem that determines the optim
 This model with non-convexities uses binary variables and thus is a mixed-integer linear program (MILP). The formulation of the unit commitment problem is as follows:
 \begin{equation}
     \begin{aligned}
-        \min \sum_{g} \sum_{t} (MC_g p_{g,t} + K_g u_{g,t} + S_g v_{g,t}) \\
+        \min & \sum_{g} \sum_{t} (MC_g p_{g,t} + K_g u_{g,t} + S_g v_{g,t}) \\
         \text{s.t.} \quad & \sum_{g} p_{g,t} = D_t \quad \forall t \\
         & P_g^{\min} u_{g,t} \leq p_{g,t} \leq P_g^{\max} u_{g,t} \quad \forall g,t \\
         & u_{g,t} = u_{g,t-1} + v_{g,t} - w_{g,t} \quad \forall g,t \\
@@ -781,7 +781,10 @@ The marginal pricing is the simplest way to convexify the problem, it consists i
 \begin{definition}
     The \textbf{lost opportunity cost} of an agent is the difference between the maximum possible profit of the agent and it's profit as the market clears.
     \begin{equation}
-        LOC_g(\pi_t) = \max \quad \sum_{t} (\pi_t - MC_g) p_{g,t} - K_g u_{g,t} - S_g v_{g,t} - \sum_{t} (\pi_t - MC_g) p_{g,t}^* - K_g u_{g,t}^* - S_g v_{g,t}^*
+        \begin{aligned}
+        LOC_g(\pi_t) = \max \quad \sum_{t} &\left((\pi_t - MC_g) p_{g,t} - K_g u_{g,t} - S_g v_{g,t}\right)\\ 
+        &- \left(\sum_{t} \left((\pi_t - MC_g) p_{g,t}^* - K_g u_{g,t}^* - S_g v_{g,t}^*\right)\right)
+        \end{aligned}
     \end{equation}
     with ($p_{g,t}^*, u_{g,t}^*, v_{g,t}^*$) the optimal solution of the unit commitment problem and $\pi_t$ the decided price at time $t$.
 \end{definition}
