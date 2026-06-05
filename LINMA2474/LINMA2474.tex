@@ -682,7 +682,7 @@ Knowing $y$ and $A$, we want to find $x_o$ by recovering the sparsest $x$ such t
 	\end{itemize}
 \end{thm}
 \begin{definition}
-	The Kruskal rank is defined as 
+	The \textbf{Kruskal rank} is defined as 
 	\begin{equation}
 		krank(A) \coloneqq \max_r \{r\in \N | \text{ the columns of }A_I \text{ are linearly independent }\color{red}\forall\color{black} I\subset [n]\text{ with } |I| = r\}
 	\end{equation}
@@ -692,6 +692,16 @@ The difference with the usual rank is the red $\forall$, that is a $\exists$ for
 	\item [$\to$] Note: $0\le krank(A)\le rank(A)\qquad \forall A$.
 	\item [$\to$] Note: the nullspace assumption of theorem \ref{thm:fuck} is equivalent to saying $krank(A)\ge 2k$. 
 \end{itemize}
+\begin{definition}
+	The \textbf{spark} is the number of non-zero entries in the sparsest nonzero element of the null space of A:
+	\begin{equation}
+		spark(A) = \min_{x \neq 0, Ax=0} \|x\|_0
+	\end{equation}
+\end{definition}
+Intuitively we can see the spark as the dual of the Kruskal rank. The kruskal rank is the biggest integer $r$ such that every subset of $r$ columns is linearly independant. The spark is the smallest integer $s$ such that there exists a subset of $s$ columns that are linearly dependent. And so they are linked by this equation:
+\begin{equation}
+	krank(A) + 1 = spark(A)
+\end{equation}
 \begin{thm}[\textbf{$\ell^0$ recovery.}]
 	Suppose that $y=Ax_o$, with $\|x_o\|_0 \le \frac{1}{2}krank(A)$. Then, $x_o$ is the unique optimal solution to the $\ell^0$ minimization problem. 
 \end{thm}
