@@ -741,7 +741,7 @@ The $\ell_1$ minimization works as a replacement of the $\ell_0$ minimization, b
 \begin{definition}
 	The \textbf{mutual coherence} of a matrix $A = \left[ a_1 |\cdots| a_n \right] \in \R^{m \times n}$ with all nonzero columns is defined as:
 	\begin{equation}
-		\mu(A) = \max_{i \neq j} \left| \langle \frac{a_i}{\|a_i\|_2}, \frac{a_{\mathcal{J}}}{\|a_{\mathcal{J}}\|_2} \rangle \right|
+		\mu(A) = \max_{i \neq j} \left| \langle \frac{a_i}{\|a_i\|_2}, \frac{a_j}{\|a_j\|_2} \rangle \right|
 	\end{equation}
 \end{definition}
 The mutual coherence is useful for sparse recovery because we will show that when $\mu(A)$ is small, the $krank(A)$ will be large. Namely, 
@@ -785,7 +785,7 @@ Let $s \coloneqq krank(A) + 1$. We normalize the columns of $A$, this does not c
 	\begin{aligned}
 		0 &= \langle a_{j_1}, \alpha_1 a_{j_1} + \cdots + \alpha_s a_{j_s} \rangle\\
 		\alpha_1 &= - \alpha_2 \langle a_{j_1}, a_{j_2} \rangle - \cdots - \alpha_s \langle a_{j_1}, a_{j_s} \rangle\\
-		\frac{\alpha_1}{|\alpha_1|} &= \left( \frac{|\alpha_2|}{|\alpha_1|} + \cdots + \frac{|\alpha_s|}{|\alpha_1|} \right) \mu(A) \\
+		\frac{\alpha_1}{|\alpha_1|} &\le \left( \frac{|\alpha_2|}{|\alpha_1|} + \cdots + \frac{|\alpha_s|}{|\alpha_1|} \right) \mu(A) \\
 		1 &\leq (s-1) \mu(A)\\
 		\frac{1}{\mu(A)} &\leq krank(A) 
 	\end{aligned}
@@ -794,7 +794,7 @@ With this result, we can see that if $y = Ax_o$ and $\|x_o\|_0 \leq \frac{1}{2 \
 \begin{equation}
 	\min_x \|x\|_0 \qquad \text{ such that } Ax=y
 \end{equation}
-\begin{thm}[$\ell^1$ suceeds under incoherence]\label{thm:ell1_inco}
+\begin{thm}[$\ell^1$ succeeds under incoherence]\label{thm:ell1_inco}
 	Let $A \in \R^{m \times n}$ be an incoherent matrix with mutual coherence $\mu(A)$, with $diag(A^TA) = I$, $y = Ax_o$, and $\|x_o\|_0 \leq \frac{1}{2 \mu(A)}$. Then, $x_o$ is the unique optimal solution to the $\ell^1$ minimization problem.
 \end{thm}
 This theorem can be proven if the three following points are true. Let $x' \in \R^n$ feasible point $\neq 0$, $\mathcal{J} = supp(x_o)$, $k = |\mathcal{J}|$, we want:
@@ -816,7 +816,7 @@ Let us prove each point:
 	\item Let $\lambda = A_\mathcal{J} (A_\mathcal{J}^*A_\mathcal{J})^{-1} sign(x_{o,\mathcal{J}})$, then the first condition of \eqref{eq:sign-cond} is satisfied. For the second condition, we have for $j \in \mathcal{J}^c$, 
 	\begin{equation}
 		\begin{aligned}
-			|a_{\mathcal{J}}^* A_\mathcal{J} (A_\mathcal{J}^*A_\mathcal{J})^{-1} sign(x_{o,\mathcal{J}})| &\leq \underbrace{\|A_\mathcal{J}^* a_{\mathcal{J}}\|_2}_{\le \mu(A)} \underbrace{\|(A_\mathcal{J}^*A_\mathcal{J})^{-1}\|_{SP}}_{\le \frac{1}{1-k\mu(A)} \text{by \eqref{eq:label}}} \underbrace{\|sign(x_{o,\mathcal{J}})\|_2}_{\le k}\\
+			|a_j^* A_\mathcal{J} (A_\mathcal{J}^*A_\mathcal{J})^{-1} sign(x_{o,\mathcal{J}})| &\leq \underbrace{\|A_\mathcal{J}^* a_j\|_2}_{\le \mu(A)} \underbrace{\|(A_\mathcal{J}^*A_\mathcal{J})^{-1}\|_{SP}}_{\le \frac{1}{1-k\mu(A)} \text{by \eqref{eq:label}}} \underbrace{\|sign(x_{o,\mathcal{J}})\|_2}_{\le k}\\
 			&\leq \frac{k \mu(A)}{1- k \mu(A)} \leq 1 
 		\end{aligned}
 	\end{equation}
