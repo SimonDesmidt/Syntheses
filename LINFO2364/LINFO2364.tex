@@ -872,15 +872,18 @@ First let us define the notations for adding an extension (new edge $e$) of a gr
     \caption{PatternGrowthGraph algorithm}
     \begin{algorithmic}[1]
         \State \textbf{Input:} Seed of the graph to grow $g$, dataset of graphs $\mathcal{D}$, minimum support threshold $\theta$, current set of frequent graphs $S$
-        \State \textbf{Output:} Set $S$ of frequent itemsets
+        \State \textbf{Output:} Set $S$ of frequent graphs
         \If{$g \in S$}
             \State \textbf{return}
         \Else
             \State $S = S \cup \{g\}$
         \EndIf
-        \State Scan $\mathcal{D}$ once, find all the edges $e$ such that $g$ can be extended to $g \diamond_x e$
+        \State Scan $\mathcal{D}$ once, find all the edges $e$ such that $g$ can be extended to $g \diamond_x e$ or $g \diamond_{xb} e$
         \For{each frequent $g \diamond_x e$}
             \State PatternGrowthGraph($g \diamond_x e$, $\mathcal{D}$, $\theta$, $S$)
+        \EndFor
+        \For{each frequent $g \diamond_{xb} e$}
+            \State PatternGrowthGraph($g \diamond_{xb} e$, $\mathcal{D}$, $\theta$, $S$)
         \EndFor
         \State \textbf{return} S
     \end{algorithmic}
@@ -933,6 +936,19 @@ Where $<_e$ is an ordering between edges and $<_l$ is the classical lexicographi
         \item If $e_{ij}$ is a backward edge and $e_{kl}$ is a forward edge, then if  $i \leq l$
     \end{itemize}
 \end{definition}
+\begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        $e_{ij} \backslash e_{kl}$ & forward edge & backward edge \\
+        \hline
+        forward edge & $j < l$ or  & $j \leq k$ \\
+        & ($j = l$ and $i > k$) & \\
+        \hline
+        backward edge & $i \leq l$ & $i < k$ or  \\
+        & & ($i = k$ and $j < l$)\\
+        \hline
+    \end{tabular}
+\end{center}
 \begin{definition}
     The \textbf{canonical DFS code} of a graph $G$ is the minimum DFS code among all the DFS codes of $G$.
 \end{definition}
@@ -945,7 +961,7 @@ The gSpan algorithm is based on the pattern growth method, but it uses the DFS c
     \caption{gSpan algorithm}
     \begin{algorithmic}[1]
         \State \textbf{Input:} DFS code of the pattern being grown $s$, dataset of graphs $\mathcal{D}$, minimum support threshold $\theta$, current set of frequent graphs $S$
-        \State \textbf{Output:} Set $S$ of frequent itemsets
+        \State \textbf{Output:} Set $S$ of frequent graphs
         \If{$s \neq dfs(s)$}
             \State \textbf{return}
         \EndIf
@@ -1813,7 +1829,7 @@ When only few data are labeled, two cases arise:
 \section{Outlier Detection in High-Dimensional Data}
 As usual the curse of dimensionality makes the distance between data points less meaningful, and so it becomes harder to detect outliers. To overcome this problem, we can use the \textbf{HilOut algorithm}. The HilOut algorithm finds distance-based outliers, but use the ranks of distance instead of the distances themselves. The HilOut algorithm works as follows:
 \begin{itemize}
-    \item For each objects $o$, HilOut finds the k-nearest neighbors of $o$, denoted by $nn_1(o), \dots, nn_k (o)$, where k is a parameter.
+    \item For each objects $o$, HilOut finds the k-nearest neighbors of $o$, denoted by $nn_1(o)$, $\dots$, $nn_k (o)$, where k is a parameter.
     \item The weights of the object $o$ is defined as:
     \begin{equation}    
         w(o) = \sum_{i=1}^{k} dist(o, nn_i(o))
