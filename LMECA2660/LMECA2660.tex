@@ -28,10 +28,11 @@
 \usepackage{pdfpages}
 \usepackage{tabularx}
 \usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage{cleveref}
 \usepackage[skins]{tcolorbox}
 \titleformat{\chapter}[display]
   {\normalfont\bfseries}{}{0pt}{\Huge}
-\usepackage{hyperref}
 \newcommand{\hsp}{\hspace{20pt}}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\R}{\mathbb{R}}
@@ -231,7 +232,7 @@ By a Taylor development,
 \begin{equation}
 	\frac{k^*h}{kh} = 1 - \frac{(kh)^2}{6} + \mathcal{O}((kh)^4)
 \end{equation}
-and although $k$ is not constant for all modes, the error of the stencil is still of the same order: $\mathcal{O}((kh)^2)$. Moreover, the speed of the modes is $c^* = \frac{k^*h}{kh}c$.
+and although $k$ is not constant for all modes, the error of the stencil is still of the same order: $\mathcal{O}((kh)^2)$. For higher order explicit scheme (E4, E6,...), the error is of the same order as the scheme. Moreover, the speed of the modes is $c^* = \frac{k^*h}{kh}c$.
 \begin{figure}[H]
 	\centering 
 	\includegraphics[width=.5\textwidth]{img/convection-kmod.png}
@@ -266,12 +267,50 @@ For example, in the case where $\beta= 0$ and $\alpha \neq 0$, the system is tri
 \begin{itemize}
 	\item [$\to$] Note: The I4o scheme is the scheme with the smallest constant before the $(kh)^4$ using all parameters. For this one, the sign of that constant is positive, meaning that it goes above the correct velocity. This behaviour is not present on the other scheme. 
 \end{itemize}
+\subsection{One-sided finite differences}
+Let us consider the backward differences for the convection equation:
+\begin{equation}\label{eq:upwind}
+	\frac{d}{dt} u_i = - c \frac{u_i-u_{i-1}}{h}\Longrightarrow \frac{d}{dt} A_k = -\frac{c}{h} (1-e^{jkh})
+\end{equation}
+Then, $\lambda_k = -\frac{c}{h} (1-e^{-jkh})$ is no longer purely imaginary. Its real part gives an amplitude error (numerical diffusion) and its imaginary part gives a (numerical) dispersion error. 
+\begin{itemize}
+	\item [$\to$] Note: for $c<0$, we need to use forward differences instead because otherwise the real part of $\lambda_k$ becomes positive and thus unstable. 
+\end{itemize}
+Let us compute the term of numerical diffusion:
+\begin{equation}
+	\frac{d}{dt}u_i = -c\frac{u_i-u_{i-1}}{h} = -c \frac{u_{i+1}-u_{i-1}}{2h} + c \frac{u_{i+1}-2u_i+u_{i-1}}{2h} = -c \frac{u_{i+1}-u_{i-1}}{2h} + \frac{ch}{2}\frac{u_{i+1}-2u_i+u_{i-1}}{h^2}
+\end{equation}
+The modified equation becomes
+\begin{equation}
+	\frac{\partial u}{\partial t} + c\frac{\partial u}{\partial x} = \frac{ch}{2} \frac{\partial^2 u}{\partial x^2} + \dots 
+\end{equation}
+and so the diffusivity parameter is thus $\epsilon = \frac{ch}{2}$. \\
+For this scheme, from \Cref{eq:upwind}, $\lambda_k \Delta t = -\frac{c\Delta t}{h} \left((1-\cos(kh)) + i\sin(kh)\right)$ and the region of stability of the method is a circle centered in $(-1,0)$ in the complex plane of $\lambda_k \Delta t$. 
+\subsection{One-sided finite differences of higher order}
+This type of scheme of higher order would give for example 
+\begin{equation}
+	\begin{aligned}
+		\frac{d}{dt} u_i &= \frac{3u_i -4u_{i-1}+u_{i-2}}{2h}\\
+		& = \frac{11u_i-18u_{i-1}+9u_{i-2}-2u_{i-3}}{6h}
+	\end{aligned}
+\end{equation}
+and all those expressions give different stability regions. The general form for the spatial derivative is 
+\begin{equation}
+	\left.\frac{\partial u}{\partial x}\right|_i = a_1 \frac{u_i-u_{i-1}}{h} + a_2 \frac{u_i-u_{i-2}}{2h} + a_3 \frac{u_i-u_{i-3}}{3h}
+\end{equation}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.6\textwidth]{img/decentered_convection.png}
+	\caption{Stability regions for one-sided schemes.}
+	\label{fig:decentered-convection}
+\end{figure}
+This means that if our system has a high eigenvalue $\lambda$, we need to decrease the time step to have convergence properties. This means that those one-sided schemes are not much helpful, because they are very costly. Moreover, at order 3, we can see low wave numbers with positive real part, meaning that they blow up (positive exponent in the exponential). 
 \section{Diffusion equation}
 The diffusion equation is 
 \begin{equation}\label{eq:diffusion}
 	\frac{\partial u}{\partial t} = \alpha \frac{\partial^2 u}{\partial x^2}
 \end{equation}
-This equation is not reversible because it represents a loss of information: the high-wave-number terms decay fast and have no impact after a small time.\\
+This equation is not reversible because it represents a loss of information: the high-wave-number terms decay fast and have no more impact after a small time.\\
 The exact solution is $u(x,t) = A_k(t)e^{jkx}$ with $A_k(t) = A_k(0)e^{\alpha k^2 t}$. 
 \subsection{Explicit schemes}
 The explicit finite differences scheme is 
@@ -280,15 +319,15 @@ The explicit finite differences scheme is
 \end{equation}
 Let $u_i(t) = A(t) e^{jkx_i}$. Then, 
 \begin{equation}
-	\frac{dA}{dt} = -\alpha (k^2)^* A \Longrightarrow A(t) = A(0)e^{-\alpha (k^2)^* t} e^{jkx_i} \Longrightarrow u_i(t) = A(0)e^{-\alpha k^2 \left(\frac{\left(k^2\right)^*h^2}{k^2 h^2}\right)}e^{jkx_i}
+	\frac{dA}{dt} = -\alpha (k^2)^* A \Longrightarrow A(t) = <A(0)e^{-\alpha (k^2)^* t} e^{jkx_i} \Longrightarrow u_i(t) = A(0)e^{-\alpha k^2 \left(\frac{\left(k^2\right)^*h^2}{k^2 h^2}\right)}e^{jkx_i}
 \end{equation}
 This is a \textbf{amplitude} error, as the mode do not decay with the proper \textbf{rate}. \\
 For example, for the explicit scheme of order 2 ($a=1$, $b=c=0$), the modified $k^2$ is given by
 \begin{equation}
-	(k^1)^*h^2 = 4\sin^2 \left(\frac{kh}{2}\right) \Longleftrightarrow \frac{(k^2)^* h^2}{k^2 h^2} = \frac{\sin^2 \left(\frac{kh}{2}\right)}{\left(\frac{kh}{2}\right)^2}
+	(k^2)^*h^2 = 4\sin^2 \left(\frac{kh}{2}\right) \Longleftrightarrow \frac{(k^2)^* h^2}{k^2 h^2} = \frac{\sin^2 \left(\frac{kh}{2}\right)}{\left(\frac{kh}{2}\right)^2}
 \end{equation}
 \subsection{Implicit schemes}
-The general form of the implicit scheme follows the same reasoning as for \eqref{eq:I-order1}.
+The general form of the implicit scheme follows the same reasoning as for \Cref{eq:I-order1}.
 \begin{equation}
 	\begin{aligned}
 		\left.\frac{\partial^2 u}{\partial x^2}\right|_i + \alpha \frac{1}{2}\left(\left.\frac{\partial^2 u}{\partial x^2}\right|_{i+1} + \left.\frac{\partial^2 u}{\partial x^2}\right|_{i-1}\right) + \beta \frac{1}{2}\left(\left.\frac{\partial^2 u}{\partial x^2}\right|_{i+2} + \left.\frac{\partial^2 u}{\partial x^2}\right|_{i-2}\right) \\
@@ -315,44 +354,6 @@ As previously, we can do the Taylor development series of this expression to get
 	\caption{Evolution of the modified $k^2$ with $k^2$.}
 	\label{fig:diffusion-kmod}
 \end{figure}
-\section{One-sided finite differences}
-Let us consider the backward differences for the convection equation:
-\begin{equation}\label{eq:upwind}
-	\frac{d}{dt} u_i = - c \frac{u_i-u_{i-1}}{h}\Longrightarrow \frac{d}{dt} A_k = -\frac{c}{h} (1-e^{jkh})
-\end{equation}
-Then, $\lambda_k = -\frac{c}{h} (1-e^{-jkh})$ is no longer purely imaginary. Its real part gives an amplitude error (numerical diffusion) and its imaginary part gives a (numerical) dispersion error. 
-\begin{itemize}
-	\item [$\to$] Note: for $c<0$, we need to use forward differences instead because otherwise the real part of $\lambda_k$ becomes positive and thus unstable. 
-\end{itemize}
-Let us compute the term of numerical diffusion:
-\begin{equation}
-	\frac{d}{dt}u_i = -c\frac{u_i-u_{i-1}}{h} = -c \frac{u_{i+1}-u_{i-1}}{2h} + c \frac{u_{i+1}-2u_i+u_{i-1}}{2h} = -c \frac{u_{i+1}-u_{i-1}}{2h} + \frac{ch}{2}\frac{u_{i+1}-2u_i+u_{i-1}}{h^2}
-\end{equation}
-The modified equation becomes
-\begin{equation}
-	\frac{\partial u}{\partial t} + c\frac{\partial u}{\partial x} = \frac{ch}{2} \frac{\partial^2 u}{\partial x^2} + \dots 
-\end{equation}
-and so the diffusivity parameter is thus $\epsilon = \frac{ch}{2}$. \\
-For this scheme, from \eqref{eq:upwind}, $\lambda_k \Delta t = -\frac{c\Delta t}{h} \left((1-\cos(kh)) + i\sin(kh)\right)$ and the region of stability of the method is a circle centered in $(-1,0)$ in the complex plane of $\lambda_k \Delta t$. 
-\subsection{One-sided finite differences of higher order}
-This type of scheme of higher order would give for example 
-\begin{equation}
-	\begin{aligned}
-		\frac{d}{dt} u_i &= \frac{3u_i -4u_{i-1}+u_{i-2}}{2h}\\
-		& = \frac{11u_i-18u_{i-1}+9u_{i-2}-2u_{i-3}}{6h}
-	\end{aligned}
-\end{equation}
-and all those expressions give different stability regions. The general form for the spatial derivative is 
-\begin{equation}
-	\left.\frac{\partial u}{\partial x}\right|_i = a_1 \frac{u_i-u_{i-1}}{h} + a_2 \frac{u_i-u_{i-2}}{2h} + a_3 \frac{u_i-u_{i-3}}{3h}
-\end{equation}
-\begin{figure}[H]
-	\centering 
-	\includegraphics[width=.6\textwidth]{img/decentered_convection.png}
-	\caption{Stability regions for one-sided schemes.}
-	\label{fig:decentered-convection}
-\end{figure}
-This means that if our system has a high eigenvalue $\lambda$, we need to decrease the time step to have convergence properties. This means that those one-sided schemes are not much helpful, because they are very costly. Moreover, at order 3, we can see low wave numbers with positive real part, meaning that they blow up (positive exponent in the exponential). 
 \section{Convection-diffusion equation}
 The convection-diffusion equation is 
 \begin{equation}
@@ -400,6 +401,13 @@ This is also an ellipse, with axes $a = \beta + 2r$ and $b = \beta$. Here, $b\le
 	\caption{Stability region of the convection-diffusion equation.}
 	\label{fig:conv-diff}
 \end{figure}
+Diffusion with non constant $\epsilon$. The handling of this non constant term is always done in the same manner. For example, for the E2 scheme,
+\begin{equation}
+	\begin{aligned}
+		\frac{\partial}{\partial x}\left.\left(\epsilon\frac{\partial u}{\partial x}\right)\right|_i = \frac{\epsilon_{i+1/2}(u_{i+1}-u_i)-\epsilon_{i-1/2}(u_i-u_{i-1})}{h^2}\\
+		\epsilon_{i+1/2} = \frac{1}{2}\left(\epsilon(x_i,u_i)+\epsilon (x_{i+1},u_{i+1})\right)
+	\end{aligned}
+\end{equation}
 \section{Convection equation in 2D}
 The convection equation in 2D has two different velocity values:
 \begin{equation}
@@ -432,6 +440,7 @@ and
 	|\lambda_{k\ell}|_{\max} \Delta t = \beta 
 \end{equation}
 \section{Convection-diffusion equation in 2D}
+The convection-diffusion equation in 2D is handled in the same way it is in 1D but using two parts. There is no conceptual difference. 
 \begin{equation}
 	\frac{\partial u}{\partial t} + u_0 \frac{\partial u}{\partial x} + v_0 \frac{\partial u}{\partial y} = \epsilon \left(\frac{\partial^2u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}\right) 
 \end{equation}
@@ -446,7 +455,7 @@ The parameters of the scheme are
 		r_y = \frac{\epsilon \Delta t}{(\Delta y)^2} \qquad R_y = \frac{|v_0| \Delta y}{\epsilon} \Longrightarrow \beta_y = r_yR_y\\
 	\end{cases}
 \end{equation}
-In the case $\Delta x=  Delta y = h$, $r_x=r_y=r=\epsilon \Delta t/ h^2$ and 
+In the case $\Delta x= \Delta y = h$, $r_x=r_y=r=\epsilon \Delta t/ h^2$ and 
 \begin{equation}
 	\begin{cases}
 		\beta_x = \frac{|u_0| \Delta t}{h}\\
@@ -464,9 +473,13 @@ The general formulation of first order ODEs is
 Until now, we have only had a simple system with $f(u,t) = \lambda u$. \\
 We can do a Taylor development of $f(\cdot)$ to analyze the local behaviour of the system:
 \begin{equation}
-	\frac{du}{dt} = f(u,t) = \underbrace{f(u_0,t_0)}_{\coloneqq\beta} + (u-u_0)\underbrace{\frac{\partial f}{\partial u}}_{=\eqqcolon \lambda} + (t-t_0) \underbrace{\frac{\partial f}{\partial t}(u_0,t_0)}_{\eqqcolon \gamma} + \dots 
+	\frac{du}{dt} = f(u,t) = \underbrace{f(u_0,t_0)}_{\eqqcolon\beta} + (u-u_0)\underbrace{\frac{\partial f}{\partial u}}_{\eqqcolon \lambda} + (t-t_0) \underbrace{\frac{\partial f}{\partial t}(u_0,t_0)}_{\eqqcolon \gamma} + \dots 
 \end{equation}
-and defining $u' = u-u_0$ and $t'=t-t_0$. The solution of this is 
+and defining $u' = u-u_0$ and $t'=t-t_0$, we get 
+\begin{equation}
+	\frac{du'}{dt'} -\lambda u' = \beta+\gamma t'.
+\end{equation}
+The solution of this is, with initial condition $u'(t'=0)=u(0)-u_0 = 0$, 
 \begin{equation}
 	u'(t) = u_p' + u_g' = -\frac{1}{\lambda}\left(\gamma t' + \left(\frac{\gamma}{\lambda}+ \beta\right)\right) + A e^{\lambda t'} = \frac{1}{\lambda}\left[\left(\frac{\gamma}{\lambda} + \beta\right)\left(e^{\lambda t'} -1\right) - \gamma t'\right]
 \end{equation}
@@ -487,10 +500,11 @@ The scheme is stable if
 \end{equation}
 This is a circle centered in $(-1,0)$. \\
 
-At each time stpe, the Euler scheme produces an $\mathcal{O}((\Delta t)^2)$ error. To arrive at $t=T$, it takes $N=T/\Delta t$ time steps. The error at $t=T$ is thus $\mathcal{O}((\Delta t)^2/\Delta t) = \mathcal{O}(\Delta t)$. The Euler scheme if a first-order scheme.
+At each time stpe, the Euler scheme produces an $\mathcal{O}((\Delta t)^2)$ error. To arrive at $t=T$, it takes $N=T/\Delta t$ time steps. The error at $t=T$ is thus $\mathcal{O}((\Delta t)^2/\Delta t) = \mathcal{O}(\Delta t)$. The Euler scheme is a first-order scheme.
 \begin{itemize}
 	\item [$\to$] Note: always check the order of a scheme using a fixed time interval, and not a single time step, as we want a global estimation. 
 \end{itemize}
+If $\lambda$ is large in modulus but in the stable part of the physical solution, then decreasing the time step can make $\lambda \Delta t$ lie in the stability region. 
 \section{Implicit Euler scheme}
 \begin{equation}
 	\frac{u^{n+1}-u^n}{\Delta t} = \lambda u^{n+1}
@@ -668,7 +682,7 @@ At the end of the loop, $(t,u)$ are the time $t^{n+1} = t^n + \Delta t$ and the 
 Multisteps time schemes use more than one previous step to compute the value $t^{n}$. They are generally cheap, but not self starting: $t^1$ cannot be computed through it, as it would need to know $t^{-1}$. Moreover, they produce multiple solutions even though only one is physically correct. 
 \subsection{Leap-frog}
 The scheme is 
-\begin{equation}
+\begin{equation}\label{eq:leapfrog}
 	\frac{u^{n+1}-u^{n-1}}{2\Delta t} = f(u^n, t^n)\Longleftrightarrow u^{n+1} = u^{n-1} + 2\Delta t f(u^n, t^n)
 \end{equation}
 The scheme is centered around $t^n$, meaning it is of order 2.\\
@@ -700,7 +714,151 @@ Then, the solution of the scheme is
 \end{equation}
 where $u^1$ must be computed using another scheme with less steps, e.g. RK2. 
 \subsection{General multi-step schemes}
-
+The general form of multi-step schemes is the following:
+\begin{equation}
+	\sum_{m=0}^k \alpha_m u^{n+1-m} = \Delta t \sum_{m=0}^k \beta_m f(u^{n+1-m}, t^{n+1-m})
+\end{equation}
+If $\beta_0=0$, then the scheme is explicit, and implicit if not. 
+\subsubsection{Adams-Bashforth (EXPLICIT)}
+The Adams Bashforth schemes are a class of explicit multi-step schemes of the following form:
+\begin{equation}
+	u^{n+1} = u^n + \Delta t \sum_{m=1}^k \beta_m f^{n+1-m}
+\end{equation}
+The first three schemes are 
+\begin{itemize}
+	\item $k=1$ (explicit Euler):     $u^{n+1} = u^n + \Delta t f^n$;
+	\item $k=2$:     $u^{n+1}=u^n + \frac{\Delta t}{2}(3f^n-f^{n-1})$;
+	\item $k=3$: $u^{n+1} = u^n + \frac{\Delta t}{12}(23f^n-16f^{n-1}+5 f^{n-2})$.
+\end{itemize}
+When $k$ increases, the stability factor $\rho$ has more and more roots: the function $\Gamma(\rho)$ such that $u^{n+1} = \Gamma(\rho) u^n$ has $k$ roots. The stability regions of the Adams-Bashforth methods are shown on \Cref{fig:AB}. Higher order means better accuracy, but it is also stable on a much smaller region, and all of them are far smaller than the stability region of Runge-Kutta methods. However, they require far less evaluation per step than RK methods. 
+\begin{figure}[H]
+	\centering 
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{img/adams_bashforth_stability.png}
+		\caption{Adams-Bashforth from 1 to 6.}
+		\label{fig:AB-stability}
+	\end{subfigure}
+	\hfill 
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{img/AB_RK4_stability.png}
+		\caption{Adams-Bashforth compared to RK4.}
+		\label{fig:AB/RK4}
+	\end{subfigure}
+	\caption{Stability regions of Adams-Bashforth methods}
+	\label{fig:AB}
+\end{figure}
+\subsubsection{Adams-Moulton (IMPLICIT)}
+The Adams-Moulton schemes are a class of implicit multi-step schemes of the following form:
+\begin{equation}
+	u^{n+1} = u^n + \Delta t \sum_{m=0}^{k-1} \beta_m f^{n+1-m}
+\end{equation}
+The first three schemes are 
+\begin{itemize}
+	\item $k=1$ (implicit Euler): $u^{n+1} = u^n + \Delta t f^{n+1}$;
+	\item $k=2$ (Crank Nicholson): $u^{n+1} = u^n + \frac{\Delta t}{2} (f^{n+1}+f^n)$;
+	\item $k=3$: $u^{n+1} = u^n + \frac{\Delta t}{12}(5f^{n+1}+8f^n-f^{n-1})$.
+\end{itemize}
+The number of roots of the stability factor is $k-1$ in these schemes, meaning that both $k=1$ and $k=2$ are unconditionnally stable. The stability regions are shown on \Cref{fig:AM}.
+\begin{figure}[H]
+	\centering 
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=\textwidth]{img/adams_moulton_stability_RK4.png}
+		\caption{Adams-Moulton from 3 to 6 (1 and 2 are unconditionnally stable) compared to RK4.}
+		\label{fig:AM/RK4}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{img/adams_moulton_stability_small.png}
+		\caption{Zoom of Adams-Moulton to show that 5 and 6 go to the right of the imaginary axis.}
+		\label{fig:AM-stability}
+	\end{subfigure} 
+	\caption{Stability regions of Adams-Bashforth methods.}
+	\label{fig:AM}
+\end{figure}
+\subsubsection{Hybrid Adams methods}
+The idea of the hybrid methods is to use AB as a predictor and AM and a corrector, as AB is easy to use (explicit) but has poor stability, and AM has the opposite. \\
+Using AB1 as predictor and AM2 as corrector yields Runge-Kutta 2. Other example using AB4 and AM4:
+\begin{equation}
+	\begin{aligned}
+		u^{*, n+1} &= u^n + \frac{\Delta t}{24}\left(55f^n-59f^{n-1}+37f^{n-2}-9f^{n-3}\right)\\
+		u^{n+1} &= u^n + \frac{\Delta t}{24}\left(9f^{*,n+1}+19f^n-5f^{n-1}+f^{n-2}\right)
+	\end{aligned}
+\end{equation}
+This 4\textsuperscript{th} order scheme requires only two evaluations of $f$, compared to 4 for RK4 of the same error order. 
+\begin{itemize}
+	\item [$\to$] Note: the predictor can be done with one order less than the corrector without changing the order of the scheme.
+\end{itemize}
+\subsubsection{A family of multi-steps second order explicit schemes}
+\begin{equation}
+	u^{n+1} = \alpha u^n + (1-\alpha)u^{n-1} + \frac{\Delta t}{2}\left((4-\alpha)f^n-\alpha f^{n-1}\right)
+\end{equation}
+The case $\alpha=0$ returns the leapfrog scheme (see \Cref{eq:leapfrog}) and the case $\alpha=1$ returns AB2. The scheme is order 2 for any value of $\alpha$ except $\alpha=-4$: it is order 3 but unstable. 
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.5\textwidth]{img/multistep_family_stability.png}
+	\caption{Stability regions of the family of multi-steps second order explicit schemes.}
+	\label{fig:family-stability}
+\end{figure}
+\subsection{3 point backward differentiation formula}
+The 3BDF scheme does a Taylor series development of $u^n$ and $u^{n-1}$ around $u^{n+1}$. It yields 
+\begin{equation}
+	\frac{3u^{n+1}-4u^n+u^{n-1}}{2\Delta t} = \left(\frac{du}{dt}\right)^{n+1} - \frac{1}{3}(\Delta t)^2 \left(\frac{d^3u}{dt^3}\right)^{n+1}+\dots =f^{n+1}
+\end{equation}
+This implicit scheme is second order and can also be written:
+\begin{equation}
+	\frac{3}{2} \frac{u^{n+1}-u^n}{\Delta t}-\frac{1}{2}\frac{u^n-u^{n-1}}{\Delta t} = f^{n+1}
+\end{equation}
+For the system $\frac{du}{dt} = \lambda u$, the scheme is stable if 
+\begin{equation}
+	u^{n+1} = \rho u^n = \rho^2 u^{n-1} \Longrightarrow 3\rho^2-4\rho+1=2\lambda \Delta t \rho^2\Longrightarrow \rho = \frac{2\pm \sqrt{1+2\lambda \Delta t}}{3(1-2\lambda \Delta t)}
+\end{equation}
 \chapter{Fourier document}
 \textcolor{red}{TODO.}
+\chapter{Euler equations for compressible flows}
+The Euler equations are the following
+\begin{equation}
+	\begin{aligned}
+		\frac{\partial \rho}{\partial t} + \sum_j \frac{\partial}{\partial x_j}(\rho u_j) &= 0\\
+		\frac{\partial }{\partial t}(\rho u_i) + \sum_j \frac{\partial}{\partial x_j} (\rho u_i u_j)&=-\frac{\partial p}{\partial x_i} + \rho g_i\\
+		\frac{\partial}{\partial t}(\rho U_0) + \sum_j \frac{\partial }{\partial x_j}(\rho U_0u_j) &= -\sum_j \frac{\partial }{\partial x_j}(\rho u_j)
+	\end{aligned}
+\end{equation}
+The first one is the conservation of mass and the third one is the conservation of energy. The variables are:\\
+\begin{center}
+	\begin{tabular}{|c|c||c|c|}
+		\hline 
+		Variable & Name & Variable & Name\\ \hline \hline 
+		$\rho$ & Density & $u_i$ & Velocity in direction $i$ $(x,y,z)$\\ \hline 
+		$x_i$ & $x,y,z$ & $p$ & Pressure\\ \hline 
+		$g=-\nabla W$ & Gravity & $W=gz$ & Potential energy \\\hline
+		$U_0=U+K+W$& Total internal energy & $H_0=H+K+W$ & Total enthalpy\\ \hline
+		$U$ & Internal energy & $H=U+p/\rho$ & Enthalpy\\ \hline 
+		$K=\sum_i \frac{u_i^2}{2}$ & Kinetic energy & &\\ \hline 
+	\end{tabular}
+\end{center}
+For an ideal gas, $p=\rho RT$. Then, $dU=C_V(T)dT$ and $dH = C_P(T)dT$ wwith $C_P(T)-C_V(T)=R$. If the gas is perfect, then $C_P$ and $C_V$ are constant and $\gamma\coloneqq\frac{C_P}{C_V}$. This yields $p=(\gamma-1)\rho U$.
+Let us define the following vectors: 
+\begin{equation}
+	\begin{aligned}
+		\boldsymbol{s} = \begin{bmatrix}
+			s_1\\s_2\\s_3\\s_4\\s_5
+		\end{bmatrix} = \begin{bmatrix}
+			\rho \\ \rho u\\ \rho v\\ \rho w \\\rho U_0
+		\end{bmatrix} &\qquad \boldsymbol{r}(\boldsymbol{s}) =\begin{bmatrix}
+		0 \\0\\0\\-\rho g\\0
+		\end{bmatrix} \\ 
+		\boldsymbol{F}_x(\boldsymbol{s}) = \begin{bmatrix}
+			\rho u \\ \rho u^2 + p \\ \rho vu \\ \rho w u \\ \rho H_0 u
+		\end{bmatrix} \qquad \boldsymbol{F}_y(\boldsymbol{s}) &= \begin{bmatrix}
+			\rho v \\ \rho uv \\ \rho v^2 + p \\ \rho wv \\ \rho H_0 v
+		\end{bmatrix} \qquad \boldsymbol{F}_z(\boldsymbol{s}) = \begin{bmatrix}
+			\rho w \\ \rho uw\\ \rho vw \\ \rho w^2 + p \\ \rho H_0 w
+		\end{bmatrix}
+	\end{aligned}
+\end{equation}
+Then, the system of equations is 
+\begin{equation}
+	\frac{\partial }{\partial t}\boldsymbol{s} + \frac{\partial }{\partial x} \boldsymbol{F}_x(\boldsymbol{s}) + \frac{\partial }{\partial y} \boldsymbol{F}_y(\boldsymbol{s}) + \frac{\partial }{\partial z} \boldsymbol{F}_z(\boldsymbol{s}) = \boldsymbol{r}(\boldsymbol{s}) \in \R^5
+\end{equation}
+In 2D, the equation middle equation contains only two equations and all terms in $z$ are 0. In 1D, it is further reduced in the same manner. 
 \end{document}
