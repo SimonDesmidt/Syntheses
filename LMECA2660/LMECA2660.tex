@@ -910,4 +910,359 @@ For the corresponding subsonic outflow, we impose a single condition: for exampl
 For a supersonic flow, everything is imposed at the inlet and everything is extrapolated at the outlet. 
 \chapter{Hyperbolic systems}
 
+The Euler equations are a hyperbolic system. Its conservative form in 1D is on the left and the non conservative on the right:
+\begin{equation}\label{eq:hyperbolic}
+	\frac{\partial \boldsymbol{s}}{\partial t} + \frac{\partial \boldsymbol{F}(\boldsymbol{s})}{\partial x} = 0 \qquad \qquad \frac{\partial \boldsymbol{s}}{\partial t} + A(\boldsymbol{s})\frac{\partial \boldsymbol{s}}{\partial x}=0
+\end{equation}
+For the system to be hyperbolic, the matrix $A(\boldsymbol{s})$ must have real and distinct eigenvalues. The simplest case of hyperbolic system is the convection equation: 
+\begin{equation}
+	\frac{\partial u}{\partial t} + c\frac{\partial u }{\partial x}=0
+\end{equation}
+\section{Explicit Euler scheme}
+The explicit Euler scheme both in time and space yields
+\begin{equation}
+	\frac{u_i^{n+1}-u_i^n}{\Delta t} = -c\frac{u_{i+1}^n-u_{i-1}^n}{2h} \Longleftrightarrow u_i^{n+1} = u_i^n - \frac{c\Delta t}{2h}\left(u_{i+1}^n-u_{i-1}^n\right)
+\end{equation}
+This approximation is actually the following ODE:
+\begin{equation}
+	\begin{aligned}	
+		\left.\frac{\partial u}{\partial t}\right|_i^n + \frac{\Delta t}{2}\left.\frac{\partial^2u}{\partial t^2}\right|_i ^n + \dots = -c \left(\left.\frac{\partial u}{\partial x}\right|_i^n + \frac{h^2}{6}\left.\frac{\partial^3 u}{\partial x^3}\right|_i^n+\dots\right)\\
+		\Longleftrightarrow \frac{\partial u}{\partial t} = -c \frac{\partial u}{\partial x} - \frac{\Delta t}{2}\frac{\partial^2u}{\partial t^2} - \frac{ch^2}{6} \frac{\partial^3 u}{\partial x^3} + \dots 
+	\end{aligned}
+\end{equation}
+From this, we can express the second derivative $\frac{\partial^2u}{\partial x^2}$ by derivating the equation once. This finally yields 
+\begin{equation}
+	\frac{\partial u}{\partial t}+ c\frac{\partial u}{\partial x} = \frac{-c\Delta t^2}{2} \frac{\partial^2 u}{\partial x^2} + \dots 
+\end{equation}
+The Euler explicit scheme produces a diffusion term with negative coefficient. This is unstable and thus the scheme does not work. 
+\section{Lax scheme}
+The Lax scheme stabilizes the Euler explicit scheme by replacing $u_i^n$ by $\frac{1}{2} \left(u_{i+1}^n + u_{i-1}^n\right)$. It yields the following:
+\begin{equation}
+	u_i^{n+1} = \frac{1}{2}\underbrace{\left(u_{i+1}^n + u_{i-1}^n\right)}_{=u_i^n + \frac{1}{2}(u_{i+1}^n - 2u_i^n + u_{i-1}^n)} - \frac{c\Delta t}{2h} \left(u_{i+1}^n - u_{i-1}^n\right) 
+\end{equation}
+where the underbraced term comes from the Taylor series of $u_{i+1}^n$ and $u_{i-1}^n$ around $u_i^n$. The modified equation is 
+\begin{equation}
+	\frac{\partial u}{\partial t} + c\frac{\partial u}{\partial x} = -\frac{c^2\Delta t}{2} \frac{\partial^2 u}{\partial x^2} + \frac{h^2}{2\Delta t} \frac{\partial^2 u}{\partial x^2} + \dots = \frac{h^2}{2\Delta t}\left(1-\left(\frac{c\Delta t}{h}\right)^2 \right) \frac{\partial^2 u}{\partial x^2}+ \dots 
+\end{equation}
+If $\beta=\frac{|c|\Delta t}{h} <1$, then the diffusion coefficient is positive and the scheme is stable. The right hand side of the equation is some numerical diffusion induced by the method. The RHS can be re-expressed as follows:
+\begin{equation}
+	\frac{|c|h}{2}\frac{(1-\beta^2)}{\beta} \frac{\partial ^2 u }{\partial x^2} + \dots 
+\end{equation}
+At $\beta<1$ fixed, the scheme is convergent when $h$ tends to 0. However, at $h$ fixed, the diffusion term explodes when $\Delta t$ becomes small. This behaviour is very bad. 
+\section{Explicit Euler scheme and upwinding}
+Upwinding consists in using decentered finite differences to improve stability. 
+For a positive velocity ($c>0$), the explicit Euler scheme with upwinding becomes 
+\begin{equation}
+	\frac{u_i^{n+1}-u_i^n}{\Delta t} = -c\frac{u_i^n - u_{i-1}^n}{h}
+\end{equation}
+The $u_{i-1}^n$ is the upwinding. The modified equation is then 
+\begin{equation}
+	\begin{aligned}		
+		\frac{\partial u}{\partial t} + \frac{\Delta t}{2}\frac{\partial^2u}{\partial t^2} + \dots = -c\left(\frac{\partial u}{\partial x}-\frac{h}{2}\frac{\partial^2 u}{\partial x^2} + \dots\right)\\
+		\frac{\partial u}{\partial t} + c\frac{\partial u}{\partial x} = \frac{ch}{2} \left(1-\frac{c\Delta t}{h}\right)\frac{\partial^2 u }{\partial x^2} + \dots 
+	\end{aligned}
+\end{equation}
+In the case of a negative velocity $(c<0)$, the upwinding yields 
+\begin{equation}
+	\frac{u_i^{n+1}-u_i^n}{\Delta t} = -c \frac{u_{i+1}^n-u_i^n}{h}
+\end{equation}
+And the modified equation is 
+\begin{equation}
+	\frac{\partial u}{\partial t} + c\frac{\partial u}{\partial x} = \frac{|c|h}{2}\left(1-\beta\right) \frac{\partial^2 u}{\partial x^2} + \dots
+\end{equation}
+This is exactly the same as for a positive velocity. Then, if $\beta<1$, the diffusion coefficient is positive and the method is stable. At $h$ fixed, the diffusion still increases when $\Delta t$ becomes small, but much less than the Lax scheme. 
+\section{Lax-Wendroff scheme}
+The Lax-Wendroff scheme is obtained by using the Taylor series up to second order terms: from \Cref{eq:hyperbolic}, 
+\begin{equation}
+	\frac{\partial^2 s}{\partial t^2} = -\frac{\partial }{\partial t}\frac{\partial \boldsymbol{F}(\boldsymbol{s})}{\partial x} = -\frac{\partial }{\partial x}\frac{\partial \boldsymbol{F}(\boldsymbol{s})}{\partial t}=-\frac{\partial }{\partial x} \left(\frac{\partial \boldsymbol{F}(\boldsymbol{s})}{\partial \boldsymbol{s}}\frac{\partial \boldsymbol{s}}{\partial t}\right) = \frac{\partial}{\partial x}\left(A(\boldsymbol{s})\frac{\partial \boldsymbol{F}(\boldsymbol{s})}{\partial x}\right)
+\end{equation}
+The Lax-Wendroff scheme uses 
+\begin{equation}
+	\boldsymbol{s}_i^{n+1} = \boldsymbol{s}_i^n + \Delta t\left.\frac{\partial \boldsymbol{s}}{\partial t}\right|_i^n + \frac{(\Delta t)^2}{2} \left.\frac{\partial^2 \boldsymbol{s}}{\partial t^2}\right|_i^n + \dots 
+\end{equation}
+Then the scheme is 
+\begin{equation}
+	\boldsymbol{s}_i^{n+1} = \boldsymbol{s}_i^n - \Delta t \frac{\boldsymbol{F}_{i+1}^n-\boldsymbol{F}_{i-1}^n }{2h} + \frac{(\Delta t)^2}{2}\frac{A_{i+1/2}^n \left(\boldsymbol{F}_{i+1}^n-\boldsymbol{F}_i^n\right) - A_{i-1/2}^n\left(\boldsymbol{F}_i^n - \boldsymbol{F}_{i-1}^n\right)}{h^2}
+\end{equation}
+where either $A_{i+1/2} = \frac{A(\boldsymbol{s}_i^n) + A(\boldsymbol{s}_{i+1}^n)}{2}$ or $A_{i+1/2} = A\left(\frac{\boldsymbol{s}_i^n + \boldsymbol{s}_{i+1}^n}{2}\right)$. Because the scheme uses Taylor series up to order 2, there is no numerical diffusion. Furthermore, the truncation error is of order $\mathcal{O}(h^2, (\Delta t)^2)$. The scheme is stable if $\beta=\frac{|\mu_k|\Delta t}{h}<1$, where $\mu_k$ are the eigenvalues of $A(\boldsymbol{s})$. \\
+
+For simple convection in 1D, the Lax Wendroff scheme yields 
+\begin{equation}
+	u^{n+1}_n = u_i^n - c\Delta t \frac{u_{i+1}^n - u_{i-1}^n}{2h} +\frac{1}{2}c^2 (\Delta t)^2 \frac{u_{i+1}^n - 2u_i^n+u_{i-1}^n}{h^2}
+\end{equation}
+The Lax-Wendroff scheme is not very convenient to use as we need to evaluate $A(\boldsymbol{s})$. That is not a problem if we have the analytical formulation, but it is rarely the case. There exist some methods using two steps that are equivalent to Lax-Wendroff that are easier to use. 
+\section{Richtmeyer scheme}
+The Richtmeyer scheme uses a Lax-scheme predictor and a leapfrog-scheme corrector:
+\begin{equation}
+	\begin{cases}
+		\boldsymbol{s}_{i+1/2}^* = \frac{1}{2}(\boldsymbol{s}_{i+1} + \boldsymbol{s}_i^n) - \frac{\Delta t}{2}\frac{\boldsymbol{F}_{i+1}^n - \boldsymbol{F}_i^n}{h}\\
+		\boldsymbol{s}_i^{n+1} = \boldsymbol{s}_i^n - \Delta t \frac{\boldsymbol{F}_{i+1/2}^* - \boldsymbol{F}_{i-1/2}^*}{h}
+	\end{cases}
+\end{equation}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.7\textwidth]{img/richtmeyer.png}
+	\caption{Illustration of the Richtmeyer scheme.}
+	\label{fig:richtmeyer}
+\end{figure}
+\section{McCormack scheme}
+The McCormack scheme uses forward and backward decentered finite differences as predictor and corrector. The equations are the following:
+\begin{equation}
+	\begin{cases}
+		\boldsymbol{s}_i^* = \boldsymbol{s}_i^n - \Delta t \frac{\boldsymbol{F}_{i+1}^n-\boldsymbol{F}_i^n}{h}\\
+		\boldsymbol{s}_i^{n+1} = \frac{1}{2}\boldsymbol{s}_i^* + \frac{1}{2}\left(\boldsymbol{s}_i^n - \Delta t\frac{\boldsymbol{F}_i^*-\boldsymbol{F}_{i-1}^*}{h}\right) = \boldsymbol{s}_i^n - \frac{\Delta t}{2}\left(\frac{\boldsymbol{F}_{i+1}^n - \boldsymbol{F}_i^n}{h} + \frac{\boldsymbol{F}_i^*-\boldsymbol{F}_{i-1}^*}{h}\right)
+	\end{cases}
+\end{equation}
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.7\textwidth]{img/mccormack.png}
+	\caption{Illustration of the McCormack scheme.}
+	\label{fig:mccormack}
+\end{figure}
+\section{Complex physical domains}
+Consider a complex physical domain with a structured grid, and consider a rectangular computational domain such that $\xi_i=i$, $\eta_j=j$ and $\zeta_k=k$. We define the jacobian matrix of the transformation between the physical domain and the computational domain as 
+\begin{equation}
+	J = \begin{pmatrix}
+		\frac{\partial x}{\partial \xi} & \frac{\partial x}{\partial \eta} & \frac{\partial x}{\partial \zeta}\\
+		\frac{\partial y}{\partial \xi} & \frac{\partial y}{\partial \eta} & \frac{\partial y}{\partial \zeta}\\
+		\frac{\partial z}{\partial \xi} & \frac{\partial z}{\partial \eta} & \frac{\partial z}{\partial \zeta}\\
+	\end{pmatrix}\qquad \qquad 
+	J^{-1} = \begin{pmatrix}
+		\frac{\partial \xi}{\partial x} & \frac{\partial \xi}{\partial y} & \frac{\partial \xi}{\partial z}\\
+		\frac{\partial \eta}{\partial x} & \frac{\partial \eta}{\partial y} & \frac{\partial \eta}{\partial z}\\
+		\frac{\partial \zeta}{\partial x} & \frac{\partial \zeta}{\partial y} & \frac{\partial \zeta}{\partial z}\\
+	\end{pmatrix}
+\end{equation}
+If we have a hyperbolic system in the physical domain in conservative form \Cref{eq:hyperbolic}, in the computational domain it becomes 
+\begin{equation}
+	\begin{aligned}	
+		\frac{\partial}{\partial t}(D\boldsymbol{s}) &+ \frac{\partial}{\partial \xi} \left(D\left(\frac{\partial \xi}{\partial x}\boldsymbol{F}_x(\boldsymbol{s}) + \frac{\partial \xi}{\partial y}\boldsymbol{F}_y(\boldsymbol{s}) + \frac{\partial \xi}{\partial z}\boldsymbol{F}_z(\boldsymbol{s})+\frac{\partial \xi}{\partial t}\boldsymbol{s}\right)\right) \\
+		&+ \frac{\partial}{\partial \eta} \left(D\left(\frac{\partial \eta}{\partial x}\boldsymbol{F}_x(\boldsymbol{s}) + \frac{\partial \eta}{\partial y}\boldsymbol{F}_y(\boldsymbol{s}) + \frac{\partial \eta}{\partial z}\boldsymbol{F}_z(\boldsymbol{s})+\frac{\partial \eta}{\partial t}\boldsymbol{s}\right)\right)\\
+		&+ \frac{\partial}{\partial \xi} \left(D\left(\frac{\partial \zeta}{\partial x}\boldsymbol{F}_x(\boldsymbol{s}) + \frac{\partial \zeta}{\partial y}\boldsymbol{F}_y(\boldsymbol{s}) + \frac{\partial \zeta}{\partial z}\boldsymbol{F}_z(\boldsymbol{s})+\frac{\partial \zeta}{\partial t}\boldsymbol{s}\right)\right) = 0
+	\end{aligned}
+\end{equation}
+\section{Burgers equation}
+The Burgers equation is the simplest example of a nonlinear hyperbolic equation 
+\begin{equation}
+	\frac{\partial u}{\partial t} + u\frac{\partial u}{\partial x}=0 \Longleftrightarrow \frac{\partial u}{\partial t} + \frac{\partial}{\partial x}\left(\frac{u^2}{2}\right)=0
+\end{equation}
+The first equation is the advective form while the second is the conservative form. We define the momentum and the energy of the solution:
+\begin{equation}
+	\begin{cases}
+		I \coloneqq \int_a^b udx\\
+		E \coloneqq \int_a^b \frac{u^2}{2}dx
+	\end{cases}
+\end{equation}
+where $a,b$ are the bounds of the domain. The energy is conserved as long as $u$ is continuous and decreases as long as it becomes discontinuous. \\
+
+By the method of characteristics, they are $\frac{dx}{dt}=u(x,t)$ and $u$ is conserved along each characteristic as the equation is homogeneous. Then, the characteristics are straight lines of changing slope. 
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.6\textwidth]{img/characteristics_burgers.png}
+	\caption{Characteristics of the Burgers equation}
+	\label{fig:burgers-char}
+\end{figure}
+\begin{figure}[H]
+	\centering 
+	\begin{subfigure}{.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/burgers_solution.png}
+		\caption{Solution of the Burgers equation with sine initial condition. A discontinuity appears after a certain time.}
+		\label{fig:burgers-solution}
+	\end{subfigure}
+	\hfill 
+	\begin{subfigure}{.49\textwidth}
+		\centering 
+		\includegraphics[width=\textwidth]{img/burgers_energy.png}
+		\caption{The energy is conserved in the Burgers equation until the discontinuity appears.}
+		\label{fig:burgers-energy}
+	\end{subfigure}
+\end{figure}
+The shock at the discontinuity conserves the momentum but dissipates energy and creates entropy. 
+\subsection{Steady and unsteady discontinuities}
+The general conservative form is 
+\begin{equation}
+	\frac{\partial u}{\partial t}+\frac{\partial}{\partial x}(f(u))=0
+\end{equation}
+Consider a discontinuity with $u(x_g)=u_g$ on the left and $u(x_d)=u_d$. Then, 
+\begin{equation}
+	0=\int_{x_g}^{x_d}udx
+\end{equation}
+Then,
+\begin{equation}
+	\frac{d}{dt}\left(\int_{x_g}^{x_d}udx\right) = 0 \Longrightarrow \underbrace{\int_{x_g}^{x_d}\frac{\partial u}{\partial t}dx}_{ = -\int_{x_g}^{x_d}\frac{\partial}{\partial x}(f(u))dx=-(f(u_d)-f(u_g))} + u_d \underbrace{\frac{dx_d}{dt}}_{\frac{dx_c}{dt}} - u_g \underbrace{\frac{dx_g}{dt}}_{\frac{dx_c}{dt}}
+\end{equation}
+Then,
+\begin{equation}
+	(u_g-u_d)\frac{dx_c}{dt} = f(u_g)-f(u_d)
+\end{equation}
+where $\frac{dx_c}{dt}$ is the velocity of the discontinuity. This equation is the \textbf{jump condition}. For Burgers, it is 
+\begin{equation}
+	\frac{dx_c}{dt} = \frac{u_g+u_d}{2}
+\end{equation}
+\subsection{Simulation using finite differences}
+We can do three different schemes: 
+\begin{equation}
+	\begin{aligned}
+		\frac{du_i}{dt} = -u_i \frac{u_{i+1}-u_{i-1}}{2h}\\
+		\frac{du_i}{dt} = -\frac{1}{2}\frac{u_{i+1}^2-u_{i-1}^2}{2h}\\
+		\frac{du_i}{dt} = \frac{1}{3}(a) + \frac{2}{3}(b)
+	\end{aligned}
+\end{equation}
+By computing $\frac{dI}{dt}$ and $\frac{dE}{dt}$, we can show that all schemes conserve $I$, but only the third conserves energy (even though it should not because of the discontinuity). To make this discontinuity appear, we need some numerical diffusion in the region of the discontinuity, for example a nonlinear term that is negligible away from the discontinuity, e.g. 
+\begin{equation}
+	\frac{C}{h}\left(|u_{i+1}-u_i|(u_{i+1}-u_i)-|u_i-u_{i-1}|(u_i-u_{i-1})\right)
+\end{equation} 
+for some dimensionless coefficient $C>0$ calibrated by experimentations. The addition of this term does not modify the conservation of momentum. 
+\subsection{Explicit Euler scheme with upwinding}
+We need to check the cases of the sign of $u_i^n$ just like for the convection, as the velocity corresponds to $u$ here. 
+If $u_i^n>0$, then the explicit Euler scheme with upwinding yields 
+\begin{equation}
+	\begin{aligned}
+		\frac{u_i^{n+1}-u_i^n}{\Delta t} &= -u_i \frac{u_i^n(u_i^n - u_{i-1}^n)}{h}\\
+		&= -(u_i^n + u_{i-1}^n)\frac{u_i^n - u_{i-1}^n}{2h}
+	\end{aligned}
+\end{equation}
+If $u_i^n<0$, then 
+\begin{equation}
+	\begin{aligned}
+		\frac{u_i^{n+1}-u_i^n}{\Delta t} &= -u_i^n\frac{u_{i+1}^n - u_i^n}{h} \\
+		&= -(u_{i+1}^n + u_i^n) \frac{u_{i+1}^n-u_i^n}{h}
+	\end{aligned}
+\end{equation}
+This scheme avoid the oscillations before and after the discontinuity that appeared in the previous scheme. 
+\chapter{Numerical methods for incompressible flows}
+Let us consider single phase flows: $\rho=\rho_0$. Then, the Navier-Stokes equations are 
+\begin{equation}
+	\begin{aligned}
+		\nabla \cdot \boldsymbol{u}&=0\\
+		\rho_0 \frac{D\boldsymbol{u}}{Dt} &= -\nabla p + \rho_0\boldsymbol{g} + \nabla \cdot \tau \\
+		\rho_0c\frac{DT}{Dt} &=\Phi - \nabla \cdot \boldsymbol{q}
+	\end{aligned}
+\end{equation}
+where the first equation comes from continuity and is a constraint, while the others are the conservation of momentum and energy of the system. $\tau=2\mu d = 2\mu \frac{\nabla \boldsymbol{u}+\nabla \boldsymbol{u}^T}{2}$ is the shear stress tensor, $\boldsymbol{q}=-k \nabla T$ the heat flux, $c$ the specific heat and $\Phi=\tau\cdot d>0$ the viscous dissipation. As $\boldsymbol{g}=-g\Hat{\boldsymbol{e}}_z$, we obtain 
+\begin{equation}
+	\begin{aligned}
+		\rho_0 \frac{D\boldsymbol{u}}{Dt} &= -\nabla \left(p+\rho_0W\right) + \nabla \cdot (2\mu d)\\
+		\rho_0c\frac{DT}{Dt} &= 2\mu d\cdot d + \nabla \cdot (k\nabla T)
+	\end{aligned}
+\end{equation}
+In general, the parameters depend on the temperature. If we consider that $\mu$ is not, then we can solve the fluid mechanics without having to solve the temperature. In that case, we have 
+\begin{equation}
+\begin{aligned}
+\nabla \cdot \boldsymbol{u} &= 0 \\
+\rho_0 \frac{D\boldsymbol{u}}{Dt} &= -\nabla \left(p+\rho_0 W\right) + \mu \nabla^2 \boldsymbol{u}
+\end{aligned}
+\end{equation}
+We define the kinematic pressure $P\coloneqq \frac{p+\rho_0W}{\rho_0}$ and the kinematic viscosity $\nu = \mu/\rho$. This yields 
+\begin{equation}\label{eq:NS}
+	\boxed{
+		\begin{aligned}
+			\nabla \cdot \boldsymbol{u}&=0\\
+			\frac{D\boldsymbol{u}}{Dt} &= - \nabla P + \nu \nabla^2 \boldsymbol{u}
+		\end{aligned}
+	}
+\end{equation}
+With the advective form 
+\begin{equation}
+	\frac{D\boldsymbol{u}}{Dt} = \frac{\partial \boldsymbol{u}}{\partial t} + (\nabla \boldsymbol{u})\cdot \boldsymbol{u} = \frac{\partial \boldsymbol{u}}{\partial t} + A
+\end{equation}
+and the divergence form 
+\begin{equation}
+	\frac{D\boldsymbol{u}}{Dt} = \frac{\partial \boldsymbol{u}}{\partial t} + (\boldsymbol{u}\cdot \nabla)\boldsymbol{u} = \frac{\partial \boldsymbol{u}}{\partial t} + A 
+\end{equation}
+\begin{itemize}
+	\item [$\to$] Note: both formulations are physically equivalent, but not numerically. 
+\end{itemize}
+\section{2D flows}
+For 2D flows, the Navier-Stokes equations from \Cref{eq:NS}
+\begin{equation}
+	\begin{aligned}
+		\frac{\partial u}{\partial x} + \frac{\partial v}{\partial y} &= 0 \\
+		\frac{\partial u}{\partial t} + a + \frac{\partial P}{\partial x} &= \nu \left(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}\right)\\
+		\frac{\partial v}{\partial t} + b + \frac{\partial P}{\partial y} &= \nu \left(\frac{\partial^2v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2}\right)
+	\end{aligned}
+\end{equation}
+where $a$ and $b$ are 
+\begin{center}
+	\begin{tabular}{c|c|c}
+		& Advective form & Divergence form\\\hline 
+		$a$ & $u\frac{\partial u}{\partial x} + v \frac{\partial u}{\partial y}$ & $\frac{\partial}{\partial x}(uu) + \frac{\partial}{\partial y}(uv)$\\
+		$b$ & $u\frac{\partial v}{\partial x} + v\frac{\partial v}{\partial y}$ & $\frac{\partial}{\partial x}(vu) + \frac{\partial }{\partial y}(vv)$
+	\end{tabular}
+\end{center}
+\begin{itemize}
+	\item [$\to$] Note: For any vector $a$, $\nabla \times (\nabla \times a)=-\nabla \cdot(\nabla a) + \nabla (\nabla \cdot a)$. Here, because of incompressibility, $\nabla\times(\nabla\times u) = -\nabla \cdot(\nabla u) + \nabla \underbrace{(\nabla \cdot u)}_{=0}$. This gives $\nabla^2 u = -\nabla \times \omega$, for $\omega\coloneqq \nabla \times u$ the vorticity. 
+	\item [$\to$] Note: the initial and boundary conditions must be consistent with the constraint $\nabla \cdot \boldsymbol{u}=0$.
+\end{itemize}
+Because of the incompressibility constraint, the problem is elliptic: all points are connected to all other points. 
+\subsection{Iterative methods for the case of steady flows}
+We wish to obtain the solution of the following system:
+\begin{equation}
+	\begin{aligned}
+		\boldsymbol{A} + \nabla P = \nu \nabla^2 \boldsymbol{u}\\
+		\nabla \cdot \boldsymbol{u}=0
+	\end{aligned}
+\end{equation}
+The Chorin method consists in adding a pseudo-time $\tau$ and iterate until convergence of the system:
+\begin{equation}
+	\begin{aligned}
+		\frac{\partial \boldsymbol{u}}{\partial \tau}+ \boldsymbol{A} + \nabla P &= \nu \nabla^2 \boldsymbol{u}\\
+		\frac{\partial P}{\partial \tau} + c_0^2 \nabla \cdot \boldsymbol{u}&=0
+	\end{aligned}
+\end{equation}
+The parameter $c_0^2$ has dimensions $[L^2/T^2]$. It is a velocity and its choice should be made in relation to the characteristic velocity of the flow. 
+\subsection{Discretization}
+The discretization is done using a staggered "marker and cell" (MAC) mesh.
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=.6\textwidth]{img/mac_mesh.pdf}
+	\caption{Discretization of the field to solve steady-state Navier-Stokes in 2D.}
+\end{figure}
+The Euler explicit iteration is
+\begin{equation}
+	\begin{aligned}
+		\frac{u_{i+1/2,j}^{n+1} - u_{i+1/2,j}^n}{\Delta t} &+ a_{i+1/2,j}^n + \frac{P_{i+1,j}^n - P_{i,j}^n}{\Delta x}\\& = \nu \left(\frac{u_{i+3/2,j}^n - 2u_{i+1/2,j}^n + u_{i-1/2,j}^n}{(\Delta x)^2} + \frac{u_{i+1/2,j+1}^n - 2u_{i+1/2,j}^n + u_{i+1/2,j-1}^n}{(\Delta y)^2}\right)\\
+		\frac{v_{i,j+1/2}^{n+1} - v_{i,j+1/2}^n}{\Delta t} &+ b_{i,j+1/2}^n + \frac{P_{i,j+1}^n - P_{i,j}^n}{\Delta y}\\& = \nu \left(\frac{v_{i+1,j+1/2}^n - 2v_{i,j+1/2}^n + v_{i-1,j+1/2}^n}{(\Delta x)^2} + \frac{v_{i,j+3/2}^n - 2v_{i,j+1/2}^n + v_{i,j-1/2}^n}{(\Delta y)^2}\right)
+	\end{aligned}
+\end{equation}
+To impose the initial and boundary conditions on the MAC mesh, we add ghost points on the outside of the physical domain. Furthermore, as $P$ is defined in the middle of the cells, there is no boundary condition on it. We need to impose the ghost value so that the first and second derivative of the velocity is accurate to $\mathcal{O}((\Delta x)^2)$ so that the solution on the rest of the grid can be accurate too. Let us denote $v_0$ the value of the ghost point. Then, by the Taylor series, we have 
+\begin{center}
+\renewcommand{\arraystretch}{2.0}
+\setlength{\tabcolsep}{14pt}
+\begin{tabular}{c|c|c}
+$v_0$ 
+& $\left.\frac{\partial v}{\partial x}\right|_1 = \frac{v_2-v_0}{2\Delta x}$ 
+& $\left.\frac{\partial^2 v}{\partial x^2}\right|_1 = \frac{v_2 - 2v_1 + v_0}{(\Delta x)^2}$ \\ 
+\hline \hline
+$-(v_1-2v_\Gamma)$ 
+& $\mathcal{O}(\Delta x)$ 
+& Incorrect \\ 
+\hline
+$\frac{1}{3}\left(v_2 - 6v_1 + 8v_\Gamma\right)$ 
+& $\mathcal{O}((\Delta x)^2)$ 
+& $\mathcal{O}(\Delta x)$ \\ 
+\hline
+$-\frac{1}{5} \left(v_3 - 5v_2 + 15v_1 - 16v_\Gamma\right)$ 
+& $\mathcal{O}((\Delta x)^2)$ 
+& $\mathcal{O}((\Delta x)^2)$
+\end{tabular}
+\end{center}
+The equation for the pressure in steady state incompressible flows is 
+\begin{equation}
+	\nabla^2 P = -\nabla \cdot \boldsymbol{A}
+\end{equation}
+\subsection{Methods for unsteady flows}
+The following explicit scheme of order $\mathcal{O}(\Delta t)$ 
+\begin{equation}
+	\begin{cases}
+		\frac{\boldsymbol{u}^*-\boldsymbol{u}^n}{\Delta t} + \boldsymbol{A} = \nu \nabla^2 \boldsymbol{u}^n\\
+		\frac{\boldsymbol{u}^{n+1}-\boldsymbol{u}^*}{\Delta t} + \nabla P = 0 \\
+		\nabla \cdot \boldsymbol{u}^{n+1} = 0
+	\end{cases}
+\end{equation}
+yields the following Poisson equation 
+\begin{equation}
+	\nabla^2 P = \frac{1}{\Delta t} \nabla \cdot \boldsymbol{u}^*
+\end{equation}
 \end{document}
