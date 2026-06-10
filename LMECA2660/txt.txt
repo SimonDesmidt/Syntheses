@@ -1,0 +1,52 @@
+CM1 : 
+------
+pp1-2: Finite differences with uniform grid 
+pp3-12: Operators 
+pp13-19: Convection in 1D
+pp20-24: Diffusion in 1D
+
+CM 2 : 
+-------
+pp1-7: Convection in 1D
+pp8-13: Convection-diffusion in 1D
+pp14-15: Convection in 2D
+pp16-17: Convection-diffusion in 2D
+
+CM 3 : 
+-------
+pp1-20: Numerical integration schemes for ODEs
+pp21-40: Multistep methods
+
+CM 4 : 
+-------
+pp1-9: Euler equations for compressible flows 
+
+CM 5 : 
+-------
+pp1-7: Hyperbolic systems 
+pp8-9: Generalization of hyperbolic systems 
+pp10-18: Complex physical domains 
+pp19-20: ADI 
+
+CM 6 : 
+-------
+Same as CM 5 
+
+CM 7 : 
+-------
+pp1-28: Burgers 
+
+CM 8 : 
+-------
+pp1-5: Introduction to incompressible flows
+pp6-18: Discretization
+p19: ADI
+pp20-24: Unsteady flows 
+pp25-28: Body
+pp29-36: Velocity-Vorticity formulation 
+pp37-38: ADI
+
+CM 9 :
+-------
+pp1-18: Diffusion 
+pp19-24: ADI 

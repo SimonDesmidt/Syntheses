@@ -860,5 +860,54 @@ Then, the system of equations is
 \begin{equation}
 	\frac{\partial }{\partial t}\boldsymbol{s} + \frac{\partial }{\partial x} \boldsymbol{F}_x(\boldsymbol{s}) + \frac{\partial }{\partial y} \boldsymbol{F}_y(\boldsymbol{s}) + \frac{\partial }{\partial z} \boldsymbol{F}_z(\boldsymbol{s}) = \boldsymbol{r}(\boldsymbol{s}) \in \R^5
 \end{equation}
-In 2D, the equation middle equation contains only two equations and all terms in $z$ are 0. In 1D, it is further reduced in the same manner. 
+In 2D, the equation middle equation contains only two equations and all terms in $z$ are 0. In 1D, it is further reduced in the same manner. \\ In 2D, by the chain rule, we can express this: 
+\begin{equation}
+	\frac{\partial \boldsymbol{s}}{\partial t} + \frac{\partial \boldsymbol{F}_x(\boldsymbol{s})}{\partial \boldsymbol{s}}\frac{\partial \boldsymbol{s}}{\partial x} + \frac{\partial \boldsymbol{F}_y(\boldsymbol{s})}{\partial \boldsymbol{s}} \frac{\partial \boldsymbol{s}}{\partial y} = 0
+\end{equation}
+where we define the Jacobian matrices $A_x(\boldsymbol{s})\coloneqq \frac{\partial \boldsymbol{F}_x(\boldsymbol{s})}{\partial \boldsymbol{s}}$ and $A_y(\boldsymbol{s})\coloneqq \frac{\partial \boldsymbol{F}_y(\boldsymbol{s})}{\partial \boldsymbol{s}}$. 
+
+In 1D, the Jacobian matrix $A(\boldsymbol{s})$ has three real and distinct eigenvalues: 
+\begin{equation}
+	\left.\frac{dx}{dt}\right|_1 = \mu_1 = u-c \qquad \left.\frac{dx}{dt}\right|_2 = \mu_2 = u \qquad \left.\frac{dx}{dt}\right|_3 = \mu_3 = u+c 
+\end{equation}
+where $c$ is the speed of sound defined by $c^2 = \left.\frac{\partial p}{\partial \rho}\right|_S = \gamma \frac{p}{\rho}=\gamma RT$ (last expressions for perfect gas). By the eigenvalues, the system is thus hyperbolic. 
+\begin{itemize}
+	\item In subsonic flows, $u<c$ and two characteristics go the right while one goes to the left. Therefore, one of the four boundary conditions is applied at the outflow while the other 3 are applied at the inflow. 
+	\item In supersonic flows, $u>c$ and all characteristics go in the same direction. Then, all conditions are applied at the inflow. 
+\end{itemize}
+\section{Isentropic 1D flow}
+In isentropic 1D flows, we have the following relation between pressure and density: $dp=c^2d\rho$ from the relation $c^2=\left.\frac{\partial p}{\partial \rho}\right|_S$. The equations become 
+\begin{equation}
+	\begin{aligned}
+		\frac{\partial \rho}{\partial t} + \frac{\partial }{\partial x}(\rho u) &= 0 \\
+		\frac{\partial}{\partial t}(\rho u) + \frac{\partial}{\partial x}(\rho u^2)&=-\frac{\partial p}{\partial x} = -c^2 \frac{\partial \rho}{\partial x}
+	\end{aligned}
+\end{equation}
+This gives a first order ODE system for $\rho$ and $u$ on which we can use the method of characteristics. Those characteristics are $\frac{dx}{dt}=u-c$ and $\frac{dx}{dt} = u+c$, along which the quantities $\frac{(\gamma-1)}{2}u-c$ and $\frac{(\gamma-1)}{2}u+c$ are conserved respectively. They are called the Riemann invariants. \\
+
+Using the Jacobian matrices, the equations become
+\begin{equation}
+	\frac{\partial}{\partial t}\begin{pmatrix}
+		\rho\\ \rho u
+	\end{pmatrix} + \begin{pmatrix}
+		0 & 1 \\ c^2-u^2 & 2u
+	\end{pmatrix} \frac{\partial }{\partial x}\begin{pmatrix}
+		\rho\\ \rho u
+	\end{pmatrix} = 0
+\end{equation}
+\subsection{Boundary conditions for 1D flows}
+For a subsonic inflow, we can impose the enthalpy and entropy at the inflow: 
+\begin{equation}
+	\begin{cases}
+		H_{0i} = \left(H+\frac{u^2}{2}\right)_i = \left(H+\frac{u^2}{2}\right)_{\infty} = H_{0\infty} \\
+		S_{0i} = S_{0\infty} \Longleftrightarrow \frac{p_i}{p_\infty} = \left(\frac{\rho_i}{\rho_\infty}\right)^\gamma 
+	\end{cases}
+\end{equation}
+The subscript $i$ is for inflow and $\infty$ is for upstream. From those conditions, the density $\rho$ is extrapolated from the interior of the computational domain: $\rho_1=\rho_2$.\\
+
+For the corresponding subsonic outflow, we impose a single condition: for example the pressure $p_N=p_d$, for $N$ the index of the last point of the domain, and $d$ for downstream. Then $\rho u$ and $\rho U_0$ are extrapolated from the previous value of the computational domain. Any of the three values can be imposed depending on the situation, but that changes of course the solution. \\
+
+For a supersonic flow, everything is imposed at the inlet and everything is extrapolated at the outlet. 
+\chapter{Hyperbolic systems}
+
 \end{document}
