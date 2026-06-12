@@ -1265,4 +1265,181 @@ yields the following Poisson equation
 \begin{equation}
 	\nabla^2 P = \frac{1}{\Delta t} \nabla \cdot \boldsymbol{u}^*
 \end{equation}
+The discretization of this equation on the MAC mesh is equivalent to this:
+\begin{equation}
+	\frac{\boldsymbol{u}^{n+1} - \boldsymbol{u}^n}{\Delta t} + \boldsymbol{A}^n + \nabla P = \nu \nabla^2 \boldsymbol{u}^n
+\end{equation}
+and the accuracy is thus $\mathcal{O}(\Delta t)$. There also exists a semi-implicit scheme: 
+\begin{equation}
+	\frac{\boldsymbol{u}^{n+1}-\boldsymbol{u}^n}{\Delta t} + \underbrace{\left(\frac{3}{2}\boldsymbol{A}^n - \frac{1}{2}\boldsymbol{A}^{n-1}\right)}_{\text{Adams-Bashforth (explicit)}} + \nabla P = \nu \underbrace{\left(\frac{1}{2}\nabla^2 \boldsymbol{u}^{n+1} + \frac{1}{2}\nabla^2 \boldsymbol{u}^n\right)}_{\text{Crank-Nicholson (implicit)}}
+\end{equation}
+and it always needs $\nabla \cdot \boldsymbol{u}^{n+1}=0$. This scheme is $\mathcal{O}((\Delta t)^2)$. 
+\section{Penalization method for a body intersecting the grid}
+If a body of any shape is intersecting the grid, then we add a penalization term to the Navier-Stokes equations:
+\begin{equation}\label{eq:penalize}
+	\frac{\boldsymbol{u}^{n+1}-\boldsymbol{u}^*}{\Delta t} + \boldsymbol{A} = \nu \nabla^2 \boldsymbol{u}^n - \chi \frac{\boldsymbol{u}^*-\boldsymbol{u}_b^{n+1}}{\Delta \tau}
+\end{equation}
+where $\boldsymbol{u}_b^{n+1}$ is the velocity field inside the body and $\chi$ is a mask that is 1 inside the body and 0 outside. \\
+
+Consider first an incompressible body (no change of volum). Inside the body, we can rewrite it as 
+\begin{equation}
+	\boldsymbol{u}^* = \frac{\Delta t}{1+\frac{\Delta t}{\Delta \tau}}(\nu \nabla^2 \boldsymbol{u}^n-\boldsymbol{A}) + \frac{1}{1+\frac{\Delta t}{\Delta \tau}}\boldsymbol{u}^n+ \frac{\frac{\Delta t}{\Delta \tau}}{1+\frac{\Delta t}{\Delta \tau}} \boldsymbol{u}^{n+1}_b
+\end{equation}
+and the amplification factor is $\rho=\frac{1}{1+\Delta t/\Delta \tau}$. It is smaller than 1 for any $\Delta t/\Delta \tau$ and this method is thus unconditionnally stable. For large $\Delta t/\Delta \tau$, the amplification factor tends to 0, as does the factor on $\boldsymbol{u}^n$, and the factor in front of $\boldsymbol{u}^{n+1}_b$ tends to 1, meaning that refinement leads to the exact solution. 
+\subsection{Explicit Euler on the penalization}
+If we use an explicit Euler scheme on the penalization term, we get 
+\begin{equation}
+	\boldsymbol{u}^* = \Delta t(\nu \nabla^2 \boldsymbol{u}^n-\boldsymbol{A}) + \boldsymbol{u}^n - \frac{\Delta t}{\Delta \tau}\left(\boldsymbol{u}^n - \boldsymbol{u}^{n+1}_b\right)
+\end{equation}
+yielding 
+\begin{equation}
+	\boldsymbol{u}^* = \left(1-\frac{\Delta t}{\Delta \tau}\right) \boldsymbol{u}^n + \Delta t(\nu \nabla^2 \boldsymbol{u}^n-\boldsymbol{A}) + \frac{\Delta t}{\Delta \tau}\boldsymbol{u}^{n+1}_b
+\end{equation}
+Here, the amplification factor is $\rho=1-\frac{\Delta t}{\Delta \tau}$, meaning that we need $\Delta t/\Delta \tau \le 2$ for stability. The optimal choice is $\Delta t= \Delta \tau$ for $\rho=0$. This still leaves an error term $\Delta t(\nu \nabla^2 \boldsymbol{u}^n-\boldsymbol{A})$, called the Navier-Stokes residual inside the body. It goes to 0 only when $\Delta t$ does as well. 
+\subsection{Crank Nicholson on the penalization}
+\begin{equation}
+	\frac{\boldsymbol{u}^* - \boldsymbol{u}^n}{\Delta t} = (\nu \nabla^2 \boldsymbol{u}^n-\boldsymbol{A}) - \chi \frac{\frac{\boldsymbol{u}^* + \boldsymbol{u}^*}{2}-\boldsymbol{u}_b^{n+1}}{\Delta \tau}
+\end{equation}
+This yields 
+\begin{equation}
+	\left(1+\frac{\chi}{2}\frac{\Delta t}{\Delta \tau}\right) \boldsymbol{u}^* = \left(1-\frac{\chi}{2}\frac{\Delta t}{\Delta \tau}\right)\boldsymbol{u}^n + \Delta t(\nu \nabla^2 \boldsymbol{u}^n-\boldsymbol{A}) + \frac{\chi}{2}\frac{\Delta t}{\Delta \tau} \boldsymbol{u}_b^{n+1}
+\end{equation}
+Then, inside the body, 
+\begin{equation}
+	\rho = \frac{1-\frac{1}{2}\frac{\Delta t}{\Delta \tau}}{1+\frac{1}{2}\frac{\Delta t}{\Delta \tau}}
+\end{equation}
+and this is unconditionnally stable, with optimal choice $\Delta t/\Delta \tau=2$. There still is a residual error, and the amplification factor can be negative, implying a non monotonic behaviour. This is not good, and $\rho$ even tends to -1 for large $\Delta t/\Delta \tau$. 
+\subsection{Compressible body}
+For a compressible body, $\nabla \cdot \boldsymbol{u}_b\neq 0$. After \Cref{eq:penalize}, we have to reproject in such a way that 
+\begin{equation}
+	\nabla \cdot \boldsymbol{u}^{n+1} = 
+	\begin{cases}
+		0 &\text{ ouside the body}\\
+		\nabla \cdot \boldsymbol{u}^{n+1}_b &\text{ inside the body}
+	\end{cases} \Longleftrightarrow \nabla \cdot \boldsymbol{u}^{n+1} = \chi \nabla \cdot \boldsymbol{u}_b^{n+1}
+\end{equation}
+\section{Vorticity-velocity formulation}
+The vorticity-velocity formulation of the Navier-Stokes equations reads
+\begin{equation}
+	\begin{cases}
+		\frac{\partial \boldsymbol{u}}{\partial t} + \boldsymbol{A} + \nabla P = \nu \nabla^2 \boldsymbol{u}\\
+		\nabla \cdot \boldsymbol{\omega} = 0
+	\end{cases}
+\end{equation}
+where $\boldsymbol{\omega} = \nabla \times \boldsymbol{u}$ and 
+\begin{equation}
+	\boldsymbol{A} = (\nabla \boldsymbol{u})\cdot \boldsymbol{u} = (\boldsymbol{u}\cdot \nabla)\boldsymbol{u} = \boldsymbol{\omega} \times \boldsymbol{u} + \nabla (\boldsymbol{u}\cdot \boldsymbol{u})/2
+\end{equation}
+the two first forms were already used previously. The vorticity-velocity formulation has an advective form:
+\begin{equation}
+	\frac{\partial \boldsymbol{\omega}}{\partial t} + (\nabla \boldsymbol{\omega}) \cdot \boldsymbol{u} = (\nabla \boldsymbol{u}) \cdot \boldsymbol{\omega} + \nu \nabla^2 \boldsymbol{\omega}
+\end{equation}
+where the left-hand side corresponds to $\frac{D\boldsymbol{\omega}}{Dt}$ and the first right-hand side is the vortex stretching term. This one is 0 in 2D because $\nabla \boldsymbol{u}$ is orthogonal to $\nabla \times \boldsymbol{u}$. It is obtained by taking the curl of the initial equation. This advective form can be written as the divergence form:
+\begin{equation}
+	\frac{\partial\boldsymbol{\omega}}{\partial t} + \nabla\cdot (\boldsymbol{\omega} \circ \boldsymbol{u}) = \nabla \cdot (\boldsymbol{u}\circ \boldsymbol{\omega}) + \nu \nabla^2 \boldsymbol{\omega}
+\end{equation} 
+where $\circ$ is the Hadamart product, i.e. elementwise. \\
+From the incompressibility constraint, we can define the streamfunction $\psi$ such that $\boldsymbol{u} = \nabla \times \boldsymbol{\psi}$, that we can choose such that $\nabla \cdot \boldsymbol{\psi}=0$ (choice of Lorentz). Then, the Navier-Stokes equations in steady-state are 
+\begin{equation}
+	\nabla^2\boldsymbol{\psi} = -\boldsymbol{\omega}
+\end{equation}
+In the particular case of 2D flows, this is a single equation $\nabla^2 \psi = -\omega$. Furthermore, on a MAC mesh, the pressure is defined in the middle of the cells, $u$ and $v$ on the medians of the cells and $\omega$ at the corners. 
+\begin{itemize}
+	\item [$\to$] The pressure and velocities cannot be defined at the same point, this is why the pressure is at the center of the cells.
+\end{itemize}
+\subsection{Iterative method for the case of steady flows}
+We want to find the solution of 
+\begin{equation}
+	\begin{cases}
+		J = \nu \nabla^2 \omega \\
+		\nabla^2 \psi = -\omega
+	\end{cases}
+\end{equation}
+with $J=\frac{\partial }{\partial x}(\omega u) + \frac{\partial}{\partial y}(\omega v)$. Once again, we use a pseudo-time to solve the system iteratively:
+\begin{equation}
+	\begin{aligned}
+		\frac{\partial \omega}{\partial \tau} + J = \nu \nabla^2 \omega 
+		\frac{\partial \psi}{\partial \tau} = \alpha (\nabla^2 \psi + \omega)
+	\end{aligned}
+\end{equation}
+The parameter $\alpha$ is a diffusivity coefficient that has to be chosen in relation to $\nu$. \\
+
+By definition of $\psi$, the boundary conditions can only be applied on $\frac{\partial^2 \psi}{\partial y^2}$. By Taylor series,
+\begin{equation}
+	\frac{\partial^2\psi}{\partial y^2}(x,0) = \frac{2}{(\Delta y)^2} \left(\psi(x,\Delta y)-\psi(x,0)\right) - \frac{2}{\Delta y} \frac{\partial \psi}{\partial y}(x,0)
+\end{equation}
+This gives 
+\begin{equation}
+	\omega(x,0) = -\frac{\partial^2 \psi}{\partial x^2}(x,0) - \frac{2}{(\Delta y)^2}(\psi(x,\Delta y)-\psi(x,0)) + \frac{2}{\Delta y}\frac{\partial \psi}{\partial y}(x,0) + \mathcal{O}(\Delta y)
+\end{equation}
+The error is thus first order, hence worse than the method. We can do better by using two levels: Taylor developments for $\psi(x,\Delta y)$ and $\psi(x, 2\Delta y)$. This yields an error of order 2, but uses information far from the boundary. \\
+Another method consists in using the Taylor series of $\psi(x,\Delta y)$ and leveraging the equation $\nabla^2 \psi = -\omega$ by re-expressing the third derivative of $\psi$ w.r.t. $y$. This yields a very long expression of accuracy $\mathcal{O}((\Delta y)^2)$. 
+\chapter{Alternate Direction Implicit}
+\section{Generalized Crank-Nicholson}
+Consider the generalized (implicit) Crank-Nicholson scheme applied on the diffusion equation. 
+\begin{equation}
+	\begin{aligned}
+		\frac{u^{n+1}-u^n}{\Delta t} &= \epsilon \left(\frac{\delta_x^2}{(\Delta x)^2} + \frac{\delta_y^2}{(\Delta y)^2}\right) \left(\theta u^{n+1} + (1-\theta)u^n\right)\\
+		\Longleftrightarrow u^{n+1} &= u^n + (r_x \delta_x^2 + r_y \delta_y^2) \left(\theta u^{n+1} + (1-\theta)u^n\right)
+	\end{aligned}
+\end{equation}
+where the $\delta^2$ operator is the second order derivative: $\delta_x^2 u^n = u^n_{i+1}-2u_i^n + u_{i-1}^n$, and $r_x\coloneqq \frac{\epsilon \Delta t}{(\Delta x)^2}$. It yields the linear system 
+\begin{equation}\label{eq:CN}
+	\left(I-\theta (r_x\delta_x^2 + r_y \delta_y^2)\right) u^{n+1} = \left(I+(1-\theta)(r_x\delta_x^2 + r_y \delta_y^2)\right)u^n
+\end{equation}
+This means that $u_{i,j}^{n+1}$ is coupled with its 4 neighbors. As the $u_{i,j}$ matrix is stored as a vector, it is not convenient to solve numerically. \\
+\section{ADI methods}
+The ADI methods consist in working in directions $x$ and $y$ sequentially:
+\begin{enumerate}
+	\item \begin{equation}
+		\frac{u^*-u^n}{\Delta t/2} = \epsilon \left(\frac{\delta_x^2}{(\Delta x)^2}u^* + \frac{\delta_y^2}{(\Delta y)^2}u^n\right)
+	\end{equation}
+	where $u^*$ is an approximation of $u^{n+1/2}$. This means that there is a tridiagonal system in direction $i$ for each value of $j$. A tridiagonal system can be solved in $\mathcal{O}(n)$ with the Thomas algorithm. 
+	\item \begin{equation}
+		\frac{u^{n+1}- u^*}{\Delta t/2} = \epsilon \left(\frac{\delta_x^2}{(\Delta x)^2}u^* + \frac{\delta_y^2}{(\Delta y)^2}u^{n+1}\right)
+	\end{equation}
+	From this, the system is explicit in $x$ and implicit in $y$. 
+\end{enumerate}
+Those two steps are equivalent to 
+\begin{equation}
+	\begin{aligned}
+		\left(I-\frac{1}{2}r_x\delta_x^2\right)\left(I-\frac{1}{2}r_y\delta y^2\right)u^{n+1} &= \left(I-\frac{1}{2}r_x\delta_x^2\right)\left(I+\frac{1}{2}r_x\delta x^2\right)u^*\\
+		&= \left(I+\frac{1}{2}r_x\delta x^2\right)\left(I-\frac{1}{2}r_x\delta_x^2\right)u^*\\
+		&= \left(I+\frac{1}{2}r_x\delta_x^2\right)\left(I+\frac{1}{2}r_y\delta y^2\right)u^n
+	\end{aligned}
+\end{equation}
+This gives 
+\begin{equation}
+	\left(I-\frac{1}{2}\left(r_x\delta_x^2 + r_y\delta_y^2\right) + \frac{1}{4}r_xr_y\delta_x^2\delta_y^2\right)u^{n+1} = \left(I+\frac{1}{2}\left(r_x\delta_x^2 + r_y\delta_y^2\right) + \frac{1}{4}r_xr_y\delta_x^2\delta_y^2\right)u^{n}
+\end{equation}
+This is the Crank-Nicholson scheme with one more error term: $\frac{1}{4}r_xr_y\delta_x^2 \delta_y^2(u^{n+1}-u^n)\approx \frac{1}{4}r_xr_y\Delta t\delta_x^2\delta_y^2\left(\left.\frac{\partial u}{\partial t}\right|^{n+1/2}\right)$. The scheme is thus still of order $\mathcal{O}((\Delta t)^2)$. \\
+The exact solution is of the form 
+\begin{equation}
+	u_{i,j}^n = \sum_{k,\ell} \rho_{k,\ell}^n e^{i(kx_i+\ell y_j)} A_{k,\ell}(0)
+\end{equation} 
+Both steps above have an amplification factor such that $u_{i,j}^{n+1} = \xi_1\xi_2 u_{i,j}^n$ and $\rho^{n+1} = \xi_1\xi_2\rho^n$. From the scheme, we obtain 
+\begin{equation}
+	\begin{cases}
+		\xi_1 = \frac{1-2r_y\sin^2\left(\frac{\ell \Delta y}{2}\right)}{1+2r_x \sin^2\left(\frac{k\Delta x}{2}\right)} = \frac{1-a_y/2}{1+a_x/2} = \frac{1+\lambda_y\Delta t/2}{1-\lambda_x\Delta t/2} \qquad a_x = 4r_x \sin^2\left(\frac{k\Delta x}{2}\right) = -\lambda_x\Delta t \\
+		\xi_2 = \frac{1-2r_x\sin^2\left(\frac{k \Delta x}{2}\right)}{1+2r_y \sin^2\left(\frac{\ell\Delta y}{2}\right)} = \frac{1-a_x/2}{1+a_y/2} = \frac{1+\lambda_x\Delta t/2}{1-\lambda_y\Delta t/2} \qquad a_y = 4r_y \sin^2\left(\frac{\ell\Delta y}{2}\right) = -\lambda_y\Delta t \\
+	\end{cases}
+\end{equation}
+We can then re-express the global amplification factor:
+\begin{equation}
+	\rho = \xi_2\xi_1 = \left(\frac{1-a_x/2}{1+a_y/2}\right)\left(\frac{1-a_y/2}{1+a_x/2}\right) = \underbrace{\left(\frac{1-a_x/2}{1+a_x/2}\right)}_{=\rho_x} \underbrace{\left(\frac{1-a_y/2}{1+a_y/2}\right)}_{=\rho_y}
+\end{equation}
+$\rho_x$ corresponds to applying the Crank-Nicholson scheme in the direction $x$, and $\rho_y$ in the direction $y$. As CN is unconditionnally stable ($|\rho_x|, |\rho_y|\le 1$) so is the global scheme. \\
+To apply the boundary conditions, we need to derive an expression to use for $u^*$ so as to preserve the order of the scheme. Let us consider the case where $u$ is given on the wall $x=0$. Then, from \Cref{eq:CN} with $\theta=\frac{1}{2}$, 
+\begin{equation}
+	\frac{1}{2}r_x\delta_x^2 u^* = u^* - \left(I+\frac{1}{2}r_y\delta_y^2\right)
+\end{equation}
+and thus 
+\begin{equation}
+	\left(I-\frac{1}{2}r_y\delta_y^2\right)u^{n+1} = u^*+ \left(u^* -\left(I+\frac{1}{2}r_y\delta_y^2\right)u^n\right) 
+\end{equation}
+This yields 
+\begin{equation}
+	u^* = \frac{1}{2}\left(u^{n+1}-u^n\right) - \frac{1}{2}r_y\delta_y^2\left(u^{n+1}-u^n\right)
+\end{equation}
+There exist many different ADI methods that separate the $x$ and $y$ components to improve efficiency. The main idea is the same for all of them. 
 \end{document}
