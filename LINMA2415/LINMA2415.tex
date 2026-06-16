@@ -267,10 +267,10 @@ Like the production of electricity, the consumption of electricity also has its 
     \textbf{Marginal benefit} (€/MWh) is the benefit of consuming one additional megawatt-hour of electricity. It is the derivative of the consumer benefit with respect to the power consumption.
 \end{definition}
 \begin{definition}
-    \textbf{Inverse demand / marginal benefit function} mapps power consumption $Q$ to marginal benefit $MB(Q)$. 
+    \textbf{Inverse demand / marginal benefit function} maps power consumption $Q$ to marginal benefit $MB(Q)$. 
 \end{definition}
 \begin{definition}
-    \textbf{Demand function} mapps prices of power $v$ to quantity $Q$, $Q(v)$. It is the inverse mapping of the inverse demand function.
+    \textbf{Demand function} maps prices of power $v$ to quantity $Q$, $Q(v)$. It is the inverse mapping of the inverse demand function.
 \end{definition}
 \begin{definition}
     \textbf{Elasticity} is the sensitivity of the demand $Q(v)$ to changes in price $v$. It is defined as:
@@ -425,13 +425,13 @@ In a pool market, the bids are more complex. For example, it can contains start-
 \section{Electricity auctions}
 In the electricity market, there exists different types of auctions. 
 \begin{definition}
-    The \textbf{uniform price auction} is an auction where an uniform price is decided $\lambda$, and every winning bid will pay or be paid at $\lambda$ €/MWh. It is used in exchange markets.
+    The \textbf{first-price auction} is an auction where the price for each winning bid is the price of the bid itself. 
 \end{definition}
 \begin{definition}
     The \textbf{second-price auction} is an auction where the price will be decided by the highest rejected bid. 
 \end{definition}
 \begin{definition}
-    The \textbf{first-price auction} is an auction where the price for each winning bid is the price of the bid itself. 
+    The \textbf{uniform price auction} is an auction where an uniform price is decided $\lambda$, and every winning bid will pay or be paid at $\lambda$ €/MWh. It is used in exchange markets.
 \end{definition}
 Both the uniform price auction and the pay as bid auction are criticized for different reasons. Uniform pricing is criticized for example for having high price volatility. Where pay-as-bid is criticized for being discriminatory (different price for the same product) and being less efficient.
 \subsection{Blueprint of an electricity market}
@@ -451,7 +451,7 @@ Zonal pricing, on the other hand, groups multiple nodes into zones and determine
 \section{Network modeling}
 The power system can be modeled as a graph, where the nodes represent the buses and the edges represent the transmission lines. This graph can be characterized by some matrices. The one that interests us is the \textbf{Laplacian matrix} $L$, but to define it we need to define the \textbf{incidence matrix} $A$ and the \textbf{degree matrix} $D$ first. Let's consider a graph $G=(N,E)$, where $N$ is the set of nodes and $E$ is the set of edges.
 \begin{definition}
-    The \textbf{incidence matrix} $A$ is a matrix that describes the connectivity of the graph. It has one row for each node and one column for each node too. Each element of the matrix is defined as follows:
+    The \textbf{incidence matrix} $A$ is a matrix that describes the connectivity of the graph. It has one row and one column for each node. Each element of the matrix is defined as follows:
     \begin{equation}
         A_{ij} = \begin{cases}
             1 & \text{if} (i,j) \in E \\
@@ -789,7 +789,7 @@ The marginal pricing is the simplest way to convexify the problem, it consists i
     with ($p_{g,t}^*, u_{g,t}^*, v_{g,t}^*$) the optimal solution of the unit commitment problem and $\pi_t$ the decided price at time $t$.
 \end{definition}
 \subsection{Convex hull pricing}
-Convex hull pricing is a more complex way to find a market equilibrium under non-convexities. It consists in computing the optimal lagrange multipliers of the market clearing constraints in the nonconvex problem. 
+Convex hull pricing is a more complex way to find a market equilibrium under non-convexities. It consists in computing the optimal Lagrange multipliers of the market clearing constraints in the nonconvex problem. 
 \begin{thm}
     \textbf{The Hogan theorem} states that the convex hull prices are the uniform prices that minimize the total lost opportunity costs.
 \end{thm}
@@ -934,7 +934,7 @@ A contract for differences (CfD) is a special type of forward contract where the
         \hline
         t &  $0$ & $0$ & Financial & Contract emission\\
         \hline
-        T & $+(f_t-p_T) x$ & $-(f_t-p_T) x$ & Financial & Reimbursment\\
+        T & $+(f_t-p_T) x$ & $-(f_t-p_T) x$ & Financial & Reimbursement\\
         \hline
         T & $+p_T q$ & $-p_T q$ & Physical (TSO) & Real time costs\\
         \hline
