@@ -714,5 +714,156 @@ For scheduling problems, LNS can be used to explore different schedules by fixin
 To generalize the cumulative constraint we can for example allow the duration of the activities to be variable, but we would need to modify the TimeTable filtering using the minimum of the duration of the activities instead of the fixed duration. We can also allow activities to be optional throught a Boolean variable that indicates whether the activity will be activated or not, but the propagator will need to take this into account.\\
 \textcolor{red}{maybe add specific problems like producer-consumer, rectangle packing, etc.}
 \section{Disjunctive scheduling}
+Disjunctive scheduling is a special case of scheduling where each activity as a resource requirement of 1 and the capacity of the resource is also 1, which means that at any time, only one activity can be active. Therefore, we can express the precedence between  two activities $i$ and $j$ as follows:
+\begin{equation}
+    s[i] + d[i] \leq s[j] \text{ or } s[j] + d[j] \leq s[i]
+\end{equation}
+We define $est_i$ as the earliest start time of activity $i$, $lst_i$ as the latest start time of activity $i$, $ect_i$ as the earliest completion time of activity $i$, and $lct_i$ as the latest completion time of activity $i$.
+\subsection{Job Shop Scheduling Problem}
+The Job Shop Scheduling Problem is a problem where we have $m$ machines and $n$ jobs, each job is a sequence of activities that must be executted in a specific time window on specific machines. The goal is to find a schedule that minimizes the makespan, which is the time it takes to complete all the jobs.\\
+This problem can be modeled with disjunctive scheduling with one problem of disjunctive scheduling for each machine.\\
+\textcolor{red}{TO IMPROVE, IDK what to say about this problem}
+\subsection{Overload checking}
+Overload checking is a feasibility check for disjunctive scheduling. The idea is that if the total time required by the activities that must be scheduled on a machine exceeds the time between the earliest start and latest end times, then we can conclude that the constraint is infeasible.\\
+\textcolor{red}{Add efficient algorithm for overload checking}
+\subsection{Detectable precedences filtering}
+A detectable precedence identifies that one activity must be scheduled before another activity. The idea is that if activity $j$ cannot be scheduled after activity $i$ then $j$ must be before $i$. The condition can be expressed as follows:
+\begin{equation}
+    est_i + d_i > lct_j - d_j
+\end{equation}
+Or in other words:
+\begin{equation}
+    ect_i > lst_j
+\end{equation}
+This means that $j$ cannot start after $i$ ends. And so we can conclude that $j$ must be scheduled before $i$. This means that we can filter the start time of $i$ with this formula:
+\begin{equation}
+    s_i = \max(s_i, ect({j \neq i | est_i + d_i > lct_j - d_j}))
+\end{equation}
+\textcolor{red}{Add efficient algorithm for detectable precedences}
+\subsection{Not last filtering}
+In the contrary of the detectable precedences filtering, the not last filtering identifies that one activity cannot be scheduled last and filter the latest start time. For example, if it is impossible to schedule ${A, B}$ before $C$, then $C$ cannot be last among ${A, B, C}$. So $C$ must end at before a least one of $A$ and $B$. This means that we can filter the latest start time of $C$ with this formula:
+\begin{equation}
+    lct_i = \min(lct_i, \max_{j \neq i}(lct_j - d_j))
+\end{equation}
+\textcolor{red}{Add efficient algorithm for not last filtering}
+\subsection{Edge finding filtering}
+\textcolor{red}{TODO}
+\subsection{Idempetency}
+All of the previous filtering algorithms are not idempotent because applying them once may create new opportunities for filtering that were not present before. 
 \chapter{Search}
+Reminder that a good CP program should be made of two parts: a good model and a good search strategy. The search strategy is important because it can have a big impact on the performance of the solver. A good search strategy can reduce the search space, detect earlier failures and find good solutions faster. While a bad search strategy generates a huge search space, leading to a lot of backtracking and wasted time.\\
+The search strategy is defined by two components: the variable selection heuristic and the value selection heuristic. The variable selection heuristic defines which variable to branch on next, which affects the size of the search tree, the depth of failures and the depth of good solutions. While the value selection heuristic defines which value to assign to the selected variable, which affects the quality of the solutions and the location of solutions in the tree.
+\section{Value selection heuristics}
+The value selection heuristic is important because it determines the quality of the branching. For a certain value $v$ we can either choose to branch on $X = v$ or $X \neq v$, or separate the domain in two with two branches $X \leq v$ and $X > v$.\\ 
+For optimization problems, value selection is very important because of branch-and-bound. In branch-and-bound, when the solver finds a good solution early, it can tighten the objective bound and prune more of the search tree. So the leftmost feasible solution matters a lot.
+\subsection{Bound-impact value selector}
+The Bound-Impact Value Selector (BIVS) tries to choose the value that gives the best objective lower bound after propagation. So for a variable $X$ and a domain $D(X)$, BVIS will test each possible value $v \in D(X)$ and compute the objective lower bound after propagating $X = v$. Then it will choose the value that gives the best objective lower bound. This heuristic is powerful because it can find good solutions early, but it is expensive because it requires propagating each possible value in the domain of the variable and a lot of backtracking.
+\subsection{Phase saving}
+Phase saving is a simpler value selection heuristic. If a variable $X$ was previously fixed successfully to a value $v$, then we store it:
+\begin{lstlisting}
+    lastValue[X] = v
+\end{lstlisting}
+Then the next time we branch on $X$, we will try to assign it to $v$ first. The intuition is that if a value worked before, it may work again. This is particularly useful with restarts, because the solver can reuse information learned from previous attempts.
+\section{Variable selection heuristics}
+The variable selection heuristic is important because it determines the size of the search tree and the time needed to find a solution.\\
+The \textbf{First-Fail principle} states that to succeed, we should first try to assign the variable that is the most likely to fail. So we want to select the variable that is the hardest to assign first.\\
+We want to do that because if the current branch lead to a failure, we want to detect it as early as possible to avoid exploring a large search space for nothing.
+\subsection{Min-Dom heuristic}
+The simplest variable selection heuristic is the Min-Dom heuristic, which selects the variable with the smallest domain. The intuition is that a variable with a smaller domain is more likely to fail because it has fewer options.
+\subsection{Degree based heuristic}
+The Degree heuristic selects the variable that is involved in the most constraints. The degree of a variable is the number of constraints that involve that variable. The intuition is that a variable that is involved in more constraints is more likely to fail because it has more restrictions. There is tree variants of this heuristic:
+\begin{itemize}
+    \item \textbf{Max-Degree}: selects the variable with the highest degree.
+    \item \textbf{Domain then degree}: selects the variable with the smallest domain, and in case of a tie, selects the variable with the highest degree.
+    \item \textbf{Dom/Deg}: selects the variable with the smallest ratio of domain size to degree.  
+\end{itemize}
+\subsection{Weighted Degree heuristic}
+The Weighted Degree heuristic (WDeg) is a dynamic variable selection heuristic that learns from the search process. Each constraint has a weight and when a constraint causes a failure, its weight is increased. The idea is that a variable that is involved in a constraint that failed often in the past is likely to fail again. The weighted degree of a variable is the sum of the weights of the constraints that involve that variable. The WDeg heuristic selects the variable with the highest weighted degree.\\
+A variant of the WDeg heuristic is the \textbf{Dom/WDeg} heuristic, which selects the variable with the smallest ratio of domain size to weighted degree. This means that the solver prefers to select a variable that is involved in many constraints that fails often. 
+\subsection{Impact-Based search}
+Impact-Based Search (IBS) estimates how much a decision will reduce the search space. The size of the search space is approximated by the product of the domain sizes ($S(d)$). When we post a decision $X = v$, we can compute the impact of this decision as follows:
+\begin{equation}
+    I(X = v) = 1 - \frac{S(after)}{S(before)}
+\end{equation}
+If $I = 0$, it means that the decision did not reduce the search space at all, while if $I = 1$, it means that the decision reduced the search space to zero and thus leads to a failure. During the search, the solver will learn average impacts. We can use this heuristic for variable selection by choosing the variable that is expected to reduce the search space the most. But we can also use it for value selection by choosing the value with high estimated filtering impact.\\
+IBS needs an initialization phase, often with random dives, to estimate impacts before the main complete search.
+\subsection{Activity-Based search}
+Activity-Based search (ABS) tracks how often each variable domain is reduced during search. We can define the activity $A(X)$ of a variable as the number of times its domain has been reduced. The ABS heuristic selects the variable maximizing:
+\begin{equation}
+    \frac{A(X)}{|D(X)|}
+\end{equation}
+The idea is to select the variable that are often involved in propagation because they are probably important.
+\subsection{Last-Conflict search}
+Last-Conflict Search remembers the last variable that caused a failure. If branching on variable x leads to failure, then after backtracking, the solver tries to branch on x again before using other heuristics. This follows the intuition that if a variable caused a failure, the cause of the failure may still be present and thus it is likely to fail again.
+\subsection{Conflict-Ordering Search}
+Conflict-Ordering Search (COS) generalizes Last-Conflict Search. Each variable gets a timestamp. When branching on a variable causes failure, the global conflict counter is incremented, and that variable receives the current timestamp.
+Then COS selects the unfixed variable with the largest timestamp and so the most recent conflict has priority. If no variable has a conflict timestamp, then we go back to the other heuristic.
+\subsection{Pick/dom heuristic}
+The Pick/Dom heuristic tracks variables that were involved in domain reductions during a fixpoint computation that eventually failed. A variable gets a $pick(x)$ score based on how often or how much its domain was reduced before failure. The heuristic selects the variable with the lowest ratio:
+\begin{equation}
+    \frac{|D(x)|}{pick(x)}
+\end{equation} 
+The difference with ABS is that ABS tracks all domain reductions, while Pick/Dom only tracks domain reductions that lead to failure.
+\subsection{Failure rate based search}
+Failure Rate Based Search (FRB) tracks how often assigning a variable leads to failure. The heuristic selects the variable with the highest failure rate, which is defined as:
+\begin{equation}
+    FR(x) = \frac{|\text{failures}(x)|}{|\text{assignments}(x)| \cdot |D(x)|}
+\end{equation}
+\subsection{Failure Directed Search}
+Failure Directed Search (FDS) is used when the goal is to prove that no better solution exists. This is especially useful in scheduling, after a good solution has already been found. Instead of trying to find a feasible solution quickly, FDS tries to close branches quickly. The idea is that if we believe there is no better solution, search should be oriented toward proving infeasibility. So for each branch we will give a rating on how quickly it fails because this will closes the search space quickly.
+\subsection{Discrepancy search}
+Discrepancy search is useful when we trust the value heuristic. A discrepancy is a deviation from the heuristic’s preferred choice. We can count the number of discrepancies in a branch and limit the number of discrepancies allowed. For example for a binary tree, the number of discrepancies is the number of right branches taken.\\
+The idea is that if the heuristic is good, then good solutions probably require only a few mistakes from the heuristic. So we visits solutions by increasing discrepancy.
+\section{Restarts}
+Restarts mean stopping the current DFS after some limit and starting again. This is useful for two reasons. First, early mistakes are very costly. If the solver makes a bad decision near the root, it may spend a long time exploring a bad subtree. Second, if the heuristic learns during search, restarting allows the solver to restart from the root with better information. Restarts can help especially with randomized search because runtime distributions may have heavy tails.
+\begin{definition}
+    A heavy-tailed runtime distribution means that some runs can be extremely long and some runs can be surpisingly short. 
+\end{definition}
+So restarting can exploit this by giving the solver a chance to find a short run if it is stuck in a long run.\\
+\subsection{No good}
+When restarting, sometimes we do not want to forget the information learned from the previous runs, especially the bad decisions that lead to failure. So we can add a nogood constraint to the model that forbids the solver to explore partial assignments that lead to failure. No-goods allow the solver to accumulate information across restarts. They prevent re-exploring the same failed search space.
+\section{Parallelization}
+If we have multiples processors in our PC, we can parallelize the search of our CP program.
+\subsection{Portfolio search}
+The portfolio search runs several heuristics in parallel. For optimization problems, workers can share the best objective bound and when a better bound is found, it is broadcasted to all workers. This allows the workers to prune more of the search space and find better solutions faster.
+\subsection{Work stealing}
+If one worker becomes idle, it steals an unexplored subproblem from another worker. This balances the load dynamically but requires communication.
+\subsection{Embarrassingly parallel search}
+Split the initial problem into many small subproblems and put them in a pool. Each worker takes one subproblem from the pool when idle. This requires little communication, but subproblems should ideally have similar difficulty.
+\section{Constraints helping the search}
+To help the search process, we can add some constraints to the model.
+\subsection{Redundant constraints}
+Redundant constraints are constraints that do not change the set of solutions but can help the solver to find a solution faster. It is a constraint that is already implied by other constraints but can still be useful because it improves the propagation of constraints.\\
+To find redundant constraints, there is two easy ways. First, we can express properties that every solution must satisfy. And second, we can derive consequences from existing constraints.\\ 
+For example, in Job-Shop Scheduling. Since a machine can process only one activity at a time, all activities assigned to the same machine must be executed sequentially. Therefore, the makespan must be at least equal to the total duration of the activities processed on each machine:
+\begin{equation}
+    makespan \geq \sum_{i \in M_m} d_i, \quad \forall m
+\end{equation}
+This constraint is redundant because it does not remove any valid solution: it is already implied by the disjunctive resource constraint. However, it can improve propagation by giving the solver a stronger lower bound on the makespan.
+\subsection{Symmetry breaking constraints}
+A \textbf{symmetry} is a map between values or between variables that transforms a solution into another solution.\\
+\textbf{Warning:} Symmetry breaking constraints does not always help, surely they reduce the search space, but they can also remove solutions that would have been found faster by the heuristic without them.\\
+\textbf{Value symmetry}\\
+So a value symmetry swaps values and it is noted $\sigma(v) = w$ if we want to map value $v$ to value $w$.\\
+For example, if we consider the problem of coloring a graph with 3 colors, such as this graph:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{img/graph_coloring.png}
+\end{figure}
+A valid value mapping can be to shift the colors by one, so that color 1 becomes color 2 ($\sigma(1) = 2$), color 2 becomes color 3 ($\sigma(2) = 3$), and color 3 becomes color 1 ($\sigma(3) = 1$). This mapping preserves the set of solutions because if a coloring is valid, then shifting the colors will also produce a valid coloring.\\
+A possible symmetry breaking constraint for this problem is to enforce that the first node is colored with color 1, and second node is colored with color 2. This constraint is valid because the two adjacent nodes have different colors, and it breaks the symmetry because it forces the first two nodes to have specific colors and thus it is not possible to shift the colors anymore.\\
+\textbf{Variable symmetry}\\
+A variable symmetry swaps variables and it is noted $x_{\sigma(i)} = x_j$.
+If we take back the previous example of coloring a graph, with the node numbered:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{img/graph_coloring2.jpg}
+\end{figure}
+A valid variable mapping can be to shift each node by two, so that node 0 becomes node 2 ($\sigma(0) = 2$), node 1 becomes node 3 ($\sigma(1) = 3$), etc. So the mapping is $x_{\sigma(i)} = x_{(i+2)\% 10}$. This mapping preserves the set of solutions because if a coloring is valid, then shifting the nodes will also produce a valid coloring.\\
+Here a symmetry breaking constraint would be a lexicographic ordering constraint that enforces the coloring of the nodes to be lexicographically smaller than the coloring of the shifted nodes. And so we have this constraint:
+\begin{equation}
+    (x0, x1, x2, x3, x4, x5, x6, x7, x8, x9) \leq_{\text{lex}} (x2, x3, x4, x5, x6, x7, x8, x9, x0, x1)
+\end{equation}
+This constraint does not remove all valid colorings, but it removes symmetric duplicates: if a coloring and its shifted version are equivalent, the solver only keeps the one that is lexicographically smaller.\\
+This is what we call a \textbf{static symmetry breaking constraint}, it is a constraint that is added to the model before the search process. There are also \textbf{dynamic symmetry breaking constraints}, which are constraints that are added during the search process. For example, if we find a solution, we can add a constraint that forbids all symmetric solutions to this solution. This is done by applying the symmetry mapping to the found solution and adding a constraint that forbids this mapped solution. We can also do \textbf{dynamic symmetry breaking} but without constraints, by modifying the search strategy to avoid exploring symmetric branches of the search tree. For example if we want to put items in bins (equal sizes), when we place the first item, which means all the bins will be empty, the bin we put it in has no importance, so we does not need to explore the branches where this item is placed in a different bin.\\
 \end{document}
