@@ -555,7 +555,7 @@ Until now we have only considered optimization problems without considering the 
 \end{itemize}
 The decision variables of the DCOPF problem will be $p_g$ the amount of power produced by generator $g$, $d_l$ the amount of power consumed by load $l$.
 \subsection{Power Transfer Distribution Factor model}
-For the PTDF model, we will interrest us to the nodal injections in the model. For that, we will a chose "hub node", which is a reference node that will absorb all the injections. The nodal injection at node $n$ is defined as:
+For the PTDF model, we will interrest us to the nodal injections in the model. For that, we will choose a "hub node", which is a reference node that will absorb all the injections. The nodal injection at node $n$ is defined as:
 \begin{equation}
     r_n = \sum_{g \in G_n} p_g - \sum_{l \in L_n} d_l
 \end{equation}
@@ -563,7 +563,7 @@ To follow the kirchhoff's laws, we need to add the following constraints:
 \begin{equation}
     \sum_{n \in N} r_n = 0
 \end{equation}
-Then, based on the PTDF ($F_kn$) that represents the amount of power flowing on line $k$ as a result of shipping unit of power from node $n$ to hub node, we can determine the flow on each line $k$ as follows:
+Then, based on the PTDF ($F_{kn}$) that represents the amount of power flowing on line $k$ as a result of shipping unit of power from node $n$ to hub node, we can determine the flow on each line $k$ as follows:
 \begin{equation}
     f_k = \sum_{n \in N} F_{kn} r_n
 \end{equation}
@@ -594,7 +594,7 @@ The KKT conditions for this problem are:
         0 \leq \mu_g &\perp P_g - p_g \geq 0\\
         0 \leq \nu_l &\perp D_l - d_l \geq 0\\
         f_k &\perp f_k - \sum_{n \in N} F_{kn} r_n = 0\\
-        r_n &\perp r_n - \sum_{g \in G_n} p_g + \sum_{l \in L_n} d_l = 0\\
+        \rho_n &\perp r_n - \sum_{g \in G_n} p_g + \sum_{l \in L_n} d_l = 0\\
         &\perp \lambda_k^- - \lambda_k^+ + \psi_k = 0 \\
         &\perp \phi + \rho_n - \sum_{k \in K} F_{kn} \psi_k = 0
     \end{aligned}
@@ -615,7 +615,7 @@ We can interpret the dual variables as follows:
     \item $\rho_n$ represents the locational marginal price (LMP) at node $n$, i.e. the marginal value of injecting one additional MW at node $n$.
 \end{itemize}
 \subsection{Bus angle model}
-For the bus angle model, also known as the reactance model, we will interrest us to the differences of phase angles in the network. For that, we will chose a "hub node", its choice won't affect the results. The phase angle at node $n$ is denoted $\theta_n$. The flow on line $k = (m,n)$ is defined as:
+For the bus angle model, also known as the reactance model, we will interrest us to the differences of phase angles in the network. For that, we will choose a "hub node", its choice won't affect the results. The phase angle at node $n$ is denoted $\theta_n$. The flow on line $k = (m,n)$ is defined as:
 \begin{equation}
     f_{(m,n)} = B_{(m,n)} (\theta_m - \theta_n)
 \end{equation}
@@ -891,7 +891,7 @@ The balancing market operates using \textbf{increment} and \textbf{decrement} bi
 This lead us to a new optimization problem, the balancing market model:
 \begin{equation}
     \begin{aligned}
-        \max & \sum_{d \in D} MB_d \delta_d^- \sum_{u \in U} MC_u \delta_u^+ &&\\
+        \max & \sum_{d \in D} MB_d \delta_d^- - \sum_{u \in U} MC_u \delta_u^+ &&\\
         \text{s.t.} \quad & \sum_{u \in U} \delta_u^+ - \sum_{d \in D} \delta_d^- = \Delta &&[\lambda]\\
         & 0 \leq \delta_u^+ \leq \Delta_u \quad \forall u \in U\\
         & 0 \leq \delta_d^- \leq \Delta_d \quad \forall d \in D
@@ -905,7 +905,6 @@ An important observation is that balancing markets can also be interpreted as a 
 \begin{definition}
     \textbf{Forward contract} are financial contracts that allows market participants to trade electricity at a predetermined price fixed in advance of the delivery. A forward contract is a bilateral agreement between two parties, it is characterized by a selling price $f_t$, a quantity $x$ of traded electricity and a delivery time $T$ (also called expiration date).
 \end{definition}
-%A forward contract works in two steps, first the two parties agree on the price $f_t$ in advance of the due date and at this moment the buyer pays the seller $f_t x$. Then at the due date, the two parties exchange the a quantity $x$ of electricity and the seller pays the buyer $p_T x$. Where $p_T$ is the real-time price of electricity at time $T$. 
 The advantages of forward contracts are that they allow market participants to hedge (se couvrir) against price volatility, they do not influence the real-time price of electricity and they can be traded. The different transactions that occur in a forward contract can be summarized in the following table:
 \begin{center}
     \begin{tabular}{|c|c|c|c|c|}
@@ -914,7 +913,7 @@ The advantages of forward contracts are that they allow market participants to h
         \hline
         t &  $+f_t x$ & $-f_t x$ & Financial & Contract emission\\
         \hline
-        T & $-p_T x$ & $+p_T x$ & Financial & Reimbursment\\
+        T & $-p_T x$ & $+p_T x$ & Financial & Reimbursement\\
         \hline
         T & $+p_T q$ & $-p_T q$ & Physical (TSO) & Real time costs\\
         \hline
@@ -923,7 +922,7 @@ The advantages of forward contracts are that they allow market participants to h
         \hline
     \end{tabular}
 \end{center}
-Suppose that the producer sells a contract for a quantity $x$ at a price $f_t$ at time $t$ but produces $q$ in real time. Then the producers would be paid $R = f_t x + p_T (q - x)$. So the producer should produce $x$ to maximize its revenue, and thus hedges the risk of price volatility. The same applies for the consumer, it should consume $x$ to minimize its cost and thus hedges the risk of price volatility.\\
+Suppose that the producer sells a contract for a quantity $x$ at a price $f_t$ at time $t$ but produces $q$ in real time for a price $p_T$. Then the producers would be paid $R = f_t x + p_T (q - x)$. So the producer should produce $x$ to maximize its revenue, and thus hedges the risk of price volatility. The same applies for the consumer, it should consume $x$ to minimize its cost and thus hedges the risk of price volatility.\\
 Given risk neutral agents, the forward price $f_t$ should be equal to the expected real-time price $\mathbb{E}[p_T|\xi_{[t]}]$, where $\xi_{[t]}$ is the state of the world at time $t$. 
 \subsection{Contract for Differences}
 A contract for differences (CfD) is a special type of forward contract where the payment is only done at the delivery time $T$. In this type of contract, the buyer and the seller agree on a price $f_t$ at time $t$ but the payment is only done at time $T$. And only one transaction occurs at time $T$, the buyer pays the seller $(f_t - p_T) x$. This is an advantage if the buyer does not have the financial resources to pay at time $t$ where the forward contract has the advantage of giving liquidity to the seller to produce the electricity. The different transactions that occur in a contract for differences can be summarized in the following table:
@@ -1103,6 +1102,7 @@ The centralized capacity expansion problem with demand response becomes:
         &p, x, d \geq 0
     \end{aligned}
 \end{equation}
+With $\Delta T_j$ the duration of slice $j$, $D_{lj}$ the load during slice $j$, $I_g$ the investment cost for generator $g$, $C_g$ the variable operating cost for generator $g$, $p_{gj}$ the production of generator $g$ during slice $j$, $d_{lj}$ the consumption of load block $l$ during slice $j$, $x_g$ the investment in technology $g$ and $V_{lj}$ the willingness to pay of load block $l$ during slice $j$.\\
 The KKT conditions of this problem are:
 \begin{equation}
     \begin{aligned}
